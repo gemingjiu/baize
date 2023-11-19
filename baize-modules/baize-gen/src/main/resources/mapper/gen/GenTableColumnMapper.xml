@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baize.gen.mapper.GenTableColumnMapper">
+
+    <resultMap type="com.baize.gen.entity.GenTableColumn" id="GenTableColumnResult">
+        <id     property="id"       column="id"      />
+        <result property="tableId"        column="table_id"       />
+        <result property="columnName"     column="column_name"    />
+        <result property="columnComment"  column="column_comment" />
+        <result property="columnType"     column="column_type"    />
+        <result property="javaType"       column="java_type"      />
+        <result property="javaField"      column="java_field"     />
+        <result property="pk"           column="pk"          />
+        <result property="increment"    column="increment"   />
+        <result property="required"     column="required"    />
+        <result property="insert"       column="insert"      />
+        <result property="edit"         column="edit"        />
+        <result property="list"         column="list"        />
+        <result property="query"        column="query"       />
+        <result property="queryType"      column="query_type"     />
+        <result property="visibleType"       column="visible_type"      />
+        <result property="dictType"       column="dict_type"      />
+        <result property="sort"           column="sort"           />
+        <result property="createdBy"       column="created_by"      />
+        <result property="createdTime"     column="created_time"    />
+        <result property="modifiedBy"       column="modified_by"      />
+        <result property="modifiedTime"     column="modified_time"    />
+    </resultMap>
+
+    <sql id="selectGenTableColumnVo">
+        select id, table_id, column_name, column_comment, column_type, java_type, java_field, pk, increment, required, insert, edit, list, query, query_type, visible_type, dict_type, sort, created_by, created_time, modified_by, modified_time from gen_table_column
+    </sql>
+
+    <select id="selectGenTableColumnListByTableId" parameterType="com.baize.gen.entity.GenTableColumn" resultMap="GenTableColumnResult">
+        <include refid="selectGenTableColumnVo"/>
+        where table_id = #{tableId}
+        order by sort
+    </select>
+
+    <select id="selectDbTableColumnsByName" parameterType="String" resultMap="GenTableColumnResult">
+        select
+            b.attname as column_name,-- 字段名
+            (case when  b.attnotnull  = true then '1' else null end) as required,  --是否非空
+            (case when d.contype = 'p' then '1' else '0' end) as pk,
+            b.attnum as sort ,
+            col_description ( b.attrelid, b.attnum ) as column_comment,   -- 字段备注
+            (case when a.relkind = 'S'  then '1' else '0' end ) as increment,
+            c.typname as column_type    --字段类型
+        from
+            pg_attribute as b
+                left join   pg_class as a on b.attrelid = a.oid
+                left join pg_constraint as d on d.contype = 'p'::"char" 	and d.conrelid = a.oid and b.attnum = ANY (d.conkey)
+                left join pg_type as c on b.atttypid= c.oid
+        where
+            a.relname = #{tableName}
+          and b.attnum > 0
+          and not b.attisdropped
+
+    </select>
+
+    <insert id="insertGenTableColumn" parameterType="com.baize.gen.entity.GenTableColumn">
+        insert into gen_table_column (
+        <if test="id !=null and id != ''" >id,</if>
+        <if test="tableId != null and tableId != ''">table_id,</if>
+        <if test="columnName != null and columnName != ''">column_name,</if>
+        <if test="columnComment != null and columnComment != ''">column_comment,</if>
+        <if test="columnType != null and columnType != ''">column_type,</if>
+        <if test="javaType != null and javaType != ''">java_type,</if>
+        <if test="javaField != null  and javaField != ''">java_field,</if>
+        <if test="pk != null and pk != ''">pk,</if>
+        <if test="increment != null and increment != ''">increment,</if>
+        <if test="required != null and required != ''">required,</if>
+        <if test="insert != null and insert != ''">insert,</if>
+        <if test="edit != null and edit != ''">edit,</if>
+        <if test="list != null and list != ''">list,</if>
+        <if test="query != null and query != ''">query,</if>
+        <if test="queryType != null and queryType != ''">query_type,</if>
+        <if test="visibleType != null and visibleType != ''">visible_type,</if>
+        <if test="dictType != null and dictType != ''">dict_type,</if>
+        <if test="sort != null">sort,</if>
+        <if test="createdBy != null and createdBy != ''">created_by,</if>
+        created_time
+        )values(
+        <if test="id !=null and id != ''" >#{id},</if>
+        <if test="tableId != null and tableId != ''">#{tableId},</if>
+        <if test="columnName != null and columnName != ''">#{columnName},</if>
+        <if test="columnComment != null and columnComment != ''">#{columnComment},</if>
+        <if test="columnType != null and columnType != ''">#{columnType},</if>
+        <if test="javaType != null and javaType != ''">#{javaType},</if>
+        <if test="javaField != null and javaField != ''">#{javaField},</if>
+        <if test="pk != null and pk != ''">#{pk},</if>
+        <if test="increment != null and increment != ''">#{increment},</if>
+        <if test="required != null and required != ''">#{required},</if>
+        <if test="insert != null and insert != ''">#{insert},</if>
+        <if test="edit != null and edit != ''">#{edit},</if>
+        <if test="list != null and list != ''">#{list},</if>
+        <if test="query != null and query != ''">#{query},</if>
+        <if test="queryType != null and queryType != ''">#{queryType},</if>
+        <if test="visibleType != null and visibleType != ''">#{visibleType},</if>
+        <if test="dictType != null and dictType != ''">#{dictType},</if>
+        <if test="sort != null">#{sort},</if>
+        <if test="createdBy != null and createdBy != ''">#{createdBy},</if>
+        now()
+        )
+    </insert>
+
+    <update id="updateGenTableColumn" parameterType="com.baize.gen.entity.GenTableColumn">
+        update gen_table_column
+        <set>
+            <if test="columnComment != null">column_comment = #{columnComment},</if>
+            <if test="javaType != null">java_type = #{javaType},</if>
+            <if test="javaField != null">java_field = #{javaField},</if>
+            <if test="insert != null">insert = #{insert},</if>
+            <if test="edit != null">edit = #{edit},</if>
+            <if test="list != null">list = #{list},</if>
+            <if test="query != null">query = #{query},</if>
+            <if test="required != null">required = #{required},</if>
+            <if test="queryType != null">query_type = #{queryType},</if>
+            <if test="visibleType != null">visible_type = #{visibleType},</if>
+            <if test="dictType != null">dict_type = #{dictType},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            modified_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGenTableColumnByIds" parameterType="String">
+        delete from gen_table_column where table_id in
+        <foreach collection="array" item="tableId" open="(" separator="," close=")">
+            #{tableId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteGenTableColumns">
+        delete from gen_table_column where id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,14 @@
+.idea/
+*.iml
+*.ipr
+*.iws
+*.class
+/logs/
+/database/.version_baize-system/
+/database/.back_baize-system/
+*/target/*/
+
+/baize-ui/
+/db/.back_baize/
+/db/.version_baize/
+/baize-modules/*/target/

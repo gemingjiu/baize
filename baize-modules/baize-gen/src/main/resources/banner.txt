@@ -1,0 +1,10 @@
+  ____          _   ______
+ |  _ \        (_) |___  /
+ | |_) |  __ _  _     / /  ___
+ |  _ <  / _` || |   / /  / _ \
+ | |_) || (_| || |  / /__|  __/
+ |____/  \__,_||_| /_____|\___|
+
+Spring Boot Version: ${spring-boot.version}
+Spring Application Name: ${spring.application.name}
+>> 白泽管理系统 <<

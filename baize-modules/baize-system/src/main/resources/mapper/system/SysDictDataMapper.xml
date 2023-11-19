@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baize.system.mapper.SysDictDataMapper">
+
+	<resultMap type="com.baize.system.api.domain.SysDictData" id="SysDictDataResult">
+		<id     property="id"   column="id"   />
+		<result property="dictLabel"  column="dict_label"  />
+		<result property="dictValue"  column="dict_value"  />
+		<result property="dictType"   column="dict_type"   />
+		<result property="cssClass"   column="css_class"   />
+		<result property="listClass"  column="list_class"  />
+		<result property="defaulted"  column="defaulted"  />
+		<result property="sort"   column="sort"   />
+		<result property="status"     column="status"      />
+		<result property="createdBy"   column="created_by"   />
+		<result property="createdTime" column="created_time" />
+		<result property="modifiedBy"   column="modified_by"   />
+		<result property="modifiedTime" column="modified_time" />
+	</resultMap>
+
+	<sql id="selectDictDataVo">
+        select id, sort, dict_label, dict_value, dict_type, css_class, list_class, defaulted, status, created_by, created_time, remark
+		from sys_dict_data
+    </sql>
+
+	<select id="selectDictDataList" parameterType="com.baize.system.api.domain.SysDictData" resultMap="SysDictDataResult">
+	    <include refid="selectDictDataVo"/>
+		<where>
+		    <if test="dictType != null and dictType != ''">
+				AND dict_type = #{dictType}
+			</if>
+			<if test="dictLabel != null and dictLabel != ''">
+				AND dict_label like concat('%', #{dictLabel}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by sort asc
+	</select>
+
+	<select id="selectDictDataByType" parameterType="com.baize.system.api.domain.SysDictData" resultMap="SysDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where status = '0' and dict_type = #{dictType} order by sort asc
+	</select>
+
+	<select id="selectDictLabel" resultType="String">
+		select dict_label from sys_dict_data
+		where dict_type = #{dictType} and dict_value = #{dictValue}
+	</select>
+
+	<select id="selectDictDataById" parameterType="String" resultMap="SysDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where id = #{dictCode}
+	</select>
+
+	<select id="countDictDataByType" resultType="Integer">
+	    select count(1) from sys_dict_data where dict_type=#{dictType}
+	</select>
+
+	<delete id="deleteDictDataById" parameterType="String">
+ 		delete from sys_dict_data where id = #{dictCode}
+ 	</delete>
+
+ 	<delete id="deleteDictDataByIds" parameterType="String">
+ 		delete from sys_dict_data where id in
+ 		<foreach collection="array" item="dictCode" open="(" separator="," close=")">
+ 			#{dictCode}
+        </foreach>
+ 	</delete>
+
+	<update id="updateDictData" parameterType="com.baize.system.api.domain.SysDictData">
+ 		update sys_dict_data
+ 		<set>
+
+ 			<if test="dictLabel != null and dictLabel != ''">dict_label = #{dictLabel},</if>
+ 			<if test="dictValue != null and dictValue != ''">dict_value = #{dictValue},</if>
+ 			<if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+ 			<if test="cssClass != null">css_class = #{cssClass},</if>
+ 			<if test="listClass != null">list_class = #{listClass},</if>
+ 			<if test="defaulted != null and defaulted != ''">defaulted = #{defaulted},</if>
+			<if test="sort != null">sort = #{sort},</if>
+ 			<if test="status != null">status = #{status},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			<if test="modifiedBy != null and modifiedBy != ''">modified_by = #{modifiedBy},</if>
+ 			modified_time = now()
+ 		</set>
+ 		where id = #{dictCode}
+	</update>
+
+	<update id="updateDictDataType" parameterType="String">
+ 		update sys_dict_data set dict_type = #{newDictType} where dict_type = #{oldDictType}
+	</update>
+
+ 	<insert id="insertDictData" parameterType="com.baize.system.api.domain.SysDictData">
+ 		insert into sys_dict_data(
+
+ 			<if test="dictLabel != null and dictLabel != ''">dict_label,</if>
+ 			<if test="dictValue != null and dictValue != ''">dict_value,</if>
+ 			<if test="dictType != null and dictType != ''">dict_type,</if>
+ 			<if test="cssClass != null and cssClass != ''">css_class,</if>
+ 			<if test="listClass != null and listClass != ''">list_class,</if>
+ 			<if test="defaulted != null and defaulted != ''">defaulted,</if>
+			<if test="sort != null">sort,</if>
+ 			<if test="status != null">status,</if>
+ 			<if test="remark != null and remark != ''">remark,</if>
+ 			<if test="createdBy != null and createdBy != ''">created_by,</if>
+ 			created_time
+ 		)values(
+
+ 		    <if test="dictLabel != null and dictLabel != ''">#{dictLabel},</if>
+ 			<if test="dictValue != null and dictValue != ''">#{dictValue},</if>
+ 			<if test="dictType != null and dictType != ''">#{dictType},</if>
+ 			<if test="cssClass != null and cssClass != ''">#{cssClass},</if>
+ 			<if test="listClass != null and listClass != ''">#{listClass},</if>
+ 			<if test="defaulted != null and defaulted != ''">#{defaulted},</if>
+			<if test="sort != null">#{sort},</if>
+ 			<if test="status != null">#{status},</if>
+ 			<if test="remark != null and remark != ''">#{remark},</if>
+ 			<if test="createdBy != null and createdBy != ''">#{createdBy},</if>
+ 			now()
+ 		)
+	</insert>
+
+</mapper> 

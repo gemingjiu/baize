@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baize.system.mapper.SysMenuMapper">
+
+	<resultMap type="com.baize.system.domain.SysMenu" id="SysMenuResult">
+		<id     property="id"         column="id"        />
+		<result property="menuName"       column="menu_name"      />
+		<result property="parentName"     column="parent_name"    />
+		<result property="parentId"       column="parent_id"      />
+		<result property="path"           column="path"           />
+		<result property="component"      column="component"      />
+		<result property="parameters"          column="parameters"          />
+		<result property="external"        column="external"       />
+		<result property="cacheable"        column="cacheable"       />
+		<result property="menuType"       column="menu_type"      />
+		<result property="visible"        column="visible"        />
+		<result property="perms"          column="perms"          />
+		<result property="icon"           column="icon"           />
+		<result property="sort"       column="sort"      />
+		<result property="status"         column="status"         />
+		<result property="createdBy"       column="created_by"      />
+		<result property="createdTime"     column="created_time"    />
+		<result property="modifiedTime"     column="modified_time"    />
+		<result property="modifiedBy"       column="modified_by"      />
+		<result property="remark"         column="remark"         />
+	</resultMap>
+
+	<sql id="selectMenuVo">
+        select id, menu_name, parent_id, sort, path, component, parameters, external, cacheable, menu_type, visible, status, coalesce(perms,'') as perms, icon, created_time
+		from sys_menu
+    </sql>
+    
+    <select id="selectMenuList" parameterType="com.baize.system.domain.SysMenu" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		<where>
+			<if test="menuName != null and menuName != ''">
+				AND menu_name like concat('%', #{menuName}, '%')
+			</if>
+			<if test="visible != null and visible != ''">
+				AND visible = #{visible}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by parent_id, sort
+	</select>
+	
+	<select id="selectMenuTreeAll" resultMap="SysMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.parameters, m.visible, m.status, coalesce(m.perms,'') as perms, m.external, m.cacheable, m.menu_type, m.icon, m.sort, m.created_time
+		from sys_menu m where m.menu_type in ('M', 'C') and m.status = '0'
+		order by m.parent_id, m.sort
+	</select>
+	
+	<select id="selectMenuListByUserId" parameterType="com.baize.system.domain.SysMenu" resultMap="SysMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.parameters, m.visible, m.status, coalesce(m.perms,'') as perms, m.external, m.cacheable, m.menu_type, m.icon, m.sort, m.created_time
+		from sys_menu m
+		left join sys_role_menu rm on m.id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		left join sys_role ro on ur.role_id = ro.id
+		where ur.role_id = #{params.id}
+		<if test="menuName != null and menuName != ''">
+            AND m.menu_name like concat('%', #{menuName}, '%')
+		</if>
+		<if test="visible != null and visible != ''">
+            AND m.visible = #{visible}
+		</if>
+		<if test="status != null and status != ''">
+            AND m.status = #{status}
+		</if>
+		order by m.parent_id, m.sort
+	</select>
+    
+    <select id="selectMenuTreeByUserId" parameterType="String" resultMap="SysMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.parameters, m.visible, m.status, coalesce(m.perms,'') as perms, m.external, m.cacheable, m.menu_type, m.icon, m.sort, m.created_time
+		from sys_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role ro on ur.role_id = ro.id
+			 left join sys_user u on ur.user_id = u.id
+		where u.id = #{userId} and m.menu_type in ('M', 'C') and m.status = '0'  AND ro.status = '0'
+		order by m.parent_id, m.sort
+	</select>
+	
+	<select id="selectMenuListByRoleId" resultType="String">
+		select m.id
+		from sys_menu m
+            left join sys_role_menu rm on m.id = rm.menu_id
+        where rm.role_id = #{roleId}
+            <if test="menuCheckStrictly">
+              and m.id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
+            </if>
+		order by m.parent_id, m.sort
+	</select>
+	
+	<select id="selectMenuPerms" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+	</select>
+
+	<select id="selectMenuPermsByUserId" parameterType="String" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role r on r.id = ur.role_id
+		where m.status = '0' and r.status = '0' and ur.user_id = #{userId}
+	</select>
+	
+	<select id="selectMenuPermsByRoleId" parameterType="String" resultType="String">
+		select distinct m.perms
+		from sys_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+		where m.status = '0' and rm.role_id = #{roleId}
+	</select>
+	
+	<select id="selectMenuById" parameterType="String" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where id = #{id}
+	</select>
+	
+	<select id="hasChildByMenuId" resultType="Integer">
+	    select count(1) from sys_menu where parent_id = #{id}
+	</select>
+	
+	<select id="checkMenuNameUnique" parameterType="com.baize.system.domain.SysMenu" resultMap="SysMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_name=#{menuName} and parent_id = #{parentId} limit 1
+	</select>
+	
+	<update id="updateMenu" parameterType="com.baize.system.domain.SysMenu">
+		update sys_menu
+		<set>
+			<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
+			<if test="parentId != null">parent_id = #{parentId},</if>
+			<if test="sort != null">sort = #{sort},</if>
+			<if test="path != null and path != ''">path = #{path},</if>
+			<if test="component != null">component = #{component},</if>
+			<if test="parameters != null">parameters = #{parameters},</if>
+			<if test="external != null and external != ''">external = #{external},</if>
+			<if test="cacheable != null and cacheable != ''">cacheable = #{cacheable},</if>
+			<if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
+			<if test="visible != null">visible = #{visible},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="perms !=null">perms = #{perms},</if>
+			<if test="icon !=null and icon != ''">icon = #{icon},</if>
+			<if test="remark != null and remark != ''">remark = #{remark},</if>
+			<if test="modifiedBy != null and modifiedBy != ''">modified_by = #{modifiedBy},</if>
+			modified_time = now()
+		</set>
+		where id = #{id}
+	</update>
+
+	<insert id="insertMenu" parameterType="com.baize.system.domain.SysMenu">
+		insert into sys_menu(
+		<if test="id != null and id != ''">id,</if>
+		<if test="parentId != null and parentId != ''">parent_id,</if>
+		<if test="menuName != null and menuName != ''">menu_name,</if>
+		<if test="sort != null">sort,</if>
+		<if test="path != null and path != ''">path,</if>
+		<if test="component != null and component != ''">component,</if>
+		<if test="parameters != null and parameters != ''">parameters,</if>
+		<if test="external != null and external != ''">external,</if>
+		<if test="cacheable != null and cacheable != ''">cacheable,</if>
+		<if test="menuType != null and menuType != ''">menu_type,</if>
+		<if test="visible != null">visible,</if>
+		<if test="status != null">status,</if>
+		<if test="perms !=null and perms != ''">perms,</if>
+		<if test="icon != null and icon != ''">icon,</if>
+		<if test="remark != null and remark != ''">remark,</if>
+		<if test="createdBy != null and createdBy != ''">created_by,</if>
+		created_time
+		)values(
+		<if test="id != null and id != ''">#{id},</if>
+		<if test="parentId != null and parentId != ''">#{parentId},</if>
+		<if test="menuName != null and menuName != ''">#{menuName},</if>
+		<if test="sort != null">#{sort},</if>
+		<if test="path != null and path != ''">#{path},</if>
+		<if test="component != null and component != ''">#{component},</if>
+		<if test="parameters != null and parameters != ''">#{parameters},</if>
+		<if test="external != null and external != ''">#{external},</if>
+		<if test="cacheable != null and cacheable != ''">#{cacheable},</if>
+		<if test="menuType != null and menuType != ''">#{menuType},</if>
+		<if test="visible != null">#{visible},</if>
+		<if test="status != null">#{status},</if>
+		<if test="perms !=null and perms != ''">#{perms},</if>
+		<if test="icon != null and icon != ''">#{icon},</if>
+		<if test="remark != null and remark != ''">#{remark},</if>
+		<if test="createdBy != null and createdBy != ''">#{createdBy},</if>
+		now()
+		)
+	</insert>
+	
+	<delete id="deleteMenuById" parameterType="String">
+	    delete from sys_menu where id = #{id}
+	</delete>
+
+</mapper> 

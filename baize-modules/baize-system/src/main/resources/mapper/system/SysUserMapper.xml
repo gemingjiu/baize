@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baize.system.mapper.SysUserMapper">
+
+    <resultMap type="com.baize.system.api.domain.SysUser" id="SysUserResult">
+        <id     property="id"       column="id"      />
+        <result property="deptId"       column="dept_id"      />
+        <result property="userName"     column="user_name"    />
+        <result property="nickName"     column="nick_name"    />
+        <result property="email"        column="email"        />
+        <result property="phone"  column="phone"  />
+        <result property="gender"          column="gender"          />
+        <result property="avatar"       column="avatar"       />
+        <result property="password"     column="password"     />
+		<result property="sort"       column="sort"       />
+        <result property="status"       column="status"       />
+        <result property="deleted"      column="deleted"     />
+        <result property="loginIp"      column="login_ip"     />
+        <result property="loginDate"    column="login_date"   />
+        <result property="createdBy"     column="created_by"    />
+        <result property="createdTime"   column="created_time"  />
+        <result property="modifiedBy"     column="modified_by"    />
+        <result property="modifiedTime"   column="modified_time"  />
+        <result property="remark"       column="remark"       />
+        <association property="dept"    javaType="com.baize.system.api.domain.SysDept"         resultMap="deptResult" />
+        <collection  property="roles"   javaType="java.util.List"  resultMap="RoleResult" />
+    </resultMap>
+	
+    <resultMap id="deptResult" type="com.baize.system.api.domain.SysDept">
+        <id     property="id"    column="id"     />
+        <result property="parentId"  column="parent_id"   />
+        <result property="deptName"  column="dept_name"   />
+        <result property="ancestors" column="ancestors"   />
+        <result property="sort"  column="sort"   />
+        <result property="leader"    column="leader"      />
+        <result property="status"    column="dept_status" />
+    </resultMap>
+	
+    <resultMap id="RoleResult" type="com.baize.system.api.domain.SysRole">
+        <id     property="id"       column="id"        />
+        <result property="roleName"     column="role_name"      />
+        <result property="roleKey"      column="role_key"       />
+        <result property="sort"     column="sort"      />
+        <result property="dataScope"    column="data_scope"     />
+        <result property="status"       column="role_status"    />
+    </resultMap>
+	
+	<sql id="selectUserVo">
+        select u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phone, u.password, u.gender, u.sort, u.status, u.deleted, u.login_ip, u.login_date, u.created_by, u.created_time, u.remark,
+        d.id, d.parent_id, d.ancestors, d.dept_name, d.sort, d.leader, d.status as dept_status,
+        r.id, r.role_name, r.role_key, r.sort, r.data_scope, r.status as role_status
+        from sys_user u
+		    left join sys_dept d on u.dept_id = d.id
+		    left join sys_user_role ur on u.id = ur.user_id
+		    left join sys_role r on r.id = ur.role_id
+    </sql>
+    
+    <select id="selectUserList" parameterType="com.baize.system.api.domain.SysUser" resultMap="SysUserResult">
+		select u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone, u.gender, u.sort, u.status, u.deleted, u.login_ip, u.login_date, u.created_by, u.created_time, u.remark, d.dept_name, d.leader from sys_user u
+		left join sys_dept d on u.dept_id = d.id
+		where u.deleted = '0'
+		<if test="id != null and id != ''">
+			AND u.id = #{id}
+		</if>
+		<if test="userName != null and userName != ''">
+			AND u.user_name like concat('%', #{userName}::text, '%')
+		</if>
+		<if test="status != null and status != ''">
+			AND u.status = #{status}
+		</if>
+		<if test="phone != null and phone != ''">
+			AND u.phone like concat('%', #{phone}::text, '%')
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			AND TO_CHAR(u.created_time,'YYYYMMDD') &gt;= #{params.beginTime}
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			AND TO_CHAR(u.created_time,'YYYYMMDD') &lt;= #{params.endTime}
+		</if>
+		<if test="deptId != null and deptId != ''">
+			AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.id FROM sys_dept t WHERE #{deptId} = ANY(STRING_TO_ARRAY(ancestors,','))))
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+		order by u.sort asc
+	</select>
+	
+	<select id="selectAllocatedList" parameterType="com.baize.system.api.domain.SysUser" resultMap="SysUserResult">
+		select distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone, u.sort, u.status, u.created_time
+		from sys_user u
+		left join sys_dept d on u.id = d.id
+		left join sys_user_role ur on u.id = ur.user_id
+		left join sys_role r on r.id = ur.role_id
+		where u.deleted = '0' and r.id = #{id}
+		<if test="userName != null and userName != ''">
+			AND u.user_name like concat('%', #{userName}::text, '%')
+		</if>
+		<if test="phone != null and phone != ''">
+			AND u.phone like concat('%', #{phone}::text, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+		order by u.sort asc
+	</select>
+	
+	<select id="selectUnallocatedList" parameterType="com.baize.system.api.domain.SysUser" resultMap="SysUserResult">
+		select distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone, u.status, u.created_time
+		from sys_user u
+		left join sys_dept d on u.id = d.id
+		left join sys_user_role ur on u.id = ur.user_id
+		left join sys_role r on r.id = ur.role_id
+		where u.deleted = '0' and (r.id != #{id} or r.id IS NULL)
+		and u.id not in (select u.id from sys_user u inner join sys_user_role ur on u.id = ur.user_id and ur.role_id =
+		#{roleId})
+		<if test="userName != null and userName != ''">
+			AND u.user_name like concat('%', #{userName}::text, '%')
+		</if>
+		<if test="phone != null and phone != ''">
+			AND u.phone like concat('%', #{phone}::text, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+	</select>
+	
+	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectUserVo"/>
+		where u.user_name = #{userName} and u.deleted = '0'
+	</select>
+	
+	<select id="selectUserById" parameterType="String" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.id = #{id}
+	</select>
+	
+	<select id="checkUserNameUnique" parameterType="String" resultMap="SysUserResult">
+		select id, user_name from sys_user where user_name = #{userName} and deleted = '0' limit 1
+	</select>
+	
+	<select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
+		select id, phone from sys_user where phone = #{phone} and deleted = '0' limit 1
+	</select>
+	
+	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
+		select id, email from sys_user where email = #{email} and deleted = '0' limit 1
+	</select>
+
+	<insert id="insertUser" parameterType="com.baize.system.api.domain.SysUser">
+		insert into sys_user(
+		<if test="id != null and id != ''">id,</if>
+		<if test="deptId != null and deptId != ''">dept_id,</if>
+		<if test="userName != null and userName != ''">user_name,</if>
+		<if test="nickName != null and nickName != ''">nick_name,</if>
+		<if test="email != null and email != ''">email,</if>
+		<if test="avatar != null and avatar != ''">avatar,</if>
+		<if test="phone != null and phone != ''">phone,</if>
+		<if test="gender != null and gender != ''">gender,</if>
+		<if test="password != null and password != ''">password,</if>
+		<if test="sort != null">sort,</if>
+		<if test="status != null and status != ''">status,</if>
+		<if test="createdBy != null and createdBy != ''">created_by,</if>
+		<if test="remark != null and remark != ''">remark,</if>
+		created_time
+		)values(
+		<if test="id != null and id != ''">#{id},</if>
+		<if test="deptId != null and deptId != ''">#{deptId},</if>
+		<if test="userName != null and userName != ''">#{userName},</if>
+		<if test="nickName != null and nickName != ''">#{nickName},</if>
+		<if test="email != null and email != ''">#{email},</if>
+		<if test="avatar != null and avatar != ''">#{avatar},</if>
+		<if test="phone != null and phone != ''">#{phone},</if>
+		<if test="gender != null and gender != ''">#{gender},</if>
+		<if test="password != null and password != ''">#{password},</if>
+		<if test="sort != null">#{sort},</if>
+		<if test="status != null and status != ''">#{status},</if>
+		<if test="createdBy != null and createdBy != ''">#{createdBy},</if>
+		<if test="remark != null and remark != ''">#{remark},</if>
+		now()
+		)
+	</insert>
+	
+	<update id="updateUser" parameterType="com.baize.system.api.domain.SysUser">
+ 		update sys_user
+ 		<set>
+ 			<if test="userName != null and userName != ''">user_name = #{userName},</if>
+ 			<if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+ 			<if test="email != null ">email = #{email},</if>
+ 			<if test="phone != null ">phone = #{phone},</if>
+ 			<if test="gender != null and gender != ''">gender = #{gender},</if>
+ 			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+ 			<if test="password != null and password != ''">password = #{password},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+ 			<if test="loginDate != null">login_date = #{loginDate},</if>
+ 			<if test="modifiedBy != null and modifiedBy != ''">modified_by = #{modifiedBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			modified_time = now()
+ 		</set>
+ 		where id = #{id}
+	</update>
+	
+	<update id="updateUserStatus" parameterType="com.baize.system.api.domain.SysUser">
+ 		update sys_user set status = #{status} where id = #{id}
+	</update>
+	
+	<update id="updateUserAvatar" parameterType="com.baize.system.api.domain.SysUser">
+ 		update sys_user set avatar = #{avatar} where user_name = #{userName}
+	</update>
+	
+	<update id="resetUserPwd" parameterType="com.baize.system.api.domain.SysUser">
+ 		update sys_user set password = #{password} where user_name = #{userName}
+	</update>
+	
+	<delete id="deleteUserById" parameterType="String">
+ 		update sys_user set deleted = '2' where id = #{id}
+ 	</delete>
+ 	
+ 	<delete id="deleteUserByIds" parameterType="String">
+ 		update sys_user set deleted = '2' where id in
+ 		<foreach collection="array" item="id" open="(" separator="," close=")">
+ 			#{id}
+        </foreach> 
+ 	</delete>
+	
+</mapper> 

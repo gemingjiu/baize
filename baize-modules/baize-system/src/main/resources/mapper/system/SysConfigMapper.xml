@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baize.system.mapper.SysConfigMapper">
+    
+    <resultMap type="com.baize.system.domain.SysConfig" id="SysConfigResult">
+    	<id     property="id"      column="id"      />
+        <result property="configName"    column="config_name"    />
+        <result property="configKey"     column="config_key"     />
+        <result property="configValue"   column="config_value"   />
+        <result property="configType"    column="config_type"    />
+        <result property="createdBy"      column="created_by"      />
+        <result property="createdTime"    column="created_time"    />
+        <result property="modifiedBy"      column="modified_by"      />
+        <result property="modifiedTime"    column="modified_time"    />
+    </resultMap>
+    
+    <sql id="selectConfigVo">
+        select id, config_name, config_key, config_value, config_type, created_by, created_time, modified_by, modified_time, remark
+		from sys_config
+    </sql>
+    
+    <!-- 查询条件 -->
+	<sql id="sqlwhereSearch">
+		<where>
+			<if test="id !=null">
+				and id = #{id}
+			</if>
+			<if test="configKey !=null and configKey != ''">
+				and config_key = #{configKey}
+			</if>
+		</where>
+	</sql>
+    
+    <select id="selectConfig" parameterType="com.baize.system.domain.SysConfig" resultMap="SysConfigResult">
+        <include refid="selectConfigVo"/>
+        <include refid="sqlwhereSearch"/>
+    </select>
+    
+    <select id="selectConfigList" parameterType="com.baize.system.domain.SysConfig" resultMap="SysConfigResult">
+        <include refid="selectConfigVo"/>
+        <where>
+			<if test="configName != null and configName != ''">
+				AND config_name like concat('%', #{configName}, '%')
+			</if>
+			<if test="configType != null and configType != ''">
+				AND config_type = #{configType}
+			</if>
+			<if test="configKey != null and configKey != ''">
+				AND config_key like concat('%', #{configKey}, '%')
+			</if>
+			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				and TO_CHAR(created_time,'YYYYMMDD') &gt;= #{params.beginTime}
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				and TO_CHAR(created_time,'YYYYMMDD') &lt;= #{params.endTime}
+			</if>
+		</where>
+    </select>
+    
+    <select id="selectConfigById" parameterType="String" resultMap="SysConfigResult">
+        <include refid="selectConfigVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="checkConfigKeyUnique" parameterType="String" resultMap="SysConfigResult">
+        <include refid="selectConfigVo"/>
+        where config_key = #{configKey} limit 1
+    </select>
+    
+    <insert id="insertConfig" parameterType="com.baize.system.domain.SysConfig">
+        insert into sys_config (
+            <if test="id != null and id != '' ">id,</if>
+			<if test="configName != null and configName != '' ">config_name,</if>
+			<if test="configKey != null and configKey != '' ">config_key,</if>
+			<if test="configValue != null and configValue != '' ">config_value,</if>
+			<if test="configType != null and configType != '' ">config_type,</if>
+			<if test="createdBy != null and createdBy != ''">created_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+ 			created_time
+        )values(
+            <if test="id != null and id != '' ">#{id}</if>
+			<if test="configName != null and configName != ''">#{configName},</if>
+			<if test="configKey != null and configKey != ''">#{configKey},</if>
+			<if test="configValue != null and configValue != ''">#{configValue},</if>
+			<if test="configType != null and configType != ''">#{configType},</if>
+			<if test="createdBy != null and createdBy != ''">#{createdBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+ 			now()
+		)
+    </insert>
+	 
+    <update id="updateConfig" parameterType="com.baize.system.domain.SysConfig">
+        update sys_config 
+        <set>
+            <if test="configName != null and configName != ''">config_name = #{configName},</if>
+            <if test="configKey != null and configKey != ''">config_key = #{configKey},</if>
+            <if test="configValue != null and configValue != ''">config_value = #{configValue},</if>
+            <if test="configType != null and configType != ''">config_type = #{configType},</if>
+            <if test="modifiedBy != null and modifiedBy != ''">modified_by = #{modifiedBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+ 			modified_time = now()
+        </set>
+        where id = #{id}
+    </update>
+	
+    <delete id="deleteConfigById" parameterType="String">
+        delete from sys_config where id = #{id}
+    </delete>
+    
+    <delete id="deleteConfigByIds" parameterType="String">
+        delete from sys_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+        	#{id}
+        </foreach>
+    </delete>
+    
+</mapper>

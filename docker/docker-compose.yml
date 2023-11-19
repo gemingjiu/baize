@@ -1,0 +1,66 @@
+version: "3.8"
+services:
+  baize-postgres:
+    image: postgres:latest
+    container_name: baize-postgres
+    environment:
+      POSTGRES_USER: baize
+      POSTGRES_PASSWORD: baize@2024
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+
+  baize-nacos:
+    image: nacos/nacos-server:v2.2.3
+    container_name: baize-nacos
+    volumes:
+      - ./nacos/logs:/home/nacos/logs
+      - ./nacos/data:/home/nacos/data
+      - ./nacos/plugins/:/home/nacos/plugins
+      - ./nacos/conf/application.properties:/home/nacos/conf/application.properties:rw
+    ports:
+      - '8848:8848'
+      - '9848:9848'
+    environment:
+      - MODE=standalone
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVER_PORT=8848
+    restart: always
+  
+  baize-redis:
+    image: redis
+    container_name: baize-redis
+    build:
+      context: ./redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/conf/redis.conf:/redis/conf/redis.conf
+      - ./redis/data:/data
+    command: redis-server /redis/conf/redis.conf
+
+  baize-mysql:
+    image: mysql:5.7
+    container_name: baize-mysql
+    build:
+      context: ./mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/conf:/etc/mysql/conf.d
+      - ./mysql/logs:/logs
+      - ./mysql/data:/var/lib/mysql
+    command: [
+    'mysqld',
+    '--innodb-buffer-pool-size=80M',
+    '--character-set-server=utf8mb4',
+    '--collation-server=utf8mb4_unicode_ci',
+    '--default-time-zone=+8:00',
+    '--lower-case-table-names=1'
+    ]
+    environment:
+      MYSQL_DATABASE: 'baize'
+      MYSQL_ROOT_PASSWORD: baize@2024

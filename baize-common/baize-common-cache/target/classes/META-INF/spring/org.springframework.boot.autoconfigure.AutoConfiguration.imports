@@ -1,0 +1,2 @@
+com.baize.common.cache.config.RedisConfig
+com.baize.common.cache.service.impl.RedisServiceImpl

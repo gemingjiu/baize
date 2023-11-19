@@ -1,0 +1,69 @@
+spring:
+  cloud:
+    discovery:
+      locator:
+        enabled: true #开启网关服务发现
+      routers:
+        # 认证中心
+        - id: baize-auth
+          uri: lb://baize-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            # 验证码处理
+            - CacheRequestFilter
+            - ValidateCodeFilter
+            - StripPrefix=1
+        # 系统服务
+        - id: baize-system
+          uri: lb://baize-system
+          predicates:
+            -Path=/system/**
+          filters:
+            - StripPrefix=1
+        # 定时任务
+        - id: baize-schedule
+          uri: lb://baize-schedule
+          predicates:
+            - Path=/schedule/**
+          filters:
+            - StripPrefix=1
+        # 代码生成
+        - id: baize-generator
+          uri: lb://baize-generator
+          predicates:
+            - Path=/generator/**
+          filters:
+            - StripPrefix=1
+        # 链路追踪服务
+        - id: baize-tracing
+          uri: lb://baize-tracing
+          predicates:
+            - Path=/tracing/**
+          filters:
+            - StripPrefix=1
+        # 监控服务
+        - id: baize-monitor
+          uri: lb://baize-monitor
+          predicates:
+            - Path=/monitor/**
+          filters:
+            - StripPrefix=1
+
+baize:
+  gateway:
+    #验证码配置
+    captcha:
+      enabled: true
+      type: math
+    # 防止XSS攻击
+    xss:
+      enabled: true
+      excludes:
+        - /system/notice
+    # 白名单
+    ignore:
+      whites:
+        - /auth/login
+        - /auth/logout
+        - /auth/register
