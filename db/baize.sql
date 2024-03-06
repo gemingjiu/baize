@@ -1,4 +1,5 @@
 insert into sys_user(id, dept_id, user_name, nick_name, user_type, email, phone, gender, avatar,password, sort, login_ip, login_date, status, deleted, revision, created_by,created_time, modified_by, modified_time, remark) values ('1', '1', 'admin', '超级管理员', '00', '1019866833@qq.com', '18715003021', '0', '', '$2a$10$Fk/AFdAuCBNpUYG4uNLAoOE5GbIIA8joG4CPJMJ7LWaxgMDgHHJoe', '0', '127.0.0.1', now(),'0', '0', '0', 'admin', now(), 'admin', now(), '系统管理员');
+
 insert into sys_dept(id, parent_id, ancestors, dept_name, leader, phone, email, sort, status, deleted,revision, created_by, created_time, modified_by, modified_time, remark) values ('1', '0', '0', '研发部', '', '18715003021', '1019866833@qq.com', 1, '0', '0', 0, 'admin', now(), 'admin', now(), '系统管理员');
 
 insert into sys_role(id, role_name, role_key, data_scope, sort, status, deleted, revision, created_by,created_time, modified_by, modified_time, remark) values ('1', '管理员', 'admin', '1', 1, '0', '0', '0', 'admin', now(), 'admin', now(), '系统管理员');

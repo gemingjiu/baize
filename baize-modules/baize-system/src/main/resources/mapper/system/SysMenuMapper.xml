@@ -145,6 +145,7 @@
 			<if test="cacheable != null and cacheable != ''">cacheable = #{cacheable},</if>
 			<if test="menuType != null and menuType != ''">menu_type = #{menuType},</if>
 			<if test="visible != null">visible = #{visible},</if>
+			<if test="revision != null">revision = #{revision}+1,</if>
 			<if test="status != null">status = #{status},</if>
 			<if test="perms !=null">perms = #{perms},</if>
 			<if test="icon !=null and icon != ''">icon = #{icon},</if>

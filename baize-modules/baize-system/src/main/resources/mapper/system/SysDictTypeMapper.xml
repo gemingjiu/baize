@@ -79,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
  			<if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
 			<if test="sort != null">sort = #{sort},</if>
+			<if test="revision != null">revision = #{revision}+1,</if>
  			<if test="status != null">status = #{status},</if>
  			<if test="remark != null">remark = #{remark},</if>
  			<if test="modifiedBy != null and modifiedBy != ''">modified_by = #{modifiedBy},</if>

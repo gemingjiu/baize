@@ -98,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="configKey != null and configKey != ''">config_key = #{configKey},</if>
             <if test="configValue != null and configValue != ''">config_value = #{configValue},</if>
             <if test="configType != null and configType != ''">config_type = #{configType},</if>
+            <if test="revision != null">revision = #{revision}+1,</if>
             <if test="modifiedBy != null and modifiedBy != ''">modified_by = #{modifiedBy},</if>
             <if test="remark != null">remark = #{remark},</if>
  			modified_time = now()
