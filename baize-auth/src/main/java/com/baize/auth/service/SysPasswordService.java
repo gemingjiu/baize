@@ -1,22 +1,22 @@
 package com.baize.auth.service;
 
-import com.baize.common.cache.service.CacheService;
-import com.baize.common.core.constant.CacheConstants;
-import com.baize.common.core.exception.BaseException;
-import com.baize.common.security.utils.SecurityUtils;
-import com.baize.system.api.domain.SysUser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import static com.baize.common.core.enums.BaizeException.SERVICE_EXCEPTION;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.baize.common.core.enums.BaizeExceptionEnum.SERVICE_EXCEPTION;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.baize.common.cache.service.CacheService;
+import com.baize.common.core.constant.CacheConstants;
+import com.baize.common.core.exception.SystemException;
+import com.baize.common.security.utils.SecurityUtils;
+import com.baize.system.api.domain.SysUser;
 
 /**
  * @author gemj
  * @since 2023/08/22 11:23
  */
-
 
 @Component
 public class SysPasswordService {
@@ -27,9 +27,6 @@ public class SysPasswordService {
 
     private Long lockTime = CacheConstants.PASSWORD_LOCK_TIME;
 
-
-
-
     /**
      * 登录账户密码错误次数缓存键名
      *
@@ -37,7 +34,7 @@ public class SysPasswordService {
      * @return 缓存键key
      */
     private String getCacheKey(String username) {
-        return CacheConstants.PWD_ERR_CNT_KEY + username;
+        return CacheConstants.LOGIN_ERROR_PREFIX + username;
     }
 
     public void validate(SysUser user, String password) {
@@ -51,13 +48,13 @@ public class SysPasswordService {
 
         if (retryCount >= maxRetryCount) {
             String errMsg = String.format("密码输入错误%s次，帐户锁定%s分钟", maxRetryCount, lockTime);
-            throw new BaseException(SERVICE_EXCEPTION, errMsg);
+            throw new SystemException(SERVICE_EXCEPTION, errMsg);
         }
 
         if (!matches(user, password)) {
             retryCount = retryCount + 1;
             cacheService.setCacheObject(getCacheKey(username), retryCount, lockTime, TimeUnit.MINUTES);
-            throw new BaseException(SERVICE_EXCEPTION, "用户不存在/密码错误");
+            throw new SystemException(SERVICE_EXCEPTION, "用户不存在/密码错误");
         } else {
             clearLoginRecordCache(username);
         }

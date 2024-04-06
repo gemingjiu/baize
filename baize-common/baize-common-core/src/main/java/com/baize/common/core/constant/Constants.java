@@ -26,7 +26,6 @@ public class Constants {
      */
     public static final String RMI_PREFIX = "rmi:";
 
-
     /**
      * LDAP 远程方法调用
      */
@@ -46,7 +45,6 @@ public class Constants {
      * https请求
      */
     public static final String HTTPS_PREFIX = "https://";
-
 
     /**
      * 成功标记

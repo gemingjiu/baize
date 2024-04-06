@@ -1,5 +1,17 @@
 package com.baize.system.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.baize.common.core.controller.BaseController;
 import com.baize.common.core.domain.AjaxResult;
@@ -13,18 +25,6 @@ import com.baize.system.domain.SysUserRole;
 import com.baize.system.service.ISysDeptService;
 import com.baize.system.service.ISysRoleService;
 import com.baize.system.service.ISysUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 角色信息
@@ -33,8 +33,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/role")
-public class SysRoleController extends BaseController
-{
+public class SysRoleController extends BaseController {
     @Autowired
     private ISysRoleService roleService;
 
@@ -44,10 +43,8 @@ public class SysRoleController extends BaseController
     @Autowired
     private ISysDeptService deptService;
 
-
     @GetMapping("/list")
-    public TableCollection list(SysRole role)
-    {
+    public TableCollection list(SysRole role) {
         startPage();
         List<SysRole> list = roleService.selectRoleList(role);
         return getDataTable(list);
@@ -58,8 +55,7 @@ public class SysRoleController extends BaseController
      */
     @RequiresPermissions("system:role:query")
     @GetMapping(value = "/{roleId}")
-    public AjaxResult getInfo(@PathVariable String roleId)
-    {
+    public AjaxResult getInfo(@PathVariable String roleId) {
         roleService.checkRoleDataScope(roleId);
         return success(roleService.selectRoleById(roleId));
     }
@@ -69,14 +65,10 @@ public class SysRoleController extends BaseController
      */
 
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysRole role)
-    {
-        if (!roleService.checkRoleNameUnique(role))
-        {
+    public AjaxResult add(@Validated @RequestBody SysRole role) {
+        if (!roleService.checkRoleNameUnique(role)) {
             return error("新增角色'" + role.getRoleName() + "'失败，角色名称已存在");
-        }
-        else if (!roleService.checkRoleKeyUnique(role))
-        {
+        } else if (!roleService.checkRoleKeyUnique(role)) {
             return error("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setModifiedBy(SecurityUtils.getUsername());
@@ -88,16 +80,12 @@ public class SysRoleController extends BaseController
      * 修改保存角色
      */
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysRole role)
-    {
+    public AjaxResult edit(@Validated @RequestBody SysRole role) {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getId());
-        if (!roleService.checkRoleNameUnique(role))
-        {
+        if (!roleService.checkRoleNameUnique(role)) {
             return error("修改角色'" + role.getRoleName() + "'失败，角色名称已存在");
-        }
-        else if (!roleService.checkRoleKeyUnique(role))
-        {
+        } else if (!roleService.checkRoleKeyUnique(role)) {
             return error("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
         role.setModifiedBy(SecurityUtils.getUsername());
@@ -109,8 +97,7 @@ public class SysRoleController extends BaseController
      */
 
     @PutMapping("/dataScope")
-    public AjaxResult dataScope(@RequestBody SysRole role)
-    {
+    public AjaxResult dataScope(@RequestBody SysRole role) {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getId());
         return toAjax(roleService.authDataScope(role));
@@ -121,8 +108,7 @@ public class SysRoleController extends BaseController
      */
 
     @PutMapping("/changeStatus")
-    public AjaxResult changeStatus(@RequestBody SysRole role)
-    {
+    public AjaxResult changeStatus(@RequestBody SysRole role) {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getId());
         role.setModifiedBy(SecurityUtils.getUsername());
@@ -134,8 +120,7 @@ public class SysRoleController extends BaseController
      */
 
     @DeleteMapping("/{roleIds}")
-    public AjaxResult remove(@PathVariable String[] roleIds)
-    {
+    public AjaxResult remove(@PathVariable String[] roleIds) {
         return toAjax(roleService.deleteRoleByIds(roleIds));
     }
 
@@ -144,17 +129,16 @@ public class SysRoleController extends BaseController
      */
     @RequiresPermissions("system:role:query")
     @GetMapping("/optionselect")
-    public AjaxResult optionselect()
-    {
+    public AjaxResult optionselect() {
         return success(roleService.selectRoleAll());
     }
+
     /**
      * 查询已分配用户角色列表
      */
     @RequiresPermissions("system:role:list")
     @GetMapping("/authUser/allocatedList")
-    public TableCollection allocatedList(SysUser user)
-    {
+    public TableCollection allocatedList(SysUser user) {
         startPage();
         List<SysUser> list = userService.selectAllocatedList(user);
         return getDataTable(list);
@@ -165,8 +149,7 @@ public class SysRoleController extends BaseController
      */
     @RequiresPermissions("system:role:list")
     @GetMapping("/authUser/unallocatedList")
-    public TableCollection unallocatedList(SysUser user)
-    {
+    public TableCollection unallocatedList(SysUser user) {
         startPage();
         List<SysUser> list = userService.selectUnallocatedList(user);
         return getDataTable(list);
@@ -177,8 +160,7 @@ public class SysRoleController extends BaseController
      */
 
     @PutMapping("/authUser/cancel")
-    public AjaxResult cancelAuthUser(@RequestBody SysUserRole userRole)
-    {
+    public AjaxResult cancelAuthUser(@RequestBody SysUserRole userRole) {
         return toAjax(roleService.deleteAuthUser(userRole));
     }
 
@@ -187,8 +169,7 @@ public class SysRoleController extends BaseController
      */
 
     @PutMapping("/authUser/cancelAll")
-    public AjaxResult cancelAuthUserAll(String roleId, String[] userIds)
-    {
+    public AjaxResult cancelAuthUserAll(String roleId, String[] userIds) {
         return toAjax(roleService.deleteAuthUsers(roleId, userIds));
     }
 
@@ -197,8 +178,7 @@ public class SysRoleController extends BaseController
      */
 
     @PutMapping("/authUser/selectAll")
-    public AjaxResult selectAuthUserAll(String roleId, String[] userIds)
-    {
+    public AjaxResult selectAuthUserAll(String roleId, String[] userIds) {
         roleService.checkRoleDataScope(roleId);
         return toAjax(roleService.insertAuthUsers(roleId, userIds));
     }
@@ -208,8 +188,7 @@ public class SysRoleController extends BaseController
      */
     @RequiresPermissions("system:role:query")
     @GetMapping(value = "/deptTree/{roleId}")
-    public AjaxResult deptTree(@PathVariable("roleId") String roleId)
-    {
+    public AjaxResult deptTree(@PathVariable("roleId") String roleId) {
         AjaxResult ajax = AjaxResult.success();
         ajax.put("checkedKeys", deptService.selectDeptListByRoleId(roleId));
         ajax.put("depts", deptService.selectDeptTreeList(new SysDept()));

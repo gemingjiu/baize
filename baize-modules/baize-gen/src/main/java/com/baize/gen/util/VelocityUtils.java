@@ -1,18 +1,19 @@
 package com.baize.gen.util;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.baize.common.core.constant.GenConstants;
-import com.baize.common.core.utils.DateUtils;
-import com.baize.common.core.utils.text.StringUtils;
-import com.baize.gen.entity.GenTable;
-import com.baize.gen.entity.GenTableColumn;
-import org.apache.velocity.VelocityContext;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.velocity.VelocityContext;
+
+import com.baize.common.core.constant.GenConstants;
+import com.baize.common.core.utils.DateUtils;
+import com.baize.common.core.utils.JsonUtils;
+import com.baize.common.core.utils.text.StringUtils;
+import com.baize.gen.entity.GenTable;
+import com.baize.gen.entity.GenTableColumn;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * 模板工具类
@@ -79,27 +80,27 @@ public class VelocityUtils {
 
     public static void setMenuVelocityContext(VelocityContext context, GenTable genTable) {
         String options = genTable.getOptions();
-        JSONObject paramsObj = JSON.parseObject(options);
-        String parentMenuId = getParentMenuId(paramsObj);
+        JsonNode jsonNode = JsonUtils.parseJSONObject(options);
+        String parentMenuId = getParentMenuId(jsonNode);
         context.put("parentMenuId", parentMenuId);
     }
 
     public static void setTreeVelocityContext(VelocityContext context, GenTable genTable) {
         String options = genTable.getOptions();
-        JSONObject paramsObj = JSON.parseObject(options);
-        String treeCode = getTreecode(paramsObj);
-        String treeParentCode = getTreeParentCode(paramsObj);
-        String treeName = getTreeName(paramsObj);
+        JsonNode jsonNode = JsonUtils.parseJSONObject(options);
+        String treeCode = getTreecode(jsonNode);
+        String treeParentCode = getTreeParentCode(jsonNode);
+        String treeName = getTreeName(jsonNode);
 
         context.put("treeCode", treeCode);
         context.put("treeParentCode", treeParentCode);
         context.put("treeName", treeName);
         context.put("expandColumn", getExpandColumn(genTable));
-        if (paramsObj.containsKey(GenConstants.TREE_PARENT_CODE)) {
-            context.put("tree_parent_code", paramsObj.getString(GenConstants.TREE_PARENT_CODE));
+        if (JsonUtils.containsKey(jsonNode, GenConstants.TREE_PARENT_CODE)) {
+            context.put("tree_parent_code", JsonUtils.getString(jsonNode, GenConstants.TREE_PARENT_CODE));
         }
-        if (paramsObj.containsKey(GenConstants.TREE_NAME)) {
-            context.put("tree_name", paramsObj.getString(GenConstants.TREE_NAME));
+        if (JsonUtils.containsKey(jsonNode, GenConstants.TREE_NAME)) {
+            context.put("tree_name", JsonUtils.getString(jsonNode, GenConstants.TREE_NAME));
         }
     }
 
@@ -124,7 +125,7 @@ public class VelocityUtils {
      * 获取模板信息
      *
      * @param tplCategory 生成的模板
-     * @param tplVueType  前端类型
+     * @param tplVueType 前端类型
      * @return 模板列表
      */
     public static List<String> getTemplateList(String tplCategory, String tplVueType) {
@@ -174,7 +175,8 @@ public class VelocityUtils {
         if (template.contains("domain.java.vm")) {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, className);
         }
-        if (template.contains("sub-domain.java.vm") && StringUtils.equals(GenConstants.TPL_SUB, genTable.getTplCategory())) {
+        if (template.contains("sub-domain.java.vm")
+            && StringUtils.equals(GenConstants.TPL_SUB, genTable.getTplCategory())) {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, genTable.getRelationGenTable().getClassName());
         } else if (template.contains("mapper.java.vm")) {
             fileName = StringUtils.format("{}/mapper/{}Mapper.java", javaPath, className);
@@ -253,14 +255,14 @@ public class VelocityUtils {
     /**
      * 添加字典列表
      *
-     * @param dicts   字典列表
+     * @param dicts 字典列表
      * @param columns 列集合
      */
     public static void addDicts(Set<String> dicts, List<GenTableColumn> columns) {
         for (GenTableColumn column : columns) {
-            if (!column.isSuperColumn() && StringUtils.isNotEmpty(column.getDictType()) && StringUtils.equalsAny(
-                    column.getVisibleType(),
-                    new String[]{GenConstants.HTML_SELECT, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX})) {
+            if (!column.isSuperColumn() && StringUtils.isNotEmpty(column.getDictType())
+                && StringUtils.equalsAny(column.getVisibleType(),
+                    new String[] {GenConstants.HTML_SELECT, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX})) {
                 dicts.add("'" + column.getDictType() + "'");
             }
         }
@@ -269,7 +271,7 @@ public class VelocityUtils {
     /**
      * 获取权限前缀
      *
-     * @param moduleName   模块名称
+     * @param moduleName 模块名称
      * @param businessName 业务名称
      * @return 返回权限前缀
      */
@@ -280,13 +282,13 @@ public class VelocityUtils {
     /**
      * 获取上级菜单ID字段
      *
-     * @param paramsObj 生成其他选项
+     * @param jsonNode 生成其他选项
      * @return 上级菜单ID字段
      */
-    public static String getParentMenuId(JSONObject paramsObj) {
-        if (StringUtils.isNotEmpty(paramsObj) && paramsObj.containsKey(GenConstants.PARENT_MENU_ID)
-                && StringUtils.isNotEmpty(paramsObj.getString(GenConstants.PARENT_MENU_ID))) {
-            return paramsObj.getString(GenConstants.PARENT_MENU_ID);
+    public static String getParentMenuId(JsonNode jsonNode) {
+        if (!jsonNode.isNull() && JsonUtils.containsKey(jsonNode, GenConstants.PARENT_MENU_ID)
+            && StringUtils.isNotEmpty(JsonUtils.getString(jsonNode, GenConstants.PARENT_MENU_ID))) {
+            return JsonUtils.getString(jsonNode, GenConstants.PARENT_MENU_ID);
         }
         return DEFAULT_PARENT_MENU_ID;
     }
@@ -294,12 +296,12 @@ public class VelocityUtils {
     /**
      * 获取树编码
      *
-     * @param paramsObj 生成其他选项
+     * @param jsonNode 生成其他选项
      * @return 树编码
      */
-    public static String getTreecode(JSONObject paramsObj) {
-        if (paramsObj.containsKey(GenConstants.TREE_CODE)) {
-            return StringUtils.toCamelCase(paramsObj.getString(GenConstants.TREE_CODE));
+    public static String getTreecode(JsonNode jsonNode) {
+        if (JsonUtils.containsKey(jsonNode, GenConstants.TREE_CODE)) {
+            return StringUtils.toCamelCase(JsonUtils.getString(jsonNode, GenConstants.TREE_CODE));
         }
         return StringUtils.EMPTY;
     }
@@ -307,12 +309,12 @@ public class VelocityUtils {
     /**
      * 获取树父编码
      *
-     * @param paramsObj 生成其他选项
+     * @param jsonNode 生成其他选项
      * @return 树父编码
      */
-    public static String getTreeParentCode(JSONObject paramsObj) {
-        if (paramsObj.containsKey(GenConstants.TREE_PARENT_CODE)) {
-            return StringUtils.toCamelCase(paramsObj.getString(GenConstants.TREE_PARENT_CODE));
+    public static String getTreeParentCode(JsonNode jsonNode) {
+        if (JsonUtils.containsKey(jsonNode, GenConstants.TREE_PARENT_CODE)) {
+            return StringUtils.toCamelCase(JsonUtils.getString(jsonNode, GenConstants.TREE_PARENT_CODE));
         }
         return StringUtils.EMPTY;
     }
@@ -320,12 +322,12 @@ public class VelocityUtils {
     /**
      * 获取树名称
      *
-     * @param paramsObj 生成其他选项
+     * @param jsonNode 生成其他选项
      * @return 树名称
      */
-    public static String getTreeName(JSONObject paramsObj) {
-        if (paramsObj.containsKey(GenConstants.TREE_NAME)) {
-            return StringUtils.toCamelCase(paramsObj.getString(GenConstants.TREE_NAME));
+    public static String getTreeName(JsonNode jsonNode) {
+        if (JsonUtils.containsKey(jsonNode, GenConstants.TREE_NAME)) {
+            return StringUtils.toCamelCase(JsonUtils.getString(jsonNode, GenConstants.TREE_NAME));
         }
         return StringUtils.EMPTY;
     }
@@ -338,8 +340,8 @@ public class VelocityUtils {
      */
     public static int getExpandColumn(GenTable genTable) {
         String options = genTable.getOptions();
-        JSONObject paramsObj = JSON.parseObject(options);
-        String treeName = paramsObj.getString(GenConstants.TREE_NAME);
+        JsonNode jsonNode = JsonUtils.parseJSONObject(options);
+        String treeName = JsonUtils.getString(jsonNode, GenConstants.TREE_NAME);
         int num = 0;
         for (GenTableColumn column : genTable.getColumns()) {
             if (column.list()) {

@@ -1,8 +1,8 @@
 package com.baize.common.core.domain;
 
-import com.baize.common.core.constant.Constants;
-
 import java.io.Serializable;
+
+import com.baize.common.core.constant.Constants;
 
 /**
  * 响应信息主体

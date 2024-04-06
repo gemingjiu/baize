@@ -1,10 +1,11 @@
 package com.baize.gateway.config;
 
-import com.baize.gateway.handler.SentinelFallbackHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+
+import com.baize.gateway.handler.SentinelFallbackHandler;
 
 /**
  * 限流配置

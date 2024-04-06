@@ -1,12 +1,7 @@
 package com.baize.system.controller;
 
+import java.util.List;
 
-import com.baize.common.core.controller.BaseController;
-import com.baize.common.core.domain.AjaxResult;
-import com.baize.common.core.domain.TableCollection;
-import com.baize.common.security.utils.SecurityUtils;
-import com.baize.system.domain.SysPost;
-import com.baize.system.service.ISysPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.baize.common.core.controller.BaseController;
+import com.baize.common.core.domain.AjaxResult;
+import com.baize.common.core.domain.TableCollection;
+import com.baize.common.security.utils.SecurityUtils;
+import com.baize.system.domain.SysPost;
+import com.baize.system.service.ISysPostService;
 
 /**
  * 岗位信息操作处理
@@ -27,8 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/post")
-public class SysPostController extends BaseController
-{
+public class SysPostController extends BaseController {
     @Autowired
     private ISysPostService postService;
 
@@ -37,23 +36,18 @@ public class SysPostController extends BaseController
      */
 
     @GetMapping("/list")
-    public TableCollection list(SysPost post)
-    {
+    public TableCollection list(SysPost post) {
         startPage();
         List<SysPost> list = postService.selectPostList(post);
         return getDataTable(list);
     }
-
-
-
 
     /**
      * 根据岗位编号获取详细信息
      */
 
     @GetMapping(value = "/{postId}")
-    public AjaxResult getInfo(@PathVariable String postId)
-    {
+    public AjaxResult getInfo(@PathVariable String postId) {
         return success(postService.selectPostById(postId));
     }
 
@@ -62,14 +56,10 @@ public class SysPostController extends BaseController
      */
 
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysPost post)
-    {
-        if (!postService.checkPostNameUnique(post))
-        {
+    public AjaxResult add(@Validated @RequestBody SysPost post) {
+        if (!postService.checkPostNameUnique(post)) {
             return error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
-        }
-        else if (!postService.checkPostCodeUnique(post))
-        {
+        } else if (!postService.checkPostCodeUnique(post)) {
             return error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
         post.setModifiedBy(SecurityUtils.getUsername());
@@ -81,14 +71,10 @@ public class SysPostController extends BaseController
      */
 
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysPost post)
-    {
-        if (!postService.checkPostNameUnique(post))
-        {
+    public AjaxResult edit(@Validated @RequestBody SysPost post) {
+        if (!postService.checkPostNameUnique(post)) {
             return error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
-        }
-        else if (!postService.checkPostCodeUnique(post))
-        {
+        } else if (!postService.checkPostCodeUnique(post)) {
             return error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
         post.setModifiedBy(SecurityUtils.getUsername());
@@ -100,8 +86,7 @@ public class SysPostController extends BaseController
      */
 
     @DeleteMapping("/{postIds}")
-    public AjaxResult remove(@PathVariable String[] postIds)
-    {
+    public AjaxResult remove(@PathVariable String[] postIds) {
         return toAjax(postService.deletePostByIds(postIds));
     }
 
@@ -109,8 +94,7 @@ public class SysPostController extends BaseController
      * 获取岗位选择框列表
      */
     @GetMapping("/optionselect")
-    public AjaxResult optionselect()
-    {
+    public AjaxResult optionselect() {
         List<SysPost> posts = postService.selectPostAll();
         return success(posts);
     }

@@ -1,18 +1,17 @@
 package com.baize.system.service;
 
-import com.baize.system.api.domain.SysRole;
-import com.baize.system.domain.SysUserRole;
-
 import java.util.List;
 import java.util.Set;
+
+import com.baize.system.api.domain.SysRole;
+import com.baize.system.domain.SysUserRole;
 
 /**
  * 角色业务层
  * 
  * 
  */
-public interface ISysRoleService
-{
+public interface ISysRoleService {
     /**
      * 根据条件分页查询角色数据
      * 

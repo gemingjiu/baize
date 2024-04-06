@@ -1,17 +1,17 @@
 package com.baize.system.mapper;
 
-import com.baize.system.domain.SysUserRole;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import com.baize.system.domain.SysUserRole;
 
 /**
  * 用户与角色关联表 数据层
  * 
  * 
  */
-public interface SysUserRoleMapper
-{
+public interface SysUserRoleMapper {
     /**
      * 通过用户ID删除用户和角色关联
      * 

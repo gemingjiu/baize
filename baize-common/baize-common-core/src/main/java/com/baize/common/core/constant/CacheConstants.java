@@ -27,32 +27,32 @@ public class CacheConstants {
     public static final long PASSWORD_LOCK_TIME = 10;
 
     /**
-     * 权限缓存前缀
+     * 权限缓存 redis key prefix
      */
-    public static final String LOGIN_TOKEN_KEY = "LOGIN_TOKENS:";
+    public static final String LOGIN_TOKEN_PREFIX = "LOGIN_TOKENS:";
 
     /**
-     * 验证码 redis key
+     * 验证码 redis key prefix
      */
-    public static final String CAPTCHA_CODE_KEY = "CAPTCHA_CODES:";
+    public static final String CAPTCHA_PREFIX = "CAPTCHA_CODES:";
 
     /**
-     * 参数管理 cache key
+     * 参数管理 cache key prefix
      */
-    public static final String SYS_CONFIG_KEY = "SYS_CONFIG:";
+    public static final String SYS_CONFIG_PREFIX = "SYS_CONFIG:";
 
     /**
-     * 字典管理 cache key
+     * 字典管理 cache key prefix
      */
-    public static final String SYS_DICT_KEY = "SYS_DICT:";
+    public static final String SYS_DICT_PREFIX = "SYS_DICT:";
 
     /**
-     * 登录账户密码错误次数 redis key
+     * 登录账户密码错误次数 redis key prefix
      */
-    public static final String PWD_ERR_CNT_KEY = "LOGIN_ERROR:";
+    public static final String LOGIN_ERROR_PREFIX = "LOGIN_ERROR:";
 
     /**
-     * 登录IP黑名单 cache key
+     * 登录IP黑名单 cache key prefix
      */
-    public static final String SYS_LOGIN_BLACKLIST = SYS_CONFIG_KEY + "LOGIN_BLACKLIST";
+    public static final String LOGIN_BLACKLIST_PREFIX = SYS_CONFIG_PREFIX + "LOGIN_BLACKLIST";
 }

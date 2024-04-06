@@ -1,5 +1,11 @@
 package com.baize.system.service.impl;
 
+import static com.baize.common.core.enums.BaizeException.SERVICE_EXCEPTION;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.baize.common.core.constant.UserConstants;
 import com.baize.common.core.exception.BaseException;
@@ -10,12 +16,6 @@ import com.baize.system.domain.SysPost;
 import com.baize.system.mapper.SysPostMapper;
 import com.baize.system.mapper.SysUserPostMapper;
 import com.baize.system.service.ISysPostService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.baize.common.core.enums.BaizeExceptionEnum.SERVICE_EXCEPTION;
 
 /**
  * 岗位信息 服务层处理
@@ -53,8 +53,7 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 岗位列表
      */
     @Override
-    public List<SysPost> selectPostAll()
-    {
+    public List<SysPost> selectPostAll() {
         return postMapper.selectPostAll();
     }
 
@@ -65,8 +64,7 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 角色对象信息
      */
     @Override
-    public SysPost selectPostById(String postId)
-    {
+    public SysPost selectPostById(String postId) {
         return postMapper.selectPostById(postId);
     }
 
@@ -77,8 +75,7 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 选中岗位ID列表
      */
     @Override
-    public List<String> selectPostListByUserId(String userId)
-    {
+    public List<String> selectPostListByUserId(String userId) {
         return postMapper.selectPostListByUserId(userId);
     }
 
@@ -89,12 +86,10 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 结果
      */
     @Override
-    public boolean checkPostNameUnique(SysPost post)
-    {
+    public boolean checkPostNameUnique(SysPost post) {
         String postId = StringUtils.isNull(post.getId()) ? "" : post.getId();
         SysPost info = postMapper.checkPostNameUnique(post.getPostName());
-        if (StringUtils.isNotNull(info) && StringUtils.equals(info.getId(),postId))
-        {
+        if (StringUtils.isNotNull(info) && StringUtils.equals(info.getId(), postId)) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
@@ -107,12 +102,10 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 结果
      */
     @Override
-    public boolean checkPostCodeUnique(SysPost post)
-    {
+    public boolean checkPostCodeUnique(SysPost post) {
         String postId = StringUtils.isNull(post.getId()) ? "" : post.getId();
         SysPost info = postMapper.checkPostCodeUnique(post.getPostCode());
-        if (StringUtils.isNotNull(info) && StringUtils.equals(info.getId(),postId))
-        {
+        if (StringUtils.isNotNull(info) && StringUtils.equals(info.getId(), postId)) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
@@ -125,8 +118,7 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 结果
      */
     @Override
-    public int countUserPostById(String postId)
-    {
+    public int countUserPostById(String postId) {
         return userPostMapper.countUserPostById(postId);
     }
 
@@ -137,8 +129,7 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 结果
      */
     @Override
-    public int deletePostById(String postId)
-    {
+    public int deletePostById(String postId) {
         return postMapper.deletePostById(postId);
     }
 
@@ -149,13 +140,10 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 结果
      */
     @Override
-    public int deletePostByIds(String[] postIds)
-    {
-        for (String postId : postIds)
-        {
+    public int deletePostByIds(String[] postIds) {
+        for (String postId : postIds) {
             SysPost post = selectPostById(postId);
-            if (countUserPostById(postId) > 0)
-            {
+            if (countUserPostById(postId) > 0) {
                 throw new BaseException(SERVICE_EXCEPTION, String.format("%1$s已分配,不能删除", post.getPostName()));
             }
         }
@@ -169,8 +157,7 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 结果
      */
     @Override
-    public int insertPost(SysPost post)
-    {
+    public int insertPost(SysPost post) {
         initSysPost(post);
         return postMapper.insertPost(post);
     }
@@ -182,8 +169,7 @@ public class SysPostServiceImpl implements ISysPostService {
      * @return 结果
      */
     @Override
-    public int updatePost(SysPost post)
-    {
+    public int updatePost(SysPost post) {
         return postMapper.updatePost(post);
     }
 }

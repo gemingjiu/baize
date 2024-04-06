@@ -1,17 +1,22 @@
 package com.baize.system.domain;
 
-
 import com.baize.common.core.domain.BaseEntity;
+
 import lombok.Data;
 
-
 /**
+ * 参数配置表 sys_config
+ *
  * @author gemj
- * @since 2023/12/14 22:50
+ * @since 2024/4/6 10:17:41
  */
 @Data
 public class SysConfig extends BaseEntity {
     private static final Long serialVersionUID = 1L;
+    /**
+     * 参数ID
+     */
+    private String id;
     /**
      * 参数名称
      */

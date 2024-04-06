@@ -7,7 +7,6 @@
 /database/.version_baize-system/
 /database/.back_baize-system/
 */target/*/
-
 /baize-ui/
 /db/.back_baize/
 /db/.version_baize/

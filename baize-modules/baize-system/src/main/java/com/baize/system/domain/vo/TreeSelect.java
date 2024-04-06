@@ -1,12 +1,13 @@
 package com.baize.system.domain.vo;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.baize.system.api.domain.SysDept;
 import com.baize.system.domain.SysMenu;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.Data;
 
 /**
  * @author gemj
@@ -15,27 +16,33 @@ import java.util.stream.Collectors;
 @Data
 public class TreeSelect {
     private static final Long serialVersionUID = 1L;
-    public TreeSelect(SysDept dept)
-    {
+
+    public TreeSelect(SysDept dept) {
         this.id = dept.getId();
         this.label = dept.getDeptName();
         this.children = dept.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
+
     public TreeSelect(SysMenu menu) {
         this.id = menu.getId();
         this.label = menu.getMenuName();
         this.children = menu.getChildren().stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
-    /** 节点ID */
+    /**
+     * 节点ID
+     */
     private String id;
 
-    /** 节点名称 */
+    /**
+     * 节点名称
+     */
     private String label;
 
-    /** 子节点 */
+    /**
+     * 子节点
+     */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TreeSelect> children;
-
 
 }

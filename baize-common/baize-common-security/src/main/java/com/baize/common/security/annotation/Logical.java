@@ -7,7 +7,6 @@ package com.baize.common.security.annotation;
  * @since 2023/08/22 14:26
  */
 
-
 public enum Logical {
     /**
      * 必须具有所有的元素

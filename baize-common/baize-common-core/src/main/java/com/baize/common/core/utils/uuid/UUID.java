@@ -1,7 +1,6 @@
 package com.baize.common.core.utils.uuid;
 
-
-import com.baize.common.core.exception.BaseException;
+import static com.baize.common.core.enums.BaizeException.UTILS_EXCEPTION;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -9,7 +8,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.baize.common.core.enums.BaizeExceptionEnum.UTILS_EXCEPTION;
+import com.baize.common.core.exception.BaseException;
 
 /**
  * 提供通用唯一识别码（universally unique identifier）（UUID）实现
@@ -49,7 +48,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     /**
      * 使用指定的数据构造新的 UUID。
      *
-     * @param mostSigBits  用于 {@code UUID} 的最高有效 64 位
+     * @param mostSigBits 用于 {@code UUID} 的最高有效 64 位
      * @param leastSigBits 用于 {@code UUID} 的最低有效 64 位
      */
     public UUID(long mostSigBits, long leastSigBits) {
@@ -146,7 +145,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     /**
      * 返回指定数字对应的hex值
      *
-     * @param val    值
+     * @param val 值
      * @param digits 位
      * @return 值
      */
@@ -164,7 +163,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         try {
             return SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
-            throw new BaseException(UTILS_EXCEPTION, e);
+            throw new BaseException(UTILS_EXCEPTION, "获取SHA1PRNG随机实例失败", e);
         }
     }
 
@@ -211,7 +210,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     public int version() {
         // Version is bits masked by 0x000000000000F000 in MS long
-        return (int) ((mostSigBits >> 12) & 0x0f);
+        return (int)((mostSigBits >> 12) & 0x0f);
     }
 
     /**
@@ -233,7 +232,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         // 1 0 - The IETF aka Leach-Salz variant (used by this class)
         // 1 1 0 Reserved, Microsoft backward compatibility
         // 1 1 1 Reserved for future definition.
-        return (int) ((leastSigBits >>> (64 - (leastSigBits >>> 62))) & (leastSigBits >> 63));
+        return (int)((leastSigBits >>> (64 - (leastSigBits >>> 62))) & (leastSigBits >> 63));
     }
 
     /**
@@ -252,8 +251,8 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     public long timestamp() throws UnsupportedOperationException {
         checkTimeBase();
         return (mostSigBits & 0x0FFFL) << 48//
-                | ((mostSigBits >> 16) & 0x0FFFFL) << 32//
-                | mostSigBits >>> 32;
+            | ((mostSigBits >> 16) & 0x0FFFFL) << 32//
+            | mostSigBits >>> 32;
     }
 
     /**
@@ -270,7 +269,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     public int clockSequence() throws UnsupportedOperationException {
         checkTimeBase();
-        return (int) ((leastSigBits & 0x3FFF000000000000L) >>> 48);
+        return (int)((leastSigBits & 0x3FFF000000000000L) >>> 48);
     }
 
     /**
@@ -381,7 +380,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     @Override
     public int hashCode() {
         long hilo = mostSigBits ^ leastSigBits;
-        return ((int) (hilo >> 32)) ^ (int) hilo;
+        return ((int)(hilo >> 32)) ^ (int)hilo;
     }
 
     // -------------------------------------------------------------------------------------------------------------------
@@ -400,7 +399,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         if ((null == obj) || (obj.getClass() != UUID.class)) {
             return false;
         }
-        UUID id = (UUID) obj;
+        UUID id = (UUID)obj;
         return (mostSigBits == id.mostSigBits && leastSigBits == id.leastSigBits);
     }
 
@@ -418,10 +417,10 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         // The ordering is intentionally set up so that the UUIDs
         // can simply be numerically compared as two numbers
         return (this.mostSigBits < val.mostSigBits ? -1 : //
-                (this.mostSigBits > val.mostSigBits ? 1 : //
-                        (this.leastSigBits < val.leastSigBits ? -1 : //
-                                (this.leastSigBits > val.leastSigBits ? 1 : //
-                                        0))));
+            (this.mostSigBits > val.mostSigBits ? 1 : //
+                (this.leastSigBits < val.leastSigBits ? -1 : //
+                    (this.leastSigBits > val.leastSigBits ? 1 : //
+                        0))));
     }
 
     /**

@@ -1,8 +1,8 @@
 package com.baize.system.api.domain.vo;
 
-import com.baize.system.api.domain.SysUser;
-
 import java.util.Set;
+
+import com.baize.system.api.domain.SysUser;
 
 /**
  * 登录用户信息

@@ -1,16 +1,15 @@
 package com.baize.system.mapper;
 
-import com.baize.system.domain.SysRoleMenu;
-
 import java.util.List;
+
+import com.baize.system.domain.SysRoleMenu;
 
 /**
  * 角色与菜单关联表 数据层
  * 
  * 
  */
-public interface SysRoleMenuMapper
-{
+public interface SysRoleMenuMapper {
     /**
      * 查询菜单使用数量
      * 

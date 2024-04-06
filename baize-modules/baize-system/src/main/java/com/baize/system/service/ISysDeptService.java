@@ -1,17 +1,16 @@
 package com.baize.system.service;
 
+import java.util.List;
+
 import com.baize.system.api.domain.SysDept;
 import com.baize.system.domain.vo.TreeSelect;
-
-import java.util.List;
 
 /**
  * 部门管理 服务层
  * 
  * 
  */
-public interface ISysDeptService
-{
+public interface ISysDeptService {
     /**
      * 查询部门管理数据
      * 

@@ -1,12 +1,14 @@
 package com.baize.system.api.factory;
 
-import com.baize.common.core.domain.Response;
-import com.baize.system.api.RemoteUserService;
-import com.baize.system.api.domain.vo.LoginUser;
-import com.baize.system.api.domain.SysUser;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
+
+import com.baize.common.core.domain.Response;
+import com.baize.system.api.RemoteUserService;
+import com.baize.system.api.domain.SysUser;
+import com.baize.system.api.domain.vo.LoginUser;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author gemj

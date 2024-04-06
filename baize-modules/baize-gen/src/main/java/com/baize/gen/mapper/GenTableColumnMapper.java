@@ -1,8 +1,8 @@
 package com.baize.gen.mapper;
 
-import com.baize.gen.entity.GenTableColumn;
-
 import java.util.List;
+
+import com.baize.gen.entity.GenTableColumn;
 
 /**
  * @author gemj

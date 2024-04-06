@@ -1,11 +1,12 @@
 package com.baize.common.core.utils.ip;
 
-import com.baize.common.core.utils.ServletUtils;
-import com.baize.common.core.utils.text.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.baize.common.core.utils.ServletUtils;
+import com.baize.common.core.utils.text.StringUtils;
 
 /**
  * @author gemj
@@ -17,7 +18,8 @@ public class IpUtils {
     public final static String REGX_IP = "((" + REGX_0_255 + "\\.){3}" + REGX_0_255 + ")";
     // 匹配网段
     public final static String REGX_IP_SEG = "(" + REGX_IP + "\\-" + REGX_IP + ")";
-    public final static String REGX_IP_WILDCARD = "(((\\*\\.){3}\\*)|(" + REGX_0_255 + "(\\.\\*){3})|(" + REGX_0_255 + "\\." + REGX_0_255 + ")(\\.\\*){2}" + "|((" + REGX_0_255 + "\\.){3}\\*))";
+    public final static String REGX_IP_WILDCARD = "(((\\*\\.){3}\\*)|(" + REGX_0_255 + "(\\.\\*){3})|(" + REGX_0_255
+        + "\\." + REGX_0_255 + ")(\\.\\*){2}" + "|((" + REGX_0_255 + "\\.){3}\\*))";
 
     /**
      * 获取客户端IP
@@ -85,12 +87,12 @@ public class IpUtils {
         // 10.x.x.x/8
         final byte SECTION_1 = 0x0A;
         // 172.16.x.x/12
-        final byte SECTION_2 = (byte) 0xAC;
-        final byte SECTION_3 = (byte) 0x10;
-        final byte SECTION_4 = (byte) 0x1F;
+        final byte SECTION_2 = (byte)0xAC;
+        final byte SECTION_3 = (byte)0x10;
+        final byte SECTION_4 = (byte)0x1F;
         // 192.168.x.x/16
-        final byte SECTION_5 = (byte) 0xC0;
-        final byte SECTION_6 = (byte) 0xA8;
+        final byte SECTION_5 = (byte)0xC0;
+        final byte SECTION_6 = (byte)0xA8;
         switch (b0) {
             case SECTION_1:
                 return true;
@@ -130,24 +132,24 @@ public class IpUtils {
                     if ((l < 0L) || (l > 4294967295L)) {
                         return null;
                     }
-                    bytes[0] = (byte) (int) (l >> 24 & 0xFF);
-                    bytes[1] = (byte) (int) ((l & 0xFFFFFF) >> 16 & 0xFF);
-                    bytes[2] = (byte) (int) ((l & 0xFFFF) >> 8 & 0xFF);
-                    bytes[3] = (byte) (int) (l & 0xFF);
+                    bytes[0] = (byte)(int)(l >> 24 & 0xFF);
+                    bytes[1] = (byte)(int)((l & 0xFFFFFF) >> 16 & 0xFF);
+                    bytes[2] = (byte)(int)((l & 0xFFFF) >> 8 & 0xFF);
+                    bytes[3] = (byte)(int)(l & 0xFF);
                     break;
                 case 2:
                     l = Integer.parseInt(elements[0]);
                     if ((l < 0L) || (l > 255L)) {
                         return null;
                     }
-                    bytes[0] = (byte) (int) (l & 0xFF);
+                    bytes[0] = (byte)(int)(l & 0xFF);
                     l = Integer.parseInt(elements[1]);
                     if ((l < 0L) || (l > 16777215L)) {
                         return null;
                     }
-                    bytes[1] = (byte) (int) (l >> 16 & 0xFF);
-                    bytes[2] = (byte) (int) ((l & 0xFFFF) >> 8 & 0xFF);
-                    bytes[3] = (byte) (int) (l & 0xFF);
+                    bytes[1] = (byte)(int)(l >> 16 & 0xFF);
+                    bytes[2] = (byte)(int)((l & 0xFFFF) >> 8 & 0xFF);
+                    bytes[3] = (byte)(int)(l & 0xFF);
                     break;
                 case 3:
                     for (i = 0; i < 2; ++i) {
@@ -155,14 +157,14 @@ public class IpUtils {
                         if ((l < 0L) || (l > 255L)) {
                             return null;
                         }
-                        bytes[i] = (byte) (int) (l & 0xFF);
+                        bytes[i] = (byte)(int)(l & 0xFF);
                     }
                     l = Integer.parseInt(elements[2]);
                     if ((l < 0L) || (l > 65535L)) {
                         return null;
                     }
-                    bytes[2] = (byte) (int) (l >> 8 & 0xFF);
-                    bytes[3] = (byte) (int) (l & 0xFF);
+                    bytes[2] = (byte)(int)(l >> 8 & 0xFF);
+                    bytes[3] = (byte)(int)(l & 0xFF);
                     break;
                 case 4:
                     for (i = 0; i < 4; ++i) {
@@ -170,7 +172,7 @@ public class IpUtils {
                         if ((l < 0L) || (l > 255L)) {
                             return null;
                         }
-                        bytes[i] = (byte) (int) (l & 0xFF);
+                        bytes[i] = (byte)(int)(l & 0xFF);
                     }
                     break;
                 default:
@@ -301,7 +303,7 @@ public class IpUtils {
      * 校验ip是否符合过滤串规则
      *
      * @param filter 过滤IP列表,支持后缀'*'通配,支持网段如:`10.10.10.1-10.10.10.99`
-     * @param ip     校验IP地址
+     * @param ip 校验IP地址
      * @return boolean 结果
      */
     public static boolean isMatchedIp(String filter, String ip) {

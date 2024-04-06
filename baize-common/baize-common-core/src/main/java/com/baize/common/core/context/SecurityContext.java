@@ -1,16 +1,15 @@
 package com.baize.common.core.context;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baize.common.core.constant.SecurityConstants;
 import com.baize.common.core.utils.ConvertUtils;
 import com.baize.common.core.utils.text.StringUtils;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * 获取当前线程变量中的 用户id、用户名称、Token等信息
- * 注意： 必须在网关通过请求头的方法传入，同时在HeaderInterceptor拦截器设置值。 否则这里无法获取
+ * 获取当前线程变量中的 用户id、用户名称、Token等信息 注意： 必须在网关通过请求头的方法传入，同时在HeaderInterceptor拦截器设置值。 否则这里无法获取
  *
  * @author gemj
  * @since 2023/08/22 14:09

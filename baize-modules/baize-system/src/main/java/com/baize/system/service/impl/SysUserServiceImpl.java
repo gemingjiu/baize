@@ -1,5 +1,17 @@
 package com.baize.system.service.impl;
 
+import static com.baize.common.core.enums.BaizeException.SERVICE_EXCEPTION;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Validator;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.baize.common.core.constant.UserConstants;
 import com.baize.common.core.exception.BaseException;
@@ -19,18 +31,8 @@ import com.baize.system.mapper.SysUserPostMapper;
 import com.baize.system.mapper.SysUserRoleMapper;
 import com.baize.system.service.ISysConfigService;
 import com.baize.system.service.ISysUserService;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.baize.common.core.enums.BaizeExceptionEnum.SERVICE_EXCEPTION;
 
 /**
  * 用户 业务层处理
@@ -65,7 +67,7 @@ public class SysUserServiceImpl implements ISysUserService {
         info.setModifiedBy(SecurityUtils.getLoginUser().getUsername());
     }
 
-    private void modifySysUser(SysUser info){
+    private void modifySysUser(SysUser info) {
         info.setModifiedBy(SecurityUtils.getLoginUser().getUsername());
     }
 
@@ -222,7 +224,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public void checkUserDataScope(String userId) {
         if (!SysUser.isAdmin(SecurityUtils.getId())) {
-            SysUser user = new SysUser();
+            SysUser user = new SysUser(userId);
             user.setId(userId);
             List<SysUser> users = SpringUtils.getAopProxy(this).selectUserList(user);
             if (StringUtils.isEmpty(users)) {
@@ -287,7 +289,7 @@ public class SysUserServiceImpl implements ISysUserService {
     /**
      * 用户授权角色
      *
-     * @param userId  用户ID
+     * @param userId 用户ID
      * @param roleIds 角色组
      */
     @Override
@@ -325,7 +327,7 @@ public class SysUserServiceImpl implements ISysUserService {
      * 修改用户头像
      *
      * @param userName 用户名
-     * @param avatar   头像地址
+     * @param avatar 头像地址
      * @return 结果
      */
     @Override
@@ -389,7 +391,7 @@ public class SysUserServiceImpl implements ISysUserService {
     /**
      * 新增用户角色信息
      *
-     * @param userId  用户ID
+     * @param userId 用户ID
      * @param roleIds 角色组
      */
     public void insertUserRole(String userId, String[] roleIds) {

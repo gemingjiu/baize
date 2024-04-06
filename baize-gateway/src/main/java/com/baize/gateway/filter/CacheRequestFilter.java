@@ -1,5 +1,8 @@
 package com.baize.gateway.filter;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.OrderedGatewayFilter;
@@ -8,10 +11,8 @@ import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-import java.util.List;
+import reactor.core.publisher.Mono;
 
 /**
  * 获取body请求数据（解决流不能重复读取问题）

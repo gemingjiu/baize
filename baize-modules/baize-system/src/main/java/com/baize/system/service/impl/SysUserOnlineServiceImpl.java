@@ -1,11 +1,11 @@
 package com.baize.system.service.impl;
 
+import org.springframework.stereotype.Service;
 
 import com.baize.common.core.utils.text.StringUtils;
 import com.baize.system.api.domain.vo.LoginUser;
 import com.baize.system.domain.SysUserOnline;
 import com.baize.system.service.ISysUserOnlineService;
-import org.springframework.stereotype.Service;
 
 /**
  * 在线用户 服务层处理
@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
  * 
  */
 @Service
-public class SysUserOnlineServiceImpl implements ISysUserOnlineService
-{
+public class SysUserOnlineServiceImpl implements ISysUserOnlineService {
     /**
      * 通过登录地址查询信息
      * 
@@ -23,10 +22,8 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
      * @return 在线用户信息
      */
     @Override
-    public SysUserOnline selectOnlineByIpaddr(String ipaddr, LoginUser user)
-    {
-        if (StringUtils.equals(ipaddr, user.getIpaddr()))
-        {
+    public SysUserOnline selectOnlineByIpaddr(String ipaddr, LoginUser user) {
+        if (StringUtils.equals(ipaddr, user.getIpaddr())) {
             return loginUserToUserOnline(user);
         }
         return null;
@@ -40,10 +37,8 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
      * @return 在线用户信息
      */
     @Override
-    public SysUserOnline selectOnlineByUserName(String userName, LoginUser user)
-    {
-        if (StringUtils.equals(userName, user.getUsername()))
-        {
+    public SysUserOnline selectOnlineByUserName(String userName, LoginUser user) {
+        if (StringUtils.equals(userName, user.getUsername())) {
             return loginUserToUserOnline(user);
         }
         return null;
@@ -58,10 +53,8 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
      * @return 在线用户信息
      */
     @Override
-    public SysUserOnline selectOnlineByInfo(String ipaddr, String userName, LoginUser user)
-    {
-        if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.equals(userName, user.getUsername()))
-        {
+    public SysUserOnline selectOnlineByInfo(String ipaddr, String userName, LoginUser user) {
+        if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.equals(userName, user.getUsername())) {
             return loginUserToUserOnline(user);
         }
         return null;
@@ -74,10 +67,8 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
      * @return 在线用户
      */
     @Override
-    public SysUserOnline loginUserToUserOnline(LoginUser user)
-    {
-        if (StringUtils.isNull(user))
-        {
+    public SysUserOnline loginUserToUserOnline(LoginUser user) {
+        if (StringUtils.isNull(user)) {
             return null;
         }
         SysUserOnline sysUserOnline = new SysUserOnline();

@@ -1,9 +1,19 @@
 package com.baize.common.core.utils;
 
-import com.alibaba.fastjson2.JSON;
-import com.baize.common.core.domain.Response;
-import com.baize.common.core.utils.text.StringUtils;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,20 +23,12 @@ import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import reactor.core.publisher.Mono;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import com.baize.common.core.domain.Response;
+import com.baize.common.core.utils.text.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 /**
  * 客户端响应工具类
@@ -46,8 +48,7 @@ public class ServletUtils {
      * 获取String参数
      */
     public static String getParameter(String name, String defaultValue) {
-        return com.baize.common.core.utils.ConvertUtils.toStr(
-                getRequest().getParameter(name), defaultValue);
+        return com.baize.common.core.utils.ConvertUtils.toStr(getRequest().getParameter(name), defaultValue);
     }
 
     /**
@@ -61,8 +62,7 @@ public class ServletUtils {
      * 获取Integer参数
      */
     public static Integer getParameterToInt(String name, Integer defaultValue) {
-        return com.baize.common.core.utils.ConvertUtils.toInt(
-                getRequest().getParameter(name), defaultValue);
+        return com.baize.common.core.utils.ConvertUtils.toInt(getRequest().getParameter(name), defaultValue);
     }
 
     /**
@@ -76,8 +76,7 @@ public class ServletUtils {
      * 获取Boolean参数
      */
     public static Boolean getParameterToBool(String name, Boolean defaultValue) {
-        return com.baize.common.core.utils.ConvertUtils.toBool(
-                getRequest().getParameter(name), defaultValue);
+        return com.baize.common.core.utils.ConvertUtils.toBool(getRequest().getParameter(name), defaultValue);
     }
 
     /**
@@ -137,7 +136,7 @@ public class ServletUtils {
     public static ServletRequestAttributes getRequestAttributes() {
         try {
             RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-            return (ServletRequestAttributes) attributes;
+            return (ServletRequestAttributes)attributes;
         } catch (Exception e) {
             return null;
         }
@@ -168,7 +167,7 @@ public class ServletUtils {
      * 将字符串渲染到客户端
      *
      * @param response 渲染对象
-     * @param string   待渲染的字符串
+     * @param string 待渲染的字符串
      */
     public static void renderString(HttpServletResponse response, String string) {
         try {
@@ -238,7 +237,7 @@ public class ServletUtils {
      * 设置webflux模型响应
      *
      * @param response ServerHttpResponse
-     * @param value    响应内容
+     * @param value 响应内容
      * @return Mono<Void>
      */
     public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, Object value) {
@@ -249,12 +248,11 @@ public class ServletUtils {
      * 设置webflux模型响应
      *
      * @param response ServerHttpResponse
-     * @param code     响应状态码
-     * @param value    响应内容
+     * @param code 响应状态码
+     * @param value 响应内容
      * @return Mono<Void>
      */
-    public static Mono<Void> webFluxResponseWriter(
-            ServerHttpResponse response, Object value, int code) {
+    public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, Object value, int code) {
         return webFluxResponseWriter(response, HttpStatus.OK, value, code);
     }
 
@@ -262,32 +260,32 @@ public class ServletUtils {
      * 设置webflux模型响应
      *
      * @param response ServerHttpResponse
-     * @param status   http状态码
-     * @param code     响应状态码
-     * @param value    响应内容
+     * @param status http状态码
+     * @param code 响应状态码
+     * @param value 响应内容
      * @return Mono<Void>
      */
-    public static Mono<Void> webFluxResponseWriter(
-            ServerHttpResponse response, HttpStatus status, Object value, int code) {
+    public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, HttpStatus status, Object value,
+        int code) {
         return webFluxResponseWriter(response, MediaType.APPLICATION_JSON_VALUE, status, value, code);
     }
 
     /**
      * 设置webflux模型响应
      *
-     * @param response    ServerHttpResponse
+     * @param response ServerHttpResponse
      * @param contentType content-type
-     * @param status      http状态码
-     * @param code        响应状态码
-     * @param value       响应内容
+     * @param status http状态码
+     * @param code 响应状态码
+     * @param value 响应内容
      * @return Mono<Void>
      */
-    public static Mono<Void> webFluxResponseWriter(
-            ServerHttpResponse response, String contentType, HttpStatus status, Object value, int code) {
+    public static Mono<Void> webFluxResponseWriter(ServerHttpResponse response, String contentType, HttpStatus status,
+        Object value, int code) {
         response.setStatusCode(status);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, contentType);
         Response<?> result = Response.fail(code, value.toString());
-        DataBuffer dataBuffer = response.bufferFactory().wrap(JSON.toJSONString(result).getBytes());
+        DataBuffer dataBuffer = response.bufferFactory().wrap(JsonUtils.toByteArray(result));
         return response.writeWith(Mono.just(dataBuffer));
     }
 }

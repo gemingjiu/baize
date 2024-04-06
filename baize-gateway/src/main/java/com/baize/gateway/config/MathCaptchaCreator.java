@@ -1,8 +1,8 @@
 package com.baize.gateway.config;
 
-import com.google.code.kaptcha.text.impl.DefaultTextCreator;
-
 import java.util.Random;
+
+import com.google.code.kaptcha.text.impl.DefaultTextCreator;
 
 /**
  * 数学表达式验证码生成器
@@ -11,6 +11,7 @@ import java.util.Random;
  */
 public class MathCaptchaCreator extends DefaultTextCreator {
     private static final String[] NUMBERS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+
     @Override
     public String getText() {
         // 计算式的结果

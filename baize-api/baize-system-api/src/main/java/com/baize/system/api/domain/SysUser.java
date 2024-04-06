@@ -1,11 +1,12 @@
 package com.baize.system.api.domain;
 
-import com.baize.common.core.domain.BaseEntity;
-import com.baize.common.core.utils.text.StringUtils;
-import lombok.Data;
-
 import java.util.Date;
 import java.util.List;
+
+import com.baize.common.core.domain.BaseEntity;
+import com.baize.common.core.utils.text.StringUtils;
+
+import lombok.Data;
 
 /**
  * 系统用户信息
@@ -16,7 +17,11 @@ import java.util.List;
 @Data
 public class SysUser extends BaseEntity {
     private static final long serialVersionUID = 1L;
-    private static final String  AdminId = "1";
+    private static final String AdminId = "1";
+    /**
+     * 用户ID
+     */
+    private String id;
     /**
      * 部门ID
      */
@@ -98,7 +103,7 @@ public class SysUser extends BaseEntity {
     private Long roleId;
 
     public SysUser(String userId) {
-        super.setId(userId);
+        this.id = userId;
     }
 
     public SysUser() {
@@ -110,6 +115,6 @@ public class SysUser extends BaseEntity {
     }
 
     public static boolean isAdmin(String userId) {
-        return StringUtils.isNotBlank(userId) && StringUtils.equals(userId,AdminId);
+        return StringUtils.isNotBlank(userId) && StringUtils.equals(userId, AdminId);
     }
 }

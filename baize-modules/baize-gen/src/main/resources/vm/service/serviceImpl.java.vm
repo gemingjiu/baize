@@ -1,23 +1,12 @@
-package ${packageName}.service.impl;
-
+package ${packageName}import java.util.ArrayList;
 import java.util.List;
-    #foreach ($column in $columns)
-        #if($column.javaField == 'createdTime' || $column.javaField == 'modifiedTime')
-        import com.baize.common.core.utils.DateUtils;
-            #break
-        #end
-    #end
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-    #if($table.sub)
-    import java.util.ArrayList;
-    import com.baize.common.core.utils.StringUtils;
-    import org.springframework.transaction.annotation.Transactional;
-    import ${packageName}.domain.${subClassName};
-    #end
-import ${packageName}.mapper.${ClassName}Mapper;
-import ${packageName}.domain.${ClassName};
-import ${packageName}.service.I${ClassName}Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baize.common.core.utils.DateUtils;
+import com.baize.common.core.utils.StringUtils; ${packageName}.service.I${ClassName}Service;
 
 /**
  * ${functionName}Service业务层处理
@@ -26,8 +15,7 @@ import ${packageName}.service.I${ClassName}Service;
  * @date ${datetime}
  */
 @Service
-public class ${ClassName}ServiceImpl implements I${ClassName}Service
-{
+public class ${ClassName}ServiceImpl implements I${ClassName}Service {
     @Autowired
     private ${ClassName}Mapper ${className}Mapper;
 
@@ -38,8 +26,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @return ${functionName}
      */
     @Override
-    public ${ClassName} select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField})
-    {
+    public ${ClassName} select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField}) {
         return ${className}Mapper.select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaField});
     }
 
@@ -50,8 +37,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
      * @return ${functionName}
      */
     @Override
-    public List<${ClassName}> select${ClassName}List(${ClassName} ${className})
-    {
+    public List<${ClassName}> select${ClassName}List(${ClassName} ${className}) {
         return ${className}Mapper.select${ClassName}List(${className});
     }
 
@@ -65,8 +51,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
         @Transactional
         #end
     @Override
-    public int insert${ClassName}(${ClassName} ${className})
-    {
+    public int insert${ClassName}(${ClassName} ${className}) {
         #foreach ($column in $columns)
             #if($column.javaField == 'createdTime')
                 ${className}.setcreatedTime(DateUtils.getNowDate());
@@ -91,15 +76,15 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
         @Transactional
         #end
     @Override
-    public int update${ClassName}(${ClassName} ${className})
-    {
+    public int update${ClassName}(${ClassName} ${className}) {
         #foreach ($column in $columns)
             #if($column.javaField == 'modifiedTime')
                 ${className}.setmodifiedTime(DateUtils.getNowDate());
             #end
         #end
         #if($table.sub)
-                ${className}Mapper.delete${subClassName}By${subTableFkClassName}(${className}.get${pkColumn.capJavaField}());
+                ${className}Mapper.delete${subClassName}By${subTableFkClassName}(${className}.get${pkColumn.capJavaField}())
+            ;
             insert${subClassName}(${className});
         #end
         return ${className}Mapper.update${ClassName}(${className});
@@ -115,8 +100,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
         @Transactional
         #end
     @Override
-    public int delete${ClassName}By${pkColumn.capJavaField}s(${pkColumn.javaType}[] ${pkColumn.javaField}s)
-    {
+    public int delete${ClassName}By${pkColumn.capJavaField}s(${pkColumn.javaType}[] ${pkColumn.javaField}s) {
         #if($table.sub)
                 ${className}Mapper.delete${subClassName}By${subTableFkClassName}s(${pkColumn.javaField}s);
         #end
@@ -133,8 +117,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
         @Transactional
         #end
     @Override
-    public int delete${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField})
-    {
+    public int delete${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField}) {
         #if($table.sub)
                 ${className}Mapper.delete${subClassName}By${subTableFkClassName}(${pkColumn.javaField});
         #end
@@ -147,20 +130,17 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
          *
          * @param ${className} ${functionName}对象
          */
-        public void insert${subClassName}(${ClassName} ${className})
-        {
+        public void insert${subClassName}(${ClassName} ${className}) {
             List<${subClassName}> ${subclassName}List = ${className}.get${subClassName}List();
             ${pkColumn.javaType} ${pkColumn.javaField} = ${className}.get${pkColumn.capJavaField}();
-            if (StringUtils.isNotNull(${subclassName}List))
-            {
+            if (StringUtils.isNotNull(${subclassName}List)) {
                 List<${subClassName}> list = new ArrayList<${subClassName}>();
-                for (${subClassName} ${subclassName} : ${subclassName}List)
+                for (${subClassName} ${subclassName} :${subclassName}List)
                 {
                     ${subclassName}.set${subTableFkClassName}(${pkColumn.javaField});
                     list.add(${subclassName});
                 }
-                if (list.size() > 0)
-                {
+                if (list.size() > 0) {
                         ${className}Mapper.batch${subClassName}(list);
                 }
             }

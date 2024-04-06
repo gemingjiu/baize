@@ -1,5 +1,17 @@
 package com.baize.gateway.service.impl;
 
+import static com.baize.common.core.enums.BaizeException.CAPTCHA_EXCEPTION;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.FastByteArrayOutputStream;
 
 import com.baize.common.cache.service.CacheService;
 import com.baize.common.core.constant.CacheConstants;
@@ -12,17 +24,6 @@ import com.baize.common.core.utils.uuid.UUIDUtils;
 import com.baize.gateway.config.CaptchaConfig;
 import com.baize.gateway.service.CaptchaCodeService;
 import com.google.code.kaptcha.Producer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.FastByteArrayOutputStream;
-
-import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import static com.baize.common.core.enums.BaizeExceptionEnum.CAPTCHA_EXCEPTION;
 
 @Service
 public class CaptchaCodeServiceImpl implements CaptchaCodeService {
@@ -35,7 +36,6 @@ public class CaptchaCodeServiceImpl implements CaptchaCodeService {
 
     @Autowired
     private CacheService cacheService;
-
 
     @Autowired
     private CaptchaConfig captchaConfig;
@@ -52,7 +52,7 @@ public class CaptchaCodeServiceImpl implements CaptchaCodeService {
 
         // 保存验证码信息
         String uuid = UUIDUtils.simpleUUID();
-        String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
+        String verifyKey = CacheConstants.CAPTCHA_PREFIX + uuid;
 
         String capStr = null, code = null;
         BufferedImage image = null;
@@ -91,7 +91,7 @@ public class CaptchaCodeServiceImpl implements CaptchaCodeService {
         if (StringUtils.isEmpty(uuid)) {
             throw new BaseException(CAPTCHA_EXCEPTION, "验证码已失效");
         }
-        String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
+        String verifyKey = CacheConstants.CAPTCHA_PREFIX + uuid;
         String captcha = cacheService.getCacheObject(verifyKey);
         cacheService.deleteObject(verifyKey);
 

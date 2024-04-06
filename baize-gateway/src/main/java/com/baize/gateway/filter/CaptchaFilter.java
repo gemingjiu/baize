@@ -1,12 +1,9 @@
 package com.baize.gateway.filter;
 
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.baize.common.core.utils.ServletUtils;
-import com.baize.common.core.utils.text.StringUtils;
-import com.baize.gateway.config.CaptchaConfig;
-import com.baize.gateway.service.CaptchaCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -14,11 +11,15 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicReference;
+import com.baize.common.core.utils.JsonUtils;
+import com.baize.common.core.utils.ServletUtils;
+import com.baize.common.core.utils.text.StringUtils;
+import com.baize.gateway.config.CaptchaConfig;
+import com.baize.gateway.service.CaptchaCodeService;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import reactor.core.publisher.Flux;
 
 /**
  * 验证码拦截器
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Component
 public class CaptchaFilter extends AbstractGatewayFilterFactory<Object> {
-    private final static String[] VALIDATE_URL = new String[]{"/auth/login", "/auth/register"};
+    private final static String[] VALIDATE_URL = new String[] {"/auth/login", "/auth/register"};
     private static final String CODE = "code";
     private static final String UUID = "uuid";
     @Autowired
@@ -41,14 +42,16 @@ public class CaptchaFilter extends AbstractGatewayFilterFactory<Object> {
             ServerHttpRequest request = exchange.getRequest();
 
             // 非登录/注册请求或验证码关闭，不处理
-            if (!StringUtils.containsAnyIgnoreCase(request.getURI().getPath(), VALIDATE_URL) || !captchaConfig.getEnabled()) {
+            if (!StringUtils.containsAnyIgnoreCase(request.getURI().getPath(), VALIDATE_URL)
+                || !captchaConfig.getEnabled()) {
                 return chain.filter(exchange);
             }
 
             try {
                 String rspStr = resolveBodyFromRequest(request);
-                JSONObject obj = JSON.parseObject(rspStr);
-                captchaCodeService.checkCaptcha(obj.getString(CODE), obj.getString(UUID));
+                JsonNode jsonNode = JsonUtils.parseJSONObject(rspStr);
+                captchaCodeService.checkCaptcha(JsonUtils.getString(jsonNode, CODE),
+                    JsonUtils.getString(jsonNode, UUID));
             } catch (Exception e) {
                 return ServletUtils.webFluxResponseWriter(exchange.getResponse(), e.getMessage());
             }

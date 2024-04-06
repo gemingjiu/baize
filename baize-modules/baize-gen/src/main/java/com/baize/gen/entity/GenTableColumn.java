@@ -1,9 +1,9 @@
 package com.baize.gen.entity;
 
+import javax.validation.constraints.NotBlank;
+
 import com.baize.common.core.domain.BaseEntity;
 import com.baize.common.core.utils.text.StringUtils;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author gemj
@@ -11,6 +11,8 @@ import javax.validation.constraints.NotBlank;
  */
 public class GenTableColumn extends BaseEntity {
     private static final long serialVersionUID = 1L;
+    /** 生成列ID */
+    private String id;
     /** 归属表编号 */
     private String tableId;
 
@@ -60,6 +62,14 @@ public class GenTableColumn extends BaseEntity {
     /** 字典类型 */
     private String dictType;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getTableId() {
         return tableId;
     }
@@ -68,276 +78,220 @@ public class GenTableColumn extends BaseEntity {
         this.tableId = tableId;
     }
 
-    public void setColumnName(String columnName)
-    {
+    public void setColumnName(String columnName) {
         this.columnName = columnName;
     }
 
-    public String getColumnName()
-    {
+    public String getColumnName() {
         return columnName;
     }
 
-    public void setColumnComment(String columnComment)
-    {
+    public void setColumnComment(String columnComment) {
         this.columnComment = columnComment;
     }
 
-    public String getColumnComment()
-    {
+    public String getColumnComment() {
         return columnComment;
     }
 
-    public void setColumnType(String columnType)
-    {
+    public void setColumnType(String columnType) {
         this.columnType = columnType;
     }
 
-    public String getColumnType()
-    {
+    public String getColumnType() {
         return columnType;
     }
 
-    public void setJavaType(String javaType)
-    {
+    public void setJavaType(String javaType) {
         this.javaType = javaType;
     }
 
-    public String getJavaType()
-    {
+    public String getJavaType() {
         return javaType;
     }
 
-    public void setJavaField(String javaField)
-    {
+    public void setJavaField(String javaField) {
         this.javaField = javaField;
     }
 
-    public String getJavaField()
-    {
+    public String getJavaField() {
         return javaField;
     }
 
-    public String getCapJavaField()
-    {
+    public String getCapJavaField() {
         return StringUtils.capitalize(javaField);
     }
 
-    public void setPk(String pk)
-    {
+    public void setPk(String pk) {
         this.pk = pk;
     }
 
-    public String getPk()
-    {
+    public String getPk() {
         return pk;
     }
 
-    public boolean pk()
-    {
+    public boolean pk() {
         return pk(this.pk);
     }
 
-    public boolean pk(String pk)
-    {
+    public boolean pk(String pk) {
         return pk != null && StringUtils.equals("1", pk);
     }
 
-    public String getIncrement()
-    {
+    public String getIncrement() {
         return increment;
     }
 
-    public void setIncrement(String increment)
-    {
+    public void setIncrement(String increment) {
         this.increment = increment;
     }
 
-    public boolean increment()
-    {
+    public boolean increment() {
         return increment(this.increment);
     }
 
-    public boolean increment(String increment)
-    {
+    public boolean increment(String increment) {
         return increment != null && StringUtils.equals("1", increment);
     }
 
-    public void setRequired(String required)
-    {
+    public void setRequired(String required) {
         this.required = required;
     }
 
-    public String getRequired()
-    {
+    public String getRequired() {
         return required;
     }
 
-    public boolean required()
-    {
+    public boolean required() {
         return required(this.required);
     }
 
-    public boolean required(String required)
-    {
+    public boolean required(String required) {
         return required != null && StringUtils.equals("1", required);
     }
 
-    public void setInsert(String insert)
-    {
+    public void setInsert(String insert) {
         this.insert = insert;
     }
 
-    public String getInsert()
-    {
+    public String getInsert() {
         return insert;
     }
 
-    public boolean insert()
-    {
+    public boolean insert() {
         return insert(this.insert);
     }
 
-    public boolean insert(String insert)
-    {
+    public boolean insert(String insert) {
         return insert != null && StringUtils.equals("1", insert);
     }
 
-    public void setEdit(String edit)
-    {
+    public void setEdit(String edit) {
         this.edit = edit;
     }
 
-    public String getEdit()
-    {
+    public String getEdit() {
         return edit;
     }
 
-    public boolean edit()
-    {
+    public boolean edit() {
         return insert(this.edit);
     }
 
-    public boolean edit(String edit)
-    {
+    public boolean edit(String edit) {
         return edit != null && StringUtils.equals("1", edit);
     }
 
-    public void setList(String list)
-    {
+    public void setList(String list) {
         this.list = list;
     }
 
-    public String getList()
-    {
+    public String getList() {
         return list;
     }
 
-    public boolean list()
-    {
+    public boolean list() {
         return list(this.list);
     }
 
-    public boolean list(String list)
-    {
+    public boolean list(String list) {
         return list != null && StringUtils.equals("1", list);
     }
 
-    public void setQuery(String query)
-    {
+    public void setQuery(String query) {
         this.query = query;
     }
 
-    public String getQuery()
-    {
+    public String getQuery() {
         return query;
     }
 
-    public boolean query()
-    {
+    public boolean query() {
         return query(this.query);
     }
 
-    public boolean query(String query)
-    {
+    public boolean query(String query) {
         return query != null && StringUtils.equals("1", query);
     }
 
-    public void setQueryType(String queryType)
-    {
+    public void setQueryType(String queryType) {
         this.queryType = queryType;
     }
 
-    public String getQueryType()
-    {
+    public String getQueryType() {
         return queryType;
     }
 
-    public String getVisibleType()
-    {
+    public String getVisibleType() {
         return visibleType;
     }
 
-    public void setVisibleType(String visibleType)
-    {
+    public void setVisibleType(String visibleType) {
         this.visibleType = visibleType;
     }
 
-    public void setDictType(String dictType)
-    {
+    public void setDictType(String dictType) {
         this.dictType = dictType;
     }
 
-    public String getDictType()
-    {
+    public String getDictType() {
         return dictType;
     }
 
-
-    public boolean isSuperColumn()
-    {
+    public boolean isSuperColumn() {
         return isSuperColumn(this.javaField);
     }
 
-    public static boolean isSuperColumn(String javaField)
-    {
+    public static boolean isSuperColumn(String javaField) {
         return StringUtils.equalsAnyIgnoreCase(javaField,
-                // BaseEntity
-                "createdBy", "createdTime", "modifiedBy", "modifiedTime", "remark",
-                // TreeEntity
-                "parentName", "parentId", "orderNum", "ancestors");
+            // BaseEntity
+            "createdBy", "createdTime", "modifiedBy", "modifiedTime", "remark",
+            // TreeEntity
+            "parentName", "parentId", "orderNum", "ancestors");
     }
 
-    public boolean isUsableColumn()
-    {
+    public boolean isUsableColumn() {
         return isUsableColumn(javaField);
     }
 
-    public static boolean isUsableColumn(String javaField)
-    {
+    public static boolean isUsableColumn(String javaField) {
         // isSuperColumn()中的名单用于避免生成多余Domain属性，若某些属性在生成页面时需要用到不能忽略，则放在此处白名单
         return StringUtils.equalsAnyIgnoreCase(javaField, "parentId", "orderNum", "remark");
     }
 
-    public String readConverterExp()
-    {
+    public String readConverterExp() {
         String remarks = StringUtils.substringBetween(this.columnComment, "（", "）");
         StringBuffer sb = new StringBuffer();
-        if (StringUtils.isNotEmpty(remarks))
-        {
-            for (String value : remarks.split(" "))
-            {
-                if (StringUtils.isNotEmpty(value))
-                {
+        if (StringUtils.isNotEmpty(remarks)) {
+            for (String value : remarks.split(" ")) {
+                if (StringUtils.isNotEmpty(value)) {
                     Object startStr = value.subSequence(0, 1);
                     String endStr = value.substring(1);
                     sb.append("").append(startStr).append("=").append(endStr).append(",");
                 }
             }
             return sb.deleteCharAt(sb.length() - 1).toString();
-        }
-        else
-        {
+        } else {
             return this.columnComment;
         }
     }

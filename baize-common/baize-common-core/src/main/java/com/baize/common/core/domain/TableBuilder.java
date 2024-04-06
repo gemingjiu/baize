@@ -3,7 +3,6 @@ package com.baize.common.core.domain;
 import com.baize.common.core.utils.ConvertUtils;
 import com.baize.common.core.utils.ServletUtils;
 
-
 /**
  * @author gemj
  * @since 2023/12/08 14:29
@@ -37,8 +36,7 @@ public class TableBuilder {
     /**
      * 封装分页对象
      */
-    public static PageData getPageDomain()
-    {
+    public static PageData getPageDomain() {
         PageData pageData = new PageData();
         pageData.setPageNum(ConvertUtils.toInt(ServletUtils.getParameter(PAGE_NUM), 1));
         pageData.setPageSize(ConvertUtils.toInt(ServletUtils.getParameter(PAGE_SIZE), 10));
@@ -48,8 +46,7 @@ public class TableBuilder {
         return pageData;
     }
 
-    public static PageData buildPageRequest()
-    {
+    public static PageData buildPageRequest() {
         return getPageDomain();
     }
 }

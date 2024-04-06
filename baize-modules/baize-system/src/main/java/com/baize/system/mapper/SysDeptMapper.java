@@ -1,17 +1,17 @@
 package com.baize.system.mapper;
 
-import com.baize.system.api.domain.SysDept;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import com.baize.system.api.domain.SysDept;
 
 /**
  * 部门管理 数据层
  * 
  * 
  */
-public interface SysDeptMapper
-{
+public interface SysDeptMapper {
     /**
      * 查询部门管理数据
      * 
@@ -27,7 +27,8 @@ public interface SysDeptMapper
      * @param deptCheckStrictly 部门树选择项是否关联显示
      * @return 选中部门列表
      */
-    public List<String> selectDeptListByRoleId(@Param("roleId") String roleId, @Param("deptCheckStrictly") String deptCheckStrictly);
+    public List<String> selectDeptListByRoleId(@Param("roleId") String roleId,
+        @Param("deptCheckStrictly") String deptCheckStrictly);
 
     /**
      * 根据部门ID查询信息

@@ -1,9 +1,9 @@
 package com.baize.gateway.service;
 
+import java.io.IOException;
+
 import com.baize.common.core.domain.AjaxResult;
 import com.baize.common.core.exception.BaseException;
-
-import java.io.IOException;
 
 public interface CaptchaCodeService {
     /**

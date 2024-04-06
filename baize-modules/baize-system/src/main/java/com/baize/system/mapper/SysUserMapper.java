@@ -1,17 +1,17 @@
 package com.baize.system.mapper;
 
-import com.baize.system.api.domain.SysUser;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import com.baize.system.api.domain.SysUser;
 
 /**
  * 用户表 数据层
  * 
  * 
  */
-public interface SysUserMapper
-{
+public interface SysUserMapper {
     /**
      * 根据条件分页查询用户列表
      * 

@@ -1,16 +1,15 @@
 package com.baize.system.service;
 
-import com.baize.system.domain.SysConfig;
-
 import java.util.List;
+
+import com.baize.system.domain.SysConfig;
 
 /**
  * 参数配置 服务层
  * 
  * 
  */
-public interface ISysConfigService
-{
+public interface ISysConfigService {
     /**
      * 查询参数配置信息
      * 

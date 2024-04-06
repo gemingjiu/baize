@@ -1,16 +1,15 @@
 package com.baize.system.service;
 
-import com.baize.system.api.domain.SysDictData;
-
 import java.util.List;
+
+import com.baize.system.api.domain.SysDictData;
 
 /**
  * 字典 业务层
  * 
  * 
  */
-public interface ISysDictDataService
-{
+public interface ISysDictDataService {
     /**
      * 根据条件分页查询字典数据
      * 

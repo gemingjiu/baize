@@ -1,13 +1,7 @@
 package com.baize.system.controller;
 
+import java.util.List;
 
-import com.baize.common.core.controller.BaseController;
-import com.baize.common.core.domain.AjaxResult;
-import com.baize.common.core.domain.TableCollection;
-import com.baize.common.security.annotation.RequiresPermissions;
-import com.baize.common.security.utils.SecurityUtils;
-import com.baize.system.api.domain.SysDictType;
-import com.baize.system.service.ISysDictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.baize.common.core.controller.BaseController;
+import com.baize.common.core.domain.AjaxResult;
+import com.baize.common.core.domain.TableCollection;
+import com.baize.common.security.annotation.RequiresPermissions;
+import com.baize.common.security.utils.SecurityUtils;
+import com.baize.system.api.domain.SysDictType;
+import com.baize.system.service.ISysDictTypeService;
 
 /**
  * 数据字典信息
@@ -28,30 +28,24 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/dict/type")
-public class SysDictTypeController extends BaseController
-{
+public class SysDictTypeController extends BaseController {
     @Autowired
     private ISysDictTypeService dictTypeService;
 
     @RequiresPermissions("system:dict:list")
     @GetMapping("/list")
-    public TableCollection list(SysDictType dictType)
-    {
+    public TableCollection list(SysDictType dictType) {
         startPage();
         List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
         return getDataTable(list);
     }
-
-
-
 
     /**
      * 查询字典类型详细
      */
 
     @GetMapping(value = "/{dictId}")
-    public AjaxResult getInfo(@PathVariable String dictId)
-    {
+    public AjaxResult getInfo(@PathVariable String dictId) {
         return success(dictTypeService.selectDictTypeById(dictId));
     }
 
@@ -60,10 +54,8 @@ public class SysDictTypeController extends BaseController
      */
 
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysDictType dict)
-    {
-        if (!dictTypeService.checkDictTypeUnique(dict))
-        {
+    public AjaxResult add(@Validated @RequestBody SysDictType dict) {
+        if (!dictTypeService.checkDictTypeUnique(dict)) {
             return error("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
         dict.setModifiedBy(SecurityUtils.getUsername());
@@ -75,10 +67,8 @@ public class SysDictTypeController extends BaseController
      */
 
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysDictType dict)
-    {
-        if (!dictTypeService.checkDictTypeUnique(dict))
-        {
+    public AjaxResult edit(@Validated @RequestBody SysDictType dict) {
+        if (!dictTypeService.checkDictTypeUnique(dict)) {
             return error("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
         dict.setModifiedBy(SecurityUtils.getUsername());
@@ -89,8 +79,7 @@ public class SysDictTypeController extends BaseController
      * 删除字典类型
      */
     @DeleteMapping("/{dictIds}")
-    public AjaxResult remove(@PathVariable String[] dictIds)
-    {
+    public AjaxResult remove(@PathVariable String[] dictIds) {
         dictTypeService.deleteDictTypeByIds(dictIds);
         return success();
     }
@@ -99,8 +88,7 @@ public class SysDictTypeController extends BaseController
      * 刷新字典缓存
      */
     @DeleteMapping("/refreshCache")
-    public AjaxResult refreshCache()
-    {
+    public AjaxResult refreshCache() {
         dictTypeService.resetDictCache();
         return success();
     }
@@ -109,8 +97,7 @@ public class SysDictTypeController extends BaseController
      * 获取字典选择框列表
      */
     @GetMapping("/optionselect")
-    public AjaxResult optionselect()
-    {
+    public AjaxResult optionselect() {
         List<SysDictType> dictTypes = dictTypeService.selectDictTypeAll();
         return success(dictTypes);
     }

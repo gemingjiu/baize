@@ -1,11 +1,12 @@
 package com.baize.gen.mapper;
 
-import com.baize.gen.entity.GenTable;
-
 import java.util.List;
+
+import com.baize.gen.entity.GenTable;
 
 /**
  * 业务 数据层
+ * 
  * @author gemj
  * @since 2023/12/08 14:08
  */

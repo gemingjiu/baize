@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  * 白泽定时任务服务启动类
+ * 
  * @author gemj
  * @since 2023/12/11 19:36
  */

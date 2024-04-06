@@ -120,13 +120,13 @@ public class XSSFilter {
         vAllowed.put("i", no_atts);
         vAllowed.put("em", no_atts);
 
-        vSelfClosingTags = new String[]{"img"};
-        vNeedClosingTags = new String[]{"a", "b", "strong", "i", "em"};
-        vDisallowed = new String[]{};
-        vAllowedProtocols = new String[]{"http", "mailto", "https"}; // no ftp.
-        vProtocolAtts = new String[]{"src", "href"};
-        vRemoveBlanks = new String[]{"a", "b", "strong", "i", "em"};
-        vAllowedEntities = new String[]{"amp", "gt", "lt", "quot"};
+        vSelfClosingTags = new String[] {"img"};
+        vNeedClosingTags = new String[] {"a", "b", "strong", "i", "em"};
+        vDisallowed = new String[] {};
+        vAllowedProtocols = new String[] {"http", "mailto", "https"}; // no ftp.
+        vProtocolAtts = new String[] {"src", "href"};
+        vRemoveBlanks = new String[] {"a", "b", "strong", "i", "em"};
+        vAllowedEntities = new String[] {"amp", "gt", "lt", "quot"};
         stripComment = true;
         encodeQuotes = true;
         alwaysMakeTags = false;
@@ -149,23 +149,23 @@ public class XSSFilter {
         assert conf.containsKey("vRemoveBlanks") : "configuration requires vRemoveBlanks";
         assert conf.containsKey("vAllowedEntities") : "configuration requires vAllowedEntities";
 
-        vAllowed = Collections.unmodifiableMap((HashMap<String, List<String>>) conf.get("vAllowed"));
-        vSelfClosingTags = (String[]) conf.get("vSelfClosingTags");
-        vNeedClosingTags = (String[]) conf.get("vNeedClosingTags");
-        vDisallowed = (String[]) conf.get("vDisallowed");
-        vAllowedProtocols = (String[]) conf.get("vAllowedProtocols");
-        vProtocolAtts = (String[]) conf.get("vProtocolAtts");
-        vRemoveBlanks = (String[]) conf.get("vRemoveBlanks");
-        vAllowedEntities = (String[]) conf.get("vAllowedEntities");
-        stripComment = conf.containsKey("stripComment") ? (Boolean) conf.get("stripComment") : true;
-        encodeQuotes = conf.containsKey("encodeQuotes") ? (Boolean) conf.get("encodeQuotes") : true;
-        alwaysMakeTags = conf.containsKey("alwaysMakeTags") ? (Boolean) conf.get("alwaysMakeTags") : true;
+        vAllowed = Collections.unmodifiableMap((HashMap<String, List<String>>)conf.get("vAllowed"));
+        vSelfClosingTags = (String[])conf.get("vSelfClosingTags");
+        vNeedClosingTags = (String[])conf.get("vNeedClosingTags");
+        vDisallowed = (String[])conf.get("vDisallowed");
+        vAllowedProtocols = (String[])conf.get("vAllowedProtocols");
+        vProtocolAtts = (String[])conf.get("vProtocolAtts");
+        vRemoveBlanks = (String[])conf.get("vRemoveBlanks");
+        vAllowedEntities = (String[])conf.get("vAllowedEntities");
+        stripComment = conf.containsKey("stripComment") ? (Boolean)conf.get("stripComment") : true;
+        encodeQuotes = conf.containsKey("encodeQuotes") ? (Boolean)conf.get("encodeQuotes") : true;
+        alwaysMakeTags = conf.containsKey("alwaysMakeTags") ? (Boolean)conf.get("alwaysMakeTags") : true;
     }
 
     // ---------------------------------------------------------------
     // my versions of some PHP library functions
     public static String chr(final int decimal) {
-        return String.valueOf((char) decimal);
+        return String.valueOf((char)decimal);
     }
 
     public static String htmlSpecialChars(final String s) {

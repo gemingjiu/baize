@@ -1,16 +1,15 @@
 package com.baize.system.mapper;
 
-import com.baize.system.api.domain.SysDictType;
-
 import java.util.List;
+
+import com.baize.system.api.domain.SysDictType;
 
 /**
  * 字典表 数据层
  * 
  * 
  */
-public interface SysDictTypeMapper
-{
+public interface SysDictTypeMapper {
     /**
      * 根据条件分页查询字典类型
      * 

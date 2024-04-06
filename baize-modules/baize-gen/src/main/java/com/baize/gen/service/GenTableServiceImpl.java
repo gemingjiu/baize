@@ -1,30 +1,9 @@
 package com.baize.gen.service;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.baize.common.core.constant.Constants;
-import com.baize.common.core.constant.GenConstants;
-import com.baize.common.core.enums.BaizeExceptionEnum;
-import com.baize.common.core.exception.BaseException;
-import com.baize.common.core.utils.text.CharsetUtils;
-import com.baize.common.core.utils.text.StringUtils;
-import com.baize.common.security.utils.SecurityUtils;
-import com.baize.gen.entity.GenTable;
-import com.baize.gen.entity.GenTableColumn;
-import com.baize.gen.mapper.GenTableColumnMapper;
-import com.baize.gen.mapper.GenTableMapper;
-import com.baize.gen.util.GenUtils;
-import com.baize.gen.util.VelocityFactory;
-import com.baize.gen.util.VelocityUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.baize.common.core.enums.BaizeException.DB_TABLE_EXCEPTION;
+import static com.baize.common.core.enums.BaizeException.IMPORT_EXCEPTION;
+import static com.baize.common.core.enums.BaizeException.REQUEST_INVALID;
+import static com.baize.common.core.enums.BaizeException.UTILS_EXCEPTION;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,10 +17,36 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baize.common.core.constant.Constants;
+import com.baize.common.core.constant.GenConstants;
+import com.baize.common.core.exception.GenException;
+import com.baize.common.core.utils.JsonUtils;
+import com.baize.common.core.utils.text.CharsetUtils;
+import com.baize.common.core.utils.text.StringUtils;
+import com.baize.common.security.utils.SecurityUtils;
+import com.baize.gen.entity.GenTable;
+import com.baize.gen.entity.GenTableColumn;
+import com.baize.gen.mapper.GenTableColumnMapper;
+import com.baize.gen.mapper.GenTableMapper;
+import com.baize.gen.util.GenUtils;
+import com.baize.gen.util.VelocityFactory;
+import com.baize.gen.util.VelocityUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @Slf4j
 public class GenTableServiceImpl implements IGenTableService {
-
 
     @Autowired
     private GenTableMapper genTableMapper;
@@ -114,7 +119,7 @@ public class GenTableServiceImpl implements IGenTableService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateGenTable(GenTable genTable) {
-        String options = JSON.toJSONString(genTable.getParams());
+        String options = JsonUtils.toJSONString(genTable.getParams());
         genTable.setOptions(options);
         int row = genTableMapper.updateGenTable(genTable);
         if (row > 0) {
@@ -161,7 +166,7 @@ public class GenTableServiceImpl implements IGenTableService {
                 }
             }
         } catch (Exception e) {
-            throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "导入失败：" + e.getMessage());
+            throw new GenException(IMPORT_EXCEPTION, String.format("导入表列表失败,原因： %s", e.getMessage()));
         }
     }
 
@@ -241,7 +246,7 @@ public class GenTableServiceImpl implements IGenTableService {
                     String path = getGenPath(table, template);
                     FileUtils.writeStringToFile(new File(path), sw.toString(), CharsetUtils.UTF_8);
                 } catch (IOException e) {
-                    throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "渲染模板失败，表名：" + table.getTableName());
+                    throw new GenException(UTILS_EXCEPTION, String.format("渲染模板失败，表名：%s", table.getTableName()));
                 }
             }
         }
@@ -257,13 +262,15 @@ public class GenTableServiceImpl implements IGenTableService {
     public void synchDb(String tableName) {
         GenTable table = genTableMapper.selectGenTableByName(tableName);
         List<GenTableColumn> tableColumns = table.getColumns();
-        Map<String, GenTableColumn> tableColumnMap = tableColumns.stream().collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity()));
+        Map<String, GenTableColumn> tableColumnMap =
+            tableColumns.stream().collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity()));
 
         List<GenTableColumn> dbTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
         if (StringUtils.isEmpty(dbTableColumns)) {
-            throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "同步数据失败，原表结构不存在");
+            throw new GenException(DB_TABLE_EXCEPTION, "同步数据失败，原表结构不存在");
         }
-        List<String> dbTableColumnNames = dbTableColumns.stream().map(GenTableColumn::getColumnName).collect(Collectors.toList());
+        List<String> dbTableColumnNames =
+            dbTableColumns.stream().map(GenTableColumn::getColumnName).collect(Collectors.toList());
 
         dbTableColumns.forEach(column -> {
             GenUtils.initColumnField(column, table);
@@ -276,8 +283,7 @@ public class GenTableServiceImpl implements IGenTableService {
                     column.setQueryType(prevColumn.getQueryType());
                 }
                 if (StringUtils.isNotEmpty(prevColumn.getRequired()) && !column.pk()
-                        && (column.insert() || column.edit())
-                        && ((column.isUsableColumn()) || (!column.isSuperColumn()))) {
+                    && (column.insert() || column.edit()) && ((column.isUsableColumn()) || (!column.isSuperColumn()))) {
                     // 如果是(新增/修改&非主键/非忽略及父属性)，继续保留必填/显示类型选项
                     column.setRequired(prevColumn.getRequired());
                     column.setVisibleType(prevColumn.getVisibleType());
@@ -288,7 +294,8 @@ public class GenTableServiceImpl implements IGenTableService {
             }
         });
 
-        List<GenTableColumn> delColumns = tableColumns.stream().filter(column -> !dbTableColumnNames.contains(column.getColumnName())).collect(Collectors.toList());
+        List<GenTableColumn> delColumns = tableColumns.stream()
+            .filter(column -> !dbTableColumnNames.contains(column.getColumnName())).collect(Collectors.toList());
         if (StringUtils.isNotEmpty(delColumns)) {
             genTableColumnMapper.deleteGenTableColumns(delColumns);
         }
@@ -353,23 +360,36 @@ public class GenTableServiceImpl implements IGenTableService {
      */
     @Override
     public void validateEdit(GenTable genTable) {
-        if (GenConstants.TPL_TREE.equals(genTable.getTplCategory())) {
-            String options = JSON.toJSONString(genTable.getParams());
-            JSONObject paramsObj = JSON.parseObject(options);
-            if (StringUtils.isEmpty(paramsObj.getString(GenConstants.TREE_CODE))) {
-                throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "树编码字段不能为空");
-            } else if (StringUtils.isEmpty(paramsObj.getString(GenConstants.TREE_PARENT_CODE))) {
-                throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "树父编码字段不能为空");
-            } else if (StringUtils.isEmpty(paramsObj.getString(GenConstants.TREE_NAME))) {
-                throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "树名称字段不能为空");
-            } else if (GenConstants.TPL_SUB.equals(genTable.getTplCategory())) {
-                if (StringUtils.isEmpty(genTable.getRelationTable())) {
-                    throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "关联子表的表名不能为空");
-                } else if (StringUtils.isEmpty(genTable.getRelationFkName())) {
-                    throw new BaseException(BaizeExceptionEnum.SYSTEM_EXCEPTION, "子表关联的外键名不能为空");
-                }
-            }
+        if (!GenConstants.TPL_TREE.equals(genTable.getTplCategory())) {
+            return;
         }
+        String options = JsonUtils.toJSONString(genTable.getParams());
+        JsonNode jsonNode = JsonUtils.parseJSONObject(options);
+        if (jsonNode.isNull()) {
+            return;
+        }
+        if (StringUtils.isEmpty(JsonUtils.getString(jsonNode, GenConstants.TREE_CODE))) {
+            throw new GenException(REQUEST_INVALID, "树编码字段不能为空");
+        }
+
+        if (StringUtils.isEmpty(JsonUtils.getString(jsonNode, GenConstants.TREE_PARENT_CODE))) {
+            throw new GenException(REQUEST_INVALID, "树父编码字段不能为空");
+        }
+
+        if (StringUtils.isEmpty(JsonUtils.getString(jsonNode, GenConstants.TREE_NAME))) {
+            throw new GenException(REQUEST_INVALID, "树名称字段不能为空");
+        }
+
+        if (GenConstants.TPL_SUB.equals(genTable.getTplCategory())
+            && StringUtils.isEmpty(genTable.getRelationTable())) {
+            throw new GenException(REQUEST_INVALID, "关联子表的表名不能为空");
+        }
+
+        if (GenConstants.TPL_SUB.equals(genTable.getTplCategory())
+            && StringUtils.isEmpty(genTable.getRelationFkName())) {
+            throw new GenException(REQUEST_INVALID, "子表关联的外键名不能为空");
+        }
+
     }
 
     /**
@@ -418,33 +438,36 @@ public class GenTableServiceImpl implements IGenTableService {
      * @param genTable 设置后的生成对象
      */
     public void setTableFromOptions(GenTable genTable) {
-        JSONObject paramsObj = JSON.parseObject(genTable.getOptions());
-        if (StringUtils.isNotNull(paramsObj)) {
-            String treeCode = paramsObj.getString(GenConstants.TREE_CODE);
-            String treeParentCode = paramsObj.getString(GenConstants.TREE_PARENT_CODE);
-            String treeName = paramsObj.getString(GenConstants.TREE_NAME);
-            String parentMenuId = paramsObj.getString(GenConstants.PARENT_MENU_ID);
-            String parentMenuName = paramsObj.getString(GenConstants.PARENT_MENU_NAME);
-
-            genTable.setTreeCode(treeCode);
-            genTable.setTreeParentCode(treeParentCode);
-            genTable.setTreeName(treeName);
-            genTable.setParentMenuId(parentMenuId);
-            genTable.setParentMenuName(parentMenuName);
+        JsonNode jsonNode = JsonUtils.parseJSONObject(genTable.getOptions());
+        if (jsonNode.isNull()) {
+            return;
         }
+        String treeCode = JsonUtils.getString(jsonNode, GenConstants.TREE_CODE);
+        String treeParentCode = JsonUtils.getString(jsonNode, GenConstants.TREE_PARENT_CODE);
+        String treeName = JsonUtils.getString(jsonNode, GenConstants.TREE_NAME);
+        String parentMenuId = JsonUtils.getString(jsonNode, GenConstants.PARENT_MENU_ID);
+        String parentMenuName = JsonUtils.getString(jsonNode, GenConstants.PARENT_MENU_NAME);
+
+        genTable.setTreeCode(treeCode);
+        genTable.setTreeParentCode(treeParentCode);
+        genTable.setTreeName(treeName);
+        genTable.setParentMenuId(parentMenuId);
+        genTable.setParentMenuName(parentMenuName);
+
     }
 
     /**
      * 获取代码生成地址
      *
-     * @param table    业务表信息
+     * @param table 业务表信息
      * @param template 模板文件路径
      * @return 生成地址
      */
     public static String getGenPath(GenTable table, String template) {
         String genPath = table.getGenPath();
         if (StringUtils.equals(genPath, "/")) {
-            return System.getProperty("user.dir") + File.separator + "src" + File.separator + VelocityUtils.getFileName(template, table);
+            return System.getProperty("user.dir") + File.separator + "src" + File.separator
+                + VelocityUtils.getFileName(template, table);
         }
         return genPath + File.separator + VelocityUtils.getFileName(template, table);
     }

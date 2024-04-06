@@ -1,12 +1,12 @@
 package com.baize.common.cache.service;
 
-import org.springframework.data.redis.core.BoundSetOperations;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.BoundSetOperations;
 
 /**
  * @author gemj
@@ -15,8 +15,7 @@ import java.util.concurrent.TimeUnit;
 public interface CacheService {
     <T> void setCacheObject(String key, T value);
 
-    <T> void setCacheObject(
-            String key, T value, Long timeout, TimeUnit timeUnit);
+    <T> void setCacheObject(String key, T value, Long timeout, TimeUnit timeUnit);
 
     boolean expire(String key, long timeout);
 

@@ -1,11 +1,11 @@
 package com.baize.system.api.domain;
 
+import java.util.Set;
 
 import com.baize.common.core.domain.BaseEntity;
 import com.baize.common.core.utils.text.StringUtils;
-import lombok.Data;
 
-import java.util.Set;
+import lombok.Data;
 
 /**
  * 角色信息
@@ -16,6 +16,10 @@ import java.util.Set;
 @Data
 public class SysRole extends BaseEntity {
     private static final long serialVersionUID = 1L;
+    /**
+     * 角色ID
+     */
+    private String id;
     private static final String AdminId = "1";
     /**
      * 角色名称
@@ -63,7 +67,7 @@ public class SysRole extends BaseEntity {
     private Set<String> permissions;
 
     public SysRole(String roleId) {
-        super.setId(roleId);
+        this.id = roleId;
     }
 
     public SysRole() {

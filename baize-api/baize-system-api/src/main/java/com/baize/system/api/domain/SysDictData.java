@@ -1,6 +1,7 @@
 package com.baize.system.api.domain;
 
 import com.baize.common.core.domain.BaseEntity;
+
 import lombok.Data;
 
 /**
@@ -9,7 +10,10 @@ import lombok.Data;
 @Data
 public class SysDictData extends BaseEntity {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 字典数据ID
+     */
+    private String id;
     /**
      * 字典标签
      */

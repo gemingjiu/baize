@@ -12,7 +12,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author gemj
  */
 
-
 @EnableFeignClients(basePackages = "com.baize")
 // 指定要扫描的Mapper类的包的路径
 @MapperScan("com.baize.**.mapper")

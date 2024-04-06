@@ -1,16 +1,15 @@
 package com.baize.system.service;
 
-import com.baize.system.domain.SysPost;
-
 import java.util.List;
+
+import com.baize.system.domain.SysPost;
 
 /**
  * 岗位信息 服务层
  * 
  * 
  */
-public interface ISysPostService
-{
+public interface ISysPostService {
     /**
      * 查询岗位信息集合
      * 

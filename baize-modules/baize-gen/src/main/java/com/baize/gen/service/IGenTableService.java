@@ -1,9 +1,9 @@
 package com.baize.gen.service;
 
-import com.baize.gen.entity.GenTable;
-
 import java.util.List;
 import java.util.Map;
+
+import com.baize.gen.entity.GenTable;
 
 /**
  * @author gemj

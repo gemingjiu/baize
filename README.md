@@ -1,6 +1,9 @@
 # 白泽管理系统
+
 ## 服务列表
+
 ### 服务网关
+
 ```yaml
 # Tomcat
 server:
@@ -12,7 +15,9 @@ spring:
     # 应用名称
     name: baize-gateway
 ```
+
 ### 认证中心
+
 ```yaml
 # Tomcat
 server:
@@ -24,7 +29,9 @@ spring:
     # 应用名称
     name: baize-auth
 ```
+
 ### 系统服务
+
 ```yaml
 # Tomcat
 server:
@@ -36,7 +43,9 @@ spring:
     # 应用名称
     name: baize-system
 ```
+
 ### 定时服务
+
 ```yaml
 # Tomcat
 server:
@@ -48,7 +57,9 @@ spring:
     # 应用名称
     name: baize-job
 ```
+
 ### 代码生成
+
 ```yaml
 # Tomcat
 server:
@@ -60,29 +71,39 @@ spring:
     # 应用名称
     name: baize-gen
 ```
+
 ### 注册中心
+
 ```yaml
 name: nacos
 port: 8848
 ```
+
 ### 配置中心
+
 ```yaml
 name: nacos
 port: 8848
 ```
+
 ### 缓存服务
+
 ```yaml
 name: redis
 port: 6379
 ```
+
 ### 数据库
+
 ```yaml
 name: postgres
 port: 5432
 ```
 
 ## 组件功能
+
 ### 服务网关
+
 * 路由
 * 聚合服务
 * 负载均衡
@@ -96,6 +117,7 @@ port: 5432
 * 日志
   > 1. 登录日志
   > 2. 操作日志
+
 ### 认证中心
 
 ### 注册中心

@@ -1,6 +1,5 @@
 package com.baize.common.core.utils.uuid;
 
-
 public class UUIDUtils {
     /**
      * 获取随机UUID

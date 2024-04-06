@@ -1,5 +1,9 @@
 package com.baize.system.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.baize.common.core.utils.uuid.UUID;
 import com.baize.common.security.utils.DictUtils;
@@ -7,10 +11,6 @@ import com.baize.common.security.utils.SecurityUtils;
 import com.baize.system.api.domain.SysDictData;
 import com.baize.system.mapper.SysDictDataMapper;
 import com.baize.system.service.ISysDictDataService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 字典 业务层处理
@@ -18,15 +18,16 @@ import java.util.List;
  * 
  */
 @Service
-public class SysDictDataServiceImpl implements ISysDictDataService
-{
+public class SysDictDataServiceImpl implements ISysDictDataService {
     @Autowired
     private SysDictDataMapper dictDataMapper;
+
     private void initSysDictData(SysDictData info) {
         info.setId(UUID.fastUUID().toString(true));
         info.setCreatedBy(SecurityUtils.getLoginUser().getUsername());
         info.setModifiedBy(SecurityUtils.getLoginUser().getUsername());
     }
+
     /**
      * 根据条件分页查询字典数据
      * 
@@ -34,8 +35,7 @@ public class SysDictDataServiceImpl implements ISysDictDataService
      * @return 字典数据集合信息
      */
     @Override
-    public List<SysDictData> selectDictDataList(SysDictData dictData)
-    {
+    public List<SysDictData> selectDictDataList(SysDictData dictData) {
         return dictDataMapper.selectDictDataList(dictData);
     }
 
@@ -47,8 +47,7 @@ public class SysDictDataServiceImpl implements ISysDictDataService
      * @return 字典标签
      */
     @Override
-    public String selectDictLabel(String dictType, String dictValue)
-    {
+    public String selectDictLabel(String dictType, String dictValue) {
         return dictDataMapper.selectDictLabel(dictType, dictValue);
     }
 
@@ -59,8 +58,7 @@ public class SysDictDataServiceImpl implements ISysDictDataService
      * @return 字典数据
      */
     @Override
-    public SysDictData selectDictDataById(String dictCode)
-    {
+    public SysDictData selectDictDataById(String dictCode) {
         return dictDataMapper.selectDictDataById(dictCode);
     }
 
@@ -70,10 +68,8 @@ public class SysDictDataServiceImpl implements ISysDictDataService
      * @param dictCodes 需要删除的字典数据ID
      */
     @Override
-    public void deleteDictDataByIds(String[] dictCodes)
-    {
-        for (String dictCode : dictCodes)
-        {
+    public void deleteDictDataByIds(String[] dictCodes) {
+        for (String dictCode : dictCodes) {
             SysDictData data = selectDictDataById(dictCode);
             dictDataMapper.deleteDictDataById(dictCode);
             List<SysDictData> dictDatas = dictDataMapper.selectDictDataByType(data.getDictType());
@@ -88,12 +84,10 @@ public class SysDictDataServiceImpl implements ISysDictDataService
      * @return 结果
      */
     @Override
-    public int insertDictData(SysDictData data)
-    {
+    public int insertDictData(SysDictData data) {
         initSysDictData(data);
         int row = dictDataMapper.insertDictData(data);
-        if (row > 0)
-        {
+        if (row > 0) {
             List<SysDictData> dictDatas = dictDataMapper.selectDictDataByType(data.getDictType());
             DictUtils.setDictCache(data.getDictType(), dictDatas);
         }
@@ -107,11 +101,9 @@ public class SysDictDataServiceImpl implements ISysDictDataService
      * @return 结果
      */
     @Override
-    public int updateDictData(SysDictData data)
-    {
+    public int updateDictData(SysDictData data) {
         int row = dictDataMapper.updateDictData(data);
-        if (row > 0)
-        {
+        if (row > 0) {
             List<SysDictData> dictDatas = dictDataMapper.selectDictDataByType(data.getDictType());
             DictUtils.setDictCache(data.getDictType(), dictDatas);
         }

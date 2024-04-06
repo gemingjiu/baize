@@ -1,5 +1,13 @@
 package com.baize.common.security.service;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.baize.common.cache.service.CacheService;
 import com.baize.common.core.constant.CacheConstants;
@@ -11,14 +19,8 @@ import com.baize.common.core.utils.text.StringUtils;
 import com.baize.common.core.utils.uuid.UUIDUtils;
 import com.baize.common.security.utils.SecurityUtils;
 import com.baize.system.api.domain.vo.LoginUser;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Token服务
@@ -35,10 +37,9 @@ public class TokenService {
     private final static Long MILLIS_MINUTE_TEN = CacheConstants.REFRESH_TIME * MILLIS_MINUTE;
     private final static long expireTime = CacheConstants.EXPIRATION;
 
-    private final static String ACCESS_TOKEN = CacheConstants.LOGIN_TOKEN_KEY;
+    private final static String ACCESS_TOKEN = CacheConstants.LOGIN_TOKEN_PREFIX;
     @Autowired
     private CacheService cacheService;
-
 
     /**
      * 创建令牌

@@ -1,16 +1,15 @@
 package com.baize.system.service;
 
-import com.baize.system.api.domain.SysUser;
-
 import java.util.List;
+
+import com.baize.system.api.domain.SysUser;
 
 /**
  * 用户 业务层
  * 
  * 
  */
-public interface ISysUserService
-{
+public interface ISysUserService {
     /**
      * 根据条件分页查询用户列表
      * 
@@ -194,6 +193,5 @@ public interface ISysUserService
      * @return 结果
      */
     public int deleteUserByIds(String[] userIds);
-
 
 }

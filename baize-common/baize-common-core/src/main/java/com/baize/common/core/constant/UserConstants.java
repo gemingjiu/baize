@@ -13,56 +13,6 @@ public class UserConstants {
     public static final String SYS_USER = "SYS_USER";
 
     /**
-     * 正常状态
-     */
-    public static final String NORMAL = "0";
-
-    /**
-     * 异常状态
-     */
-    public static final String EXCEPTION = "1";
-
-    /**
-     * 用户封禁状态
-     */
-    public static final String USER_DISABLE = "1";
-
-    /**
-     * 角色封禁状态
-     */
-    public static final String ROLE_DISABLE = "1";
-
-    /**
-     * 部门正常状态
-     */
-    public static final String DEPT_NORMAL = "0";
-
-    /**
-     * 部门停用状态
-     */
-    public static final String DEPT_DISABLE = "1";
-
-    /**
-     * 字典正常状态
-     */
-    public static final String DICT_NORMAL = "0";
-
-    /**
-     * 是否为系统默认（是）
-     */
-    public static final String YES = "Y";
-
-    /**
-     * 是否菜单外链（是）
-     */
-    public static final String YES_FRAME = "0";
-
-    /**
-     * 是否菜单外链（否）
-     */
-    public static final String NO_FRAME = "1";
-
-    /**
      * 菜单类型（目录）
      */
     public static final String TYPE_DIR = "M";
@@ -80,23 +30,23 @@ public class UserConstants {
     /**
      * Layout组件标识
      */
-    public final static String LAYOUT = "Layout";
+    public static final String LAYOUT = "Layout";
 
     /**
      * ParentView组件标识
      */
-    public final static String PARENT_VIEW = "ParentView";
+    public static final String PARENT_VIEW = "ParentView";
 
     /**
      * InnerLink组件标识
      */
-    public final static String INNER_LINK = "InnerLink";
+    public static final String INNER_LINK = "InnerLink";
 
     /**
      * 校验是否唯一的返回标识
      */
-    public final static boolean UNIQUE = true;
-    public final static boolean NOT_UNIQUE = false;
+    public static final boolean UNIQUE = true;
+    public static final boolean NOT_UNIQUE = false;
 
     /**
      * 用户名长度限制

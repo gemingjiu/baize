@@ -1,7 +1,17 @@
 package com.baize.system.service.impl;
 
+import static com.baize.common.core.enums.BaizeException.SERVICE_EXCEPTION;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.baize.common.core.constant.UserConstants;
+import com.baize.common.core.enums.EnabledStatus;
 import com.baize.common.core.exception.BaseException;
 import com.baize.common.core.utils.ConvertUtils;
 import com.baize.common.core.utils.SpringUtils;
@@ -15,15 +25,6 @@ import com.baize.system.domain.vo.TreeSelect;
 import com.baize.system.mapper.SysDeptMapper;
 import com.baize.system.mapper.SysRoleMapper;
 import com.baize.system.service.ISysDeptService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.baize.common.core.enums.BaizeExceptionEnum.SERVICE_EXCEPTION;
 
 /**
  * 部门管理 服务实现
@@ -168,7 +169,7 @@ public class SysDeptServiceImpl implements ISysDeptService {
     public boolean checkDeptNameUnique(SysDept dept) {
         String deptId = StringUtils.isNull(dept.getId()) ? "" : dept.getId();
         SysDept info = deptMapper.checkDeptNameUnique(dept.getDeptName(), dept.getParentId());
-        if (StringUtils.isNotNull(info) && !StringUtils.equals(info.getId() , deptId)) {
+        if (StringUtils.isNotNull(info) && !StringUtils.equals(info.getId(), deptId)) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
@@ -202,7 +203,7 @@ public class SysDeptServiceImpl implements ISysDeptService {
         initSysDept(dept);
         SysDept info = deptMapper.selectDeptById(dept.getParentId());
         // 如果父节点不为正常状态,则不允许新增子节点
-        if (!UserConstants.DEPT_NORMAL.equals(info.getStatus())) {
+        if (EnabledStatus.DISABLED.getStatus().equals(info.getStatus())) {
             throw new BaseException(SERVICE_EXCEPTION, "部门停用，不允许新增");
         }
         dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
@@ -226,8 +227,8 @@ public class SysDeptServiceImpl implements ISysDeptService {
             updateDeptChildren(dept.getId(), newAncestors, oldAncestors);
         }
         int result = deptMapper.updateDept(dept);
-        if (UserConstants.DEPT_NORMAL.equals(dept.getStatus()) && StringUtils.isNotEmpty(dept.getAncestors())
-                && !StringUtils.equals("0", dept.getAncestors())) {
+        if (EnabledStatus.ENABLED.getStatus().equals(dept.getStatus()) && StringUtils.isNotEmpty(dept.getAncestors())
+            && !StringUtils.equals("0", dept.getAncestors())) {
             // 如果该部门是启用状态，则启用该部门的所有上级部门
             updateParentDeptStatusNormal(dept);
         }
@@ -248,7 +249,7 @@ public class SysDeptServiceImpl implements ISysDeptService {
     /**
      * 修改子元素关系
      *
-     * @param deptId       被修改的部门ID
+     * @param deptId 被修改的部门ID
      * @param newAncestors 新的父ID集合
      * @param oldAncestors 旧的父ID集合
      */
@@ -295,7 +296,7 @@ public class SysDeptServiceImpl implements ISysDeptService {
         Iterator<SysDept> it = list.iterator();
         while (it.hasNext()) {
             SysDept n = it.next();
-            if (StringUtils.isNotNull(n.getParentId()) &&StringUtils.equals(n.getParentId(),t.getId())) {
+            if (StringUtils.isNotNull(n.getParentId()) && StringUtils.equals(n.getParentId(), t.getId())) {
                 tlist.add(n);
             }
         }

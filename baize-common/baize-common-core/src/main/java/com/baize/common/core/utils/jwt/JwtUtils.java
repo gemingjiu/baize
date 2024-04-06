@@ -1,13 +1,14 @@
 package com.baize.common.core.utils.jwt;
 
+import java.util.Map;
+
 import com.baize.common.core.constant.SecurityConstants;
 import com.baize.common.core.constant.TokenConstants;
 import com.baize.common.core.utils.ConvertUtils;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
-import java.util.Map;
 
 /**
  * Jwt工具类
@@ -105,7 +106,7 @@ public class JwtUtils {
      * 根据身份信息获取键值
      *
      * @param claims 身份信息
-     * @param key    键
+     * @param key 键
      * @return 值
      */
     public static String getValue(Claims claims, String key) {

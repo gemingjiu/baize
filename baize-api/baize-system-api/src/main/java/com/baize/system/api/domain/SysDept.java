@@ -1,12 +1,11 @@
 package com.baize.system.api.domain;
 
-
-import com.baize.common.core.domain.BaseEntity;
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.baize.common.core.domain.BaseEntity;
+
+import lombok.Data;
 
 /**
  * 部门信息
@@ -17,6 +16,10 @@ import java.util.List;
 @Data
 public class SysDept extends BaseEntity {
     private static final long serialVersionUID = 1L;
+    /**
+     * 部门ID
+     */
+    private String id;
     /** 父部门ID */
     private String parentId;
 

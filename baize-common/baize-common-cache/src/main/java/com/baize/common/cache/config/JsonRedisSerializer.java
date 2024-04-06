@@ -1,21 +1,23 @@
 package com.baize.common.cache.config;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.filter.Filter;
-import com.baize.common.core.constant.Constants;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
-import java.nio.charset.Charset;
+import com.baize.common.core.constant.Constants;
+import com.baize.common.core.utils.JsonUtils;
 
 public class JsonRedisSerializer<T> implements RedisSerializer<T> {
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-    static final Filter AUTO_TYPE_FILTER = JSONReader.autoTypeFilter(Constants.JSON_WHITELIST_STR);
+    private final Set<String> whitePrefixes = new HashSet<>(Arrays.asList(Constants.JSON_WHITELIST_STR));
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     public JsonRedisSerializer(Class<T> clazz) {
         super();
@@ -27,7 +29,7 @@ public class JsonRedisSerializer<T> implements RedisSerializer<T> {
         if (t == null) {
             return new byte[0];
         }
-        return JSON.toJSONString(t, JSONWriter.Feature.WriteClassName).getBytes(DEFAULT_CHARSET);
+        return JsonUtils.toByteArray(t);
     }
 
     @Override
@@ -36,7 +38,13 @@ public class JsonRedisSerializer<T> implements RedisSerializer<T> {
             return null;
         }
         String str = new String(bytes, DEFAULT_CHARSET);
-
-        return JSON.parseObject(str, clazz, AUTO_TYPE_FILTER);
+        T t = JsonUtils.parseObject(str, clazz);
+        String className = t.getClass().getName();
+        for (String prefix : whitePrefixes) {
+            if (className.startsWith(prefix)) {
+                return t;
+            }
+        }
+        throw new SerializationException("Class is not in the whitelist");
     }
 }

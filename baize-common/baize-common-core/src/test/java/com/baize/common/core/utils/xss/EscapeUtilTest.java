@@ -2,7 +2,6 @@ package com.baize.common.core.utils.xss;
 
 class EscapeUtilTest {
 
-
     @org.junit.jupiter.api.Test
     void escape() {
         String html = "<script>alert(1);</script>";
@@ -14,6 +13,5 @@ class EscapeUtilTest {
         System.out.println("escape: " + escape);
         System.out.println("unescape: " + EscapeUtil.unescape(escape));
     }
-
 
 }

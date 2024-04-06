@@ -1,26 +1,29 @@
 package com.baize.gen.entity;
 
-import com.baize.common.core.domain.BaseEntity;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
-import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.Valid;
+
+import com.baize.common.core.domain.BaseEntity;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 代码生成业务表;
+ * 
  * @author : gemingjiu
  * @date : 2023-9-11
  */
-@ApiModel(value = "代码生成业务表",description = "")
-public class GenTable  extends BaseEntity implements Serializable,Cloneable{
+@ApiModel(value = "代码生成业务表", description = "")
+public class GenTable extends BaseEntity implements Serializable, Cloneable {
     /** 主键ID */
-    @ApiModelProperty(name = "主键ID",notes = "")
-    private String id ;
+    @ApiModelProperty(name = "主键ID", notes = "")
+    private String id;
     /** 表名 */
-    @ApiModelProperty(name = "表名",notes = "")
-    private String tableName ;
+    @ApiModelProperty(name = "表名", notes = "")
+    private String tableName;
     /**
      * 表描述
      */
@@ -47,7 +50,7 @@ public class GenTable  extends BaseEntity implements Serializable,Cloneable{
     @ApiModelProperty(name = "使用的模板", notes = "")
     private String tplCategory;
 
-    @ApiModelProperty(name= "Vue版本",notes = "")
+    @ApiModelProperty(name = "Vue版本", notes = "")
     private String vueType;
     /**
      * 显示类型
@@ -72,17 +75,17 @@ public class GenTable  extends BaseEntity implements Serializable,Cloneable{
     /**
      * 功能名
      */
-    @ApiModelProperty(name = "功能名",notes = "")
-    private String functionName ;
+    @ApiModelProperty(name = "功能名", notes = "")
+    private String functionName;
     /** 作者 */
-    @ApiModelProperty(name = "作者",notes = "")
-    private String author ;
+    @ApiModelProperty(name = "作者", notes = "")
+    private String author;
     /** 生成方式;0:gzip 1:自定义 */
-    @ApiModelProperty(name = "生成方式",notes = "0:gzip 1:自定义")
-    private String genType ;
+    @ApiModelProperty(name = "生成方式", notes = "0:gzip 1:自定义")
+    private String genType;
     /** 生成路径 */
     @ApiModelProperty(name = "生成路径", notes = "")
-    private String genPath ;
+    private String genPath;
     /** 主键信息 */
     private GenTableColumn pkColumn;
 
@@ -94,8 +97,8 @@ public class GenTable  extends BaseEntity implements Serializable,Cloneable{
     private List<GenTableColumn> columns;
 
     /** 其他生成选项 */
-    @ApiModelProperty(name = "其他生成选项",notes = "")
-    private String options ;
+    @ApiModelProperty(name = "其他生成选项", notes = "")
+    private String options;
     /** 树编码字段 */
     private String treeCode;
 
@@ -112,19 +115,22 @@ public class GenTable  extends BaseEntity implements Serializable,Cloneable{
     private String parentMenuName;
 
     /** 主键ID */
-    public String getId(){
+    public String getId() {
         return this.id;
     }
+
     /** 主键ID */
-    public void setId(String id){
-        this.id=id;
+    public void setId(String id) {
+        this.id = id;
     }
+
     /** 表名 */
-    public String getTableName(){
+    public String getTableName() {
         return this.tableName;
     }
+
     /** 表名 */
-    public void setTableName(String tableName){
+    public void setTableName(String tableName) {
         this.tableName = tableName;
     }
 
@@ -155,31 +161,36 @@ public class GenTable  extends BaseEntity implements Serializable,Cloneable{
     public void setRelationTable(String relationTable) {
         this.relationTable = relationTable;
     }
+
     /** 外键名 */
-    public String getRelationFkName(){
+    public String getRelationFkName() {
         return this.relationFkName;
     }
+
     /** 外键名 */
-    public void setRelationFkName(String relationFkName){
-        this.relationFkName=relationFkName;
-    }
-    /** 实体类名称 */
-    public String getClassName(){
-        return this.className;
-    }
-    /** 实体类名称 */
-    public void setClassName(String className){
-        this.className=className;
-    }
-    /** 使用的模板 */
-    public String getTplCategory(){
-        return this.tplCategory;
-    }
-    /** 使用的模板 */
-    public void setTplCategory(String tplCategory){
-        this.tplCategory=tplCategory;
+    public void setRelationFkName(String relationFkName) {
+        this.relationFkName = relationFkName;
     }
 
+    /** 实体类名称 */
+    public String getClassName() {
+        return this.className;
+    }
+
+    /** 实体类名称 */
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    /** 使用的模板 */
+    public String getTplCategory() {
+        return this.tplCategory;
+    }
+
+    /** 使用的模板 */
+    public void setTplCategory(String tplCategory) {
+        this.tplCategory = tplCategory;
+    }
 
     public String getVueType() {
         return vueType;
@@ -198,61 +209,75 @@ public class GenTable  extends BaseEntity implements Serializable,Cloneable{
     }
 
     /** 包路径 */
-    public String getPackageName(){
+    public String getPackageName() {
         return this.packageName;
     }
+
     /** 包路径 */
-    public void setPackageName(String packageName){
-        this.packageName=packageName;
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
+
     /** 模块名 */
-    public String getModuleName(){
+    public String getModuleName() {
         return this.moduleName;
     }
+
     /** 模块名 */
-    public void setModuleName(String moduleName){
-        this.moduleName=moduleName;
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
     }
+
     /** 业务名 */
-    public String getBusinessName(){
+    public String getBusinessName() {
         return this.businessName;
     }
+
     /** 业务名 */
-    public void setBusinessName(String businessName){
+    public void setBusinessName(String businessName) {
         this.businessName = businessName;
     }
+
     /** 功能名 */
-    public String getFunctionName(){
+    public String getFunctionName() {
         return this.functionName;
     }
+
     /** 功能名 */
-    public void setFunctionName(String functionName){
-        this.functionName=functionName;
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
+
     /** 作者 */
-    public String getAuthor(){
+    public String getAuthor() {
         return this.author;
     }
+
     /** 作者 */
-    public void setAuthor(String author){
-        this.author=author;
+    public void setAuthor(String author) {
+        this.author = author;
     }
+
     /** 生成方式;0:gzip 1:自定义 */
-    public String getGenType(){
+    public String getGenType() {
         return this.genType;
     }
+
     /** 生成方式;0:gzip 1:自定义 */
-    public void setGenType(String genType){
-        this.genType=genType;
+    public void setGenType(String genType) {
+        this.genType = genType;
     }
+
     /** 生成路径 */
-    public String getGenPath(){
+    public String getGenPath() {
         return this.genPath;
     }
+
     /** 生成路径 */
-    public void setGenPath(String genPath){
-        this.genPath=genPath;
+    public void setGenPath(String genPath) {
+        this.genPath = genPath;
     }
+
     /** 其他生成选项 */
     public String getOptions() {
         return this.options;

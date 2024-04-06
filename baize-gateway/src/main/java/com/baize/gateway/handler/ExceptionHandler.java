@@ -1,7 +1,5 @@
 package com.baize.gateway.handler;
 
-import com.baize.common.core.utils.ServletUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +7,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
+
+import com.baize.common.core.utils.ServletUtils;
+
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
@@ -33,7 +35,7 @@ public class ExceptionHandler implements ErrorWebExceptionHandler {
         if (ex instanceof NotFoundException) {
             msg = "服务未找到";
         } else if (ex instanceof ResponseStatusException) {
-            ResponseStatusException responseStatusException = (ResponseStatusException) ex;
+            ResponseStatusException responseStatusException = (ResponseStatusException)ex;
             msg = responseStatusException.getMessage();
         } else {
             msg = "内部服务器错误";

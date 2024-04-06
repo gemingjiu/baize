@@ -1,9 +1,7 @@
 package com.baize.gateway.filter;
 
-import com.baize.common.core.utils.text.StringUtils;
-import com.baize.common.core.utils.xss.EscapeUtil;
-import com.baize.gateway.config.XssConfig;
-import io.netty.buffer.ByteBufAllocator;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -21,10 +19,14 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+
+import com.baize.common.core.utils.text.StringUtils;
+import com.baize.common.core.utils.xss.EscapeUtil;
+import com.baize.gateway.config.XssConfig;
+
+import io.netty.buffer.ByteBufAllocator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * 跨站脚本过滤器
@@ -80,7 +82,8 @@ public class XssFilter implements GlobalFilter, Ordered {
                     bodyStr = EscapeUtil.clean(bodyStr);
                     // 转成字节
                     byte[] bytes = bodyStr.getBytes(StandardCharsets.UTF_8);
-                    NettyDataBufferFactory nettyDataBufferFactory = new NettyDataBufferFactory(ByteBufAllocator.DEFAULT);
+                    NettyDataBufferFactory nettyDataBufferFactory =
+                        new NettyDataBufferFactory(ByteBufAllocator.DEFAULT);
                     DataBuffer buffer = nettyDataBufferFactory.allocateBuffer(bytes.length);
                     buffer.write(bytes);
                     return buffer;

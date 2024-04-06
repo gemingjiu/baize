@@ -1,16 +1,15 @@
 package com.baize.system.mapper;
 
-import com.baize.system.domain.SysNotice;
-
 import java.util.List;
+
+import com.baize.system.domain.SysNotice;
 
 /**
  * 通知公告表 数据层
  * 
  * 
  */
-public interface SysNoticeMapper
-{
+public interface SysNoticeMapper {
     /**
      * 查询公告信息
      * 

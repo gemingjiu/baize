@@ -1,14 +1,14 @@
 package com.baize.gen.service;
 
-import com.baize.common.core.utils.ConvertUtils;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.baize.common.security.utils.SecurityUtils;
 import com.baize.gen.entity.GenTableColumn;
 import com.baize.gen.mapper.GenTableColumnMapper;
 import com.baize.gen.util.GenUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author gemj
@@ -41,8 +41,6 @@ public class GenTableColumnServiceImpl implements IGenTableColumnService {
         GenUtils.initColumnField(genTableColumn);
         return genTableColumnMapper.insertGenTableColumn(genTableColumn);
     }
-
-
 
     /**
      * 修改业务字段

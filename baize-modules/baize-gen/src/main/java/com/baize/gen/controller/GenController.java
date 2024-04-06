@@ -1,13 +1,12 @@
 package com.baize.gen.controller;
 
-import com.baize.common.core.controller.BaseController;
-import com.baize.common.core.domain.AjaxResult;
-import com.baize.common.core.domain.TableCollection;
-import com.baize.common.core.utils.ConvertUtils;
-import com.baize.gen.entity.GenTable;
-import com.baize.gen.entity.GenTableColumn;
-import com.baize.gen.service.IGenTableColumnService;
-import com.baize.gen.service.IGenTableService;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -20,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.baize.common.core.controller.BaseController;
+import com.baize.common.core.domain.AjaxResult;
+import com.baize.common.core.domain.TableCollection;
+import com.baize.common.core.utils.ConvertUtils;
+import com.baize.gen.entity.GenTable;
+import com.baize.gen.entity.GenTableColumn;
+import com.baize.gen.service.IGenTableColumnService;
+import com.baize.gen.service.IGenTableService;
 
 /**
  * 代码生成 操作处理

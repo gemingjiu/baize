@@ -1,20 +1,18 @@
 package com.baize.system.service;
 
+import java.util.List;
+import java.util.Set;
 
 import com.baize.system.domain.SysMenu;
 import com.baize.system.domain.vo.RouterVo;
 import com.baize.system.domain.vo.TreeSelect;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * 菜单 业务层
  * 
  * 
  */
-public interface ISysMenuService
-{
+public interface ISysMenuService {
     /**
      * 根据用户查询系统菜单列表
      * 

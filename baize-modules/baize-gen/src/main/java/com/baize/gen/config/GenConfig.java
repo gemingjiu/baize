@@ -24,43 +24,35 @@ public class GenConfig {
     /** 表前缀(类名不会包含表前缀) */
     public static String tablePrefix;
 
-    public static String getAuthor()
-    {
+    public static String getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author)
-    {
+    public void setAuthor(String author) {
         GenConfig.author = author;
     }
 
-    public static String getPackageName()
-    {
+    public static String getPackageName() {
         return packageName;
     }
 
-    public void setPackageName(String packageName)
-    {
+    public void setPackageName(String packageName) {
         GenConfig.packageName = packageName;
     }
 
-    public static boolean getAutoRemovePre()
-    {
+    public static boolean getAutoRemovePre() {
         return autoRemovePre;
     }
 
-    public void setAutoRemovePre(boolean autoRemovePre)
-    {
+    public void setAutoRemovePre(boolean autoRemovePre) {
         GenConfig.autoRemovePre = autoRemovePre;
     }
 
-    public static String getTablePrefix()
-    {
+    public static String getTablePrefix() {
         return tablePrefix;
     }
 
-    public void setTablePrefix(String tablePrefix)
-    {
+    public void setTablePrefix(String tablePrefix) {
         GenConfig.tablePrefix = tablePrefix;
     }
 }

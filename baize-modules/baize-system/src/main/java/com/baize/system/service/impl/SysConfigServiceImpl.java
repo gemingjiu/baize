@@ -1,10 +1,20 @@
 package com.baize.system.service.impl;
 
+import static com.baize.common.core.enums.BaizeException.SERVICE_EXCEPTION;
+
+import java.util.Collection;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.baize.common.cache.service.CacheService;
 import com.baize.common.core.constant.CacheConstants;
 import com.baize.common.core.constant.UserConstants;
-import com.baize.common.core.exception.BaseException;
+import com.baize.common.core.enums.YesNoEnum;
+import com.baize.common.core.exception.SystemException;
 import com.baize.common.core.utils.ConvertUtils;
 import com.baize.common.core.utils.text.StringUtils;
 import com.baize.common.core.utils.uuid.UUID;
@@ -12,14 +22,6 @@ import com.baize.common.security.utils.SecurityUtils;
 import com.baize.system.domain.SysConfig;
 import com.baize.system.mapper.SysConfigMapper;
 import com.baize.system.service.ISysConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.List;
-
-import static com.baize.common.core.enums.BaizeExceptionEnum.SERVICE_EXCEPTION;
 
 /**
  * 参数配置 服务层实现
@@ -31,11 +33,13 @@ public class SysConfigServiceImpl implements ISysConfigService {
 
     @Autowired
     private CacheService cacheService;
+
     private void initSysConfig(SysConfig info) {
         info.setId(UUID.fastUUID().toString(true));
         info.setCreatedBy(SecurityUtils.getLoginUser().getUsername());
         info.setModifiedBy(SecurityUtils.getLoginUser().getUsername());
     }
+
     /**
      * 项目启动时，初始化参数到缓存
      */
@@ -135,8 +139,8 @@ public class SysConfigServiceImpl implements ISysConfigService {
     public void deleteConfigByIds(String[] configIds) {
         for (String configId : configIds) {
             SysConfig config = selectConfigById(configId);
-            if (StringUtils.equals(UserConstants.YES, config.getConfigType())) {
-                throw new BaseException(SERVICE_EXCEPTION, String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
+            if (StringUtils.equals(YesNoEnum.YES.getCode(), config.getConfigType())) {
+                throw new SystemException(SERVICE_EXCEPTION, String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
             configMapper.deleteConfigById(configId);
             cacheService.deleteObject(getCacheKey(config.getConfigKey()));
@@ -159,7 +163,7 @@ public class SysConfigServiceImpl implements ISysConfigService {
      */
     @Override
     public void clearConfigCache() {
-        Collection<String> keys = cacheService.keys(CacheConstants.SYS_CONFIG_KEY + "*");
+        Collection<String> keys = cacheService.keys(CacheConstants.SYS_CONFIG_PREFIX + "*");
         cacheService.deleteObject(keys);
     }
 
@@ -195,6 +199,6 @@ public class SysConfigServiceImpl implements ISysConfigService {
      * @return 缓存键key
      */
     private String getCacheKey(String configKey) {
-        return CacheConstants.SYS_CONFIG_KEY + configKey;
+        return CacheConstants.SYS_CONFIG_PREFIX + configKey;
     }
 }

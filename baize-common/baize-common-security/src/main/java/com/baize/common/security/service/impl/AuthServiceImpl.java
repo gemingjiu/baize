@@ -1,5 +1,16 @@
 package com.baize.common.security.service.impl;
 
+import static com.baize.common.core.enums.BaizeException.NO_LOGIN_EXCEPTION;
+import static com.baize.common.core.enums.BaizeException.NO_PERMISSION_EXCEPTION;
+import static com.baize.common.core.enums.BaizeException.NO_ROLE_EXCEPTION;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
+import org.springframework.util.PatternMatchUtils;
+
 import com.baize.common.core.context.SecurityContext;
 import com.baize.common.core.exception.BaseException;
 import com.baize.common.core.utils.SpringUtils;
@@ -11,16 +22,6 @@ import com.baize.common.security.service.AuthService;
 import com.baize.common.security.service.TokenService;
 import com.baize.common.security.utils.SecurityUtils;
 import com.baize.system.api.domain.vo.LoginUser;
-import org.springframework.stereotype.Component;
-import org.springframework.util.PatternMatchUtils;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.baize.common.core.enums.BaizeExceptionEnum.NO_LOGIN_EXCEPTION;
-import static com.baize.common.core.enums.BaizeExceptionEnum.NO_PERMISSION_EXCEPTION;
-import static com.baize.common.core.enums.BaizeExceptionEnum.NO_ROLE_EXCEPTION;
 
 /**
  * 认证服务
@@ -41,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
     private static final String SUPER_ADMIN = "admin";
 
     public TokenService tokenService = SpringUtils.getBean(TokenService.class);
-
 
     @Override
     public void logout() {
@@ -133,7 +133,6 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-
     @Override
     public boolean hasPermit(String permission) {
         return hasPermit(getPermitList(), permission);
@@ -165,7 +164,6 @@ public class AuthServiceImpl implements AuthService {
             }
         }
     }
-
 
     @Override
     public void checkPermitOr(String... permissions) {
@@ -212,21 +210,23 @@ public class AuthServiceImpl implements AuthService {
      * 判断是否包含角色
      *
      * @param roles 角色列表
-     * @param role  角色
+     * @param role 角色
      * @return 用户是否具备某角色权限
      */
     public boolean hasRole(Collection<String> roles, String role) {
-        return roles.stream().filter(StringUtils::hasText).anyMatch(x -> SUPER_ADMIN.contains(x) || PatternMatchUtils.simpleMatch(x, role));
+        return roles.stream().filter(StringUtils::hasText)
+            .anyMatch(x -> SUPER_ADMIN.contains(x) || PatternMatchUtils.simpleMatch(x, role));
     }
 
     /**
      * 判断是否包含权限
      *
      * @param authorities 权限列表
-     * @param permission  权限字符串
+     * @param permission 权限字符串
      * @return 用户是否具备某权限
      */
     private boolean hasPermit(Set<String> authorities, String permission) {
-        return authorities.stream().filter(StringUtils::hasText).anyMatch(x -> ALL_PERMISSION.contains(x) || PatternMatchUtils.simpleMatch(x, permission));
+        return authorities.stream().filter(StringUtils::hasText)
+            .anyMatch(x -> ALL_PERMISSION.contains(x) || PatternMatchUtils.simpleMatch(x, permission));
     }
 }

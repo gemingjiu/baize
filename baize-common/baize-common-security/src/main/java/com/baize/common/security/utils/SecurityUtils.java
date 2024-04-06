@@ -1,21 +1,23 @@
 package com.baize.common.security.utils;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.baize.common.core.constant.SecurityConstants;
 import com.baize.common.core.constant.TokenConstants;
 import com.baize.common.core.context.SecurityContext;
 import com.baize.common.core.utils.ServletUtils;
 import com.baize.common.core.utils.text.StringUtils;
 import com.baize.system.api.domain.vo.LoginUser;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author gemj
  * @since 2023/08/22 14:08
  */
 public class SecurityUtils {
-    private static final String  AdminId = "1";
+    private static final String AdminId = "1";
+
     /**
      * 获取用户ID
      */
@@ -65,8 +67,8 @@ public class SecurityUtils {
      */
     public static String replaceTokenPrefix(String token) {
         // 如果前端设置了令牌前缀，则裁剪掉前缀
-        if (StringUtils.isNotEmpty(token) && token.startsWith(TokenConstants.PREFIX)) {
-            token = token.replaceFirst(TokenConstants.PREFIX, "");
+        if (StringUtils.isNotEmpty(token) && token.startsWith(TokenConstants.TOKEN_PREFIX)) {
+            token = token.replaceFirst(TokenConstants.TOKEN_PREFIX, "");
         }
         return token;
     }
@@ -95,7 +97,7 @@ public class SecurityUtils {
     /**
      * 判断密码是否相同
      *
-     * @param rawPassword     真实密码
+     * @param rawPassword 真实密码
      * @param encodedPassword 加密后字符
      * @return 结果
      */
