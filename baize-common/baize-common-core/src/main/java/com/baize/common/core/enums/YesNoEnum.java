@@ -5,7 +5,7 @@ package com.baize.common.core.enums;
  * @since 2024/04/06 15:03
  */
 public enum YesNoEnum {
-    YES("Y", "是"), NO("N", "否");
+    YES("0", "是"), NO("1", "否");
 
     private final String code;
     private final String desc;

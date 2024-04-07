@@ -21,7 +21,7 @@
         <spring-cloud.version>2021.0.8</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
         <spring-boot-admin.version>2.7.10</spring-boot-admin.version>
-        <jackson.version>2.17.0</jackson.version>
+        <fastjson.version>2.0.43</fastjson.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <lombok.version>1.18.28</lombok.version>
         <swagger.fox.version>3.0.0</swagger.fox.version>
@@ -82,9 +82,9 @@
 
             <!-- JSON 解析器和生成器 -->
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
 
             <!-- JWT -->

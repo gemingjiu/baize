@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -58,6 +59,16 @@ public class JsonUtils {
         T t = null;
         try {
             t = objectMapper.readValue(file, object);
+        } catch (IOException e) {
+            log.error("从文件中读取json字符串转为自定义对象失败：{}", e.getMessage());
+        }
+        return t;
+    }
+
+    public static <T> T parseObject(String jsonString, JavaType javaType) {
+        T t = null;
+        try {
+            t = objectMapper.readValue(jsonString, javaType);
         } catch (IOException e) {
             log.error("从文件中读取json字符串转为自定义对象失败：{}", e.getMessage());
         }
