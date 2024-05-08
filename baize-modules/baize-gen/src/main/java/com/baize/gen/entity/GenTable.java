@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.baize.common.core.constant.GenConstants;
 import com.baize.common.core.domain.BaseEntity;
+import com.baize.common.core.utils.text.StringUtils;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -352,5 +354,34 @@ public class GenTable extends BaseEntity implements Serializable, Cloneable {
 
     public void setParentMenuName(String parentMenuName) {
         this.parentMenuName = parentMenuName;
+    }
+
+    public boolean isSub()
+    {
+        return isSub(this.tplCategory);
+    }
+
+    public static boolean isSub(String tplCategory)
+    {
+        return tplCategory != null && StringUtils.equals(GenConstants.TPL_SUB, tplCategory);
+    }
+    public boolean isTree()
+    {
+        return isTree(this.tplCategory);
+    }
+
+    public static boolean isTree(String tplCategory)
+    {
+        return tplCategory != null && StringUtils.equals(GenConstants.TPL_TREE, tplCategory);
+    }
+
+    public boolean isCrud()
+    {
+        return isCrud(this.tplCategory);
+    }
+
+    public static boolean isCrud(String tplCategory)
+    {
+        return tplCategory != null && StringUtils.equals(GenConstants.TPL_CRUD, tplCategory);
     }
 }

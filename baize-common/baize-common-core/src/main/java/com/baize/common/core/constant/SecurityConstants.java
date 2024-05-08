@@ -2,34 +2,34 @@ package com.baize.common.core.constant;
 
 public class SecurityConstants {
     /**
+     * TOKEN标识
+     */
+    public static final String TOKEN_ID = "id";
+    /**
      * 用户ID字段
      */
-    public static final String DETAILS_ID = "id";
+    public static final String USER_ID = "user_id";
 
     /**
      * 用户名字段
      */
-    public static final String DETAILS_USERNAME = "username";
+    public static final String USERNAME = "username";
+
 
     /**
      * 授权信息字段
      */
-    public static final String AUTHORIZATION_HEADER = "authorization";
+    public static final String AUTHORIZATION_PREFIX = "authorization";
 
     /**
      * 请求来源
      */
-    public static final String FROM_SOURCE = "from-source";
+    public static final String REQUEST_SOURCE = "request_source";
 
     /**
      * 内部请求
      */
     public static final String INNER = "inner";
-
-    /**
-     * 用户标识
-     */
-    public static final String USER_KEY = "user_key";
 
     /**
      * 登录用户

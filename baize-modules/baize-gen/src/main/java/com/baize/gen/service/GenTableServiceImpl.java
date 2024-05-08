@@ -185,6 +185,7 @@ public class GenTableServiceImpl implements IGenTableService {
         setSubTable(table);
         // 设置主键列信息
         setPkColumn(table);
+
         VelocityFactory.initVelocity();
 
         VelocityContext context = VelocityUtils.prepareContext(table);

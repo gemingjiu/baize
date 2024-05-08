@@ -1,12 +1,20 @@
-package ${packageName}import java.util.ArrayList;
-import java.util.List;
+package ${packageName}.service.impl;
 
+import java.util.List;
+#foreach ($column in $columns)
+#if($column.javaField == 'createdTime' || $column.javaField == 'modifiedTime')
+import com.baize.common.utils.DateUtils;
+    #break
+#end
+#end
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+#if($table.sub)
+import java.util.ArrayList;
+import com.baize.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.baize.common.core.utils.DateUtils;
-import com.baize.common.core.utils.StringUtils; ${packageName}.service.I${ClassName}Service;
+import ${packageName}.domain.${subClassName};
+#end
 
 /**
  * ${functionName}Service业务层处理

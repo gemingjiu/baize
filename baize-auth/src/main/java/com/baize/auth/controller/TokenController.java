@@ -47,7 +47,7 @@ public class TokenController {
     public Response<?> logout(HttpServletRequest request) {
         String token = SecurityUtils.getToken(request);
         if (StringUtils.isNotEmpty(token)) {
-            String username = JwtUtils.getUserName(token);
+            String username = JwtUtils.getUsername(token);
             // 删除用户缓存记录
             authService.logoutByToken(token);
             // 记录用户退出日志

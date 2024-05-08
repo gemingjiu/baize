@@ -42,6 +42,14 @@ public class SysLoginService {
         if (StringUtils.isAnyBlank(username, password)) {
             throw new SystemException(SERVICE_EXCEPTION, "用户/密码必须填写");
         }
+
+        // 密码解密
+        try {
+            password = SecurityUtils.decryptPassword(password);
+        } catch (Exception e) {
+            throw new SystemException(SERVICE_EXCEPTION, "用户密码解密失败");
+        }
+
         // 密码如果不在指定范围内 错误
         if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
             || password.length() > UserConstants.PASSWORD_MAX_LENGTH) {

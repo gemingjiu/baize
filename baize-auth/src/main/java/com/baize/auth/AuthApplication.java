@@ -16,6 +16,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class AuthApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthApplication.class, args);
-        System.out.println("白泽认证授权中心启动成功......");
+        System.out.println("白泽认证授权中心启动成功.");
     }
 }

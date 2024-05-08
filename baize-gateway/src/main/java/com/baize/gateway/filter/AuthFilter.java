@@ -16,7 +16,7 @@ import com.baize.common.core.constant.TokenConstants;
 import com.baize.common.core.utils.ServletUtils;
 import com.baize.common.core.utils.jwt.JwtUtils;
 import com.baize.common.core.utils.text.StringUtils;
-import com.baize.gateway.config.IgnoreConfig;
+import com.baize.gateway.config.GatewayWhitelist;
 
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     // 排除过滤的 uri 地址，nacos自行添加
     @Autowired
-    private IgnoreConfig ignoreConfig;
+    private GatewayWhitelist gatewayWhiteList;
 
     @Autowired
 
@@ -46,10 +46,11 @@ public class AuthFilter implements GlobalFilter, Ordered {
         ServerHttpRequest.Builder mutate = request.mutate();
 
         String url = request.getURI().getPath();
-        // 跳过不需要验证的路径
-        if (StringUtils.matches(url, ignoreConfig.getWhites())) {
+        // 白名单放行策略
+        if (gatewayWhiteList.checkUrl(url)) {
             return chain.filter(exchange);
         }
+
         String token = getToken(request);
         if (StringUtils.isEmpty(token)) {
             return unauthorizedResponse(exchange, "令牌不能为空");
@@ -58,25 +59,23 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (claims == null) {
             return unauthorizedResponse(exchange, "令牌已过期或验证不正确！");
         }
-        String userKey = JwtUtils.getUserKey(claims);
 
+        String userKey = JwtUtils.getUserIdentity(claims);
         boolean hasKey = cacheService.hasKey(getTokenKey(userKey));
-
         if (!hasKey) {
             return unauthorizedResponse(exchange, "登录状态已过期");
         }
         String userid = JwtUtils.getId(claims);
-        String username = JwtUtils.getUserName(claims);
+        String username = JwtUtils.getUsername(claims);
         if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(username)) {
             return unauthorizedResponse(exchange, "令牌验证失败");
         }
-
         // 设置用户信息到请求
-        addHeader(mutate, SecurityConstants.USER_KEY, userKey);
-        addHeader(mutate, SecurityConstants.DETAILS_ID, userid);
-        addHeader(mutate, SecurityConstants.DETAILS_USERNAME, username);
+        addHeader(mutate, SecurityConstants.TOKEN_ID, userKey);
+        addHeader(mutate, SecurityConstants.USER_ID, userid);
+        addHeader(mutate, SecurityConstants.USERNAME, username);
         // 内部请求来源参数清除
-        removeHeader(mutate, SecurityConstants.FROM_SOURCE);
+        removeHeader(mutate, SecurityConstants.REQUEST_SOURCE);
         return chain.filter(exchange.mutate().request(mutate.build()).build());
     }
 
@@ -94,7 +93,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
     private Mono<Void> unauthorizedResponse(ServerWebExchange exchange, String msg) {
-        log.error("[鉴权异常处理]请求路径:{}", exchange.getRequest().getPath());
+        log.error("[鉴权异常处理]请求路径:{},异常原因:{}.", exchange.getRequest().getPath(), msg);
         return ServletUtils.webFluxResponseWriter(exchange.getResponse(), msg, HttpStatus.UNAUTHORIZED);
     }
 

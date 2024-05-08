@@ -21,6 +21,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 public class SystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(SystemApplication.class, args);
-        System.out.println("白泽系统服务启动成功......");
+        System.out.println("白泽系统服务启动成功.");
     }
 }

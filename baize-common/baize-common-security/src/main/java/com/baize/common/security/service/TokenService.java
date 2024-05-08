@@ -45,10 +45,10 @@ public class TokenService {
      * 创建令牌
      */
     public Map<String, Object> createToken(LoginUser loginUser) {
-        String token = UUIDUtils.fastUUID();
+        String id = UUIDUtils.fastUUID();
         String userId = loginUser.getSysUser().getId();
         String userName = loginUser.getSysUser().getUserName();
-        loginUser.setToken(token);
+        loginUser.setToken(id);
         loginUser.setId(userId);
         loginUser.setUsername(userName);
         loginUser.setIpaddr(IpUtils.getIpAddr());
@@ -56,9 +56,10 @@ public class TokenService {
 
         // Jwt存储信息
         Map<String, Object> claimsMap = new HashMap<String, Object>();
-        claimsMap.put(SecurityConstants.USER_KEY, token);
-        claimsMap.put(SecurityConstants.DETAILS_ID, userId);
-        claimsMap.put(SecurityConstants.DETAILS_USERNAME, userName);
+        claimsMap.put(SecurityConstants.TOKEN_ID, id);
+        claimsMap.put(SecurityConstants.USER_ID, userId);
+        claimsMap.put(SecurityConstants.USERNAME, userName);
+
 
         // 接口返回信息
         Map<String, Object> rspMap = new HashMap<String, Object>();
@@ -135,14 +136,14 @@ public class TokenService {
         LoginUser user = null;
         try {
             if (StringUtils.isNotEmpty(token)) {
-                String userkey = JwtUtils.getUserKey(token);
-                user = cacheService.getCacheObject(getTokenKey(userkey));
+                String userKey = JwtUtils.getUserIdentity(token);
+                user = cacheService.getCacheObject(getTokenKey(userKey));
                 return user;
             }
         } catch (Exception e) {
             log.error("获取用户信息异常'{}'", e.getMessage());
         }
-        return user;
+        return null;
     }
 
     /**
@@ -150,8 +151,8 @@ public class TokenService {
      */
     public void delLoginUser(String token) {
         if (StringUtils.isNotEmpty(token)) {
-            String userkey = JwtUtils.getUserKey(token);
-            cacheService.deleteObject(getTokenKey(userkey));
+            String userKey = JwtUtils.getUserIdentity(token);
+            cacheService.deleteObject(getTokenKey(userKey));
         }
     }
 

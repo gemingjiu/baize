@@ -1,10 +1,5 @@
 package com.baize.system.api;
 
-/**
- * @author gemj
- * @since 2023/08/22 14:57
- */
-
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClientConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +16,10 @@ import com.baize.system.api.domain.vo.LoginUser;
 import com.baize.system.api.factory.RemoteUserFallbackFactory;
 
 /**
- * 用户服务
- *
+ * 用户远程调用接口 一般由认证服务请求过来
+ * 
  * @author gemj
+ * @since 2023/08/22 14:57
  */
 @FeignClient(contextId = "remoteUserService", configuration = LoadBalancerClientConfiguration.class,
     value = ServiceConstants.SYSTEM_SERVICE, fallbackFactory = RemoteUserFallbackFactory.class)
@@ -37,7 +33,7 @@ public interface RemoteUserService {
      */
     @GetMapping("/user/info/{username}")
     public Response<LoginUser> getUserInfo(@PathVariable("username") String username,
-        @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
+        @RequestHeader(SecurityConstants.REQUEST_SOURCE) String source);
 
     /**
      * 注册用户信息
@@ -48,5 +44,5 @@ public interface RemoteUserService {
      */
     @PostMapping("/user/register")
     public Response<Boolean> registerUserInfo(@RequestBody SysUser sysUser,
-        @RequestHeader(SecurityConstants.FROM_SOURCE) String source);
+        @RequestHeader(SecurityConstants.REQUEST_SOURCE) String source);
 }

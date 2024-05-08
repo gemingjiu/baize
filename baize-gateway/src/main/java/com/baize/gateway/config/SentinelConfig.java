@@ -8,7 +8,7 @@ import org.springframework.core.annotation.Order;
 import com.baize.gateway.handler.SentinelFallbackHandler;
 
 /**
- * 限流配置
+ * 限流降级配置
  *
  * @author gemj
  */

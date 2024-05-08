@@ -8,6 +8,7 @@ import com.baize.common.core.constant.SecurityConstants;
 import com.baize.common.core.constant.TokenConstants;
 import com.baize.common.core.context.SecurityContext;
 import com.baize.common.core.utils.ServletUtils;
+import com.baize.common.core.utils.algorithm.Base64;
 import com.baize.common.core.utils.text.StringUtils;
 import com.baize.system.api.domain.vo.LoginUser;
 
@@ -17,6 +18,15 @@ import com.baize.system.api.domain.vo.LoginUser;
  */
 public class SecurityUtils {
     private static final String AdminId = "1";
+
+    private static final String ALGORITHMS = "RSA";
+    private static final String PRIVATEKEY = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAqhHyZfSsYourNxaY\n"
+        + "7Nt+PrgrxkiA50efORdI5U5lsW79MmFnusUA355oaSXcLhu5xxB38SMSyP2KvuKN\n"
+        + "PuH3owIDAQABAkAfoiLyL+Z4lf4Myxk6xUDgLaWGximj20CUf+5BKKnlrK+Ed8gA\n"
+        + "kM0HqoTt2UZwA5E2MzS4EI2gjfQhz5X28uqxAiEA3wNFxfrCZlSZHb0gn2zDpWow\n"
+        + "cSxQAgiCstxGUoOqlW8CIQDDOerGKH5OmCJ4Z21v+F25WaHYPxCFMvwxpcw99Ecv\n"
+        + "DQIgIdhDTIqD2jfYjPTY8Jj3EDGPbH2HHuffvflECt3Ek60CIQCFRlCkHpi7hthh\n"
+        + "YhovyloRYsM+IS9h/0BzlEAuO0ktMQIgSPT3aFAgJYwKpqRYKlLDVcflZFCKY7u3\n" + "UP8iWi1Qw0Y=";
 
     /**
      * 获取用户ID
@@ -33,10 +43,10 @@ public class SecurityUtils {
     }
 
     /**
-     * 获取用户key
+     * 获取TokenID
      */
-    public static String getUserKey() {
-        return SecurityContext.getUserKey();
+    public static String getTokenId() {
+        return SecurityContext.getTokenId();
     }
 
     /**
@@ -104,5 +114,19 @@ public class SecurityUtils {
     public static boolean matchesPassword(String rawPassword, String encodedPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    /**
+     * RSA非对称解密算法，解密
+     * 
+     * @throws Exception 解密失败会抛出该异常
+     * @param encodedPassword 加密的密文
+     * @return 明文
+     * 
+     */
+    public static String decryptPassword(String encodedPassword) throws Exception {
+        // 解密
+        byte[] decodePrivateKey = Base64.decode(PRIVATEKEY);
+        return RSAEncryptUtil.decrypt(encodedPassword, decodePrivateKey);
     }
 }

@@ -46,27 +46,27 @@ public class SecurityContext {
     }
 
     public static String getId() {
-        return get(SecurityConstants.DETAILS_ID);
+        return get(SecurityConstants.USER_ID);
     }
 
     public static void setId(String account) {
-        set(SecurityConstants.DETAILS_ID, account);
+        set(SecurityConstants.USER_ID, account);
     }
 
     public static String getUserName() {
-        return get(SecurityConstants.DETAILS_USERNAME);
+        return get(SecurityConstants.USERNAME);
     }
 
     public static void setUserName(String username) {
-        set(SecurityConstants.DETAILS_USERNAME, username);
+        set(SecurityConstants.USERNAME, username);
     }
 
-    public static String getUserKey() {
-        return get(SecurityConstants.USER_KEY);
+    public static String getTokenId() {
+        return get(SecurityConstants.TOKEN_ID);
     }
 
-    public static void setUserKey(String userKey) {
-        set(SecurityConstants.USER_KEY, userKey);
+    public static void setTokenId(String tokenId) {
+        set(SecurityConstants.TOKEN_ID, tokenId);
     }
 
     public static String getPermission() {

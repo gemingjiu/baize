@@ -45,9 +45,9 @@ public class JwtUtils {
      * @param token 令牌
      * @return 用户ID
      */
-    public static String getUserKey(String token) {
+    public static String getUserIdentity(String token) {
         Claims claims = parseToken(token);
-        return getValue(claims, SecurityConstants.USER_KEY);
+        return getValue(claims, SecurityConstants.TOKEN_ID);
     }
 
     /**
@@ -56,8 +56,8 @@ public class JwtUtils {
      * @param claims 身份信息
      * @return 用户ID
      */
-    public static String getUserKey(Claims claims) {
-        return getValue(claims, SecurityConstants.USER_KEY);
+    public static String getUserIdentity(Claims claims) {
+        return getValue(claims, SecurityConstants.TOKEN_ID);
     }
 
     /**
@@ -68,7 +68,7 @@ public class JwtUtils {
      */
     public static String getId(String token) {
         Claims claims = parseToken(token);
-        return getValue(claims, SecurityConstants.DETAILS_ID);
+        return getValue(claims, SecurityConstants.USER_ID);
     }
 
     /**
@@ -78,7 +78,7 @@ public class JwtUtils {
      * @return 用户ID
      */
     public static String getId(Claims claims) {
-        return getValue(claims, SecurityConstants.DETAILS_ID);
+        return getValue(claims, SecurityConstants.USER_ID);
     }
 
     /**
@@ -87,9 +87,9 @@ public class JwtUtils {
      * @param token 令牌
      * @return 用户名
      */
-    public static String getUserName(String token) {
+    public static String getUsername(String token) {
         Claims claims = parseToken(token);
-        return getValue(claims, SecurityConstants.DETAILS_USERNAME);
+        return getValue(claims, SecurityConstants.USERNAME);
     }
 
     /**
@@ -98,8 +98,8 @@ public class JwtUtils {
      * @param claims 身份信息
      * @return 用户名
      */
-    public static String getUserName(Claims claims) {
-        return getValue(claims, SecurityConstants.DETAILS_USERNAME);
+    public static String getUsername(Claims claims) {
+        return getValue(claims, SecurityConstants.USERNAME);
     }
 
     /**

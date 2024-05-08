@@ -80,6 +80,9 @@ public class VelocityUtils {
 
     public static void setMenuVelocityContext(VelocityContext context, GenTable genTable) {
         String options = genTable.getOptions();
+        if (StringUtils.isBlank(options)) {
+            return;
+        }
         JsonNode jsonNode = JsonUtils.parseJSONObject(options);
         String parentMenuId = getParentMenuId(jsonNode);
         context.put("parentMenuId", parentMenuId);
@@ -87,6 +90,9 @@ public class VelocityUtils {
 
     public static void setTreeVelocityContext(VelocityContext context, GenTable genTable) {
         String options = genTable.getOptions();
+        if (StringUtils.isBlank(options)) {
+            return;
+        }
         JsonNode jsonNode = JsonUtils.parseJSONObject(options);
         String treeCode = getTreecode(jsonNode);
         String treeParentCode = getTreeParentCode(jsonNode);
