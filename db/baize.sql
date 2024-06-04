@@ -50,7 +50,10 @@ INSERT INTO sys_menu VALUES ('106', '参数设置', '1', 'config', 'system/confi
 INSERT INTO sys_menu VALUES ('107', '通知公告', '1', 'notice', 'system/notice/index', '', '1', '0', 'C', '0', 'message','system:notice:list', 8, '0', '0', 0, 'admin', '2024-01-31 09:37:31.981', '', NULL, '通知公告菜单');
 INSERT INTO sys_menu VALUES ('108', '日志管理', '1', 'log', '', '', '1', '0', 'M', '0', 'log', '', 9, '0', '0', 0, 'admin','2024-01-31 09:37:31.998', '', NULL, '日志管理菜单');
 
-INSERT INTO sys_menu VALUES ('115',  '代码生成','3', 'gen', 'tool/gen/index',     '', '1', '0', 'C', '0', 'code' ,'tool:gen:list', 1, '0','0', 0, 'admin', '2024-01-31 09:37:31.687', '', NULL, '代码生成菜单');
+INSERT INTO sys_menu VALUES ('109', '自增ID生成', '1', 'generator', 'system/generator/index', '', '1', '0', 'C', '0', 'generator', 'system:generator:list', 10, '0', '0', 0, 'admin','2024-01-31 09:37:31.998', '', NULL, '自增ID生成菜单');
+
+
+INSERT INTO sys_menu VALUES ('115',  '自增ID生成','3', 'gen', 'tool/gen/index',     '', '1', '0', 'C', '0', 'code' ,'tool:gen:list', 1, '0','0', 0, 'admin', '2024-01-31 09:37:31.687', '', NULL, '代码生成菜单');
 
 -- 三级菜单
 INSERT INTO sys_menu VALUES ('500', '操作日志', '108', 'operlog', 'system/operlog/index', '', '1', '0', 'C', '0', 'form','system:operlog:list', 1, '0', '0', 0, 'admin', '2024-01-31 09:37:32.211', '', NULL, '操作日志菜单');
@@ -138,6 +141,17 @@ INSERT INTO sys_menu VALUES ('1057', '生成删除', '115', '#', '', '', '1', '0
 INSERT INTO sys_menu VALUES ('1058', '导入代码', '115', '#', '', '', '1', '0', 'F', '0', '#', 'tool:gen:import', 2, '0', '0', 0, 'admin','2024-01-31 09:37:33.802', '', NULL, '');
 INSERT INTO sys_menu VALUES ('1059', '预览代码', '115', '#', '', '', '1', '0', 'F', '0', '#', 'tool:gen:preview', 4, '0', '0', 0, 'admin','2024-01-31 09:37:33.829', '', NULL, '');
 INSERT INTO sys_menu VALUES ('1060', '生成代码', '115', '#', '', '', '1', '0', 'F', '0', '#', 'tool:gen:code', 5, '0', '0', 0, 'admin','2024-01-31 09:37:33.868', '', NULL, '');
+
+
+-- 自增ID生成
+INSERT INTO sys_menu VALUES ('1061', 'ID生成查询', '109', '#', '', '', '1', '0', 'F', '0', '#', 'system:generator:query', 1, '0', '0', 0, 'admin','2024-01-31 09:37:33.538', '', NULL, '');
+INSERT INTO sys_menu VALUES ('1062', 'ID生成新增', '109', '#', '', '', '1', '0', 'F', '0', '#', 'system:generator:add', 2, '0', '0', 0, 'admin','2024-01-31 09:37:33.574', '', NULL, '');
+INSERT INTO sys_menu VALUES ('1063', 'ID生成修改', '109', '#', '', '', '1', '0', 'F', '0', '#', 'system:generator:edit', 3, '0', '0', 0, 'admin','2024-01-31 09:37:33.613', '', NULL, '');
+INSERT INTO sys_menu VALUES ('1064', 'ID生成删除', '109', '#', '', '', '1', '0', 'F', '0', '#', 'system:generator:remove', 4, '0', '0', 0, 'admin','2024-01-31 09:37:33.641', '', NULL, '');
+INSERT INTO sys_menu VALUES ('1065', 'ID生成修改', '109', '#', '', '', '1', '0', 'F', '0', '#', 'system:generator:changeStatus', 5, '0', '0', 0,'admin', '2024-01-31 09:37:33.672', '', NULL, '');
+INSERT INTO sys_menu VALUES ('1066', 'ID生成导出', '109', '#', '', '', '1', '0', 'F', '0', '#', 'system:generator:export', 6, '0', '0', 0, 'admin','2024-01-31 09:37:33.717', '', NULL, '');
+
+
 
 -- 字典类型表
 INSERT INTO sys_dict_type VALUES ('1', '用户性别', 'sys_user_gender', 1, '0', '0', 0, 'admin', '2024-02-27 12:55:21.967', 'admin','2024-03-05 15:31:09.817', '用户性别列表');

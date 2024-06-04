@@ -24,7 +24,7 @@ public class BaseEntity implements Serializable {
     /**
      * 乐观锁
      */
-    private Long revision;
+    private Long version;
     /**
      * 记录状态 0:启用, 1:停用
      */
@@ -68,12 +68,12 @@ public class BaseEntity implements Serializable {
         this.tenantId = tenantId;
     }
 
-    public Long getRevision() {
-        return revision;
+    public Long getVersion() {
+        return version;
     }
 
-    public void setRevision(Long revision) {
-        this.revision = revision;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     public String getStatus() {

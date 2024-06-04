@@ -1,6 +1,6 @@
 package com.baize.auth.service;
 
-import static com.baize.common.core.enums.BaizeException.SERVICE_EXCEPTION;
+import static com.baize.common.core.enums.BaizeException.SYSTEM_EXCEPTION;
 
 import java.util.concurrent.TimeUnit;
 
@@ -48,13 +48,13 @@ public class SysPasswordService {
 
         if (retryCount >= maxRetryCount) {
             String errMsg = String.format("密码输入错误%s次，帐户锁定%s分钟", maxRetryCount, lockTime);
-            throw new SystemException(SERVICE_EXCEPTION, errMsg);
+            throw new SystemException(SYSTEM_EXCEPTION, errMsg);
         }
 
         if (!matches(user, password)) {
             retryCount = retryCount + 1;
             cacheService.setCacheObject(getCacheKey(username), retryCount, lockTime, TimeUnit.MINUTES);
-            throw new SystemException(SERVICE_EXCEPTION, "用户不存在/密码错误");
+            throw new SystemException(SYSTEM_EXCEPTION, "用户不存在/密码错误");
         } else {
             clearLoginRecordCache(username);
         }

@@ -101,7 +101,7 @@
             <if test="listClass != null">list_class = #{listClass},</if>
             <if test="defaulted != null and defaulted != ''">defaulted = #{defaulted},</if>
             <if test="sort != null">sort = #{sort},</if>
-            <if test="revision != null">revision = #{revision}+1,</if>
+            <if test="version != null">version = #{version}+1,</if>
             <if test="status != null">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="modifiedBy != null and modifiedBy != ''">modified_by = #{modifiedBy},</if>
