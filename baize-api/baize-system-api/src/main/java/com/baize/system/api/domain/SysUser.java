@@ -100,7 +100,7 @@ public class SysUser extends BaseEntity {
     /**
      * 角色ID
      */
-    private Long roleId;
+    private String roleId;
 
     public SysUser(String userId) {
         this.id = userId;

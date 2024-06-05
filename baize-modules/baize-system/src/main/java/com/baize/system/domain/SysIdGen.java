@@ -12,19 +12,23 @@ import lombok.Data;
  * @date 2024-05-13
  */
 @Data
-public class SysIdGenerator extends BaseEntity {
+public class SysIdGen extends BaseEntity {
     private static final long serialVersionUID = 1L;
     /** 主键ID */
     @ApiModelProperty(name = "主键ID", notes = "")
     private String id;
+    /** 业务类型 */
+    @ApiModelProperty(name = "业务类型", notes = "")
+    private String bizType;
+    /** 业务描述 */
+    @ApiModelProperty(name = "业务描述", notes = "")
+    private String bizDesc;
     /** 当前最大id */
     @ApiModelProperty(name = "当前最大id", notes = "")
     private Long maxId;
     /** 号段的布长 */
     @ApiModelProperty(name = "号段的布长", notes = "")
     private Integer step;
-    /** 业务类型 */
-    @ApiModelProperty(name = "业务类型", notes = "")
-    private String bizType;
+
 
 }

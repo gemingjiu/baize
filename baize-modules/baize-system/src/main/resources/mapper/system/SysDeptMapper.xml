@@ -62,17 +62,17 @@
         select d.id
         from sys_dept d
         left join sys_role_dept rd on d.id = rd.dept_id
-        where rd.role_id = #{id}
+        where rd.role_id = #{roleId}
         <if test="deptCheckStrictly">
             and d.id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.id = rd.dept_id and
-            rd.role_id = #{id})
+            rd.role_id = #{roleId})
         </if>
         order by d.parent_id, d.sort
     </select>
 
     <select id="selectDeptById" parameterType="String" resultMap="SysDeptResult">
         <include refid="selectDeptVo"/>
-        where id = #{id}
+        where id = #{deptId}
     </select>
 
     <select id="checkDeptExistUser" parameterType="String" resultType="int">

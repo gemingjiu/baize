@@ -124,7 +124,7 @@ public class SecurityUtils {
      * @return 明文
      * 
      */
-    public static String decryptPassword(String encodedPassword) throws Exception {
+    public static String decryptRsaPassword(String encodedPassword) throws Exception {
         // 解密
         byte[] decodePrivateKey = Base64.decode(PRIVATEKEY);
         return RSAEncryptUtil.decrypt(encodedPassword, decodePrivateKey);

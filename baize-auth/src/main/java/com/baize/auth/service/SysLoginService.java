@@ -45,7 +45,7 @@ public class SysLoginService {
 
         // 密码解密
         try {
-            password = SecurityUtils.decryptPassword(password);
+            password = SecurityUtils.decryptRsaPassword(password);
         } catch (Exception e) {
             throw new SystemException(SERVICE_EXCEPTION, "用户密码解密失败");
         }

@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.9.1",
   "createdTime": "2023-9-10 11:59:11",
-  "updatedTime": "2024-4-25 22:26:38",
+  "updatedTime": "2024-6-5 17:36:28",
   "dbConns": [],
   "profile": {
     "default": {
@@ -1313,24 +1313,7 @@
           "uiHint": "642D2E0A-8846-4549-BE56-8C0473F26EDE"
         }
       ],
-      "correlations": [
-        {
-          "myField": "FC68498D-EA73-446D-B79B-ECB06EABB747",
-          "refEntity": "64C87A71-FC0B-4F03-AEE8-89CB18B3C355",
-          "refField": "0082E5D2-FD99-4420-A3DD-0B5878D68CF7",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        },
-        {
-          "myField": "FC68498D-EA73-446D-B79B-ECB06EABB747",
-          "refEntity": "EBD5EFCB-2432-4358-8478-B44C42CAD27F",
-          "refField": "E4583DA1-2DFC-405A-9A9F-EC8852975A52",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        }
-      ],
+      "correlations": [],
       "indexes": [
         {
           "defKey": "sys_user_pkey",
@@ -2338,56 +2321,7 @@
           "uiHint": "642D2E0A-8846-4549-BE56-8C0473F26EDE"
         }
       ],
-      "correlations": [
-        {
-          "myField": "42B02796-E6FD-4FC6-A3BB-38115AFF2E63",
-          "refEntity": "A7A5D554-EDE2-4349-BBA9-1099C9BB39A9",
-          "refField": "9CC88F20-8568-4CB6-977B-5A99E4EA7C73",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        },
-        {
-          "myField": "42B02796-E6FD-4FC6-A3BB-38115AFF2E63",
-          "refEntity": "EBD5EFCB-2432-4358-8478-B44C42CAD27F",
-          "refField": "94369D43-83A4-45F9-9894-A3D33F1D3D30",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        },
-        {
-          "myField": "42B02796-E6FD-4FC6-A3BB-38115AFF2E63",
-          "refEntity": "F8ADAF6D-C132-441B-A693-7D81B252448F",
-          "refField": "C9898590-F4F8-4222-A46F-1090666C8115",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        },
-        {
-          "myField": "42B02796-E6FD-4FC6-A3BB-38115AFF2E63",
-          "refEntity": "9BDBFCF4-9200-4F54-9D43-D57BEA1A0A75",
-          "refField": "0C20F04B-8141-4301-BBF1-F47F6E241ADB",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        },
-        {
-          "myField": "42B02796-E6FD-4FC6-A3BB-38115AFF2E63",
-          "refEntity": "4CBCFCCD-DD04-41DC-BD15-12471A2C27A2",
-          "refField": "94369D43-83A4-45F9-9894-A3D33F1D3D30",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        },
-        {
-          "myField": "42B02796-E6FD-4FC6-A3BB-38115AFF2E63",
-          "refEntity": "2767DD7D-89C9-40F0-8BF0-726C6399E2A3",
-          "refField": "385C99E8-2028-4B17-8EA7-8B5E8EF24CB0",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        }
-      ],
+      "correlations": [],
       "indexes": [
         {
           "defKey": "sys_role_pkey",
@@ -3073,16 +3007,7 @@
           "uiHint": "642D2E0A-8846-4549-BE56-8C0473F26EDE"
         }
       ],
-      "correlations": [
-        {
-          "myField": "504B995D-BBC6-4E4A-99B1-C91D7C3FE2FA",
-          "refEntity": "2767DD7D-89C9-40F0-8BF0-726C6399E2A3",
-          "refField": "ED4AEED6-7898-4B55-B907-DCCB4D1291B3",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        }
-      ],
+      "correlations": [],
       "indexes": [
         {
           "defKey": "sys_menu_pkey",
@@ -3656,16 +3581,7 @@
           "uiHint": "642D2E0A-8846-4549-BE56-8C0473F26EDE"
         }
       ],
-      "correlations": [
-        {
-          "myField": "E7B53785-1DF5-423F-95A9-00B8F946A1F6",
-          "refEntity": "4CBCFCCD-DD04-41DC-BD15-12471A2C27A2",
-          "refField": "E4583DA1-2DFC-405A-9A9F-EC8852975A52",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        }
-      ],
+      "correlations": [],
       "indexes": [
         {
           "defKey": "sys_dept_pkey",
@@ -7840,16 +7756,7 @@
           "uiHint": "642D2E0A-8846-4549-BE56-8C0473F26EDE"
         }
       ],
-      "correlations": [
-        {
-          "myField": "873382F0-5800-4104-AE9C-8501ADF87979",
-          "refEntity": "9BDBFCF4-9200-4F54-9D43-D57BEA1A0A75",
-          "refField": "0C20F04B-8141-4301-BBF1-F47F6E241ADB",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        }
-      ],
+      "correlations": [],
       "indexes": [
         {
           "defKey": "sys_data_perm_pkey",
@@ -8339,16 +8246,7 @@
           "uiHint": "642D2E0A-8846-4549-BE56-8C0473F26EDE"
         }
       ],
-      "correlations": [
-        {
-          "myField": "F22112A6-E90C-411B-A594-2C16F0198852",
-          "refEntity": "F8ADAF6D-C132-441B-A693-7D81B252448F",
-          "refField": "C9898590-F4F8-4222-A46F-1090666C8115",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        }
-      ],
+      "correlations": [],
       "indexes": [
         {
           "defKey": "sys_perm_pkey",
@@ -8375,7 +8273,7 @@
           "codeRoot": ""
         }
       },
-      "defKey": "sys_id_generator",
+      "defKey": "sys_id_gen",
       "defName": "自增ID生成表",
       "comment": "",
       "properties": {
@@ -8476,8 +8374,26 @@
           "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
-          "defKey": "max_id",
-          "defName": "当前最大id",
+          "defKey": "biz_type",
+          "defName": "业务类型",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64",
+          "extProps": {},
+          "domain": "E0CB55D1-0678-4208-8CB3-084FF7939CD3",
+          "id": "3D0BABA6-A094-412D-A1C3-9935C7E524E0"
+        },
+        {
+          "defKey": "biz_desc",
+          "defName": "业务描述",
           "comment": "",
           "type": "",
           "len": "",
@@ -8486,6 +8402,34 @@
           "notNull": false,
           "autoIncrement": false,
           "defaultValue": "",
+          "hideInGraph": false,
+          "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
+          "refDict": "",
+          "extProps": {},
+          "notes": {},
+          "attr1": "",
+          "attr2": "",
+          "attr3": "",
+          "attr4": "",
+          "attr5": "",
+          "attr6": "",
+          "attr7": "",
+          "attr8": "",
+          "attr9": "",
+          "id": "BE9A76A6-0863-4600-9F70-47486EE8AC1F",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
+        },
+        {
+          "defKey": "max_id",
+          "defName": "当前最大id",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "0",
           "hideInGraph": false,
           "refDict": "",
           "baseType": "E1691115-9BB7-4EAB-A459-F16470EDAC3C",
@@ -8495,13 +8439,13 @@
         },
         {
           "defKey": "step",
-          "defName": "号段的布长",
+          "defName": "步长",
           "comment": "",
           "type": "",
           "len": "",
           "scale": "",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoIncrement": false,
           "defaultValue": "",
           "hideInGraph": false,
@@ -8510,24 +8454,6 @@
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "id": "D0F6710B-05C6-466F-8522-AA4BC368F0F0"
-        },
-        {
-          "defKey": "biz_type",
-          "defName": "业务类型",
-          "comment": "",
-          "type": "",
-          "len": "",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "refDict": "",
-          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64",
-          "extProps": {},
-          "domain": "E0CB55D1-0678-4208-8CB3-084FF7939CD3",
-          "id": "3D0BABA6-A094-412D-A1C3-9935C7E524E0"
         },
         {
           "defKey": "sort",
@@ -8987,24 +8913,7 @@
           "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         }
       ],
-      "correlations": [
-        {
-          "myField": "D4758726-0ADB-4782-871D-2907E8EDD57C",
-          "refEntity": "64C87A71-FC0B-4F03-AEE8-89CB18B3C355",
-          "refField": "365A56F8-394E-4995-9074-D18C8706434F",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        },
-        {
-          "myField": "D4758726-0ADB-4782-871D-2907E8EDD57C",
-          "refEntity": "A7A5D554-EDE2-4349-BBA9-1099C9BB39A9",
-          "refField": "86507888-A008-4DF6-A7ED-8E301EF23096",
-          "myRows": "1",
-          "refRows": "n",
-          "innerType": ""
-        }
-      ],
+      "correlations": [],
       "indexes": [],
       "type": "P"
     },

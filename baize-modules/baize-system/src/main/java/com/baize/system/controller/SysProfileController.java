@@ -1,6 +1,6 @@
 package com.baize.system.controller;
 
-import static com.baize.common.core.enums.BaizeException.SERVICE_EXCEPTION;
+import static com.baize.common.core.enums.BaizeException.SYSTEM_EXCEPTION;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,10 +85,10 @@ public class SysProfileController extends BaseController {
         SysUser user = userService.selectUserByUserName(username);
         // 密码解密
         try {
-            oldPassword = SecurityUtils.decryptPassword(oldPassword);
-            newPassword = SecurityUtils.decryptPassword(newPassword);
+            oldPassword = SecurityUtils.decryptRsaPassword(oldPassword);
+            newPassword = SecurityUtils.decryptRsaPassword(newPassword);
         } catch (Exception e) {
-            throw new SystemException(SERVICE_EXCEPTION, "用户旧密码解密失败");
+            throw new SystemException(SYSTEM_EXCEPTION, "用户旧密码解密失败");
         }
         String password = user.getPassword();
         if (!SecurityUtils.matchesPassword(oldPassword, password)) {

@@ -1,5 +1,7 @@
 package com.baize.system.controller;
 
+import static com.baize.common.core.enums.BaizeException.SYSTEM_EXCEPTION;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import com.baize.common.core.controller.BaseController;
 import com.baize.common.core.domain.AjaxResult;
 import com.baize.common.core.domain.Response;
 import com.baize.common.core.domain.TableCollection;
+import com.baize.common.core.exception.SystemException;
 import com.baize.common.core.utils.text.StringUtils;
 import com.baize.common.security.annotation.RequiresPermissions;
 import com.baize.common.security.utils.SecurityUtils;
@@ -159,7 +162,14 @@ public class SysUserController extends BaseController {
             return error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
         user.setModifiedBy(SecurityUtils.getUsername());
-        user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+        String password = user.getPassword();
+        // 密码解密
+        try {
+            password = SecurityUtils.decryptRsaPassword(password);
+        } catch (Exception e) {
+            throw new SystemException(SYSTEM_EXCEPTION, "用户旧密码解密失败");
+        }
+        user.setPassword(SecurityUtils.encryptPassword(password));
         return toAjax(userService.insertUser(user));
     }
 
@@ -199,7 +209,14 @@ public class SysUserController extends BaseController {
     public AjaxResult resetPwd(@RequestBody SysUser user) {
         userService.checkUserAllowed(user);
         userService.checkUserDataScope(user.getId());
-        user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+        String password = user.getPassword();
+        // 密码解密
+        try {
+            password = SecurityUtils.decryptRsaPassword(password);
+        } catch (Exception e) {
+            throw new SystemException(SYSTEM_EXCEPTION, "用户旧密码解密失败");
+        }
+        user.setPassword(SecurityUtils.encryptPassword(password));
         user.setModifiedBy(SecurityUtils.getUsername());
         return toAjax(userService.resetPwd(user));
     }
