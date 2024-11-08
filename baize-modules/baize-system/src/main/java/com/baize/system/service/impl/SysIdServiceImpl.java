@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.baize.common.core.utils.uuid.UUID;
 import com.baize.common.security.utils.SecurityUtils;
-import com.baize.system.domain.SysIdGen;
-import com.baize.system.mapper.SysIdGenMapper;
-import com.baize.system.service.ISysIdGenService;
+import com.baize.system.domain.SysId;
+import com.baize.system.mapper.SysIdMapper;
+import com.baize.system.service.ISysIdService;
 
 /**
  * 自增ID生成Service业务层处理
@@ -18,16 +18,16 @@ import com.baize.system.service.ISysIdGenService;
  * @date 2024-05-13
  */
 @Service
-public class SysIdGenServiceImpl implements ISysIdGenService {
+public class SysIdServiceImpl implements ISysIdService {
     @Autowired
-    private SysIdGenMapper sysIdGenMapper;
-    private void initSysIdGen(SysIdGen info) {
+    private SysIdMapper sysIdMapper;
+    private void initSysId(SysId info) {
         info.setId(UUID.fastUUID().toString(true));
         info.setCreatedBy(SecurityUtils.getLoginUser().getUsername());
         info.setModifiedBy(SecurityUtils.getLoginUser().getUsername());
     }
 
-    private void modifySysIdGen(SysIdGen info) {
+    private void modifySysId(SysId info) {
         info.setModifiedBy(SecurityUtils.getLoginUser().getUsername());
     }
     /**
@@ -37,42 +37,42 @@ public class SysIdGenServiceImpl implements ISysIdGenService {
      * @return 自增ID生成
      */
     @Override
-    public SysIdGen selectSysIdGenById(String id) {
-        return sysIdGenMapper.selectSysIdGenById(id);
+    public SysId selectSysIdById(String id) {
+        return sysIdMapper.selectSysIdById(id);
     }
 
     /**
      * 查询自增ID生成列表
      *
-     * @param sysIdGen 自增ID生成
+     * @param sysId 自增ID生成
      * @return 自增ID生成
      */
     @Override
-    public List<SysIdGen> selectSysIdGenList(SysIdGen sysIdGen) {
-        return sysIdGenMapper.selectSysIdGenList(sysIdGen);
+    public List<SysId> selectSysIdList(SysId sysId) {
+        return sysIdMapper.selectSysIdList(sysId);
     }
 
     /**
      * 新增自增ID生成
      *
-     * @param sysIdGen 自增ID生成
+     * @param sysId 自增ID生成
      * @return 结果
      */
     @Override
-    public int insertSysIdGen(SysIdGen sysIdGen) {
-        initSysIdGen(sysIdGen);
-        return sysIdGenMapper.insertSysIdGen(sysIdGen);
+    public int insertSysId(SysId sysId) {
+        initSysId(sysId);
+        return sysIdMapper.insertSysId(sysId);
     }
 
     /**
      * 修改自增ID生成
      *
-     * @param sysIdGen 自增ID生成
+     * @param sysId 自增ID生成
      * @return 结果
      */
     @Override
-    public int updateSysIdGen(SysIdGen sysIdGen) {
-        return sysIdGenMapper.updateSysIdGen(sysIdGen);
+    public int updateSysId(SysId sysId) {
+        return sysIdMapper.updateSysId(sysId);
     }
 
     /**
@@ -82,8 +82,8 @@ public class SysIdGenServiceImpl implements ISysIdGenService {
      * @return 结果
      */
     @Override
-    public int deleteSysIdGenByIds(String[] ids) {
-        return sysIdGenMapper.deleteSysIdGenByIds(ids);
+    public int deleteSysIdByIds(String[] ids) {
+        return sysIdMapper.deleteSysIdByIds(ids);
     }
 
     /**
@@ -93,12 +93,12 @@ public class SysIdGenServiceImpl implements ISysIdGenService {
      * @return 结果
      */
     @Override
-    public int deleteSysIdGenById(String id) {
-        return sysIdGenMapper.deleteSysIdGenById(id);
+    public int deleteSysIdById(String id) {
+        return sysIdMapper.deleteSysIdById(id);
     }
 
     @Override
-    public int updateSysIdGenStatus(SysIdGen sysIdGen) {
-        return sysIdGenMapper.updateSysIdGenStatus(sysIdGen);
+    public int updateSysIdStatus(SysId sysId) {
+        return sysIdMapper.updateSysIdStatus(sysId);
     }
 }

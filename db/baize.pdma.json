@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.9.1",
   "createdTime": "2023-9-10 11:59:11",
-  "updatedTime": "2024-6-5 17:36:28",
+  "updatedTime": "2024-9-29 19:45:54",
   "dbConns": [],
   "profile": {
     "default": {
@@ -8273,8 +8273,8 @@
           "codeRoot": ""
         }
       },
-      "defKey": "sys_id_gen",
-      "defName": "自增ID生成表",
+      "defKey": "sys_id",
+      "defName": "系统ID表",
       "comment": "",
       "properties": {
         "partitioned by": "(date string)",
@@ -8418,6 +8418,24 @@
           "attr9": "",
           "id": "BE9A76A6-0863-4600-9F70-47486EE8AC1F",
           "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
+        },
+        {
+          "defKey": "gen_type",
+          "defName": "生成类型",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64",
+          "extProps": {},
+          "domain": "73FD2BAD-2358-4336-B96D-45DC897BD792",
+          "id": "92B11020-457B-4134-8740-762B25C8DCCD"
         },
         {
           "defKey": "max_id",

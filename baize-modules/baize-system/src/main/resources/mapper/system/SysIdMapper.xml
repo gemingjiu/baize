@@ -2,14 +2,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.baize.system.mapper.SysIdGenMapper">
+<mapper namespace="com.baize.system.mapper.SysIdMapper">
 
-    <resultMap type="com.baize.system.domain.SysIdGen" id="SysIdGenResult">
+    <resultMap type="com.baize.system.domain.SysId" id="SysIdGenResult">
             <result property="id" column="id"/>
             <result property="maxId" column="max_id"/>
             <result property="step" column="step"/>
             <result property="bizType" column="biz_type"/>
             <result property="bizDesc" column="biz_desc"/>
+            <result property="genType" column="gen_type"/>
             <result property="sort" column="sort"/>
             <result property="status" column="status"/>
             <result property="deleted" column="deleted"/>
@@ -22,11 +23,11 @@
     </resultMap>
 
     <sql id="selectSysIdGeneratorVo">
-        select id, max_id, step, biz_type,biz_desc, sort, status, deleted, version, created_by, created_time, modified_by, modified_time, remark
-        from sys_id_gen
+        select id, max_id, step, biz_type,biz_desc,gen_type, sort, status, deleted, version, created_by, created_time, modified_by, modified_time, remark
+        from sys_id
     </sql>
 
-    <select id="selectSysIdGenList" parameterType="com.baize.system.domain.SysIdGen" resultMap="SysIdGenResult">
+    <select id="selectSysIdList" parameterType="com.baize.system.domain.SysId" resultMap="SysIdGenResult">
         <include refid="selectSysIdGeneratorVo"/>
         <where>
             <if test="id != null  and id != ''"> and id = #{id}</if>
@@ -39,15 +40,15 @@
         order by sort
     </select>
 
-    <select id="selectSysIdGenById" parameterType="String"
+    <select id="selectSysIdById" parameterType="String"
             resultMap="SysIdGenResult">
             <include refid="selectSysIdGeneratorVo"/>
             where id = #{id}
     </select>
 
-    <insert id="insertSysIdGen" parameterType="com.baize.system.domain.SysIdGen" useGeneratedKeys="true"
+    <insert id="insertSysId" parameterType="com.baize.system.domain.SysId" useGeneratedKeys="true"
             keyProperty="id">
-        insert into sys_id_gen (
+        insert into sys_id (
         <if test="id != null  and id != ''"> id, </if>
         <if test="maxId != null  and maxId != ''"> max_id, </if>
         <if test="step != null  and step != ''"> step, </if>
@@ -72,8 +73,8 @@
         )
     </insert>
 
-    <update id="updateSysIdGen" parameterType="com.baize.system.domain.SysIdGen">
-        update sys_id_gen
+    <update id="updateSysId" parameterType="com.baize.system.domain.SysId">
+        update sys_id
         <set>
             <if test="maxId != null  and maxId != ''"> max_id = #{maxId},</if>
             <if test="step != null  and step != ''"> step = #{step},</if>
@@ -89,21 +90,21 @@
         </set>
         where id = #{id}
     </update>
-    <update id="updateSysIdGenStatus" parameterType="com.baize.system.domain.SysIdGen">
-        update sys_id_gen
+    <update id="updateSysIdStatus" parameterType="com.baize.system.domain.SysId">
+        update sys_id
         <set>
         status = #{status}
         </set>
         where id = #{id}
     </update>
 
-    <delete id="deleteSysIdGenById" parameterType="String">
+    <delete id="deleteSysIdById" parameterType="String">
         delete
-        from sys_id_gen where id = #{id}
+        from sys_id where id = #{id}
     </delete>
 
-    <delete id="deleteSysIdGenByIds" parameterType="String">
-        delete from sys_id_gen where id in
+    <delete id="deleteSysIdByIds" parameterType="String">
+        delete from sys_id where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

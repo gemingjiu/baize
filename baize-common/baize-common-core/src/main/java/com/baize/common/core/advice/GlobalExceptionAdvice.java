@@ -13,6 +13,7 @@ import com.baize.common.core.constant.HttpStatus;
 import com.baize.common.core.domain.Response;
 import com.baize.common.core.enums.BaizeException;
 import com.baize.common.core.exception.ApiException;
+import com.baize.common.core.exception.SystemException;
 
 /**
  * @author gemj
@@ -37,6 +38,17 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler({ApiException.class})
     public Response<Object> handleApiException(ApiException e, HttpServletRequest request) {
+        String formatMsg = String.format("module:[%s] msg:[%s]", e.getModule(), e.getMessage());
+        log.error("请求地址'{}',错误信息:{}.", request.getRequestURI(), formatMsg);
+        Response<Object> res = new Response<>();
+        res.setCode(HttpStatus.ERROR);
+        res.setData(e.getData());
+        res.setMsg(formatMsg);
+        return res;
+    }
+
+    @ExceptionHandler({SystemException.class})
+    public Response<Object> handleSystemException(ApiException e, HttpServletRequest request) {
         String formatMsg = String.format("module:[%s] msg:[%s]", e.getModule(), e.getMessage());
         log.error("请求地址'{}',错误信息:{}.", request.getRequestURI(), formatMsg);
         Response<Object> res = new Response<>();

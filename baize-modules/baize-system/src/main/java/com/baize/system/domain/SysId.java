@@ -6,13 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 自增ID生成对象 sys_id_generator
- *
+ * 系统ID对象 sys_id
+ * 用于管理ID自增方式
  * @author baize
  * @date 2024-05-13
  */
 @Data
-public class SysIdGen extends BaseEntity {
+public class SysId extends BaseEntity {
     private static final long serialVersionUID = 1L;
     /** 主键ID */
     @ApiModelProperty(name = "主键ID", notes = "")
@@ -23,6 +23,9 @@ public class SysIdGen extends BaseEntity {
     /** 业务描述 */
     @ApiModelProperty(name = "业务描述", notes = "")
     private String bizDesc;
+    /** 生成类型 */
+    @ApiModelProperty(name = "生成类型", notes = "")
+    private String genType;
     /** 当前最大id */
     @ApiModelProperty(name = "当前最大id", notes = "")
     private Long maxId;

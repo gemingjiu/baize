@@ -2,7 +2,7 @@ package com.baize.system.service;
 
 import java.util.List;
 
-import com.baize.system.domain.SysIdGen;
+import com.baize.system.domain.SysId;
 
 /**
  * 自增ID生成Service接口
@@ -10,38 +10,38 @@ import com.baize.system.domain.SysIdGen;
  * @author baize
  * @date 2024-05-13
  */
-public interface ISysIdGenService {
+public interface ISysIdService {
     /**
      * 查询自增ID生成
      *
      * @param id 自增ID生成主键
      * @return 自增ID生成
      */
-    public SysIdGen selectSysIdGenById(String id);
+    public SysId selectSysIdById(String id);
 
     /**
      * 查询自增ID生成列表
      *
-     * @param sysIdGen 自增ID生成
+     * @param sysId 自增ID生成
      * @return 自增ID生成集合
      */
-    public List<SysIdGen> selectSysIdGenList(SysIdGen sysIdGen);
+    public List<SysId> selectSysIdList(SysId sysId);
 
     /**
      * 新增自增ID生成
      *
-     * @param sysIdGen 自增ID生成
+     * @param sysId 自增ID生成
      * @return 结果
      */
-    public int insertSysIdGen(SysIdGen sysIdGen);
+    public int insertSysId(SysId sysId);
 
     /**
      * 修改自增ID生成
      *
-     * @param sysIdGen 自增ID生成
+     * @param sysId 自增ID生成
      * @return 结果
      */
-    public int updateSysIdGen(SysIdGen sysIdGen);
+    public int updateSysId(SysId sysId);
 
     /**
      * 批量删除自增ID生成
@@ -49,7 +49,7 @@ public interface ISysIdGenService {
      * @param ids 需要删除的自增ID生成主键集合
      * @return 结果
      */
-    public int deleteSysIdGenByIds(String[] ids);
+    public int deleteSysIdByIds(String[] ids);
 
     /**
      * 删除自增ID生成信息
@@ -57,7 +57,7 @@ public interface ISysIdGenService {
      * @param id 自增ID生成主键
      * @return 结果
      */
-    public int deleteSysIdGenById(String id);
+    public int deleteSysIdById(String id);
 
-    int updateSysIdGenStatus(SysIdGen sysIdGen);
+    int updateSysIdStatus(SysId sysId);
 }

@@ -16,8 +16,8 @@ import com.baize.common.core.controller.BaseController;
 import com.baize.common.core.domain.AjaxResult;
 import com.baize.common.core.domain.TableCollection;
 import com.baize.common.security.annotation.RequiresPermissions;
-import com.baize.system.domain.SysIdGen;
-import com.baize.system.service.ISysIdGenService;
+import com.baize.system.domain.SysId;
+import com.baize.system.service.ISysIdService;
 
 
 /**
@@ -27,19 +27,19 @@ import com.baize.system.service.ISysIdGenService;
  * @date 2024-05-13
  */
 @RestController
-@RequestMapping("/idGen")
-public class SysIdGenController extends BaseController {
+@RequestMapping("/id")
+public class SysIdController extends BaseController {
     @Autowired
-    private ISysIdGenService sysIdGenService;
+    private ISysIdService sysIdGenService;
 
 /**
  * 查询自增ID生成列表
  */
-@RequiresPermissions("system:idGen:list")
+@RequiresPermissions("system:id:list")
 @GetMapping("/list")
-    public TableCollection list(SysIdGen sysIdGen) {
+    public TableCollection list(SysId sysId) {
         startPage();
-        List<SysIdGen> list = sysIdGenService.selectSysIdGenList(sysIdGen);
+        List<SysId> list = sysIdGenService.selectSysIdList(sysId);
         return getDataTable(list);
     }
 
@@ -48,40 +48,46 @@ public class SysIdGenController extends BaseController {
     /**
      * 获取自增ID生成详细信息
      */
-    @RequiresPermissions("system:idGen:query")
+    @RequiresPermissions("system:id:query")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") String id) {
-        return success(sysIdGenService.selectSysIdGenById(id));
+        return success(sysIdGenService.selectSysIdById(id));
     }
 
     /**
      * 新增自增ID生成
      */
-    @RequiresPermissions("system:idGen:add")
+    @RequiresPermissions("system:id:add")
     @PostMapping
-    public AjaxResult add(@RequestBody SysIdGen sysIdGen) {
-        return toAjax(sysIdGenService.insertSysIdGen(sysIdGen));
+    public AjaxResult add(@RequestBody SysId sysId) {
+        return toAjax(sysIdGenService.insertSysId(sysId));
     }
 
     /**
      * 修改自增ID生成
      */
-    @RequiresPermissions("system:idGen:edit")
+    @RequiresPermissions("system:id:edit")
     @PutMapping
-    public AjaxResult edit(@RequestBody SysIdGen sysIdGen) {
-        return toAjax(sysIdGenService.updateSysIdGen(sysIdGen));
+    public AjaxResult edit(@RequestBody SysId sysId) {
+        return toAjax(sysIdGenService.updateSysId(sysId));
     }
-    @RequiresPermissions("system:idGen:edit")
+
+    /**
+     * 修改ID状态
+     * @param sysId
+     * @return
+     */
+    @RequiresPermissions("system:id:edit")
     @PutMapping("/changeStatus")
-    public AjaxResult changeStatus(@RequestBody SysIdGen sysIdGen) {
-        return toAjax(sysIdGenService.updateSysIdGenStatus(sysIdGen));
+    public AjaxResult changeStatus(@RequestBody SysId sysId) {
+        return toAjax(sysIdGenService.updateSysIdStatus(sysId));
     }
     /**
      * 删除自增ID生成
      */
-    @RequiresPermissions("system:idGen:remove")
+    @RequiresPermissions("system:id:remove")
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable String[] ids) {
-        return toAjax(sysIdGenService.deleteSysIdGenByIds(ids));
+        return toAjax(sysIdGenService.deleteSysIdByIds(ids));
     }
 }
