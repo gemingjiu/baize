@@ -1,7 +1,8 @@
 package com.baize.common.security.utils;
 
-import javax.servlet.http.HttpServletRequest;
 
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.baize.common.core.constant.SecurityConstants;

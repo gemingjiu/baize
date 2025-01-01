@@ -1,5 +1,6 @@
 package com.baize.common.core.domain;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author gemj
  */
 public class BaseEntity implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * 租户ID

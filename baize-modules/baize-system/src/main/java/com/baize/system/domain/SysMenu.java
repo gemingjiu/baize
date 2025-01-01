@@ -6,6 +6,9 @@ import java.util.List;
 import com.baize.common.core.domain.BaseEntity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 菜单权限表 sys_menu
@@ -13,9 +16,10 @@ import lombok.Data;
  * @author gemj
  * @since 2024/4/6 10:17:41
  */
-@Data
+@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 public class SysMenu extends BaseEntity {
-    private static final Long serialVersionUID = 1L;
     /**
      * 菜单ID
      */

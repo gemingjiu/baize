@@ -11,30 +11,29 @@
 
     <name>baize</name>
     <description>白泽管理系统</description>
-
     <properties>
         <baize.version>0.0.1</baize.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        <spring-boot.version>2.7.13</spring-boot.version>
-        <spring-cloud.version>2021.0.8</spring-cloud.version>
-        <spring-cloud-alibaba.version>2021.0.5.0</spring-cloud-alibaba.version>
+        <java.version>21</java.version>
+        <spring-boot.version>3.2.4</spring-boot.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
         <spring-boot-admin.version>2.7.10</spring-boot-admin.version>
-        <fastjson.version>2.0.43</fastjson.version>
         <kaptcha.version>2.3.2</kaptcha.version>
-        <lombok.version>1.18.28</lombok.version>
-        <swagger.fox.version>3.0.0</swagger.fox.version>
-        <swagger.core.version>1.6.2</swagger.core.version>
+        <lombok.version>1.18.36</lombok.version>
+        <commons.io.version>2.14.0</commons.io.version>
         <jjwt.version>0.9.1</jjwt.version>
         <transmittable-thread-local.version>2.14.3</transmittable-thread-local.version>
         <pagehelper.boot.version>2.0.0</pagehelper.boot.version>
         <velocity.version>2.3</velocity.version>
-        <druid.version>1.2.20</druid.version>
+        <druid.version>1.2.23</druid.version>
         <dynamic-ds.version>4.2.0</dynamic-ds.version>
         <swagger.fox.version>3.0.0</swagger.fox.version>
+        <swagger.core.version>1.6.2</swagger.core.version>
         <swagger.version>1.6.8</swagger.version>
-        <commons.io.version>2.13.0</commons.io.version>
+        <fastjson.version>2.0.53</fastjson.version>
+        <servlet.api.version>4.0.1</servlet.api.version>
     </properties>
 
     <dependencyManagement>
@@ -77,7 +76,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- JSON 解析器和生成器 -->
@@ -167,6 +165,25 @@
                 <version>${swagger.version}</version>
             </dependency>
 
+            <!-- Java Servlet -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet.api.version}</version>
+            </dependency>
+
+            <!-- Jaxb -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>2.0.1.Final</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -185,7 +202,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -193,7 +209,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

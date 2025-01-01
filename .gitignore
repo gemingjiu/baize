@@ -11,3 +11,5 @@
 /db/.back_baize/
 /db/.version_baize/
 /baize-modules/*/target/
+/baize-common/*/target/
+/baize-api/*/target/

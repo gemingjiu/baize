@@ -1,11 +1,15 @@
 package com.baize.system.api.domain;
 
+import java.io.Serial;
 import java.util.Set;
 
 import com.baize.common.core.domain.BaseEntity;
 import com.baize.common.core.utils.text.StringUtils;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import static com.baize.common.core.context.SecurityContext.getId;
 
 /**
  * 角色信息
@@ -13,8 +17,10 @@ import lombok.Data;
  * @author gemj
  * @since 2023/08/22 11:32
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysRole extends BaseEntity {
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * 角色ID
@@ -75,7 +81,7 @@ public class SysRole extends BaseEntity {
     }
 
     public boolean isAdmin() {
-        return isAdmin(this.getId());
+        return isAdmin(getId());
     }
 
     public static boolean isAdmin(String roleId) {

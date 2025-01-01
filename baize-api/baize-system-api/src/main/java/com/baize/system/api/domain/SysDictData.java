@@ -3,12 +3,17 @@ package com.baize.system.api.domain;
 import com.baize.common.core.domain.BaseEntity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 
 /**
  * 字典数据表 sys_dict_data
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysDictData extends BaseEntity {
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * 字典数据ID

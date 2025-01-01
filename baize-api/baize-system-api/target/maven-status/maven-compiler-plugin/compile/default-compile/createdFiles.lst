@@ -1,0 +1,9 @@
+com\baize\system\api\domain\SysDictType.class
+com\baize\system\api\RemoteUserService.class
+com\baize\system\api\domain\SysDictData.class
+com\baize\system\api\factory\RemoteUserFallbackFactory.class
+com\baize\system\api\domain\SysUser.class
+com\baize\system\api\domain\SysDept.class
+com\baize\system\api\domain\SysRole.class
+com\baize\system\api\factory\RemoteUserFallbackFactory$1.class
+com\baize\system\api\domain\vo\LoginUser.class

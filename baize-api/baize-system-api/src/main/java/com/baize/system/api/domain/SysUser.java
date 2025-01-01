@@ -1,5 +1,6 @@
 package com.baize.system.api.domain;
 
+import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import com.baize.common.core.domain.BaseEntity;
 import com.baize.common.core.utils.text.StringUtils;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 
 /**
  * 系统用户信息
@@ -14,8 +17,10 @@ import lombok.Data;
  * @author gemj
  * @since 2023/08/22 11:27
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUser extends BaseEntity {
+    @Serial
     private static final long serialVersionUID = 1L;
     private static final String AdminId = "1";
     /**

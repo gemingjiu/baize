@@ -3,10 +3,11 @@ package com.baize.common.core.utils.ip;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import javax.servlet.http.HttpServletRequest;
+
 
 import com.baize.common.core.utils.ServletUtils;
 import com.baize.common.core.utils.text.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author gemj

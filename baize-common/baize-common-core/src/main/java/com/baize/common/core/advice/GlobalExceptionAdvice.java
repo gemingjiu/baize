@@ -22,14 +22,14 @@ import com.baize.common.core.exception.SystemException;
 @RestControllerAdvice
 @Order(value = 0)
 public class GlobalExceptionAdvice {
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
 
     /**
      * DuplicateKeyException
      */
     @ExceptionHandler(DuplicateKeyException.class)
     public Response<Object> handleDuplicateKeyExceptionException(DuplicateKeyException e) {
-        log.error("违反唯一性约束,重复主键'{}'", e.getMessage());
+        logger.error("违反唯一性约束,重复主键'{}'", e.getMessage());
         Response<Object> res = new Response<>();
         res.setCode(BaizeException.DB_DUPLICATE_KEY_EXCEPTION.getCode());
         res.setMsg(BaizeException.DB_DUPLICATE_KEY_EXCEPTION.getMessage());
@@ -38,19 +38,17 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler({ApiException.class})
     public Response<Object> handleApiException(ApiException e, HttpServletRequest request) {
-        String formatMsg = String.format("module:[%s] msg:[%s]", e.getModule(), e.getMessage());
-        log.error("请求地址'{}',错误信息:{}.", request.getRequestURI(), formatMsg);
-        Response<Object> res = new Response<>();
-        res.setCode(HttpStatus.ERROR);
-        res.setData(e.getData());
-        res.setMsg(formatMsg);
-        return res;
+        return doHandleException(e, request);
     }
 
     @ExceptionHandler({SystemException.class})
     public Response<Object> handleSystemException(ApiException e, HttpServletRequest request) {
+        return doHandleException(e, request);
+    }
+
+    private Response<Object> doHandleException(ApiException e, HttpServletRequest request) {
         String formatMsg = String.format("module:[%s] msg:[%s]", e.getModule(), e.getMessage());
-        log.error("请求地址'{}',错误信息:{}.", request.getRequestURI(), formatMsg);
+        logger.error("请求地址'{}',错误信息:{}.", request.getRequestURI(), formatMsg);
         Response<Object> res = new Response<>();
         res.setCode(HttpStatus.ERROR);
         res.setData(e.getData());

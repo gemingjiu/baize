@@ -3,6 +3,8 @@ package com.baize.system.domain;
 import com.baize.common.core.domain.BaseEntity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
  * 通知公告表 sys_notice
@@ -10,7 +12,8 @@ import lombok.Data;
  * @author gemj
  * @since 2024/4/6 10:17:41
  */
-@Data
+@EqualsAndHashCode(callSuper = true)
+@Getter
 public class SysNotice extends BaseEntity {
     private static final Long serialVersionUID = 1L;
     /**

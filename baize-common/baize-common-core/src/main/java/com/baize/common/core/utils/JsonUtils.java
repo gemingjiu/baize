@@ -15,8 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 用Jackson代替Fastjson
@@ -24,8 +25,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author gemj
  * @since 2024/04/06 10:55
  */
-@Slf4j
+
+
 public class JsonUtils {
+    private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);
+    
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     // 时间日期格式
@@ -50,7 +54,7 @@ public class JsonUtils {
         try {
             t = objectMapper.readValue(jsonString, object);
         } catch (JsonProcessingException e) {
-            log.error("JsonString转为自定义对象失败：{}", e.getMessage());
+            logger.error("JsonString转为自定义对象失败：{}", e.getMessage());
         }
         return t;
     }
@@ -60,7 +64,7 @@ public class JsonUtils {
         try {
             t = objectMapper.readValue(file, object);
         } catch (IOException e) {
-            log.error("从文件中读取json字符串转为自定义对象失败：{}", e.getMessage());
+            logger.error("从文件中读取json字符串转为自定义对象失败：{}", e.getMessage());
         }
         return t;
     }
@@ -70,7 +74,7 @@ public class JsonUtils {
         try {
             t = objectMapper.readValue(jsonString, javaType);
         } catch (IOException e) {
-            log.error("从文件中读取json字符串转为自定义对象失败：{}", e.getMessage());
+            logger.error("从文件中读取json字符串转为自定义对象失败：{}", e.getMessage());
         }
         return t;
     }
@@ -81,7 +85,7 @@ public class JsonUtils {
         try {
             t = objectMapper.readValue(jsonArray, reference);
         } catch (JsonProcessingException e) {
-            log.error("JSONArray转为List列表或者Map集合失败：{}", e.getMessage());
+            logger.error("JSONArray转为List列表或者Map集合失败：{}", e.getMessage());
         }
         return t;
     }
@@ -92,7 +96,7 @@ public class JsonUtils {
         try {
             t = objectMapper.readValue(jsonParser, reference);
         } catch (IOException e) {
-            log.error("JSONArray转为List列表或者Map集合失败：{}", e.getMessage());
+            logger.error("JSONArray转为List列表或者Map集合失败：{}", e.getMessage());
         }
         return t;
     }
@@ -102,7 +106,7 @@ public class JsonUtils {
         try {
             jsonString = objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            log.error("Object转JSONString失败：{}", e.getMessage());
+            logger.error("Object转JSONString失败：{}", e.getMessage());
         }
         return jsonString;
     }
@@ -112,7 +116,7 @@ public class JsonUtils {
         try {
             bytes = objectMapper.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            log.error("Object转ByteArray失败：{}", e.getMessage());
+            logger.error("Object转ByteArray失败：{}", e.getMessage());
         }
         return bytes;
     }
@@ -121,7 +125,7 @@ public class JsonUtils {
         try {
             objectMapper.writeValue(file, object);
         } catch (JsonProcessingException e) {
-            log.error("Object写入文件失败：{}", e.getMessage());
+            logger.error("Object写入文件失败：{}", e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +137,7 @@ public class JsonUtils {
         try {
             jsonNode = objectMapper.readTree(jsonString);
         } catch (JsonProcessingException e) {
-            log.error("JSONString转为JsonNode失败：{}", e.getMessage());
+            logger.error("JSONString转为JsonNode失败：{}", e.getMessage());
         }
         return jsonNode;
     }
@@ -148,7 +152,7 @@ public class JsonUtils {
         try {
             jsonString = objectMapper.writeValueAsString(jsonNode);
         } catch (JsonProcessingException e) {
-            log.error("JsonNode转JSONString失败：{}", e.getMessage());
+            logger.error("JsonNode转JSONString失败：{}", e.getMessage());
         }
         return jsonString;
     }

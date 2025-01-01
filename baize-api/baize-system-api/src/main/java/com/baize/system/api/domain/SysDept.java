@@ -1,11 +1,13 @@
 package com.baize.system.api.domain;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.baize.common.core.domain.BaseEntity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 部门信息
@@ -13,8 +15,10 @@ import lombok.Data;
  * @author gemj
  * @since 2023/08/22 11:31
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysDept extends BaseEntity {
+    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * 部门ID
