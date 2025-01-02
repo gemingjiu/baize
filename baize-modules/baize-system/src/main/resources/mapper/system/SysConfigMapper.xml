@@ -31,7 +31,7 @@
     </sql>
 
     <!-- 查询条件 -->
-    <sql id="sqlwhereSearch">
+    <sql id="sqlWhereSearch">
         <where>
             <if test="id !=null">
                 and id = #{id}
@@ -44,7 +44,7 @@
 
     <select id="selectConfig" parameterType="com.baize.system.domain.SysConfig" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
-        <include refid="sqlwhereSearch"/>
+        <include refid="sqlWhereSearch"/>
     </select>
 
     <select id="selectConfigList" parameterType="com.baize.system.domain.SysConfig" resultMap="SysConfigResult">

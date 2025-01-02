@@ -3,6 +3,7 @@ package com.baize.system.domain;
 import com.baize.common.core.domain.BaseEntity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 参数配置表 sys_config
@@ -10,6 +11,7 @@ import lombok.Data;
  * @author gemj
  * @since 2024/4/6 10:17:41
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysConfig extends BaseEntity {
     private static final Long serialVersionUID = 1L;

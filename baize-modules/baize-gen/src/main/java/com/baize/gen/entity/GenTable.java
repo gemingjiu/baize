@@ -3,14 +3,14 @@ package com.baize.gen.entity;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.validation.Valid;
+
 
 import com.baize.common.core.constant.GenConstants;
 import com.baize.common.core.domain.BaseEntity;
 import com.baize.common.core.utils.text.StringUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 代码生成业务表;
@@ -18,75 +18,75 @@ import io.swagger.annotations.ApiModelProperty;
  * @author : gemingjiu
  * @date : 2023-9-11
  */
-@ApiModel(value = "代码生成业务表", description = "")
+@Schema(name = "代码生成业务表", description = "")
 public class GenTable extends BaseEntity implements Serializable, Cloneable {
     /** 主键ID */
-    @ApiModelProperty(name = "主键ID", notes = "")
+    @Schema(name = "主键ID")
     private String id;
     /** 表名 */
-    @ApiModelProperty(name = "表名", notes = "")
+    @Schema(name = "表名")
     private String tableName;
     /**
      * 表描述
      */
-    @ApiModelProperty(name = "表描述", notes = "")
+    @Schema(name = "表描述")
     private String tableComment;
     /**
      * 关联表名
      */
-    @ApiModelProperty(name = "关联表名", notes = "")
+    @Schema(name = "关联表名")
     private String relationTable;
     /**
      * 外键名
      */
-    @ApiModelProperty(name = "外键名", notes = "")
+    @Schema(name = "外键名")
     private String relationFkName;
     /**
      * 实体类名称
      */
-    @ApiModelProperty(name = "实体类名称", notes = "")
+    @Schema(name = "实体类名称")
     private String className;
     /**
      * 使用的模板
      */
-    @ApiModelProperty(name = "使用的模板", notes = "")
+    @Schema(name = "使用的模板")
     private String tplCategory;
 
-    @ApiModelProperty(name = "Vue版本", notes = "")
+    @Schema(name = "Vue版本")
     private String vueType;
     /**
      * 显示类型
      */
-    @ApiModelProperty(name = "显示类型", notes = "")
+    @Schema(name = "显示类型")
     private String viewType;
     /**
      * 包路径
      */
-    @ApiModelProperty(name = "包路径", notes = "")
+    @Schema(name = "包路径")
     private String packageName;
     /**
      * 模块名
      */
-    @ApiModelProperty(name = "模块名", notes = "")
+    @Schema(name = "模块名")
     private String moduleName;
     /**
      * 业务名
      */
-    @ApiModelProperty(name = "业务名", notes = "")
+    @Schema(name = "业务名")
     private String businessName;
     /**
      * 功能名
      */
-    @ApiModelProperty(name = "功能名", notes = "")
+    @Schema(name = "功能名")
     private String functionName;
     /** 作者 */
-    @ApiModelProperty(name = "作者", notes = "")
+    @Schema(name = "作者")
     private String author;
     /** 生成方式;0:gzip 1:自定义 */
-    @ApiModelProperty(name = "生成方式", notes = "0:gzip 1:自定义")
+    @Schema(name = "生成方式", description = "0:gzip 1:自定义")
     private String genType;
     /** 生成路径 */
-    @ApiModelProperty(name = "生成路径", notes = "")
+    @Schema(name = "生成路径")
     private String genPath;
     /** 主键信息 */
     private GenTableColumn pkColumn;
@@ -99,7 +99,7 @@ public class GenTable extends BaseEntity implements Serializable, Cloneable {
     private List<GenTableColumn> columns;
 
     /** 其他生成选项 */
-    @ApiModelProperty(name = "其他生成选项", notes = "")
+    @Schema(name = "其他生成选项")
     private String options;
     /** 树编码字段 */
     private String treeCode;

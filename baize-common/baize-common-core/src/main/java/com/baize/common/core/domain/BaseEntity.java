@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Entity基类
@@ -21,7 +21,7 @@ public class BaseEntity implements Serializable {
     /**
      * 租户ID
      */
-    @ApiModelProperty(name = "租户ID", notes = "")
+    @Schema(name = "租户ID")
     private String tenantId;
     /**
      * 乐观锁
@@ -30,7 +30,7 @@ public class BaseEntity implements Serializable {
     /**
      * 记录状态 0:启用, 1:停用
      */
-    @ApiModelProperty(name = "记录状态", notes = "")
+    @Schema(name = "记录状态")
     private String status;
     /**
      * 创建人

@@ -2,8 +2,12 @@ package com.baize.system.domain;
 
 import com.baize.common.core.domain.BaseEntity;
 
-import io.swagger.annotations.ApiModelProperty;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 
 /**
  * 系统ID对象 sys_id
@@ -11,26 +15,28 @@ import lombok.Data;
  * @author baize
  * @date 2024-05-13
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysId extends BaseEntity {
+    @Serial
     private static final long serialVersionUID = 1L;
     /** 主键ID */
-    @ApiModelProperty(name = "主键ID", notes = "")
+    @Schema(name = "主键ID")
     private String id;
     /** 业务类型 */
-    @ApiModelProperty(name = "业务类型", notes = "")
+    @Schema(name = "业务类型")
     private String bizType;
     /** 业务描述 */
-    @ApiModelProperty(name = "业务描述", notes = "")
+    @Schema(name = "业务描述")
     private String bizDesc;
     /** 生成类型 */
-    @ApiModelProperty(name = "生成类型", notes = "")
+    @Schema(name = "生成类型")
     private String genType;
     /** 当前最大id */
-    @ApiModelProperty(name = "当前最大id", notes = "")
+    @Schema(name = "当前最大id")
     private Long maxId;
     /** 号段的布长 */
-    @ApiModelProperty(name = "号段的布长", notes = "")
+    @Schema(name = "号段的布长")
     private Integer step;
 
 

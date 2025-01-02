@@ -1,9 +1,10 @@
 package com.baize.gen.entity;
 
-import javax.validation.constraints.NotBlank;
+
 
 import com.baize.common.core.domain.BaseEntity;
 import com.baize.common.core.utils.text.StringUtils;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * @author gemj

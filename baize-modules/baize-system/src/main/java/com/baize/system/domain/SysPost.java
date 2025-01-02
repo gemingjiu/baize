@@ -3,6 +3,7 @@ package com.baize.system.domain;
 import com.baize.common.core.domain.BaseEntity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 岗位表 sys_post
@@ -11,6 +12,7 @@ import lombok.Data;
  * @since 2024/4/6 10:17:41
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SysPost extends BaseEntity {
     private static final Long serialVersionUID = 1L;
