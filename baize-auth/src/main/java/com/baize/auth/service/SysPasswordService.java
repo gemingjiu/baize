@@ -2,7 +2,7 @@ package com.baize.auth.service;
 
 import static com.baize.common.core.enums.BaizeException.SYSTEM_EXCEPTION;
 
-import java.util.concurrent.TimeUnit;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +12,8 @@ import com.baize.common.core.constant.CacheConstants;
 import com.baize.common.core.exception.SystemException;
 import com.baize.common.security.utils.SecurityUtils;
 import com.baize.system.api.domain.SysUser;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gemj

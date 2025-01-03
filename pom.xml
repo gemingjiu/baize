@@ -15,10 +15,10 @@
         <baize.version>0.0.1</baize.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>21</java.version>
-        <spring-boot.version>3.2.4</spring-boot.version>
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
-        <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
+        <java.version>17</java.version>
+        <spring-boot.version>3.3.5</spring-boot.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
         <mybatis-spring.version>3.0.3</mybatis-spring.version>
         <kaptcha.version>2.3.3</kaptcha.version>
         <pagehelper.boot.version>2.1.0</pagehelper.boot.version>
