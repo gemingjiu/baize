@@ -4,7 +4,11 @@
  |  _ <  / _` || |   / /  / _ \
  | |_) || (_| || |  / /__|  __/
  |____/  \__,_||_| /_____|\___|
+-------------------白泽管理系统-------------------------
+# springboot的版本号
+${AnsiColor.BLUE} Spring Boot Version: ${spring-boot.version} ${spring-boot.formatted-version}
 
-Spring Boot Version: ${spring-boot.version}
-Spring Application Name: ${spring.application.name}
->> 白泽管理系统 <<
+${AnsiColor.BLUE} Application Name: ${spring.application.name}
+
+${AnsiColor.DEFAULT}
+------------------------------------------------------
