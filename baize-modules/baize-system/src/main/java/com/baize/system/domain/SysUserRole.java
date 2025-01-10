@@ -1,6 +1,7 @@
 package com.baize.system.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 用户和角色关联 sys_user_role
@@ -8,7 +9,8 @@ import lombok.Data;
  * @author gemj
  * @since 2024/4/6 10:17:41
  */
-@Data
+@Setter
+@Getter
 public class SysUserRole {
     /**
      * 用户ID

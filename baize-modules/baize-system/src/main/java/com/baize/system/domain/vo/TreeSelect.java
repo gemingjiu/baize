@@ -1,5 +1,6 @@
 package com.baize.system.domain.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,14 +8,17 @@ import com.baize.system.api.domain.SysDept;
 import com.baize.system.domain.SysMenu;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
+ * 树形选择结构
  * @author gemj
  * @since 2023/12/14 23:07
  */
-@Data
-public class TreeSelect {
+@Getter
+@Setter
+public class TreeSelect implements Serializable {
     private static final Long serialVersionUID = 1L;
 
     public TreeSelect(SysDept dept) {

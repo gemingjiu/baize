@@ -1,6 +1,8 @@
 package com.baize.system.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 角色和部门关联 sys_role_dept
@@ -9,7 +11,8 @@ import lombok.Data;
  * @since 2024/4/6 10:17:41
  */
 
-@Data
+@Setter
+@Getter
 public class SysRoleDept {
     /**
      * 角色ID

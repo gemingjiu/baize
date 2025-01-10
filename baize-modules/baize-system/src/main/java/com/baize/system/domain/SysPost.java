@@ -2,8 +2,9 @@ package com.baize.system.domain;
 
 import com.baize.common.core.domain.BaseEntity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 岗位表 sys_post
@@ -13,7 +14,8 @@ import lombok.EqualsAndHashCode;
  */
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Setter
+@Getter
 public class SysPost extends BaseEntity {
     private static final Long serialVersionUID = 1L;
     /**

@@ -1,6 +1,7 @@
 package com.baize.system.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 当前在线会话
@@ -8,7 +9,8 @@ import lombok.Data;
  * @author gemj
  * @since 2024/4/6 10:17:41
  */
-@Data
+@Setter
+@Getter
 public class SysUserOnline {
     /**
      * 会话编号

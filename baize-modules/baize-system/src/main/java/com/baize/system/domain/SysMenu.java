@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.baize.common.core.domain.BaseEntity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

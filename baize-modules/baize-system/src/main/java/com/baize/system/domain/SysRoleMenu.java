@@ -1,6 +1,7 @@
 package com.baize.system.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 角色和菜单关联 sys_role_menu
@@ -8,7 +9,8 @@ import lombok.Data;
  * @author gemj
  * @since 2024/4/6 10:17:41
  */
-@Data
+@Setter
+@Getter
 public class SysRoleMenu {
     /**
      * 角色ID

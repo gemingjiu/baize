@@ -18,7 +18,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysDept extends BaseEntity {
-    @Serial
     private static final long serialVersionUID = 1L;
     /**
      * 部门ID

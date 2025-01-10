@@ -1,6 +1,7 @@
 package com.baize.system.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 用户和岗位关联 sys_user_post
@@ -9,7 +10,8 @@ import lombok.Data;
  * @since 2024/4/6 10:17:41
  */
 
-@Data
+@Setter
+@Getter
 public class SysUserPost {
     /**
      * 用户ID

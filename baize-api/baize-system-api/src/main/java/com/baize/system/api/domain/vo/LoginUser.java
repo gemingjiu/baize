@@ -1,5 +1,6 @@
 package com.baize.system.api.domain.vo;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import com.baize.system.api.domain.SysUser;
@@ -10,7 +11,7 @@ import com.baize.system.api.domain.SysUser;
  * @author gemj
  * @since 2023/08/22 11:43
  */
-public class LoginUser {
+public class LoginUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**

@@ -4,10 +4,9 @@ import com.baize.common.core.domain.BaseEntity;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.io.Serial;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 系统ID对象 sys_id
@@ -16,9 +15,9 @@ import java.io.Serial;
  * @date 2024-05-13
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Setter
+@Getter
 public class SysId extends BaseEntity {
-    @Serial
     private static final long serialVersionUID = 1L;
     /** 主键ID */
     @Schema(name = "主键ID")

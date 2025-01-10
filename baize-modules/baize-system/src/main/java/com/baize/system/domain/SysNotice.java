@@ -2,9 +2,9 @@ package com.baize.system.domain;
 
 import com.baize.common.core.domain.BaseEntity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 通知公告表 sys_notice
@@ -13,6 +13,7 @@ import lombok.Getter;
  * @since 2024/4/6 10:17:41
  */
 @EqualsAndHashCode(callSuper = true)
+@Setter
 @Getter
 public class SysNotice extends BaseEntity {
     private static final Long serialVersionUID = 1L;

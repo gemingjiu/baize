@@ -2,8 +2,9 @@ package com.baize.system.domain;
 
 import com.baize.common.core.domain.BaseEntity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 参数配置表 sys_config
@@ -12,7 +13,8 @@ import lombok.EqualsAndHashCode;
  * @since 2024/4/6 10:17:41
  */
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Setter
+@Getter
 public class SysConfig extends BaseEntity {
     private static final Long serialVersionUID = 1L;
     /**
