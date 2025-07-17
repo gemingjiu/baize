@@ -1,1 +1,9 @@
+# dir
 .idea
+target
+logs
+.back_baize
+
+
+# file
+*.log

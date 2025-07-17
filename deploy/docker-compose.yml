@@ -1,0 +1,71 @@
+version: "3.8"
+services:
+  baize-postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: baize@2023
+    ports:
+      - 5432:5432
+    volumes:
+      - /home/app/postgres/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+
+  baize-nacos:
+    image: nacos/nacos-server:v2.2.3
+    container_name: nacos
+    volumes:
+      - /home/app/nacos/logs:/home/nacos/logs
+      - /home/app/nacos/data:/home/nacos/data
+      - /home/app/nacos/plugins/:/home/nacos/plugins
+      - /home/app/nacos/conf/application.properties:/home/nacos/conf/application.properties:rw
+    ports:
+      - '8848:8848'
+      - '9848:9848'
+    environment:
+      - MODE=standalone
+      - PREFER_HOST_MODE=hostname
+      - NACOS_SERVER_PORT=8848
+    restart: always
+
+  baize-redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/conf/redis.conf:/redis/conf/redis.conf
+      - ./redis/data:/data
+    restart: always
+
+  baize-mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/conf:/etc/mysql/conf.d
+      - ./mysql/logs:/logs
+      - ./mysql/data:/var/lib/mysql
+    command: [
+      'mysqld',
+      '--innodb-buffer-pool-size=80M',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--default-time-zone=+8:00',
+      '--lower-case-table-names=1'
+    ]
+    environment:
+      MYSQL_DATABASE: 'baize'
+      MYSQL_ROOT_PASSWORD: baize@2024
+    restart: always
+
+  baize-sentinel:
+    image: bladex/sentinel-dashboard:latest
+    container_name: sentinel-dashboard
+    environment:
+      - JAVA_OPTS=-Dnacos.addr=nacos:8848  # 连接Nacos
+    ports:
+      - "8858:8858"
