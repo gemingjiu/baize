@@ -17,4 +17,11 @@ public class PageParam {
 
     @Schema(description = "排序方式(asc/desc)")
     private String sortOrder;
+
+    public PageParam(int current, int size) {
+        this.current = current;
+        this.size = size;
+        this.sortField = "id";
+        this.sortOrder = "desc";
+    }
 }

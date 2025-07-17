@@ -28,6 +28,7 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
 
     @Override
     public Integer create(Tenant tenant) {
+        tenant.initCreated();
         return tenantMapper.insert(tenant);
     }
 
