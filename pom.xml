@@ -44,6 +44,12 @@
                 <artifactId>baize-api-admin</artifactId>
                 <version>${baize.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.gem</groupId>
+                <artifactId>baize-common-datasource</artifactId>
+                <version>${baize.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

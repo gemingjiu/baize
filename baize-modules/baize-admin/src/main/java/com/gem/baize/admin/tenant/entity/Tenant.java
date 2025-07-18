@@ -1,11 +1,8 @@
-package com.gem.baize.api.admin.tenant.entity;
+package com.gem.baize.admin.tenant.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gem.baize.common.core.entity.BaseEntity;
+import com.gem.baize.common.datasource.entity.BaseEntity;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,10 +13,6 @@ import java.time.LocalDateTime;
 @Data
 @TableName("sys_tenant")
 public class Tenant extends BaseEntity {
-    // 租户ID
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
     // 租户名称
     @TableField("tenant_name")
     private String tenantName;
@@ -30,7 +23,6 @@ public class Tenant extends BaseEntity {
 
     // 过期时间
     @TableField("expire_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expireTime;
 
     // 联系人

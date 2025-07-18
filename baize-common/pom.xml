@@ -16,5 +16,6 @@
     <modules>
         <module>baize-common-core</module>
         <module>baize-common-security</module>
+        <module>baize-common-datasource</module>
     </modules>
 </project>

@@ -1,15 +1,18 @@
-package com.gem.baize.common.core.entity;
+package com.gem.baize.common.datasource.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class BaseEntity {
+public abstract class BaseEntity {
+    @TableId(type = IdType.AUTO)
+    private Long id; // 主键ID
+
+    private String bizId;     // 业务ID
+
     @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
     @Version
     private Long version;
