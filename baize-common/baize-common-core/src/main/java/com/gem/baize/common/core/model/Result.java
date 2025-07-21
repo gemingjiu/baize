@@ -25,7 +25,7 @@ public class Result<T> implements Serializable {
         return new Result<>(200, "success", data);
     }
 
-    public static Result<Void> error(int code, String msg) {
+    public static <T> Result<T> error(int code, String msg) {
         return new Result<>(code, msg, null);
     }
 

@@ -9,6 +9,7 @@ import com.gem.baize.admin.tenant.entity.Tenant;
 import com.gem.baize.admin.tenant.mapper.TenantMapper;
 import com.gem.baize.admin.tenant.service.TenantService;
 import com.gem.baize.common.core.model.PageParam;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,11 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
 
     @Override
     public Tenant getByBizId(String bizId) {
-        return tenantMapper.selectByBizId(bizId);
+        Tenant tenant = tenantMapper.selectByBizId(bizId);
+        if (ObjectUtils.isEmpty(tenant)) {
+            throw new RuntimeException("记录不存在");
+        }
+        return tenant;
     }
 
     @Override
