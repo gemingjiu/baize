@@ -4,10 +4,11 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id; // 主键ID
 
@@ -39,17 +40,4 @@ public abstract class BaseEntity {
 
     @TableField(value = "remark", fill = FieldFill.INSERT_UPDATE)
     private String remark;
-
-    public void initCreated() {
-        this.status = "0";
-        this.deleted = "0";
-        this.version = 1L;
-        this.createdBy = 0L;
-        this.createdTime = LocalDateTime.now();
-    }
-
-    public void initModified() {
-        this.modifiedBy = 0L;
-        this.modifiedTime = LocalDateTime.now();
-    }
 }

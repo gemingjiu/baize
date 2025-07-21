@@ -4,7 +4,7 @@ import lombok.Data;
 
 // 用户简档VO（避免暴露敏感字段）
 @Data
-class UserVO {
+public class UserVO {
     private Long userId;
     private String username;
     private String avatar;
