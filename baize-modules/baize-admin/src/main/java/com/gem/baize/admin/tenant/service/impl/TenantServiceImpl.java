@@ -1,14 +1,11 @@
 package com.gem.baize.admin.tenant.service.impl;
 
-import com.alibaba.cloud.commons.lang.StringUtils;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.admin.tenant.entity.Tenant;
 import com.gem.baize.admin.tenant.mapper.TenantMapper;
 import com.gem.baize.admin.tenant.service.TenantService;
-import com.gem.baize.common.core.model.PageParam;
+import com.gem.baize.common.core.model.dto.PageParam;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,18 +31,17 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
 
     @Override
     public Integer create(Tenant tenant) {
-        tenant.initCreated();
         return tenantMapper.insert(tenant);
     }
 
     @Override
-    public Boolean update(Tenant tenant) {
-        return tenantMapper.updateByBizId(tenant) > 0;
+    public void update(Tenant tenant) {
+        tenantMapper.updateByBizId(tenant);
     }
 
     @Override
-    public Boolean deleteByBizId(String bizId) {
-        return tenantMapper.deleteByBizId(bizId) > 0;
+    public void deleteByBizId(String bizId) {
+        tenantMapper.deleteByBizId(bizId);
     }
 
     @Override

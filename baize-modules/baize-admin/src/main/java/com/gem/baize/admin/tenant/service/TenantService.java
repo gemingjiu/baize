@@ -3,7 +3,7 @@ package com.gem.baize.admin.tenant.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gem.baize.admin.tenant.entity.Tenant;
-import com.gem.baize.common.core.model.PageParam;
+import com.gem.baize.common.core.model.dto.PageParam;
 
 /**
  * 租户服务类接口
@@ -14,9 +14,9 @@ public interface TenantService extends IService<Tenant> {
 
     Integer create(Tenant tenant);
 
-    Boolean update(Tenant tenant);
+    void update(Tenant tenant);
 
-    Boolean deleteByBizId(String bizId);
+    void deleteByBizId(String bizId);
 
     Page<Tenant> page(PageParam pageParam, Tenant tenant);
 }

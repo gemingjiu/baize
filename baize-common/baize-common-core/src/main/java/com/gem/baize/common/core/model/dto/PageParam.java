@@ -1,4 +1,4 @@
-package com.gem.baize.common.core.model;
+package com.gem.baize.common.core.model.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;

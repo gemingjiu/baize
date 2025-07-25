@@ -1,18 +1,24 @@
 package com.gem.baize.admin.tenant.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.gem.baize.common.core.annotation.GeneratedId;
 import com.gem.baize.common.datasource.entity.BaseEntity;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 /**
- *  租户信息
+ * 租户信息
  */
 @Data
 @TableName("sys_tenant")
 public class Tenant extends BaseEntity {
+    @GeneratedId(prefix = "tenant-")
+    @TableField(value = "biz_id",fill = FieldFill.INSERT_UPDATE)
+    private String bizId;     // 业务ID
+
     // 租户名称
     @TableField("tenant_name")
     private String tenantName;

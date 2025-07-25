@@ -12,8 +12,6 @@ public abstract class BaseEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id; // 主键ID
 
-    private String bizId;     // 业务ID
-
     @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
     @Version
     private Long version;

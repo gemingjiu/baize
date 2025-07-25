@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.Tenant;
-import com.gem.baize.common.core.model.PageParam;
+import com.gem.baize.common.core.model.dto.PageParam;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;

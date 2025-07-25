@@ -5,13 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.Tenant;
 import com.gem.baize.admin.tenant.service.TenantService;
 import com.gem.baize.api.admin.tenant.dto.TenantDTO;
-import com.gem.baize.common.core.model.PageParam;
-import com.gem.baize.common.core.model.Result;
+import com.gem.baize.common.core.model.dto.PageParam;
+import com.gem.baize.common.core.model.vo.Result;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +40,7 @@ public class TenantController {
         return Result.success(TenantService.create(tenant));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{bizId}")
     @Operation(summary = "更新租户")
     public Result<Void> update(@Valid @RequestBody TenantDTO dto) {
         Tenant tenant = new Tenant();

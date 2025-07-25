@@ -1,4 +1,4 @@
-package com.gem.baize.common.core.model;
+package com.gem.baize.common.core.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

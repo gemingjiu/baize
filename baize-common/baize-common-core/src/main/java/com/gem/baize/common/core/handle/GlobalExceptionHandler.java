@@ -1,8 +1,7 @@
 package com.gem.baize.common.core.handle;
 
 import com.gem.baize.common.core.exception.BusinessException;
-import com.gem.baize.common.core.model.Result;
-import lombok.extern.slf4j.Slf4j;
+import com.gem.baize.common.core.model.vo.Result;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
