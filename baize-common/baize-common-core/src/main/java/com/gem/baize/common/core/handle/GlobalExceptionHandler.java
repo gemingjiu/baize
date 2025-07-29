@@ -1,23 +1,59 @@
 package com.gem.baize.common.core.handle;
 
-import com.gem.baize.common.core.exception.BusinessException;
+import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.BaseException;
+import com.gem.baize.common.core.exception.ForbiddenException;
+import com.gem.baize.common.core.exception.NotFoundException;
 import com.gem.baize.common.core.model.vo.Result;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-//@Slf4j
+
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BusinessException.class)
-    public Result<Void> handleBusinessException(BusinessException e) {
-//        log.error("业务异常: {}", e.getMessage(), e);
+    // 数据库统一拦截异常
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Result<Void> handleDuplicateKey(DuplicateKeyException e) {
+        return Result.error(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public Result<Void> handleDataAccessException(DataAccessException e) {
+        return Result.error(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    // 处理参数校验异常
+    @ExceptionHandler(BadRequestException.class)
+    public Result<Void> handleBadRequest(BadRequestException e) {
         return Result.error(e.getCode(), e.getMessage());
     }
 
+    // 处理资源不存在异常
+    @ExceptionHandler(NotFoundException.class)
+    public Result<Void> handleNotFound(NotFoundException e) {
+        return Result.error(e.getCode(), e.getMessage());
+    }
+
+    // 处理权限不足异常
+    @ExceptionHandler(ForbiddenException.class)
+    public Result<Void> handleForbidden(ForbiddenException e) {
+        return Result.error(e.getCode(), e.getMessage());
+    }
+
+    // 处理 BaseException
+    @ExceptionHandler(BaseException.class)
+    public Result<Void> handleBusinessException(BaseException e) {
+        return Result.error(e); // 自动转换
+    }
+
+    // 处理兜底异常
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e) {
-//        log.error("系统异常: {}", e.getMessage(), e);
-        return Result.error(500, "系统繁忙，请稍后再试");
+        return Result.error(HttpStatus.INTERNAL_SERVER_ERROR, "服务器错误: " + e.getMessage());
     }
 }

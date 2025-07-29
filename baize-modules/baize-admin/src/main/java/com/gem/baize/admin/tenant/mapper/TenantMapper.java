@@ -51,6 +51,7 @@ public interface TenantMapper extends BaseMapper<Tenant> {
 
         // 5. 执行更新
         return update(updateWrapper);
+
     }
 
     default int deleteByBizId(String bizId) {

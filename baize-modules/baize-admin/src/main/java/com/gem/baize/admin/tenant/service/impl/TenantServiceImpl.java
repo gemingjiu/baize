@@ -5,10 +5,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.admin.tenant.entity.Tenant;
 import com.gem.baize.admin.tenant.mapper.TenantMapper;
 import com.gem.baize.admin.tenant.service.TenantService;
+import com.gem.baize.common.core.exception.DataCreationException;
+import com.gem.baize.common.core.exception.IntegrityViolationException;
+import com.gem.baize.common.core.exception.NotFoundException;
 import com.gem.baize.common.core.model.dto.PageParam;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Optional;
 
 /**
  * 租户服务类实现
@@ -22,30 +27,47 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
 
     @Override
     public Tenant getByBizId(String bizId) {
-        Tenant tenant = tenantMapper.selectByBizId(bizId);
-        if (ObjectUtils.isEmpty(tenant)) {
-            throw new RuntimeException("记录不存在");
-        }
-        return tenant;
+        return Optional.ofNullable(tenantMapper.selectByBizId(bizId)).orElseThrow(() -> new NotFoundException("租户不存在"));
     }
 
     @Override
     public Integer create(Tenant tenant) {
-        return tenantMapper.insert(tenant);
+        int result = tenantMapper.insert(tenant);
+        if (result <= 0) {
+            throw new DataCreationException("租户创建失败");
+        }
+        return result;
     }
 
     @Override
     public void update(Tenant tenant) {
-        tenantMapper.updateByBizId(tenant);
+        int affectedRows = tenantMapper.updateByBizId(tenant);
+
+        if (affectedRows <= 0) {
+            throw new NotFoundException("租户信息更新失败，记录不存在");
+        }
+
+        if (affectedRows > 1) {
+            throw new IntegrityViolationException("租户信息更新异常，影响了多条记录");
+        }
     }
 
     @Override
     public void deleteByBizId(String bizId) {
-        tenantMapper.deleteByBizId(bizId);
+
+        int affectedRows = tenantMapper.deleteByBizId(bizId);
+        if (affectedRows <= 0) {
+            throw new NotFoundException("租户信息删除失败，可能记录不存在");
+        }
+        if (affectedRows > 1) {
+            throw new IntegrityViolationException("租户信息删除异常，影响了多条记录");
+        }
     }
 
     @Override
     public Page<Tenant> page(PageParam pageParam, Tenant tenant) {
-        return tenantMapper.selectPage(pageParam, tenant);
+        return Optional.ofNullable(tenantMapper.selectPage(pageParam, tenant))
+                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
+                .orElseThrow(() -> new NotFoundException("未找到租户信息"));
     }
 }

@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.Tenant;
 import com.gem.baize.admin.tenant.service.TenantService;
 import com.gem.baize.api.admin.tenant.dto.TenantDTO;
+import com.gem.baize.common.core.exception.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,9 @@ public class TenantController {
     @GetMapping("/{bizId}")
     @Operation(summary = "根据ID获取租户", description = "根据ID查询租户信息")
     public Result<TenantDTO> getById(@PathVariable("bizId") String bizId) {
+        if (StringUtils.isBlank(bizId)) {
+            throw new BadRequestException("请求参数bizId不能为空》");
+        }
         Tenant tenant = TenantService.getByBizId(bizId);
         TenantDTO dto = new TenantDTO();
         BeanUtils.copyProperties(tenant, dto);
