@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class FilterPrinter {
     private final ApplicationContext applicationContext;
-    private static Logger log = LoggerFactory.getLogger(FilterPrinter.class);
+    private static final Logger log = LoggerFactory.getLogger(FilterPrinter.class);
 
     public FilterPrinter(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -33,6 +33,7 @@ public class FilterPrinter {
                         filter.getClass().getSimpleName(),
                         order);
             });
+            log.info("===== Global Filters End =====");
         }
 
     }

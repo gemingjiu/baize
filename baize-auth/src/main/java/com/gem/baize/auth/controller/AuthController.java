@@ -1,7 +1,7 @@
 package com.gem.baize.auth.controller;
 
-import com.gem.baize.common.security.dto.LoginDTO;
-import com.gem.baize.common.security.vo.LoginVO;
+import com.gem.baize.common.security.domain.dto.LoginDTO;
+import com.gem.baize.common.security.domain.vo.LoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

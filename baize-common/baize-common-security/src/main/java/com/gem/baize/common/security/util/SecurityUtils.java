@@ -1,6 +1,6 @@
 package com.gem.baize.common.security.util;
 
-import com.gem.baize.common.security.vo.UserVO;
+import com.gem.baize.common.security.domain.vo.UserVO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

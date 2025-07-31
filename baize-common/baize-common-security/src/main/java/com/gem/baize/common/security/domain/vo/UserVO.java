@@ -1,4 +1,4 @@
-package com.gem.baize.common.security.vo;
+package com.gem.baize.common.security.domain.vo;
 
 import lombok.Data;
 
