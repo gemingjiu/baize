@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.Tenant;
+import com.gem.baize.common.core.exception.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -27,7 +28,7 @@ public interface TenantMapper extends BaseMapper<Tenant> {
     default int updateByBizId(Tenant tenant) {
         // 1. 参数校验
         if (tenant == null || StringUtils.isBlank(tenant.getBizId())) {
-            throw new IllegalArgumentException("业务ID不能为空");
+            throw new BadRequestException("业务ID不能为空");
         }
 
         // 2. 构建更新条件

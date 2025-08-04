@@ -16,6 +16,10 @@ public class Result<T> implements Serializable {
     private String message;
     private T data;
 
+    public static <T> Result<T> newResult(int code, String message, T data) {
+        return new Result<>(code, message, data);
+    }
+
     // 成功响应（无数据）
     public static <T> Result<T> success() {
         return new Result<>(HttpStatus.OK.value(), "success", null);
@@ -26,24 +30,30 @@ public class Result<T> implements Serializable {
         return new Result<>(HttpStatus.OK.value(), "success", data);
     }
 
+    // 成功响应（带数据）自带描述
+    public static <T> Result<T> success(T data, String message) {
+        return new Result<>(HttpStatus.OK.value(), message, data);
+    }
+
+
     // 错误响应（仅 code + message）
     public static <T> Result<T> error(int code, String message) {
-        return new Result<>(code, message, null);
+        return newResult(code, message, null);
     }
 
     // 错误响应（code + message + data）
     public static <T> Result<T> error(int code, String message, T data) {
-        return new Result<>(code, message, data);
+        return newResult(code, message, data);
     }
 
     // 从 BaseException 转换
     public static <T> Result<T> error(BaseException e) {
-        return new Result<>(e.getCode(), e.getMessage(), null);
+        return newResult(e.getCode(), e.getMessage(), null);
     }
 
     // 支持 HttpStatus（Spring 提供）
     public static <T> Result<T> error(HttpStatus status, String message) {
-        return new Result<>(status.value(), message, null);
+        return newResult(status.value(), message, null);
     }
 
     // 提供 builder() 方法
@@ -74,7 +84,7 @@ public class Result<T> implements Serializable {
 
         // 最终构建 Result 对象
         public Result<T> build() {
-            return new Result<>(code, message, data);
+            return newResult(this.code, this.message, this.data);
         }
     }
 }

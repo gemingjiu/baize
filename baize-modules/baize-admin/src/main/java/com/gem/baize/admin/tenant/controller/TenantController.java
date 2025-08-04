@@ -4,7 +4,7 @@ package com.gem.baize.admin.tenant.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.Tenant;
 import com.gem.baize.admin.tenant.service.TenantService;
-import com.gem.baize.api.admin.tenant.dto.TenantDTO;
+import com.gem.baize.api.admin.tenant.domain.dto.TenantDTO;
 import com.gem.baize.common.core.exception.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
@@ -47,9 +47,10 @@ public class TenantController {
 
     @PutMapping("/{bizId}")
     @Operation(summary = "更新租户")
-    public Result<Void> update(@Valid @RequestBody TenantDTO dto) {
+    public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody TenantDTO dto) {
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);
+        tenant.setBizId(bizId); // 确保使用路径ID
         TenantService.update(tenant);
         return Result.success();
     }
@@ -69,5 +70,4 @@ public class TenantController {
         BeanUtils.copyProperties(dto, tenant);
         return Result.success(TenantService.page(pageParam, tenant));
     }
-
 }

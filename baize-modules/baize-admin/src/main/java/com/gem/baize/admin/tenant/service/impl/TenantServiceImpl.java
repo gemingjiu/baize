@@ -54,7 +54,6 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
 
     @Override
     public void deleteByBizId(String bizId) {
-
         int affectedRows = tenantMapper.deleteByBizId(bizId);
         if (affectedRows <= 0) {
             throw new NotFoundException("租户信息删除失败，可能记录不存在");

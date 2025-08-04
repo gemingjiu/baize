@@ -5,13 +5,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 /**
  * 多租户系统登录凭证
  */
 @Schema(description = "登录请求参数")
+@Data
 public class LoginDTO {
-
     @NotBlank(message = "租户标识不能为空")
     @Schema(description = "租户域名或编码", example = "tenant1")
     private String tenant;
@@ -31,6 +32,4 @@ public class LoginDTO {
 
     @Schema(description = "设备标识（用于多端登录控制）", example = "WEB/APP")
     private String deviceType;
-
-    // 省略Getter/Setter
 }

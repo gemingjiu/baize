@@ -1,17 +1,17 @@
 package com.gem.baize.admin.user.service;
 
-import com.gem.baize.api.admin.user.dto.UserDTO;
-import com.gem.baize.api.admin.user.vo.UserVO;
-import com.gem.baize.common.core.model.vo.PageResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gem.baize.admin.user.entity.User;
+import com.gem.baize.common.core.model.dto.PageParam;
 
 public interface UserService {
-    UserVO getById(String id);
+    User getByBizId(String bizId);
 
-    Long create(UserDTO dto);
+    Integer create(User user);
 
-    void update(UserDTO dto);
+    void update(User user);
 
-    void delete(String id);
+    void deleteByBizId(String bizId);
 
-    PageResult<UserVO> page(UserDTO query);
+    Page<User> page(PageParam pageParam, User user);
 }

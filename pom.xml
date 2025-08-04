@@ -16,6 +16,7 @@
 
     <properties>
         <baize.version>0.0.1-SNAPSHOT</baize.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
 
 
@@ -49,6 +50,12 @@
                 <groupId>com.gem</groupId>
                 <artifactId>baize-common-datasource</artifactId>
                 <version>${baize.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
