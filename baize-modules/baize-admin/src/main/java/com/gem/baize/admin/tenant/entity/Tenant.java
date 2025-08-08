@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.gem.baize.common.core.annotation.GeneratedId;
 import com.gem.baize.common.datasource.entity.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
 /**
  * 租户信息
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_tenant")
 public class Tenant extends BaseEntity {

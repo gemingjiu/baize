@@ -1,176 +1,147 @@
 package com.gem.baize.common.security.util;
 
+
 import com.gem.baize.common.core.constant.HTTPHeaderConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-
-import java.util.Map;
-
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JWT 工具类 (线程安全)
  */
-public final class JwtUtils {
-    // 使用更安全的密钥生成方式
-    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(
-            "baize-a732659e-45e2-47a8-89ab-6c4b8af98bab".getBytes(StandardCharsets.UTF_8)
-    );
+@Component
+public class JwtUtils {
 
-    // 默认过期时间(2小时)
-    private static final long DEFAULT_EXPIRATION_HOURS = 2;
+    @Value("${jwt.secret:baize-a732659e-45e2-47a8-89ab-6c4b8af98bab}")
+    private String jwtSecret;
 
-    private JwtUtils() {
-        throw new UnsupportedOperationException("工具类不允许实例化");
+    @Value("${jwt.expiration:7200000}")
+    private long jwtExpirationMs;
+
+    private SecretKey signingKey;
+
+    @PostConstruct
+    public void init() {
+        if (StringUtils.isBlank(jwtSecret)) {
+            throw new IllegalArgumentException("jwt.secret 配置不能为空");
+        }
+        this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private SecretKey getSigningKey() {
+        return this.signingKey;
     }
 
     /**
-     * 创建JWT令牌(使用默认过期时间)
-     *
-     * @param subject 主题(通常为用户ID)
-     * @return JWT令牌
+     * 创建JWT令牌（默认过期时间）
      */
-    public static String createToken(String subject) {
+    public String createToken(String subject) {
         return createToken(subject, new HashMap<>());
     }
 
     /**
-     * 创建JWT令牌(使用默认过期时间)
-     *
-     * @param subject 主题
-     * @param claims  自定义声明
-     * @return JWT令牌
+     * 创建JWT令牌（带自定义声明）
      */
-    public static String createToken(String subject, Map<String, Object> claims) {
-        return createToken(subject, claims, DEFAULT_EXPIRATION_HOURS);
-    }
-
-    /**
-     * 创建JWT令牌
-     *
-     * @param subject         主题
-     * @param claims          自定义声明
-     * @param expirationHours 过期时间(小时)
-     * @return JWT令牌
-     */
-    public static String createToken(String subject, Map<String, Object> claims, long expirationHours) {
-        Instant now = Instant.now();
-
+    public String createToken(String subject, Map<String, Object> claims) {
         return Jwts.builder()
-                .setSubject(subject)
-                .addClaims(claims)
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(expirationHours, ChronoUnit.HOURS)))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .subject(subject)
+                .claims(claims)
+                .signWith(getSigningKey())
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .compact();
     }
 
     /**
-     * 从声明创建JWT令牌(自动提取subject)
-     *
-     * @param claims 必须包含USER_ID和TENANT_ID
-     * @return JWT令牌
-     * @throws IllegalArgumentException 如果claims不完整
+     * 从声明中创建JWT（必须包含 tenantId 和 userId）
      */
-    public static String createToken(Map<String, Object> claims) {
+    public String createToken(Map<String, Object> claims) {
         validateRequiredClaims(claims);
-
-        String subject = claims.get(HTTPHeaderConstant.TENANT_ID) + ":" +
-                claims.get(HTTPHeaderConstant.USER_ID);
-
+        String subject = claims.get(HTTPHeaderConstant.TENANT_ID) + ":" + claims.get(HTTPHeaderConstant.USER_ID);
         return createToken(subject, claims);
     }
 
     /**
-     * 解析JWT令牌
-     *
-     * @param token JWT令牌
-     * @return 声明内容
-     * @throws io.jsonwebtoken.JwtException 如果令牌无效
+     * 解析令牌获取 Claims
      */
-    public static Claims parseToken(String token) {
+    public Claims parseToken(String token) {
         if (StringUtils.isBlank(token)) {
             throw new IllegalArgumentException("Token不能为空");
         }
 
-        return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    /**
-     * 从令牌获取用户ID
-     *
-     * @param token JWT令牌
-     * @return 用户ID
-     */
-    public static String getUserId(String token) {
-        return getClaim(token, HTTPHeaderConstant.USER_ID).toString();
-    }
-
-    /**
-     * 从令牌获取租户ID
-     *
-     * @param token JWT令牌
-     * @return 租户ID
-     */
-    public static String getTenantId(String token) {
-        return getClaim(token, HTTPHeaderConstant.TENANT_ID).toString();
-    }
-
-    /**
-     * 从令牌获取追踪ID
-     *
-     * @param token JWT令牌
-     * @return 追踪ID
-     */
-    public static String getTraceId(String token) {
-        return getClaim(token, HTTPHeaderConstant.TRACE_ID).toString();
-    }
-
-    /**
-     * 从令牌获取用户名
-     *
-     * @param token JWT令牌
-     * @return 用户名
-     */
-    public static String getUsername(String token) {
-        return getClaim(token, HTTPHeaderConstant.USER_NAME).toString();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**
      * 获取指定声明
-     *
-     * @param token     JWT令牌
-     * @param claimName 声明名称
-     * @return 声明值
      */
-    public static Object getClaim(String token, String claimName) {
+    public Object getClaim(String token, String claimName) {
         return parseToken(token).get(claimName);
     }
 
+    public String getUserId(String token) {
+        return String.valueOf(getClaim(token, HTTPHeaderConstant.USER_ID));
+    }
+
+    public String getTenantId(String token) {
+        return String.valueOf(getClaim(token, HTTPHeaderConstant.TENANT_ID));
+    }
+
+    public String getTraceId(String token) {
+        return String.valueOf(getClaim(token, HTTPHeaderConstant.TRACE_ID));
+    }
+
+    public String getUserName(String token) {
+        return String.valueOf(getClaim(token, HTTPHeaderConstant.USER_NAME));
+    }
+
+    public Payload parsePayload(String token) {
+        Claims claims = parseToken(token);
+        Payload payload = new Payload();
+        payload.setSubject(String.valueOf(claims.getSubject()));
+        payload.setTenantId(String.valueOf(claims.get(HTTPHeaderConstant.TENANT_ID)));
+        payload.setUserId(String.valueOf(claims.get(HTTPHeaderConstant.USER_ID)));
+        payload.setTraceId(String.valueOf(claims.get(HTTPHeaderConstant.TRACE_ID)));
+        payload.setUserName(String.valueOf(claims.get(HTTPHeaderConstant.USER_NAME)));
+        payload.setRole(String.valueOf(claims.get(HTTPHeaderConstant.ROLE)));
+        return payload;
+    }
+
     /**
-     * 验证必需声明是否存在
-     *
-     * @param claims 声明Map
-     * @throws IllegalArgumentException 如果缺少必需声明
+     * 校验是否包含必须字段
      */
-    private static void validateRequiredClaims(Map<String, Object> claims) {
+    private void validateRequiredClaims(Map<String, Object> claims) {
         if (claims == null ||
                 !claims.containsKey(HTTPHeaderConstant.USER_ID) ||
                 !claims.containsKey(HTTPHeaderConstant.TENANT_ID)) {
             throw new IllegalArgumentException("创建Token需要USER_ID和TENANT_ID声明");
         }
     }
+
+
+    @Data
+    public static class Payload {
+        private String tenantId;
+        private String userId;
+        private String traceId;
+        private String subject;
+        private String userName;
+        private String role;
+    }
 }
+

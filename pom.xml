@@ -16,7 +16,6 @@
 
     <properties>
         <baize.version>0.0.1-SNAPSHOT</baize.version>
-        <junit.version>4.13.1</junit.version>
     </properties>
 
 
@@ -35,11 +34,13 @@
                 <artifactId>baize-common-core</artifactId>
                 <version>${baize.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.gem</groupId>
                 <artifactId>baize-common-security</artifactId>
                 <version>${baize.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.gem</groupId>
                 <artifactId>baize-api-admin</artifactId>
@@ -50,12 +51,6 @@
                 <groupId>com.gem</groupId>
                 <artifactId>baize-common-datasource</artifactId>
                 <version>${baize.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
