@@ -1,7 +1,7 @@
 package com.gem.baize.common.core.id;
 
 
-import com.gem.baize.common.core.annotation.GeneratedId;
+import com.gem.baize.common.core.id.annotation.GeneratedId;
 
 public interface IdGenerator {
 

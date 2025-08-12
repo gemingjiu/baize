@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.perm.entity.Perm;
 import com.gem.baize.admin.perm.service.PermService;
 import com.gem.baize.api.admin.perm.domain.dto.PermDTO;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,9 +57,9 @@ public class PermController {
         return Result.success();
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "分页查询权限")
-    public Result<Page<PermDTO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @Valid @RequestBody PermDTO dto) {
+    public Result<Page<PermDTO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody PermDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         Perm perm = new Perm();
         BeanUtils.copyProperties(dto, perm);

@@ -1,4 +1,4 @@
-package com.gem.baize.common.core.exception;
+package com.gem.baize.common.core.exception.model;
 
 /**
  * 重复数据错误

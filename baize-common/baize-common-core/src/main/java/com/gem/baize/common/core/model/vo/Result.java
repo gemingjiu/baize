@@ -1,6 +1,6 @@
 package com.gem.baize.common.core.model.vo;
 
-import com.gem.baize.common.core.exception.BaseException;
+import com.gem.baize.common.core.exception.model.BaseException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

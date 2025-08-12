@@ -12,6 +12,9 @@ public abstract class BaseEntity implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id; // 主键ID
 
+    @TableField(value = "sort", fill = FieldFill.INSERT)
+    private int sort;
+
     @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
     @Version
     private Long version;
@@ -23,14 +26,14 @@ public abstract class BaseEntity implements Serializable {
     private String deleted;
 
     @TableField(value = "created_by", fill = FieldFill.INSERT)
-    private Long createdBy;
+    private String createdBy;
 
     @TableField(value = "created_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTime;
 
     @TableField(value = "modified_by", fill = FieldFill.INSERT_UPDATE)
-    private Long modifiedBy;
+    private String modifiedBy;
 
     @TableField(value = "modified_time", fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

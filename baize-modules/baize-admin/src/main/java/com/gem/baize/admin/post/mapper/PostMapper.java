@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.post.entity.Post;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 
 import java.time.LocalDateTime;

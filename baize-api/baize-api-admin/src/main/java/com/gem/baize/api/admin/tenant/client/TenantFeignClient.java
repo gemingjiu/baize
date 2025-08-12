@@ -1,4 +1,7 @@
 package com.gem.baize.api.admin.tenant.client;
 
-public class TenantFeignClient {
+import org.springframework.cloud.openfeign.FeignClient;
+
+@FeignClient(path = "/admin",name = "baize-admin", url = "http://localhost:8020",contextId = "TenantFeignClient")
+public interface TenantFeignClient {
 }

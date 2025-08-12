@@ -1,4 +1,4 @@
-package com.gem.baize.common.core.exception;
+package com.gem.baize.common.core.exception.model;
 
 /**
  * 资源未找到异常

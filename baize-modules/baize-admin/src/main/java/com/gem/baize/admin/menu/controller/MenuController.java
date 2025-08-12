@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.menu.entity.Menu;
 import com.gem.baize.admin.menu.service.MenuService;
 import com.gem.baize.api.admin.menu.domain.dto.MenuDTO;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,9 +57,9 @@ public class MenuController {
         return Result.success();
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "分页查询菜单")
-    public Result<Page<MenuDTO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @Valid @RequestBody MenuDTO dto) {
+    public Result<Page<MenuDTO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody MenuDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         Menu menu = new Menu();
         BeanUtils.copyProperties(dto, menu);

@@ -1,6 +1,7 @@
 package com.gem.baize.common.datasource.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.gem.baize.common.core.id.handle.IdGeneratorProcessor;
 import com.gem.baize.common.datasource.enums.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -13,21 +14,18 @@ public class BaseEntityObjectHandler implements MetaObjectHandler {
 
     // 通过构造器注入（如果使用Spring）
     public BaseEntityObjectHandler(IdGeneratorProcessor idGeneratorProcessor) {
-        log.info(">>> MetaObjectHandler 初始化");
         this.idGeneratorProcessor = idGeneratorProcessor;
     }
 
     @Override
     public void insertFill(MetaObject metaObject) {
         //TODO 获取当前用户信息
-        Long userId = 1L;
+        String userId = "admin";
         // 1. 处理自动生成的ID
         idGeneratorProcessor.process(metaObject.getOriginalObject());
 
-        this.strictInsertFill(metaObject, "createdBy", Long.class, userId);
+        this.strictInsertFill(metaObject, "createdBy", String.class, userId);
         this.strictInsertFill(metaObject, "createdTime", LocalDateTime::now, LocalDateTime.class);
-
-        this.strictInsertFill(metaObject, "modifiedTime", LocalDateTime::now, LocalDateTime.class);
         this.strictInsertFill(metaObject, "status", StatusEnum.ENABLED::getValue, String.class);
         this.strictInsertFill(metaObject, "deleted", StatusEnum.ENABLED::getValue, String.class);
         this.strictInsertFill(metaObject, "version", Long.class, 1L);
@@ -36,6 +34,9 @@ public class BaseEntityObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class);
+        //TODO 获取当前用户信息
+        String userId = "admin";
+        this.strictInsertFill(metaObject, "modified_by", String.class, userId);
+        this.strictUpdateFill(metaObject, "modifiedTime", LocalDateTime::now, LocalDateTime.class);
     }
 }

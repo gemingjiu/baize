@@ -1,0 +1,18 @@
+${AnsiColor.BRIGHT_CYAN}
+  ____          _   ______
+ |  _ \        (_) |___  /
+ | |_) |  __ _  _     / /  ___
+ |  _ <  / _` || |   / /  / _ \
+ | |_) || (_| || |  / /__|  __/
+ |____/  \__,_||_| /_____|\___|
+
+${AnsiColor.DEFAULT}
+🎉 欢迎使用【Baize 系统】 🎉
+${AnsiColor.YELLOW}
+应用名称: ${spring.application.name}
+版本: ${application.version:0.0.1} | 环境: ${spring.profiles.active:default}
+访问地址: ${AnsiColor.BRIGHT_GREEN}http://${server.address:localhost}:${server.port}${server.servlet.context-path:}${AnsiColor.DEFAULT}
+
+${AnsiColor.BRIGHT_MAGENTA}
+[安全提示] 请妥善保管您的访问凭证
+${AnsiColor.DEFAULT}

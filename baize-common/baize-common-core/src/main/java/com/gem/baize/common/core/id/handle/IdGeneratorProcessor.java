@@ -1,7 +1,7 @@
-package com.gem.baize.common.datasource.handler;
+package com.gem.baize.common.core.id.handle;
 
 
-import com.gem.baize.common.core.annotation.GeneratedId;
+import com.gem.baize.common.core.id.annotation.GeneratedId;
 import com.gem.baize.common.core.id.IdGenerator;
 import com.gem.baize.common.core.id.strategy.IncrementGenerator;
 import com.gem.baize.common.core.id.strategy.SnowflakeGenerator;

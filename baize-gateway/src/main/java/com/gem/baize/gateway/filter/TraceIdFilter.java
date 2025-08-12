@@ -1,6 +1,6 @@
 package com.gem.baize.gateway.filter;
 
-import com.gem.baize.common.core.constant.HTTPHeaderConstant;
+import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.gateway.enums.FilterOrder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -26,7 +26,7 @@ public class TraceIdFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        String traceId = request.getHeaders().getFirst(HTTPHeaderConstant.TRACE_ID);
+        String traceId = request.getHeaders().getFirst(CustomHttpHeaders.TRACE_ID);
         // 如果请求头中没有traceId，则使用Skywalking生成的traceId
         if (StringUtils.isBlank(traceId)) {
             traceId = TraceContext.traceId();
@@ -37,7 +37,7 @@ public class TraceIdFilter implements GlobalFilter, Ordered {
         }
 
         MDC.put(MDC_TRACE_ID_KEY, traceId);
-        exchange.getRequest().mutate().header(HTTPHeaderConstant.TRACE_ID, traceId);
+        exchange.getRequest().mutate().header(CustomHttpHeaders.TRACE_ID, traceId);
         return chain.filter(exchange).doFinally(signalType -> MDC.remove(MDC_TRACE_ID_KEY));
 
     }

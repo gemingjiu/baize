@@ -1,4 +1,4 @@
-package com.gem.baize.common.core.exception;
+package com.gem.baize.common.core.exception.model;
 
 /**
  * 并发冲突异常（如乐观锁失败）

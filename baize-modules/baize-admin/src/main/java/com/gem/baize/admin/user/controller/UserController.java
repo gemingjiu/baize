@@ -6,7 +6,7 @@ import com.gem.baize.admin.user.entity.User;
 import com.gem.baize.admin.user.service.UserService;
 import com.gem.baize.api.admin.user.domain.dto.UserDTO;
 import com.gem.baize.api.admin.user.domain.vo.UserVO;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,9 +60,9 @@ public class UserController {
         return Result.success();
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "分页查询用户")
-    public Result<Page<UserVO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @Valid @RequestBody UserDTO dto) {
+    public Result<Page<UserVO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody UserDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         User user = new User();
         BeanUtils.copyProperties(dto, user);

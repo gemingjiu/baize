@@ -1,7 +1,7 @@
 package com.gem.baize.gateway.filter;
 
 
-import com.gem.baize.common.core.constant.HTTPHeaderConstant;
+import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.common.security.util.JwtUtils;
 import com.gem.baize.gateway.enums.FilterOrder;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +41,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     private static Mono<Void> authenticate(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        String auth = request.getHeaders().getFirst(HTTPHeaderConstant.AUTHORIZATION);
+        String auth = request.getHeaders().getFirst(CustomHttpHeaders.AUTHORIZATION);
         if (StringUtils.isBlank(auth)) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
@@ -54,10 +54,11 @@ public class AuthFilter implements GlobalFilter, Ordered {
         try {
             JwtUtils.Payload payload = jwtUtils.parsePayload(auth.replace(BEARER, ""));
             exchange.getRequest().mutate()
-                    .header(HTTPHeaderConstant.TENANT_ID, payload.getSubject())
-                    .header(HTTPHeaderConstant.USER_ID, payload.getUserId())
-                    .header(HTTPHeaderConstant.USER_NAME, payload.getUserName())
-                    .header(HTTPHeaderConstant.ROLE, payload.getRole());
+                    .header(CustomHttpHeaders.SUBJECT_ID, payload.getSubject())
+                    .header(CustomHttpHeaders.TENANT_ID, payload.getTenantId())
+                    .header(CustomHttpHeaders.USER_ID, payload.getUserId())
+                    .header(CustomHttpHeaders.USER_NAME, payload.getUserName())
+                    .header(CustomHttpHeaders.ROLE, payload.getRole());
         } catch (Exception e) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.post.entity.Post;
 import com.gem.baize.admin.post.service.PostService;
 import com.gem.baize.api.admin.post.domain.dto.PostDTO;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,9 +57,9 @@ public class PostController {
         return Result.success();
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "分页查询部门")
-    public Result<Page<PostDTO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @Valid @RequestBody PostDTO dto) {
+    public Result<Page<PostDTO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody PostDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         Post post = new Post();
         BeanUtils.copyProperties(dto, post);

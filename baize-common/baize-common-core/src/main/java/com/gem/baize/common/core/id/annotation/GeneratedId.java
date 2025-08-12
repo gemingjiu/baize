@@ -1,4 +1,4 @@
-package com.gem.baize.common.core.annotation;
+package com.gem.baize.common.core.id.annotation;
 
 
 import java.lang.annotation.*;

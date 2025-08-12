@@ -1,9 +1,9 @@
-package com.gem.baize.common.core.handle;
+package com.gem.baize.common.core.exception.handle;
 
-import com.gem.baize.common.core.exception.BadRequestException;
-import com.gem.baize.common.core.exception.BaseException;
-import com.gem.baize.common.core.exception.ForbiddenException;
-import com.gem.baize.common.core.exception.NotFoundException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
+import com.gem.baize.common.core.exception.model.BaseException;
+import com.gem.baize.common.core.exception.model.ForbiddenException;
+import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.common.core.model.vo.Result;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
+/**
+ * 全局异常拦截器
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

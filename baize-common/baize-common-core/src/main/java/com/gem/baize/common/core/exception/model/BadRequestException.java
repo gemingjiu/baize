@@ -1,4 +1,4 @@
-package com.gem.baize.common.core.exception;
+package com.gem.baize.common.core.exception.model;
 
 /**
  * 请求参数错误异常

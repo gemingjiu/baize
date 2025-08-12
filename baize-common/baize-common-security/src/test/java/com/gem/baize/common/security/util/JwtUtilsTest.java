@@ -1,6 +1,6 @@
 package com.gem.baize.common.security.util;
 
-import com.gem.baize.common.core.constant.HTTPHeaderConstant;
+import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.Test;
@@ -37,11 +37,11 @@ class JwtUtilsTest {
     void shouldGenerateValidToken() {
         // Given
         Map<String, Object> claims = new HashMap<>() {{
-            put(HTTPHeaderConstant.TENANT_ID, "1");
-            put(HTTPHeaderConstant.USER_ID, "1");
-            put(HTTPHeaderConstant.TRACE_ID, "2caa18f6-62ed-11f0-9fe2-0242ac120002");
-            put(HTTPHeaderConstant.USER_NAME, "admin");
-            put(HTTPHeaderConstant.ROLE, "admin");
+            put(CustomHttpHeaders.TENANT_ID, "1");
+            put(CustomHttpHeaders.USER_ID, "1");
+            put(CustomHttpHeaders.TRACE_ID, "2caa18f6-62ed-11f0-9fe2-0242ac120002");
+            put(CustomHttpHeaders.USER_NAME, "admin");
+            put(CustomHttpHeaders.ROLE, "admin");
         }};
 
         // When
@@ -52,11 +52,11 @@ class JwtUtilsTest {
         Claims parsedClaims = jwtUtils.parseToken(token);
         assertAll(
                 () -> assertThat(parsedClaims.getSubject()).isEqualTo("1:1"),
-                () -> assertThat(parsedClaims.get(HTTPHeaderConstant.TENANT_ID)).isEqualTo("1"),
-                () -> assertThat(parsedClaims.get(HTTPHeaderConstant.USER_ID)).isEqualTo("1"),
-                () -> assertThat(parsedClaims.get(HTTPHeaderConstant.TRACE_ID)).isEqualTo("2caa18f6-62ed-11f0-9fe2-0242ac120002"),
-                () -> assertThat(parsedClaims.get(HTTPHeaderConstant.USER_NAME)).isEqualTo("admin"),
-                () -> assertThat(parsedClaims.get(HTTPHeaderConstant.ROLE)).isEqualTo("admin")
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.TENANT_ID)).isEqualTo("1"),
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_ID)).isEqualTo("1"),
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.TRACE_ID)).isEqualTo("2caa18f6-62ed-11f0-9fe2-0242ac120002"),
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_NAME)).isEqualTo("admin"),
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.ROLE)).isEqualTo("admin")
         );
 
         String tenantId = jwtUtils.getTenantId(token);
@@ -73,11 +73,11 @@ class JwtUtilsTest {
     void shouldGenerateJwtPayload() {
         // Given
         Map<String, Object> claims = new HashMap<>() {{
-            put(HTTPHeaderConstant.TENANT_ID, "1");
-            put(HTTPHeaderConstant.USER_ID, "1");
-            put(HTTPHeaderConstant.TRACE_ID, "2caa18f6-62ed-11f0-9fe2-0242ac120002");
-            put(HTTPHeaderConstant.USER_NAME, "admin");
-            put(HTTPHeaderConstant.ROLE, "admin");
+            put(CustomHttpHeaders.TENANT_ID, "1");
+            put(CustomHttpHeaders.USER_ID, "1");
+            put(CustomHttpHeaders.TRACE_ID, "2caa18f6-62ed-11f0-9fe2-0242ac120002");
+            put(CustomHttpHeaders.USER_NAME, "admin");
+            put(CustomHttpHeaders.ROLE, "admin");
         }};
 
         // When

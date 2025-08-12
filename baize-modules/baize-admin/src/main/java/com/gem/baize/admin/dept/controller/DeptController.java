@@ -1,11 +1,11 @@
 package com.gem.baize.admin.dept.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.dept.entity.Dept;
 import com.gem.baize.admin.dept.service.DeptService;
 import com.gem.baize.api.admin.dept.domain.dto.DeptDTO;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
+import com.gem.baize.common.core.model.vo.PageResult;
 import com.gem.baize.common.core.model.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -57,15 +57,14 @@ public class DeptController {
         return Result.success();
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "分页查询部门")
-    public Result<Page<DeptDTO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @Valid @RequestBody DeptDTO dto) {
+    public Result<PageResult<DeptDTO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody DeptDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         Dept dept = new Dept();
         BeanUtils.copyProperties(dto, dept);
-        Page<Dept> page = deptService.page(pageParam, dept);
-        Page<DeptDTO> dtoPage = new Page<>();
-        BeanUtils.copyProperties(page, dtoPage);
-        return Result.success(dtoPage);
+        PageResult<DeptDTO> dtoPageResult = new PageResult<>();
+        BeanUtils.copyProperties(deptService.page(pageParam, dept), dtoPageResult);
+        return Result.success(dtoPageResult);
     }
 }

@@ -3,7 +3,7 @@ package com.gem.baize.admin.perm.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.gem.baize.common.core.annotation.GeneratedId;
+import com.gem.baize.common.core.id.annotation.GeneratedId;
 import com.gem.baize.common.datasource.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,13 +22,13 @@ public class Perm extends BaseEntity {
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private long tenantId;
+    private String tenantId;
 
     /**
      * 父级ID
      */
     @TableField(value = "parent_id")
-    private long parentId;
+    private String parentId;
     /**
      * 权限编码
      */

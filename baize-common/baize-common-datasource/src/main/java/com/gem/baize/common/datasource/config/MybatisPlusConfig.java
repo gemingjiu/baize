@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.gem.baize.common.core.id.handle.IdGeneratorProcessor;
 import com.gem.baize.common.datasource.handler.BaseEntityObjectHandler;
-import com.gem.baize.common.datasource.handler.IdGeneratorProcessor;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -24,12 +24,13 @@ public class MybatisPlusConfig {
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.POSTGRE_SQL));
         // 乐观锁
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+
         return interceptor;
     }
 
     @Bean
     public MetaObjectHandler metaObjectHandler() {
-        IdGeneratorProcessor idGeneratorProcessor  = new IdGeneratorProcessor();
+        IdGeneratorProcessor idGeneratorProcessor = new IdGeneratorProcessor();
         return new BaseEntityObjectHandler(idGeneratorProcessor);
     }
 

@@ -5,10 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.Tenant;
 import com.gem.baize.admin.tenant.service.TenantService;
 import com.gem.baize.api.admin.tenant.domain.dto.TenantDTO;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -62,9 +61,9 @@ public class TenantController {
         return Result.success();
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "分页查询租户")
-    public Result<Page<Tenant>> page(@RequestParam("current") int current, @RequestParam("size") int size, @Valid @RequestBody TenantDTO dto) {
+    public Result<Page<Tenant>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody TenantDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);

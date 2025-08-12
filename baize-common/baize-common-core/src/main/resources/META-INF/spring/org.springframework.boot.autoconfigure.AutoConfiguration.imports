@@ -1,1 +1,1 @@
-com.gem.baize.common.core.handle.GlobalExceptionHandler
+com.gem.baize.common.core.exception.handle.GlobalExceptionHandler

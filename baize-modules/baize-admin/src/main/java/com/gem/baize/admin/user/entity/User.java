@@ -3,7 +3,7 @@ package com.gem.baize.admin.user.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.gem.baize.common.core.annotation.GeneratedId;
+import com.gem.baize.common.core.id.annotation.GeneratedId;
 import com.gem.baize.common.datasource.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,12 +27,12 @@ public class User extends BaseEntity {
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private long tenantId;
+    private String tenantId;
     /**
      * 部门ID
      */
     @TableField(value = "dept_id")
-    private long deptId;
+    private String deptId;
     /**
      * 用户账号
      */
@@ -73,11 +73,6 @@ public class User extends BaseEntity {
      */
     @TableField(value = "password")
     private String password;
-    /**
-     * 显示顺序
-     */
-    @TableField(value = "sort")
-    private int sort;
     /**
      * 最后登录IP
      */

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.role.entity.Role;
 import com.gem.baize.admin.role.service.RoleService;
 import com.gem.baize.api.admin.role.domain.dto.RoleDTO;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,9 +57,9 @@ public class RoleController {
         return Result.success();
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
     @Operation(summary = "分页查询角色")
-    public Result<Page<RoleDTO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @Valid @RequestBody RoleDTO dto) {
+    public Result<Page<RoleDTO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody RoleDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         Role role = new Role();
         BeanUtils.copyProperties(dto, role);

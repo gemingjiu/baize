@@ -6,15 +6,18 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.role.entity.Role;
-import com.gem.baize.common.core.exception.BadRequestException;
+import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
+import com.gem.baize.common.datasource.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 
 public interface RoleMapper extends BaseMapper<Role> {
     default Role selectByBizId(String bizId) {
         LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Role::getBizId, bizId);
+        queryWrapper
+                .eq(Role::getBizId, bizId)
+                .orderByAsc(BaseEntity::getSort);
         return selectOne(queryWrapper);
     }
 
