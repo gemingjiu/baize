@@ -25,16 +25,27 @@ public class TenantController {
     private TenantService TenantService;
 
     @GetMapping("/{bizId}")
-    @Operation(summary = "根据ID获取租户", description = "根据ID查询租户信息")
-    public Result<TenantDTO> getById(@PathVariable("bizId") String bizId) {
+    @Operation(summary = "根据业务ID获取租户", description = "根据业务ID查询租户信息")
+    public Result<TenantDTO> getByBizId(@PathVariable("bizId") String bizId) {
         if (StringUtils.isBlank(bizId)) {
-            throw new BadRequestException("请求参数bizId不能为空》");
+            throw new BadRequestException("请求参数bizId不能为空");
         }
         Tenant tenant = TenantService.getByBizId(bizId);
         TenantDTO dto = new TenantDTO();
         BeanUtils.copyProperties(tenant, dto);
         return Result.success(dto);
     }
+
+    @GetMapping("inner/{Id}")
+    @Operation(summary = "根据主键ID获取租户", description = "根据主键ID查询租户信息")
+    public Result<Tenant> getById(@PathVariable("Id") String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BadRequestException("请求参数Id不能为空");
+        }
+        Tenant tenant = TenantService.getById(id);
+        return Result.success(tenant);
+    }
+
 
     @PostMapping
     @Operation(summary = "创建租户")
@@ -47,10 +58,13 @@ public class TenantController {
     @PutMapping("/{bizId}")
     @Operation(summary = "更新租户")
     public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody TenantDTO dto) {
+        // 双重验证
+        if(!bizId.equals(dto.getBizId())) {
+            throw new BadRequestException("请求参数BizId不一致");
+        }
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);
-        tenant.setBizId(bizId); // 确保使用路径ID
-        TenantService.update(tenant);
+        TenantService.updateByBizId(tenant);
         return Result.success();
     }
 
@@ -63,10 +77,13 @@ public class TenantController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询租户")
-    public Result<Page<Tenant>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody TenantDTO dto) {
+    public Result<Page<TenantDTO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody TenantDTO dto) {
         PageParam pageParam = new PageParam(current, size);
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);
-        return Result.success(TenantService.page(pageParam, tenant));
+        Page<Tenant> tenantPage = TenantService.page(pageParam, tenant);
+        Page<TenantDTO> pageDTO = new Page<>();
+        BeanUtils.copyProperties(tenantPage, pageDTO);
+        return Result.success(pageDTO);
     }
 }

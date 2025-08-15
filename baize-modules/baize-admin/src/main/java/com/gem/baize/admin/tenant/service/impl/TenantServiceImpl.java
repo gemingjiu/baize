@@ -24,7 +24,6 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
     @Autowired
     private TenantMapper tenantMapper;
 
-
     @Override
     public Tenant getByBizId(String bizId) {
         return Optional.ofNullable(tenantMapper.selectByBizId(bizId)).orElseThrow(() -> new NotFoundException("租户不存在"));
@@ -40,13 +39,13 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
     }
 
     @Override
-    public void update(Tenant tenant) {
-        int affectedRows = tenantMapper.updateByBizId(tenant);
-
+    public void updateByBizId(Tenant tenant) {
+        Long innerId = getByBizId(tenant.getBizId()).getId();
+        tenant.setId(innerId);
+        int affectedRows = tenantMapper.updateById(tenant);
         if (affectedRows <= 0) {
             throw new NotFoundException("租户信息更新失败，记录不存在");
         }
-
         if (affectedRows > 1) {
             throw new IntegrityViolationException("租户信息更新异常，影响了多条记录");
         }
@@ -54,7 +53,8 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant> impleme
 
     @Override
     public void deleteByBizId(String bizId) {
-        int affectedRows = tenantMapper.deleteByBizId(bizId);
+        Long innerId = getByBizId(bizId).getId();
+        int affectedRows = tenantMapper.deleteById(innerId);
         if (affectedRows <= 0) {
             throw new NotFoundException("租户信息删除失败，可能记录不存在");
         }

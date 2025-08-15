@@ -11,6 +11,9 @@ import com.gem.baize.common.core.exception.model.IntegrityViolationException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,12 +29,13 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     private DeptMapper deptMapper;
 
     @Override
+    @Cacheable(cacheNames = "sys_dept", key = "#bizId", sync = true)
     public Dept getByBizId(String bizId) {
         return Optional.ofNullable(deptMapper.selectByBizId(bizId)).orElseThrow(() -> new NotFoundException("部门不存在"));
-
     }
 
     @Override
+    @CachePut(cacheNames = "sys_dept", key = "#dept.bizId")
     public Integer create(Dept dept) {
         int result = deptMapper.insert(dept);
         if (result <= 0) {
@@ -41,6 +45,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
+    @CachePut(cacheNames = "sys_dept", key = "#dept.bizId")
     public void update(Dept dept) {
         int affectedRows = deptMapper.updateByBizId(dept);
 
@@ -54,6 +59,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
+    @CacheEvict(cacheNames = "sys_dept", key = "#bizId")
     public void deleteByBizId(String bizId) {
         int affectedRows = deptMapper.deleteByBizId(bizId);
         if (affectedRows <= 0) {

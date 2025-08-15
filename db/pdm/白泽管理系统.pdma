@@ -3409,9 +3409,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -3442,7 +3442,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "PASTE",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "889EEE02-1B19-4BC2-A8D3-5B47A593E2BF",
@@ -3489,9 +3489,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -3522,7 +3522,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "PASTE",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "28D9C609-EFFE-4D75-AC40-08FC24FEB1C5",
@@ -4214,15 +4214,17 @@
           "id": "FBCF0BE9-B6BE-4E3E-B574-1820A77EA83E"
         },
         {
+          "defKey": "INNER_ID",
+          "defName": "内部ID",
+          "baseDataType": "BIGINT",
+          "dataLen": "",
+          "numScale": "",
           "primaryKey": 0,
           "notNull": 1,
           "autoIncrement": 0,
-          "defKey": "INNER_ID",
-          "defName": "内部ID",
-          "baseDataType": "VARCHAR",
+          "intro": "",
           "orderValue": 1,
-          "id": "A37B4013-49D1-43CB-A488-E4ACEFED5F9B",
-          "dataLen": 50
+          "id": "811E3331-F8DA-42CE-B4FF-659EDA2C96D7"
         },
         {
           "primaryKey": 0,
@@ -4756,9 +4758,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -4789,7 +4791,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "B3A684F8-F41C-4066-9200-D7A6E59808A3",
@@ -5116,9 +5118,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -5149,7 +5151,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "8FED8B36-33D8-48B5-AF9F-A3C7D9FF4C92",
@@ -5196,9 +5198,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -5229,7 +5231,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "FF48EB91-9911-4A58-8BAC-408F31DC2AE8",
@@ -5452,9 +5454,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -5485,16 +5487,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "59B0B3AC-7756-4D88-A126-D489731B60BC",
             "defKey": "parent_id",
             "defName": "父部门id",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -5525,7 +5527,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "4345C2EC-2162-418B-929B-A8EEF6A88212",
@@ -5852,9 +5854,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -5885,7 +5887,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "2137AA17-B30B-44CD-94A2-E7FF66C0B352",
@@ -5932,9 +5934,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NAME",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -5965,7 +5967,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "361077D6-744A-4A6C-A417-D2505B41A458",
@@ -6179,9 +6181,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -6212,7 +6214,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "5BDFE17D-A709-4210-A096-D765A3A5024C",
@@ -6459,9 +6461,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -6492,7 +6494,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "CAEF769E-CC56-40A1-8396-13F821CC567E",
@@ -6539,9 +6541,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NAME",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -6572,7 +6574,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "090886CF-2477-42C0-B352-54121FC43B96",
@@ -6795,9 +6797,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -6828,7 +6830,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "6760D39D-7A7F-4487-9497-F22895ADF001",
@@ -7035,9 +7037,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -7068,7 +7070,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "2A2393BA-0595-40B8-A4B5-1CF1E1DE016B",
@@ -7115,9 +7117,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NAME",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -7148,7 +7150,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "13719D84-08F1-480F-89A9-5093D48C5084",
@@ -7350,9 +7352,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -7383,7 +7385,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "E71C281B-5F84-42CF-9B29-D0FF4F0531CA",
@@ -7790,9 +7792,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -7823,7 +7825,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "50D4C960-141B-4A1E-AF15-1FA4AA4FA118",
@@ -7870,9 +7872,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -7903,7 +7905,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "8961744C-A277-4201-A8BD-6AE194B232D7",
@@ -8117,9 +8119,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -8150,22 +8152,22 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "AED80058-1D38-491A-A92C-4D887FAD8C5D",
             "defKey": "parent_id",
             "defName": "父菜单ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dbDataType": "VARCHAR",
-            "dataLen": 50,
+            "dbDataType": "INT8",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
             "autoIncrement": 0,
-            "defaultValue": "''",
+            "defaultValue": "",
             "stndDictId": "",
             "stndDictKey": "",
             "stndFieldId": "",
@@ -8757,9 +8759,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NAME",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -8790,7 +8792,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "B1D0E47F-BB7C-4FC6-AF98-B123D999C3E4",
@@ -8837,9 +8839,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -8870,7 +8872,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "87448432-EFB9-4E33-A389-3AC48B48F01C",
@@ -9072,9 +9074,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -9105,16 +9107,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "5D8D7F85-8B82-4DFB-BF42-EAAD9D1EF852",
             "defKey": "parent_id",
             "defName": "父级ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -9145,7 +9147,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "1FF30EC6-96B8-4DBD-AE01-3FDFC78B920A",
@@ -9392,10 +9394,10 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NAME",
-            "dbDataType": "VARCHAR",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dbDataType": "INT8",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -9472,10 +9474,10 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NULL_NAME",
-            "dbDataType": "VARCHAR",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "",
+            "dbDataType": "INT8",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -9728,9 +9730,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -9761,7 +9763,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "E813B0D5-E2D7-406A-AB4D-063B3620B85D",
@@ -10008,9 +10010,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NAME",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -10041,7 +10043,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "9A806B92-DD41-46BC-953C-1539C5ACBBE5",
@@ -10088,9 +10090,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "SUB_NULL_NAME",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -10121,7 +10123,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "47950670-2C92-4B48-B05E-71E1D76125DB",
@@ -10344,9 +10346,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -10377,7 +10379,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "59683FE3-67B0-409D-BA4F-1845DC8D7325",
@@ -10744,9 +10746,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -10777,7 +10779,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "709B1E8B-DC54-405F-8A98-D22AB3584AB3",
@@ -10824,9 +10826,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -10857,7 +10859,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "D67BAF6B-7754-4EA0-88EB-55F43AE04FD2",
@@ -11000,9 +11002,9 @@
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11033,16 +11035,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "42B83B35-BD6C-4D7F-9911-447749932C7F",
             "defKey": "dept_id",
             "defName": "部门ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11073,7 +11075,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           }
         ],
         "indexes": [
@@ -11138,9 +11140,9 @@
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11171,16 +11173,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "7D703735-3874-4BD8-89FD-E351624DBF9B",
             "defKey": "menu_id",
             "defName": "菜单ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11211,7 +11213,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           }
         ],
         "indexes": [
@@ -11276,9 +11278,9 @@
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11309,16 +11311,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "E9E9A057-077F-49D6-97D2-52A0C92CE794",
             "defKey": "perm_id",
             "defName": "权限ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11349,7 +11351,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           }
         ],
         "indexes": [
@@ -11494,9 +11496,9 @@
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11527,16 +11529,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "483B37DB-89DD-4746-BE5D-7A5B5ED28998",
             "defKey": "dept_id",
             "defName": "部门ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -11567,7 +11569,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "B4A9BB49-B1BC-4609-BE81-7E98F3F91746",
@@ -12134,9 +12136,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -12167,7 +12169,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "A1E59AD7-430A-44E9-A5CD-E076B50ECDE0",
@@ -12214,9 +12216,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -12247,7 +12249,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "2A111D22-7FE0-49C6-85E4-28A9F9392E3E",
@@ -12941,9 +12943,9 @@
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
-            "baseDataType": "VARCHAR",
-            "bizDomainType": "",
-            "dataLen": 50,
+            "baseDataType": "BIGINT",
+            "bizDomainType": "INNER_ID",
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -12974,7 +12976,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "F31A0D0A-B57D-434F-A5DE-CDF9D697C77B",
@@ -13021,9 +13023,9 @@
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 0,
@@ -13054,7 +13056,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "26D72492-FD83-4A32-B5DB-CC31BAF39C95",
@@ -13200,9 +13202,9 @@
             "defKey": "user_id",
             "defName": "用户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -13233,16 +13235,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "DB0225B1-FB65-4B71-B295-AF74807CF2F7",
             "defKey": "post_id",
             "defName": "岗位ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -13273,7 +13275,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           }
         ],
         "indexes": [
@@ -13338,9 +13340,9 @@
             "defKey": "user_id",
             "defName": "用户ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -13371,16 +13373,16 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           },
           {
             "id": "75B3F0BA-8523-4AD0-A449-325D7DFC0A33",
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
-            "baseDataType": "VARCHAR",
+            "baseDataType": "BIGINT",
             "bizDomainType": "INNER_ID",
-            "dataLen": 50,
+            "dataLen": "",
             "numScale": "",
             "primaryKey": 0,
             "notNull": 1,
@@ -13411,7 +13413,7 @@
             "attr19": "",
             "attr20": "",
             "origin": "IMPORT",
-            "dbDataType": "VARCHAR"
+            "dbDataType": "INT8"
           }
         ],
         "indexes": [
@@ -17239,7 +17241,7 @@
     "readonly": false,
     "allowWs": false
   },
-  "updateTime": 1754986512315,
-  "signature": "47ef7ba01f57fac718c9f10993298b1d",
+  "updateTime": 1755244357546,
+  "signature": "2aef404147e6c8c517665799e7a5040d",
   "branchId": "1111"
 }

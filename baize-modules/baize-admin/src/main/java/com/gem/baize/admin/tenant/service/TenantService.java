@@ -14,7 +14,7 @@ public interface TenantService extends IService<Tenant> {
 
     Integer create(Tenant tenant);
 
-    void update(Tenant tenant);
+    void updateByBizId(Tenant tenant);
 
     void deleteByBizId(String bizId);
 

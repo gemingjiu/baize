@@ -19,7 +19,7 @@ import org.apache.skywalking.apm.toolkit.trace.TraceContext;
  * 链路追踪过滤器，用于在请求处理过程中添加链路追踪ID。
  */
 @Component
-public class TraceIdFilter implements GlobalFilter, Ordered {
+public class TraceFilter implements GlobalFilter, Ordered {
 
     private static final String MDC_TRACE_ID_KEY = "traceId";
 

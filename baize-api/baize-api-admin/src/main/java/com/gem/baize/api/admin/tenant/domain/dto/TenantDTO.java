@@ -10,35 +10,41 @@ import java.time.LocalDateTime;
  */
 @Data
 public class TenantDTO {
-    // 租户ID
+    /**
+     *  租户ID
+     */
     private String bizId;
-
-    // 租户名称
+    /**
+     * 租户名称
+     */
     private String tenantName;
-
-    // 租户编码
-
+    /**
+     * 租户编码
+     */
     private String tenantCode;
-
-    // 过期时间
-
+    /**
+     * 过期时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expireTime;
-
-    // 联系人
-
+    /**
+     * 联系人
+     */
     private String contactPerson;
-
-    // 联系号码
-
+    /**
+     * 联系号码
+     */
     private String contactPhone;
-
-    // 联系邮件
+    /**
+     * 联系邮件
+     */
     private String contactEmail;
-
-    // 短域名
+    /**
+     * 短域名
+     */
     private String domain;
-
-    // 最大用户数
+    /**
+     * 最大用户数
+     */
     private Integer maxUser;
 }

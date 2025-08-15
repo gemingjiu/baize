@@ -24,43 +24,6 @@ public interface TenantMapper extends BaseMapper<Tenant> {
         return selectOne(queryWrapper);
     }
 
-
-    default int updateByBizId(Tenant tenant) {
-        // 1. 参数校验
-        if (tenant == null || StringUtils.isBlank(tenant.getBizId())) {
-            throw new BadRequestException("业务ID不能为空");
-        }
-
-        // 2. 构建更新条件
-        LambdaUpdateWrapper<Tenant> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(Tenant::getBizId, tenant.getBizId());
-
-        // 3. 动态设置更新字段（只更新非null字段）
-        if (tenant.getTenantName() != null) {
-            updateWrapper.set(Tenant::getTenantName, tenant.getTenantName());
-        }
-        if (tenant.getStatus() != null) {
-            updateWrapper.set(Tenant::getStatus, tenant.getStatus());
-        }
-        if (tenant.getContactPhone() != null) {
-            updateWrapper.set(Tenant::getContactPhone, tenant.getContactPhone());
-        }
-        // 继续添加其他需要更新的字段...
-
-        updateWrapper.set(Tenant::getModifiedTime, LocalDateTime.now());
-
-
-        // 5. 执行更新
-        return update(updateWrapper);
-
-    }
-
-    default int deleteByBizId(String bizId) {
-        LambdaQueryWrapper<Tenant> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Tenant::getBizId, bizId);
-        return delete(queryWrapper);
-    }
-
     default Page<Tenant> selectPage(PageParam pageParam, Tenant tenant) {
         // 1. 构建分页对象
         Page<Tenant> page = new Page<>(pageParam.getPageNum(), pageParam.getPageSize());
