@@ -136,7 +136,7 @@ public class JwtUtils {
 
     @Data
     public static class Payload {
-        private String tenantId;
+        private Long tenantId;
         private String userId;
         private String traceId;
         private String subject;

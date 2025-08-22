@@ -27,7 +27,7 @@ public class User extends BaseEntity {
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private String tenantId;
+    private Long tenantId;
     /**
      * 部门ID
      */

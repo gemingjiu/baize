@@ -5,4 +5,5 @@ INSERT INTO sys_tenant (id, biz_id, tenant_code, tenant_name, expire_time, conta
 INSERT INTO sys_tenant (id, biz_id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark) VALUES(5, 'tenant-0916a3e0-b767-4d22-9817-69439bb9bf80', 'CXMT', '长鑫科技有限责任公司', '2025-07-25 16:48:10.000', '长鑫', '18988888888', '18988888888@189.cn', 'cxmt', 10, 5, '0', '0', 0, 1, '2025-07-25 16:48:10.654', NULL, '2025-07-25 16:48:10.655', NULL);
 
 
-INSERT INTO sys_dept (id, biz_id, tenant_id, parent_id, dept_name, leader, phone, email, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark) VALUES(1, 'dept-001', 1, 'admin', '总经理办公室', '雷军', '18988888888', '18988888888@189.cn', 1, '0', '0', 1, 1, '2025-08-11 17:33:07.797', NULL, NULL, NULL);
+
+INSERT INTO sys_dept (id, biz_id, tenant_id, parent_id, dept_name, leader, phone, email, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark) VALUES(1, 'dept-001', 1, 0, '总经理办公室', '雷军', '18988888888', '18988888888@189.cn', 1, '0', '0', 1, 1, '2025-08-11 17:33:07.797', NULL, NULL, NULL);

@@ -22,12 +22,12 @@ public class Dept extends BaseEntity {
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private String tenantId;
+    private Long tenantId;
     /**
      * 父部门id
      */
     @TableField(value = "parent_id")
-    private String parentId;
+    private Long parentId;
     /**
      * 部门名称
      */

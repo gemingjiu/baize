@@ -22,12 +22,12 @@ public class Menu extends BaseEntity {
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private String tenantId;
+    private Long tenantId;
     /**
      * 父菜单ID
      */
     @TableField(value = "parent_id")
-    private String parentId;
+    private Long parentId;
     /**
      * 菜单名称
      */

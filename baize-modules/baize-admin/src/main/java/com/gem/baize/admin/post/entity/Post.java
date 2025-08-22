@@ -22,7 +22,7 @@ public class Post extends BaseEntity {
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private String tenantId;
+    private Long tenantId;
     /**
      * 岗位编码
      */

@@ -22,13 +22,13 @@ public class Perm extends BaseEntity {
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private String tenantId;
+    private Long tenantId;
 
     /**
      * 父级ID
      */
     @TableField(value = "parent_id")
-    private String parentId;
+    private Long parentId;
     /**
      * 权限编码
      */

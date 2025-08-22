@@ -19,32 +19,6 @@ public interface DeptMapper extends BaseMapper<Dept> {
     }
 
 
-    default int updateByBizId(Dept dept) {
-        // 1. 参数校验
-        if (dept == null || StringUtils.isBlank(dept.getBizId())) {
-            throw new BadRequestException("业务ID不能为空");
-        }
-
-        // 2. 构建更新条件
-        LambdaUpdateWrapper<Dept> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(Dept::getBizId, dept.getBizId());
-
-        // 继续添加其他需要更新的字段...
-
-        updateWrapper.set(Dept::getModifiedTime, LocalDateTime.now());
-
-
-        // 5. 执行更新
-        return update(updateWrapper);
-
-    }
-
-    default int deleteByBizId(String bizId) {
-        LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Dept::getBizId, bizId);
-        return delete(queryWrapper);
-    }
-
     default Page<Dept> selectPage(PageParam pageParam, Dept dept) {
         // 1. 构建分页对象
         Page<Dept> page = new Page<>(pageParam.getPageNum(), pageParam.getPageSize());
