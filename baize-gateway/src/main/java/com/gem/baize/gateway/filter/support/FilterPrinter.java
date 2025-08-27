@@ -1,4 +1,4 @@
-package com.gem.baize.gateway.filter;
+package com.gem.baize.gateway.filter.support;
 
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;

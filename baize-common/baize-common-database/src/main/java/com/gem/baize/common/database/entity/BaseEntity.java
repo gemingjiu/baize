@@ -1,4 +1,4 @@
-package com.gem.baize.common.datasource.entity;
+package com.gem.baize.common.database.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;

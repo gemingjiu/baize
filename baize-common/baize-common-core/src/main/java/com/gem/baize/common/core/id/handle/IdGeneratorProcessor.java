@@ -5,7 +5,7 @@ import com.gem.baize.common.core.id.annotation.GeneratedId;
 import com.gem.baize.common.core.id.IdGenerator;
 import com.gem.baize.common.core.id.strategy.IncrementGenerator;
 import com.gem.baize.common.core.id.strategy.SnowflakeGenerator;
-import com.gem.baize.common.core.id.strategy.UuidGenerator;
+import com.gem.baize.common.core.id.strategy.UUIDGenerator;
 
 
 import java.lang.reflect.Field;
@@ -20,7 +20,7 @@ public class IdGeneratorProcessor {
     }
 
     private static void registerDefaultGenerators() {
-        registerGenerator("uuid", new UuidGenerator());
+        registerGenerator("uuid", new UUIDGenerator());
         registerGenerator("snowflake", new SnowflakeGenerator());
         registerGenerator("increment", new IncrementGenerator());
     }

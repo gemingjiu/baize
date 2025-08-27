@@ -1,4 +1,4 @@
-package com.gem.baize.common.datasource.enums;
+package com.gem.baize.common.database.enums;
 
 
 import com.baomidou.mybatisplus.annotation.IEnum;

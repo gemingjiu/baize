@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class UuidGenerator implements IdGenerator {
+public class UUIDGenerator implements IdGenerator {
 
     @Override
     public String generate(GeneratedId config) {

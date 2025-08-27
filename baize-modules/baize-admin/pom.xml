@@ -74,7 +74,7 @@
 
         <dependency>
             <groupId>com.gem</groupId>
-            <artifactId>baize-common-datasource</artifactId>
+            <artifactId>baize-common-database</artifactId>
         </dependency>
 
         <dependency>

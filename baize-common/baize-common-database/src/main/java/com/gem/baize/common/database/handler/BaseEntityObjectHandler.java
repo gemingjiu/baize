@@ -1,8 +1,9 @@
-package com.gem.baize.common.datasource.handler;
+package com.gem.baize.common.database.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.gem.baize.common.core.context.RequestContextHolder;
 import com.gem.baize.common.core.id.handle.IdGeneratorProcessor;
-import com.gem.baize.common.datasource.enums.StatusEnum;
+import com.gem.baize.common.database.enums.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 
@@ -19,8 +20,8 @@ public class BaseEntityObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        //TODO 获取当前用户信息
-        String userId = "admin";
+        // 取当前用户信息
+        String userId = RequestContextHolder.getUserId();
         // 1. 处理自动生成的ID
         idGeneratorProcessor.process(metaObject.getOriginalObject());
 
@@ -34,9 +35,10 @@ public class BaseEntityObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        //TODO 获取当前用户信息
-        String userId = "admin";
-        this.strictInsertFill(metaObject, "modified_by", String.class, userId);
+        // 取当前用户信息
+        String userId = RequestContextHolder.getUserId();
+
+        this.strictInsertFill(metaObject, "modifiedBy", String.class, userId);
         this.strictUpdateFill(metaObject, "modifiedTime", LocalDateTime::now, LocalDateTime.class);
     }
 }

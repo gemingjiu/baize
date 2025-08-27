@@ -46,7 +46,7 @@ public class DeptController {
         Dept dept = new Dept();
         BeanUtils.copyProperties(dto, dept);
         dept.setBizId(bizId);
-        deptService.update(dept);
+        deptService.updateByBizId(dept);
         return Result.success();
     }
 

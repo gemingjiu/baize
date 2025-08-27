@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.role.entity.Role;
 import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
-import com.gem.baize.common.datasource.entity.BaseEntity;
+import com.gem.baize.common.database.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 

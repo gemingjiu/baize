@@ -5,12 +5,11 @@ import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-
+import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import jakarta.annotation.PostConstruct;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -136,7 +135,7 @@ public class JwtUtils {
 
     @Data
     public static class Payload {
-        private Long tenantId;
+        private String tenantId;
         private String userId;
         private String traceId;
         private String subject;

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.gem.baize.common.core.id.annotation.GeneratedId;
-import com.gem.baize.common.datasource.entity.BaseEntity;
+import com.gem.baize.common.database.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
