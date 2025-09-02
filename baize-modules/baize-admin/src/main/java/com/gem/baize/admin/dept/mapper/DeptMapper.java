@@ -2,14 +2,10 @@ package com.gem.baize.admin.dept.mapper;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.dept.entity.Dept;
-import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
-
-import java.time.LocalDateTime;
 
 public interface DeptMapper extends BaseMapper<Dept> {
     default Dept selectByBizId(String bizId) {

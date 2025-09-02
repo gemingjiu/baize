@@ -65,9 +65,15 @@ public class RequestContextHolder {
         return get(CustomHttpHeaders.SUBJECT_ID);
     }
 
-    public static void setUserKey(String userKey) {
-        set(CustomHttpHeaders.SUBJECT_ID, userKey);
-    }
+    public static void setUserKey(String userKey) { set(CustomHttpHeaders.SUBJECT_ID, userKey); }
+
+    public static String getTraceId() { return get(CustomHttpHeaders.TRACE_ID); }
+
+    public static void setTraceId(String traceId) { set(CustomHttpHeaders.TRACE_ID, traceId); }
+
+    public static String getRole() { return get(CustomHttpHeaders.ROLE); }
+
+    public static void setRole(String role) { set(CustomHttpHeaders.ROLE, role); }
 
     public static void remove() {
         THREAD_LOCAL.remove();

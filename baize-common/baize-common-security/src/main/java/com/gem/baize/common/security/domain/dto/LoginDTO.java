@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class LoginDTO {
     @NotBlank(message = "租户标识不能为空")
-    @Schema(description = "租户域名或编码", example = "tenant1")
+    @Schema(description = "租户域名或编码", example = "tenant.com")
     private String tenant;
 
     @NotBlank(message = "用户名不能为空")

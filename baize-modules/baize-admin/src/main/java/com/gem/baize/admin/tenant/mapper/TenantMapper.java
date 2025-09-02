@@ -3,15 +3,11 @@ package com.gem.baize.admin.tenant.mapper;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.Tenant;
-import com.gem.baize.common.core.exception.model.BadRequestException;
 import com.gem.baize.common.core.model.dto.PageParam;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.time.LocalDateTime;
 
 /**
  * 租户 Mapper 接口

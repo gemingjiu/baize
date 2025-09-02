@@ -11,7 +11,6 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 public class DeptFeignClientFallbackFactory implements FallbackFactory<DeptFeignClient> {
     private static final Logger log = LoggerFactory.getLogger(DeptFeignClientFallbackFactory.class);
 
-
     @Override
     public DeptFeignClient create(Throwable cause) {
         return new DeptFeignClient() {
