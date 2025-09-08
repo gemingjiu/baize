@@ -13,21 +13,15 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_menu")
 public class Menu extends BaseEntity {
     /**
-     * 业务ID
-     */
-    @GeneratedId(prefix = "menu-")
-    @TableField(value = "biz_id", fill = FieldFill.INSERT_UPDATE)
-    private String bizId;
-    /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private Long tenantId;
+    private String tenantId;
     /**
      * 父菜单ID
      */
     @TableField(value = "parent_id")
-    private Long parentId;
+    private String parentId;
     /**
      * 菜单名称
      */

@@ -20,13 +20,13 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    @GetMapping("/{bizId}")
+    @GetMapping("/{id}")
     @Operation(summary = "根据ID获取部门", description = "根据ID查询部门信息")
-    public Result<DeptDTO> getById(@PathVariable String bizId) {
-        if (StringUtils.isBlank(bizId)) {
-            throw new BadRequestException("请求参数bizId不能为空》");
+    public Result<DeptDTO> getById(@PathVariable String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BadRequestException("请求参数id不能为空");
         }
-        Dept dept = deptService.getByBizId(bizId);
+        Dept dept = deptService.getById(id);
         DeptDTO dto = new DeptDTO();
         BeanUtils.copyProperties(dept, dto);
         return Result.success(dto);
@@ -40,20 +40,23 @@ public class DeptController {
         return Result.success(deptService.create(dept));
     }
 
-    @PutMapping("/{bizId}")
+    @PutMapping("/{id}")
     @Operation(summary = "更新部门")
-    public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody DeptDTO dto) {
+    public Result<Void> update(@PathVariable String id, @Valid @RequestBody DeptDTO dto) {
+        // 双重验证
+        if(!id.equals(dto.getId())) {
+            throw new BadRequestException("请求参数id不一致");
+        }
         Dept dept = new Dept();
         BeanUtils.copyProperties(dto, dept);
-        dept.setBizId(bizId);
-        deptService.updateByBizId(dept);
+        deptService.updateById(dept);
         return Result.success();
     }
 
-    @DeleteMapping("/{bizId}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "删除部门")
-    public Result<Void> delete(@PathVariable String bizId) {
-        deptService.deleteByBizId(bizId);
+    public Result<Void> delete(@PathVariable String id) {
+        deptService.deleteById(id);
         return Result.success();
     }
 

@@ -18,21 +18,15 @@ import java.time.LocalDateTime;
 @TableName("sys_user")
 public class User extends BaseEntity {
     /**
-     * 业务ID
-     */
-    @GeneratedId(prefix = "user-")
-    @TableField(value = "biz_id", fill = FieldFill.INSERT_UPDATE)
-    private String bizId;
-    /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private Long tenantId;
+    private String tenantId;
     /**
      * 部门ID
      */
     @TableField(value = "dept_id")
-    private String deptId;
+    private Long deptId;
     /**
      * 用户账号
      */

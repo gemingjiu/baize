@@ -13,7 +13,7 @@ public class TenantDTO {
     /**
      *  租户ID
      */
-    private String bizId;
+    private String id;
     /**
      * 租户名称
      */

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
-import com.gem.baize.common.core.id.handle.IdGeneratorProcessor;
 import com.gem.baize.common.database.handler.BaseEntityObjectHandler;
 import com.gem.baize.common.database.handler.CustomTenantHandler;
 import jakarta.annotation.PostConstruct;
@@ -34,9 +33,7 @@ public class MybatisPlusConfig {
 
     @Bean
     public MetaObjectHandler metaObjectHandler() {
-        IdGeneratorProcessor idGeneratorProcessor = new IdGeneratorProcessor();
-
-        return new BaseEntityObjectHandler(idGeneratorProcessor);
+        return new BaseEntityObjectHandler();
     }
 
     @PostConstruct

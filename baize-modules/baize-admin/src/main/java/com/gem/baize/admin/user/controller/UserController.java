@@ -23,13 +23,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{bizId}")
+    @GetMapping("/{id}")
     @Operation(summary = "根据ID获取用户", description = "根据ID查询用户信息")
-    public Result<UserVO> getById(@PathVariable String bizId) {
-        if (StringUtils.isBlank(bizId)) {
-            throw new BadRequestException("请求参数bizId不能为空》");
+    public Result<UserVO> getById(@PathVariable String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BadRequestException("请求参数id不能为空");
         }
-        User user = userService.getByBizId(bizId);
+        User user = userService.getById(id);
         UserVO vo = new UserVO();
         BeanUtils.copyProperties(user, vo);
         return Result.success(vo);
@@ -43,20 +43,23 @@ public class UserController {
         return Result.success(userService.create(user));
     }
 
-    @PutMapping("/{bizId}")
+    @PutMapping("/{id}")
     @Operation(summary = "更新用户")
-    public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody UserDTO dto) {
+    public Result<Void> update(@PathVariable String id, @Valid @RequestBody UserDTO dto) {
+        // 双重验证
+        if(!id.equals(dto.getId())) {
+            throw new BadRequestException("请求参数id不一致");
+        }
         User user = new User();
         BeanUtils.copyProperties(dto, user);
-        user.setBizId(bizId);
         userService.update(user);
         return Result.success();
     }
 
-    @DeleteMapping("/{bizId}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "删除用户")
-    public Result<Void> delete(@PathVariable String bizId) {
-        userService.deleteByBizId(bizId);
+    public Result<Void> delete(@PathVariable String id) {
+        userService.deleteById(id);
         return Result.success();
     }
 

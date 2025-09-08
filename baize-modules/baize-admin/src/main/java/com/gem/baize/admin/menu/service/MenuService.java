@@ -10,13 +10,14 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface MenuService extends IService<Menu> {
 
-    Menu getByBizId(String bizId);
+
+    Menu getById(String id);
 
     Integer create(Menu menu);
 
     void update(Menu menu);
 
-    void deleteByBizId(String bizId);
+    void deleteById(String id);
 
     Page<Menu> page(PageParam pageParam, Menu menu);
 }

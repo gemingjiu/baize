@@ -1,8 +1,8 @@
-package com.gem.baize.common.security.interceptor;
+package com.gem.baize.common.webmvc.interceptor;
 
 
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
-import com.gem.baize.common.core.context.RequestContextHolder;
+import com.gem.baize.common.webmvc.context.RequestContextHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
@@ -30,13 +30,12 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
         RequestContextHolder.setUserKey(userKey);
         RequestContextHolder.setRole(role);
 
-
         return true;
     }
 
     @Override
     public void afterConcurrentHandlingStarted(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // ⚡ 当请求被异步处理时（比如返回 Callable、DeferredResult），会调用这里
+        // 当请求被异步处理时（比如返回 Callable、DeferredResult），会调用这里
         // 一般可以做清理上下文、日志等操作
         RequestContextHolder.remove();
     }

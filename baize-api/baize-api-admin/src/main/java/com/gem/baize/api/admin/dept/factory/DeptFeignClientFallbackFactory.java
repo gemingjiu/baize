@@ -16,7 +16,7 @@ public class DeptFeignClientFallbackFactory implements FallbackFactory<DeptFeign
         return new DeptFeignClient() {
 
             @Override
-            public Result<DeptDTO> getById(String bizId) {
+            public Result<DeptDTO> getById(String id) {
                 return null;
             }
 
@@ -26,12 +26,12 @@ public class DeptFeignClientFallbackFactory implements FallbackFactory<DeptFeign
             }
 
             @Override
-            public Result<Void> update(String bizId, DeptDTO dto) {
+            public Result<Void> update(String id, DeptDTO dto) {
                 return null;
             }
 
             @Override
-            public Result<Void> delete(String bizId) {
+            public Result<Void> delete(String id) {
                 return null;
             }
 

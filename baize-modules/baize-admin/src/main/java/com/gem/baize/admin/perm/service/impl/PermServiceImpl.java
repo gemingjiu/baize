@@ -26,8 +26,8 @@ public class PermServiceImpl extends ServiceImpl<PermMapper, Perm> implements Pe
     private PermMapper permMapper;
 
     @Override
-    public Perm getByBizId(String bizId) {
-        return Optional.ofNullable(permMapper.selectByBizId(bizId)).orElseThrow(() -> new NotFoundException("权限不存在"));
+    public Perm getById(String id) {
+        return Optional.ofNullable(permMapper.selectById(Long.valueOf(id))).orElseThrow(() -> new NotFoundException("权限不存在"));
 
     }
 
@@ -42,7 +42,7 @@ public class PermServiceImpl extends ServiceImpl<PermMapper, Perm> implements Pe
 
     @Override
     public void update(Perm perm) {
-        int affectedRows = permMapper.updateByBizId(perm);
+        int affectedRows = permMapper.updateById(perm);
 
         if (affectedRows <= 0) {
             throw new NotFoundException("权限信息更新失败，记录不存在");
@@ -54,8 +54,8 @@ public class PermServiceImpl extends ServiceImpl<PermMapper, Perm> implements Pe
     }
 
     @Override
-    public void deleteByBizId(String bizId) {
-        int affectedRows = permMapper.deleteByBizId(bizId);
+    public void deleteById(String id) {
+        int affectedRows = permMapper.deleteById(Long.valueOf(id));
         if (affectedRows <= 0) {
             throw new NotFoundException("权限信息删除失败，可能记录不存在");
         }

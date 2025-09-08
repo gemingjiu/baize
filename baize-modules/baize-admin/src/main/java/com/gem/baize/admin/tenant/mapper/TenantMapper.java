@@ -14,11 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface TenantMapper extends BaseMapper<Tenant> {
-    default Tenant selectByBizId(String bizId) {
-        LambdaQueryWrapper<Tenant> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Tenant::getBizId, bizId);
-        return selectOne(queryWrapper);
-    }
 
     default Page<Tenant> selectPage(PageParam pageParam, Tenant tenant) {
         // 1. 构建分页对象

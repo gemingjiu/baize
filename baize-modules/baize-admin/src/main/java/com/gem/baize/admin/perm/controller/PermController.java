@@ -20,13 +20,13 @@ public class PermController {
     @Autowired
     private PermService permService;
 
-    @GetMapping("/{bizId}")
+    @GetMapping("/{id}")
     @Operation(summary = "根据ID获取权限", description = "根据ID查询权限信息")
-    public Result<PermDTO> getById(@PathVariable String bizId) {
-        if (StringUtils.isBlank(bizId)) {
-            throw new BadRequestException("请求参数bizId不能为空》");
+    public Result<PermDTO> getById(@PathVariable String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BadRequestException("请求参数id不能为空");
         }
-        Perm perm = permService.getByBizId(bizId);
+        Perm perm = permService.getById(id);
         PermDTO dto = new PermDTO();
         BeanUtils.copyProperties(perm, dto);
         return Result.success(dto);
@@ -40,20 +40,23 @@ public class PermController {
         return Result.success(permService.create(perm));
     }
 
-    @PutMapping("/{bizId}")
+    @PutMapping("/{id}")
     @Operation(summary = "更新权限")
-    public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody PermDTO dto) {
+    public Result<Void> update(@PathVariable String id, @Valid @RequestBody PermDTO dto) {
+        // 双重验证
+        if(!id.equals(dto.getId())) {
+            throw new BadRequestException("请求参数id不一致");
+        }
         Perm perm = new Perm();
         BeanUtils.copyProperties(dto, perm);
-        perm.setBizId(bizId);
         permService.update(perm);
         return Result.success();
     }
 
-    @DeleteMapping("/{bizId}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "删除权限")
-    public Result<Void> delete(@PathVariable String bizId) {
-        permService.deleteByBizId(bizId);
+    public Result<Void> delete(@PathVariable String id) {
+        permService.deleteById(id);
         return Result.success();
     }
 

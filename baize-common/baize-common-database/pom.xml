@@ -53,6 +53,10 @@
             <artifactId>baize-common-core</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.gem</groupId>
+            <artifactId>baize-common-webmvc</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

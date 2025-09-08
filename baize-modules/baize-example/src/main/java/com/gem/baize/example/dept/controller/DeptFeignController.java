@@ -14,9 +14,9 @@ public class DeptFeignController {
     @Resource
     private DeptFeignClient deptFeignClient;
 
-    @GetMapping("/{bizId}")
-    public Result<DeptDTO> getById(@PathVariable String bizId) {
-        return deptFeignClient.getById(bizId);
+    @GetMapping("/{id}")
+    public Result<DeptDTO> getById(@PathVariable String id) {
+        return deptFeignClient.getById(id);
     }
 
     @PostMapping(value = "/page")

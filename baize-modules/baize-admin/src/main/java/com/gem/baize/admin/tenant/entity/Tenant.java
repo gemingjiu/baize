@@ -18,12 +18,6 @@ import java.time.LocalDateTime;
 @TableName("sys_tenant")
 public class Tenant extends BaseEntity {
     /**
-     * 业务ID
-     */
-    @GeneratedId(prefix = "tenant-")
-    @TableField(value = "biz_id", fill = FieldFill.INSERT_UPDATE)
-    private String bizId;
-    /**
      * 租户名称
      */
     @TableField("tenant_name")

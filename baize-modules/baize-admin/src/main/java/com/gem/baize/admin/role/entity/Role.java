@@ -13,16 +13,10 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_role")
 public class Role extends BaseEntity {
     /**
-     * 业务ID
-     */
-    @GeneratedId(prefix = "role-")
-    @TableField(value = "biz_id", fill = FieldFill.INSERT_UPDATE)
-    private String bizId;
-    /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private Long tenantId;
+    private String tenantId;
     /**
      * 角色名称
      */

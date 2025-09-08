@@ -10,13 +10,13 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface PostService extends IService<Post> {
 
-    Post getByBizId(String bizId);
+    Post getById(String id);
 
     Integer create(Post post);
 
     void update(Post post);
 
-    void deleteByBizId(String bizId);
+    void deleteById(String id);
 
     Page<Post> page(PageParam pageParam, Post post);
 }

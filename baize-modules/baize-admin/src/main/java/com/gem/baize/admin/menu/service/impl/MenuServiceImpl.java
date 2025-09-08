@@ -26,8 +26,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     private MenuMapper menuMapper;
 
     @Override
-    public Menu getByBizId(String bizId) {
-        return Optional.ofNullable(menuMapper.selectByBizId(bizId)).orElseThrow(() -> new NotFoundException("部门不存在"));
+    public Menu getById(String id) {
+        return Optional.ofNullable(menuMapper.selectById(Long.valueOf(id))).orElseThrow(() -> new NotFoundException("部门不存在"));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Override
     public void update(Menu menu) {
-        int affectedRows = menuMapper.updateByBizId(menu);
+        int affectedRows = menuMapper.updateById(menu);
 
         if (affectedRows <= 0) {
             throw new NotFoundException("部门信息更新失败，记录不存在");
@@ -53,8 +53,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public void deleteByBizId(String bizId) {
-        int affectedRows = menuMapper.deleteByBizId(bizId);
+    public void deleteById(String id) {
+        int affectedRows = menuMapper.deleteById(Long.valueOf(id));
         if (affectedRows <= 0) {
             throw new NotFoundException("部门信息删除失败，可能记录不存在");
         }

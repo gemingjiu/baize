@@ -1,9 +1,8 @@
 
 DROP TABLE IF EXISTS sys_config;
 CREATE TABLE sys_config(
-                           id SERIAL NOT NULL,
-                           biz_id VARCHAR(50) NOT NULL,
-                           tenant_id VARCHAR(50) NOT NULL,
+                           id INT8 NOT NULL,
+                           tenant_id INT8 NOT NULL,
                            config_name VARCHAR(50),
                            config_key VARCHAR(64),
                            config_value VARCHAR(200),
@@ -12,15 +11,14 @@ CREATE TABLE sys_config(
                            status VARCHAR(1) NOT NULL DEFAULT '0',
                            deleted VARCHAR(1) NOT NULL DEFAULT '0',
                            version INT4 NOT NULL DEFAULT 0,
-                           created_by VARCHAR(50) NOT NULL,
+                           created_by INT8 NOT NULL,
                            created_time TIMESTAMP NOT NULL,
-                           modified_by VARCHAR(50),
+                           modified_by INT8,
                            modified_time TIMESTAMP,
                            remark VARCHAR(255),
                            PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_config.id IS '参数主键';
-COMMENT ON COLUMN sys_config.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_config.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_config.config_name IS '参数名称';
 COMMENT ON COLUMN sys_config.config_key IS '参数键名';
@@ -48,10 +46,9 @@ CREATE  UNIQUE INDEX sys_config_key_ukey ON sys_config (
 
 DROP TABLE IF EXISTS sys_dept;
 CREATE TABLE sys_dept(
-                         id SERIAL NOT NULL,
-                         biz_id VARCHAR(50) NOT NULL,
-                         tenant_id VARCHAR(50) NOT NULL,
-                         parent_id VARCHAR(50) NOT NULL,
+                         id INT8 NOT NULL,
+                         tenant_id INT8 NOT NULL,
+                         parent_id INT8 NOT NULL,
                          dept_name VARCHAR(50) NOT NULL,
                          leader VARCHAR(50) NOT NULL,
                          phone VARCHAR(32),
@@ -60,15 +57,14 @@ CREATE TABLE sys_dept(
                          status VARCHAR(1) NOT NULL DEFAULT '0',
                          deleted VARCHAR(1) NOT NULL DEFAULT '0',
                          version INT4 NOT NULL,
-                         created_by VARCHAR(50) NOT NULL,
+                         created_by INT8 NOT NULL,
                          created_time TIMESTAMP NOT NULL,
-                         modified_by VARCHAR(50),
+                         modified_by INT8,
                          modified_time TIMESTAMP,
                          remark VARCHAR(255),
                          PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_dept.id IS '主键ID';
-COMMENT ON COLUMN sys_dept.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_dept.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_dept.parent_id IS '父部门id';
 COMMENT ON COLUMN sys_dept.dept_name IS '部门名称';
@@ -93,24 +89,22 @@ CREATE  UNIQUE INDEX sys_dept_ukey ON sys_dept (
 
 DROP TABLE IF EXISTS sys_dict_type;
 CREATE TABLE sys_dict_type(
-                              id SERIAL NOT NULL,
-                              biz_id VARCHAR(50) NOT NULL,
-                              tenant_id VARCHAR(50) NOT NULL,
+                              id INT8 NOT NULL,
+                              tenant_id INT8 NOT NULL,
                               dict_name VARCHAR(50),
                               dict_type VARCHAR(32),
                               sort INT4,
                               status VARCHAR(1) NOT NULL DEFAULT '0',
                               deleted VARCHAR(1) NOT NULL DEFAULT '0',
                               version INT4 NOT NULL,
-                              created_by VARCHAR(50) NOT NULL,
+                              created_by INT8 NOT NULL,
                               created_time TIMESTAMP NOT NULL,
-                              modified_by VARCHAR(50),
+                              modified_by INT8,
                               modified_time TIMESTAMP,
                               remark VARCHAR(255),
                               PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_dict_type.id IS '主键ID';
-COMMENT ON COLUMN sys_dict_type.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_dict_type.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_dict_type.dict_name IS '字典名称';
 COMMENT ON COLUMN sys_dict_type.dict_type IS '字典类型';
@@ -136,23 +130,21 @@ CREATE  UNIQUE INDEX sys_dict_type_type_ukey ON sys_dict_type (
 
 DROP TABLE IF EXISTS sys_data_perm;
 CREATE TABLE sys_data_perm(
-                              id SERIAL NOT NULL,
-                              biz_id VARCHAR(50) NOT NULL,
-                              tenant_id VARCHAR(50) NOT NULL,
+                              id INT8 NOT NULL,
+                              tenant_id INT8 NOT NULL,
                               rule_name VARCHAR(50),
                               sort INT4,
                               status VARCHAR(1) NOT NULL DEFAULT '0',
                               deleted VARCHAR(1) NOT NULL DEFAULT '0',
                               version INT4 NOT NULL,
-                              created_by VARCHAR(50) NOT NULL,
+                              created_by INT8 NOT NULL,
                               created_time TIMESTAMP NOT NULL,
-                              modified_by VARCHAR(50),
+                              modified_by INT8,
                               modified_time TIMESTAMP,
                               remark VARCHAR(255),
                               PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_data_perm.id IS '主键ID';
-COMMENT ON COLUMN sys_data_perm.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_data_perm.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_data_perm.rule_name IS '规则名称';
 COMMENT ON COLUMN sys_data_perm.sort IS '排序';
@@ -173,9 +165,8 @@ CREATE  UNIQUE INDEX sys_data_perm_ukey ON sys_data_perm (
 
 DROP TABLE IF EXISTS sys_dict_data;
 CREATE TABLE sys_dict_data(
-                              id SERIAL NOT NULL,
-                              biz_id VARCHAR(50) NOT NULL,
-                              tenant_id VARCHAR(50) NOT NULL,
+                              id INT8 NOT NULL,
+                              tenant_id INT8 NOT NULL,
                               dict_type VARCHAR(32),
                               dict_label VARCHAR(50) NOT NULL DEFAULT '',
                               dict_value VARCHAR(100) DEFAULT '',
@@ -186,15 +177,14 @@ CREATE TABLE sys_dict_data(
                               status VARCHAR(1) NOT NULL DEFAULT '0',
                               deleted VARCHAR(1) NOT NULL DEFAULT '0',
                               version INT4 NOT NULL,
-                              created_by VARCHAR(50) NOT NULL,
+                              created_by INT8 NOT NULL,
                               created_time TIMESTAMP NOT NULL,
-                              modified_by VARCHAR(50),
+                              modified_by INT8,
                               modified_time TIMESTAMP,
                               remark VARCHAR(255),
                               PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_dict_data.id IS '主键ID';
-COMMENT ON COLUMN sys_dict_data.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_dict_data.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_dict_data.dict_type IS '字典类型';
 COMMENT ON COLUMN sys_dict_data.dict_label IS '字典标签';
@@ -220,10 +210,9 @@ CREATE  UNIQUE INDEX sys_dict_data_ukey ON sys_dict_data (
 
 DROP TABLE IF EXISTS sys_menu;
 CREATE TABLE sys_menu(
-                         id SERIAL NOT NULL,
-                         biz_id VARCHAR(50) NOT NULL,
-                         tenant_id VARCHAR(50) NOT NULL,
-                         parent_id VARCHAR(50) NOT NULL DEFAULT '',
+                         id INT8 NOT NULL,
+                         tenant_id INT8 NOT NULL,
+                         parent_id INT8 NOT NULL,
                          menu_name VARCHAR(50) NOT NULL,
                          path VARCHAR(255) DEFAULT '',
                          component VARCHAR(255),
@@ -238,15 +227,14 @@ CREATE TABLE sys_menu(
                          status VARCHAR(1) NOT NULL DEFAULT '0',
                          deleted VARCHAR(1) NOT NULL DEFAULT '0',
                          version INT4 NOT NULL,
-                         created_by VARCHAR(50) NOT NULL,
+                         created_by INT8 NOT NULL,
                          created_time TIMESTAMP NOT NULL,
-                         modified_by VARCHAR(50),
+                         modified_by INT8,
                          modified_time TIMESTAMP,
                          remark VARCHAR(255),
                          PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_menu.id IS '主键ID';
-COMMENT ON COLUMN sys_menu.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_menu.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_menu.parent_id IS '父菜单ID';
 COMMENT ON COLUMN sys_menu.menu_name IS '菜单名称';
@@ -277,25 +265,23 @@ CREATE  UNIQUE INDEX sys_menu_ukey ON sys_menu (
 
 DROP TABLE IF EXISTS sys_perm;
 CREATE TABLE sys_perm(
-                         id SERIAL NOT NULL,
-                         biz_id VARCHAR(50) NOT NULL,
-                         tenant_id VARCHAR(50) NOT NULL,
-                         parent_id VARCHAR(50) NOT NULL,
+                         id INT8 NOT NULL,
+                         tenant_id INT8 NOT NULL,
+                         parent_id INT8 NOT NULL,
                          perm_code VARCHAR(70) NOT NULL,
                          perm_name VARCHAR(90) NOT NULL,
                          sort INT4,
                          status VARCHAR(1) NOT NULL DEFAULT '0',
                          deleted VARCHAR(1) NOT NULL DEFAULT '0',
                          version INT4 NOT NULL DEFAULT 0,
-                         created_by VARCHAR(50) NOT NULL,
+                         created_by INT8 NOT NULL,
                          created_time TIMESTAMP NOT NULL,
-                         modified_by VARCHAR(50),
+                         modified_by INT8,
                          modified_time TIMESTAMP,
                          remark VARCHAR(255),
                          PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_perm.id IS '主键ID';
-COMMENT ON COLUMN sys_perm.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_perm.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_perm.parent_id IS '父级ID';
 COMMENT ON COLUMN sys_perm.perm_code IS '权限编码';
@@ -322,24 +308,22 @@ CREATE  UNIQUE INDEX sys_perm_code_ukey ON sys_perm (
 
 DROP TABLE IF EXISTS sys_post;
 CREATE TABLE sys_post(
-                         id SERIAL NOT NULL,
-                         biz_id VARCHAR(50) NOT NULL,
-                         tenant_id VARCHAR(50) NOT NULL,
+                         id INT8 NOT NULL,
+                         tenant_id INT8 NOT NULL,
                          post_code VARCHAR(70) NOT NULL,
                          post_name VARCHAR(90) NOT NULL,
                          sort INT4,
                          status VARCHAR(1) NOT NULL DEFAULT '0',
                          deleted VARCHAR(1) NOT NULL DEFAULT '0',
                          version INT4 NOT NULL DEFAULT 0,
-                         created_by VARCHAR(50) NOT NULL,
+                         created_by INT8 NOT NULL,
                          created_time TIMESTAMP NOT NULL,
-                         modified_by VARCHAR(50),
+                         modified_by INT8,
                          modified_time TIMESTAMP,
                          remark VARCHAR(255),
                          PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_post.id IS '岗位ID';
-COMMENT ON COLUMN sys_post.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_post.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_post.post_code IS '岗位编码';
 COMMENT ON COLUMN sys_post.post_name IS '岗位名称';
@@ -365,9 +349,8 @@ CREATE  UNIQUE INDEX sys_post_code_ukey ON sys_post (
 
 DROP TABLE IF EXISTS sys_role;
 CREATE TABLE sys_role(
-                         id SERIAL NOT NULL,
-                         biz_id VARCHAR(50) NOT NULL,
-                         tenant_id VARCHAR(50) NOT NULL,
+                         id INT8 NOT NULL,
+                         tenant_id INT8 NOT NULL,
                          role_name VARCHAR(50) NOT NULL,
                          role_code VARCHAR(64),
                          data_scope VARCHAR(1) NOT NULL DEFAULT '1',
@@ -377,15 +360,14 @@ CREATE TABLE sys_role(
                          status VARCHAR(1) NOT NULL DEFAULT '0',
                          deleted VARCHAR(1) NOT NULL DEFAULT '0',
                          version INT4 NOT NULL,
-                         created_by VARCHAR(50) NOT NULL,
+                         created_by INT8 NOT NULL,
                          created_time TIMESTAMP NOT NULL,
-                         modified_by VARCHAR(50),
+                         modified_by INT8,
                          modified_time TIMESTAMP,
                          remark VARCHAR(255),
                          PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_role.id IS '主键ID';
-COMMENT ON COLUMN sys_role.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_role.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_role.role_name IS '角色名称';
 COMMENT ON COLUMN sys_role.role_code IS '角色权限字符串';
@@ -414,8 +396,8 @@ CREATE  UNIQUE INDEX sys_role_code_ukey ON sys_role (
 
 DROP TABLE IF EXISTS sys_role_dept;
 CREATE TABLE sys_role_dept(
-                              role_id VARCHAR(50) NOT NULL,
-                              dept_id VARCHAR(50) NOT NULL
+                              role_id INT8 NOT NULL,
+                              dept_id INT8 NOT NULL
 );
 COMMENT ON COLUMN sys_role_dept.role_id IS '角色ID';
 COMMENT ON COLUMN sys_role_dept.dept_id IS '部门ID';
@@ -428,8 +410,8 @@ CREATE  UNIQUE INDEX sys_roel_dept_ukey ON sys_role_dept (
 
 DROP TABLE IF EXISTS sys_role_menu;
 CREATE TABLE sys_role_menu(
-                              role_id VARCHAR(50) NOT NULL,
-                              menu_id VARCHAR(50) NOT NULL
+                              role_id INT8 NOT NULL,
+                              menu_id INT8 NOT NULL
 );
 COMMENT ON COLUMN sys_role_menu.role_id IS '角色ID';
 COMMENT ON COLUMN sys_role_menu.menu_id IS '菜单ID';
@@ -442,8 +424,8 @@ CREATE INDEX sys_role_menu_ukey ON sys_role_menu (
 
 DROP TABLE IF EXISTS sys_role_perm;
 CREATE TABLE sys_role_perm(
-                              role_id VARCHAR(50) NOT NULL,
-                              perm_id VARCHAR(50) NOT NULL
+                              role_id INT8 NOT NULL,
+                              perm_id INT8 NOT NULL
 );
 COMMENT ON COLUMN sys_role_perm.role_id IS '角色ID';
 COMMENT ON COLUMN sys_role_perm.perm_id IS '权限ID';
@@ -456,10 +438,9 @@ CREATE  UNIQUE INDEX sys_role_perm_ukey ON sys_role_perm (
 
 DROP TABLE IF EXISTS sys_user;
 CREATE TABLE sys_user(
-                         id SERIAL NOT NULL,
-                         biz_id VARCHAR(50) NOT NULL,
-                         tenant_id VARCHAR(50) NOT NULL,
-                         dept_id VARCHAR(50) NOT NULL,
+                         id INT8 NOT NULL,
+                         tenant_id INT8 NOT NULL,
+                         dept_id INT8 NOT NULL,
                          user_name VARCHAR(90),
                          nick_name VARCHAR(90),
                          user_type VARCHAR(32),
@@ -474,15 +455,14 @@ CREATE TABLE sys_user(
                          status VARCHAR(1) NOT NULL DEFAULT '0',
                          deleted VARCHAR(1) NOT NULL DEFAULT '0',
                          version INT4 NOT NULL,
-                         created_by VARCHAR(50) NOT NULL,
+                         created_by INT8 NOT NULL,
                          created_time TIMESTAMP NOT NULL,
-                         modified_by VARCHAR(50),
+                         modified_by INT8,
                          modified_time TIMESTAMP,
                          remark VARCHAR(255),
                          PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_user.id IS '主键ID';
-COMMENT ON COLUMN sys_user.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_user.tenant_id IS '租户ID';
 COMMENT ON COLUMN sys_user.dept_id IS '部门ID';
 COMMENT ON COLUMN sys_user.user_name IS '用户账号';
@@ -513,8 +493,7 @@ CREATE  UNIQUE INDEX sys_user_ukey ON sys_user (
 
 DROP TABLE IF EXISTS sys_tenant;
 CREATE TABLE sys_tenant(
-                           id SERIAL NOT NULL,
-                           biz_id VARCHAR(50) NOT NULL,
+                           id INT8 NOT NULL,
                            tenant_code VARCHAR(64),
                            tenant_name VARCHAR(90),
                            expire_time TIMESTAMP,
@@ -527,15 +506,14 @@ CREATE TABLE sys_tenant(
                            status VARCHAR(1) NOT NULL DEFAULT '0',
                            deleted VARCHAR(1) NOT NULL DEFAULT '0',
                            version INT4 NOT NULL DEFAULT 0,
-                           created_by VARCHAR(50) NOT NULL,
+                           created_by INT8 NOT NULL,
                            created_time TIMESTAMP NOT NULL,
-                           modified_by VARCHAR(50),
+                           modified_by INT8,
                            modified_time TIMESTAMP,
                            remark VARCHAR(255),
                            PRIMARY KEY (id)
 );
 COMMENT ON COLUMN sys_tenant.id IS '主键ID';
-COMMENT ON COLUMN sys_tenant.biz_id IS '业务ID';
 COMMENT ON COLUMN sys_tenant.tenant_code IS '租户编码';
 COMMENT ON COLUMN sys_tenant.tenant_name IS '租户名称';
 COMMENT ON COLUMN sys_tenant.expire_time IS '过期时间';
@@ -555,9 +533,6 @@ COMMENT ON COLUMN sys_tenant.modified_time IS '更新时间';
 COMMENT ON COLUMN sys_tenant.remark IS '备注';
 COMMENT ON TABLE sys_tenant IS '租户信息表';
 
-CREATE  UNIQUE INDEX sys_tenant_ukey ON sys_tenant (
-                                                    biz_id ASC
-    );
 CREATE  UNIQUE INDEX sys_tenant_code_ukey ON sys_tenant (
                                                          tenant_code ASC
     );
@@ -567,8 +542,8 @@ CREATE  UNIQUE INDEX sys_tenant_name_ukey ON sys_tenant (
 
 DROP TABLE IF EXISTS sys_user_post;
 CREATE TABLE sys_user_post(
-                              user_id VARCHAR(50) NOT NULL,
-                              post_id VARCHAR(50) NOT NULL
+                              user_id INT8 NOT NULL,
+                              post_id INT8 NOT NULL
 );
 COMMENT ON COLUMN sys_user_post.user_id IS '用户ID';
 COMMENT ON COLUMN sys_user_post.post_id IS '岗位ID';
@@ -581,8 +556,8 @@ CREATE  UNIQUE INDEX sys_user_post_ukey ON sys_user_post (
 
 DROP TABLE IF EXISTS sys_user_role;
 CREATE TABLE sys_user_role(
-                              user_id VARCHAR(50) NOT NULL,
-                              role_id VARCHAR(50) NOT NULL
+                              user_id INT8 NOT NULL,
+                              role_id INT8 NOT NULL
 );
 COMMENT ON COLUMN sys_user_role.user_id IS '用户ID';
 COMMENT ON COLUMN sys_user_role.role_id IS '角色ID';

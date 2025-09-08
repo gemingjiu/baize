@@ -41,7 +41,7 @@
         <!-- SpringDoc OpenAPI WebMVC API -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
 
         <!-- SpringBoot Actuator -->

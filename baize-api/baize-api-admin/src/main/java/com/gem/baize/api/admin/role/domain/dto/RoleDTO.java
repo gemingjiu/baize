@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class RoleDTO {
     /**
-     * 业务ID
+     * ID
      */
-    private String bizId;
+    private String id;
     /**
      * 租户ID
      */

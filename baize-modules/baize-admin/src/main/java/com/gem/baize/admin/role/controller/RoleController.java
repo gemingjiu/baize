@@ -20,13 +20,13 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/{bizId}")
+    @GetMapping("/{id}")
     @Operation(summary = "根据ID获取角色", description = "根据ID查询角色信息")
-    public Result<RoleDTO> getById(@PathVariable String bizId) {
-        if (StringUtils.isBlank(bizId)) {
-            throw new BadRequestException("请求参数bizId不能为空》");
+    public Result<RoleDTO> getById(@PathVariable String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BadRequestException("请求参数id不能为空");
         }
-        Role role = roleService.getByBizId(bizId);
+        Role role = roleService.getById(id);
         RoleDTO dto = new RoleDTO();
         BeanUtils.copyProperties(role, dto);
         return Result.success(dto);
@@ -40,20 +40,23 @@ public class RoleController {
         return Result.success(roleService.create(role));
     }
 
-    @PutMapping("/{bizId}")
+    @PutMapping("/{id}")
     @Operation(summary = "更新角色")
-    public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody RoleDTO dto) {
+    public Result<Void> update(@PathVariable String id, @Valid @RequestBody RoleDTO dto) {
+        // 双重验证
+        if(!id.equals(dto.getId())) {
+            throw new BadRequestException("请求参数id不一致");
+        }
         Role role = new Role();
         BeanUtils.copyProperties(dto, role);
-        role.setBizId(bizId);
         roleService.update(role);
         return Result.success();
     }
 
-    @DeleteMapping("/{bizId}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "删除角色")
-    public Result<Void> delete(@PathVariable String bizId) {
-        roleService.deleteByBizId(bizId);
+    public Result<Void> delete(@PathVariable String id) {
+        roleService.deleteById(id);
         return Result.success();
     }
 

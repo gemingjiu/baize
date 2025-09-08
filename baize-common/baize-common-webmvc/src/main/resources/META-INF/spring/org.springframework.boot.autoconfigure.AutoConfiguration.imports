@@ -1,0 +1,3 @@
+com.gem.baize.common.webmvc.config.WebMvcConfig
+com.gem.baize.common.webmvc.interceptor.HeaderInterceptor
+com.gem.baize.common.webmvc.context.RequestContextHolder

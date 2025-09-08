@@ -10,13 +10,13 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface PermService extends IService<Perm> {
 
-    Perm getByBizId(String bizId);
+    Perm getById(String id);
 
     Integer create(Perm perm);
 
     void update(Perm perm);
 
-    void deleteByBizId(String bizId);
+    void deleteById(String id);
 
     Page<Perm> page(PageParam pageParam, Perm perm);
 }

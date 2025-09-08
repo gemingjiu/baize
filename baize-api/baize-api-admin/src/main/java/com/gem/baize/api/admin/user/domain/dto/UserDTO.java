@@ -9,7 +9,7 @@ public class UserDTO {
     /**
      * 业务ID
      */
-    private String bizId;
+    private String id;
     /**
      * 租户ID
      */

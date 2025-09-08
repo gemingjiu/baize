@@ -24,28 +24,17 @@ public class TenantController {
     @Autowired
     private TenantService TenantService;
 
-    @GetMapping("/{bizId}")
+    @GetMapping("/{id}")
     @Operation(summary = "根据业务ID获取租户", description = "根据业务ID查询租户信息")
-    public Result<TenantDTO> getByBizId(@PathVariable("bizId") String bizId) {
-        if (StringUtils.isBlank(bizId)) {
-            throw new BadRequestException("请求参数bizId不能为空");
+    public Result<TenantDTO> getById(@PathVariable("id") String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BadRequestException("请求参数id不能为空");
         }
-        Tenant tenant = TenantService.getByBizId(bizId);
+        Tenant tenant = TenantService.getById(id);
         TenantDTO dto = new TenantDTO();
         BeanUtils.copyProperties(tenant, dto);
         return Result.success(dto);
     }
-
-    @GetMapping("inner/{Id}")
-    @Operation(summary = "根据主键ID获取租户", description = "根据主键ID查询租户信息")
-    public Result<Tenant> getById(@PathVariable("Id") String id) {
-        if (StringUtils.isBlank(id)) {
-            throw new BadRequestException("请求参数Id不能为空");
-        }
-        Tenant tenant = TenantService.getById(id);
-        return Result.success(tenant);
-    }
-
 
     @PostMapping
     @Operation(summary = "创建租户")
@@ -55,23 +44,23 @@ public class TenantController {
         return Result.success(TenantService.create(tenant));
     }
 
-    @PutMapping("/{bizId}")
+    @PutMapping("/{id}")
     @Operation(summary = "更新租户")
-    public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody TenantDTO dto) {
+    public Result<Void> update(@PathVariable String id, @Valid @RequestBody TenantDTO dto) {
         // 双重验证
-        if(!bizId.equals(dto.getBizId())) {
-            throw new BadRequestException("请求参数BizId不一致");
+        if (!id.equals(dto.getId())) {
+            throw new BadRequestException("请求参数id不一致");
         }
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);
-        TenantService.updateByBizId(tenant);
+        TenantService.updateById(tenant);
         return Result.success();
     }
 
-    @DeleteMapping("/{bizId}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "删除租户")
-    public Result<Void> delete(@PathVariable("bizId") String bizId) {
-        TenantService.deleteByBizId(bizId);
+    public Result<Void> delete(@PathVariable("id") String id) {
+        TenantService.deleteById(id);
         return Result.success();
     }
 

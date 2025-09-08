@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 
 @Data
 public abstract class BaseEntity implements Serializable {
-    @TableId(type = IdType.AUTO)
-    private Long id; // 主键ID
+    @TableId(type = IdType.ASSIGN_ID)
+    private String id; // 主键ID
 
     @TableField(value = "sort", fill = FieldFill.INSERT)
     private int sort;

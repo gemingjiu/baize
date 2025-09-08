@@ -40,7 +40,7 @@
         <!-- SpringDoc OpenAPI WebMVC API -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
 
         <!-- SpringBoot Actuator -->
@@ -70,6 +70,11 @@
         <dependency>
             <groupId>com.gem</groupId>
             <artifactId>baize-common-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gem</groupId>
+            <artifactId>baize-common-webmvc</artifactId>
         </dependency>
 
         <dependency>

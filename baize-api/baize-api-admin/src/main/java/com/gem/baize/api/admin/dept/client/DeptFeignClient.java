@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "baize-admin", url = "http://localhost:8020",contextId = "DeptFeignClient",fallbackFactory = DeptFeignClientFallbackFactory.class)
 public interface DeptFeignClient {
-    @RequestMapping(value = "/admin/dept/{bizId}", method = RequestMethod.GET)
-    Result<DeptDTO> getById(@PathVariable("bizId") String bizId);
+    @RequestMapping(value = "/admin/dept/{id}", method = RequestMethod.GET)
+    Result<DeptDTO> getById(@PathVariable("id") String id);
 
     @RequestMapping(value = "/admin/dept", method = RequestMethod.POST)
     Result<Integer> create(@RequestBody DeptDTO deptDTO);
 
-    @RequestMapping(value = "/admin/dept/{bizId}", method = RequestMethod.PUT)
-    Result<Void> update(@PathVariable String bizId, @RequestBody DeptDTO dto);
+    @RequestMapping(value = "/admin/dept/{id}", method = RequestMethod.PUT)
+    Result<Void> update(@PathVariable String id, @RequestBody DeptDTO dto);
 
-    @RequestMapping(value = "/admin/dept/{bizId}", method = RequestMethod.DELETE)
-    Result<Void> delete(@PathVariable String bizId);
+    @RequestMapping(value = "/admin/dept/{id}", method = RequestMethod.DELETE)
+    Result<Void> delete(@PathVariable String id);
 
     @RequestMapping(value = "/admin/dept/page")
     Result<PageResult<DeptDTO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @RequestBody DeptDTO dto);

@@ -15,6 +15,7 @@
 
     <modules>
         <module>baize-common-core</module>
+        <module>baize-common-webmvc</module>
         <module>baize-common-security</module>
         <module>baize-common-database</module>
         <module>baize-common-cache</module>

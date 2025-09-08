@@ -10,13 +10,13 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface RoleService extends IService<Role> {
 
-    Role getByBizId(String bizId);
+    Role getById(String id);
 
     Integer create(Role role);
 
     void update(Role role);
 
-    void deleteByBizId(String bizId);
+    void deleteById(String id);
 
     Page<Role> page(PageParam pageParam, Role role);
 }

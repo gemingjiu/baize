@@ -13,22 +13,16 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_perm")
 public class Perm extends BaseEntity {
     /**
-     * 业务ID
-     */
-    @GeneratedId(prefix = "perm-")
-    @TableField(value = "biz_id", fill = FieldFill.INSERT_UPDATE)
-    private String bizId;
-    /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    private Long tenantId;
+    private String tenantId;
 
     /**
      * 父级ID
      */
     @TableField(value = "parent_id")
-    private Long parentId;
+    private String parentId;
     /**
      * 权限编码
      */

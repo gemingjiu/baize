@@ -20,13 +20,13 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
-    @GetMapping("/{bizId}")
+    @GetMapping("/{id}")
     @Operation(summary = "根据ID获取菜单", description = "根据ID查询菜单信息")
-    public Result<MenuDTO> getById(@PathVariable String bizId) {
-        if (StringUtils.isBlank(bizId)) {
-            throw new BadRequestException("请求参数bizId不能为空》");
+    public Result<MenuDTO> getById(@PathVariable String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new BadRequestException("请求参数id不能为空");
         }
-        Menu menu = menuService.getByBizId(bizId);
+        Menu menu = menuService.getById(id);
         MenuDTO dto = new MenuDTO();
         BeanUtils.copyProperties(menu, dto);
         return Result.success(dto);
@@ -40,20 +40,23 @@ public class MenuController {
         return Result.success(menuService.create(menu));
     }
 
-    @PutMapping("/{bizId}")
+    @PutMapping("/{id}")
     @Operation(summary = "更新菜单")
-    public Result<Void> update(@PathVariable String bizId, @Valid @RequestBody MenuDTO dto) {
+    public Result<Void> update(@PathVariable String id, @Valid @RequestBody MenuDTO dto) {
+        // 双重验证
+        if(!id.equals(dto.getId())) {
+            throw new BadRequestException("请求参数id不一致");
+        }
         Menu menu = new Menu();
         BeanUtils.copyProperties(dto, menu);
-        menu.setBizId(bizId);
         menuService.update(menu);
         return Result.success();
     }
 
-    @DeleteMapping("/{bizId}")
+    @DeleteMapping("/{id}")
     @Operation(summary = "删除菜单")
-    public Result<Void> delete(@PathVariable String bizId) {
-        menuService.deleteByBizId(bizId);
+    public Result<Void> delete(@PathVariable String id) {
+        menuService.deleteById(id);
         return Result.success();
     }
 

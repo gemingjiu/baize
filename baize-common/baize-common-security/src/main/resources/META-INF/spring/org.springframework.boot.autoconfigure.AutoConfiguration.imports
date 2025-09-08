@@ -1,2 +1,1 @@
-com.gem.baize.common.security.config.WebMvcConfig
 com.gem.baize.common.security.util.JwtUtils

@@ -10,13 +10,13 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface TenantService extends IService<Tenant> {
 
-    Tenant getByBizId(String bizId);
+    Tenant getById(String id);
 
     Integer create(Tenant tenant);
 
-    void updateByBizId(Tenant tenant);
+    void update(Tenant tenant);
 
-    void deleteByBizId(String bizId);
+    void deleteById(String id);
 
     Page<Tenant> page(PageParam pageParam, Tenant tenant);
 }

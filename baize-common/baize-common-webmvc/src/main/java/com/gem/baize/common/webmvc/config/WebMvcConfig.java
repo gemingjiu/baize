@@ -1,6 +1,6 @@
-package com.gem.baize.common.security.config;
+package com.gem.baize.common.webmvc.config;
 
-import com.gem.baize.common.security.interceptor.HeaderInterceptor;
+import com.gem.baize.common.webmvc.interceptor.HeaderInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 

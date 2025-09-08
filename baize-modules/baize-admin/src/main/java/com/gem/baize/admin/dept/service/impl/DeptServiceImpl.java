@@ -10,7 +10,6 @@ import com.gem.baize.common.core.exception.model.DataCreationException;
 import com.gem.baize.common.core.exception.model.IntegrityViolationException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.common.core.model.dto.PageParam;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -30,13 +29,13 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     private DeptMapper deptMapper;
 
     @Override
-    @Cacheable(cacheNames = "sys_dept", key = "#bizId", sync = true)
-    public Dept getByBizId(String bizId) {
-        return Optional.ofNullable(deptMapper.selectByBizId(bizId)).orElseThrow(() -> new NotFoundException("部门不存在"));
+    @Cacheable(cacheNames = "sys_dept", key = "#id", sync = true)
+    public Dept getById(String id) {
+        return Optional.ofNullable(deptMapper.selectById(Long.valueOf(id))).orElseThrow(() -> new NotFoundException("部门不存在"));
     }
 
     @Override
-    @CachePut(cacheNames = "sys_dept", key = "#dept.bizId")
+    @CachePut(cacheNames = "sys_dept", key = "#dept.id")
     public Integer create(Dept dept) {
         int result = deptMapper.insert(dept);
         if (result <= 0) {
@@ -46,11 +45,8 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
-    @CachePut(cacheNames = "sys_dept", key = "#dept.bizId")
-    public void updateByBizId(Dept dept) {
-        DeptService proxy = (DeptService) AopContext.currentProxy();
-        Long innerId = proxy.getByBizId(dept.getBizId()).getId();
-        dept.setId(innerId);
+    @CachePut(cacheNames = "sys_dept", key = "#dept.id")
+    public void update(Dept dept) {
         int affectedRows = deptMapper.updateById(dept);
 
         if (affectedRows <= 0) {
@@ -63,11 +59,9 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
-    @CacheEvict(cacheNames = "sys_dept", key = "#bizId")
-    public void deleteByBizId(String bizId) {
-        DeptService proxy = (DeptService) AopContext.currentProxy();
-        Long innerId = proxy.getByBizId(bizId).getId();
-        int affectedRows = deptMapper.deleteById(innerId);
+    @CacheEvict(cacheNames = "sys_dept", key = "#id")
+    public void deleteById(String id) {
+        int affectedRows = deptMapper.deleteById(Long.valueOf(id));
         if (affectedRows <= 0) {
             throw new NotFoundException("部门信息删除失败，可能记录不存在");
         }

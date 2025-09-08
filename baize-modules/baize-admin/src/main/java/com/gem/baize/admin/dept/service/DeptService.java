@@ -10,13 +10,13 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface DeptService extends IService<Dept> {
 
-    Dept getByBizId(String bizId);
+    Dept getById(String id);
 
     Integer create(Dept dept);
 
-    void updateByBizId(Dept dept);
+    void update(Dept dept);
 
-    void deleteByBizId(String bizId);
+    void deleteById(String id);
 
     Page<Dept> page(PageParam pageParam, Dept dept);
 }

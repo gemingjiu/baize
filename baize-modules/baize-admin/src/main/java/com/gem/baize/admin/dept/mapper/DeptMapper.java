@@ -8,13 +8,6 @@ import com.gem.baize.admin.dept.entity.Dept;
 import com.gem.baize.common.core.model.dto.PageParam;
 
 public interface DeptMapper extends BaseMapper<Dept> {
-    default Dept selectByBizId(String bizId) {
-        LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Dept::getBizId, bizId);
-        return selectOne(queryWrapper);
-    }
-
-
     default Page<Dept> selectPage(PageParam pageParam, Dept dept) {
         // 1. 构建分页对象
         Page<Dept> page = new Page<>(pageParam.getPageNum(), pageParam.getPageSize());
