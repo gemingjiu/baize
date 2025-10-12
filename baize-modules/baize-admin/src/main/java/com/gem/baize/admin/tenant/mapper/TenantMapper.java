@@ -21,10 +21,14 @@ public interface TenantMapper extends BaseMapper<Tenant> {
 
         // 2. 构建查询条件
         LambdaQueryWrapper<Tenant> wrapper = new LambdaQueryWrapper<>();
-
+        // 默认排序
+        wrapper.orderByAsc(Tenant::getSort);
         // 动态条件查询
         if (StringUtils.isNotBlank(tenant.getTenantName())) {
             wrapper.like(Tenant::getTenantName, tenant.getTenantName());
+        }
+        if (StringUtils.isNotBlank(tenant.getTenantCode())) {
+            wrapper.like(Tenant::getTenantCode, tenant.getTenantCode());
         }
         if (StringUtils.isNotBlank(tenant.getStatus())) {
             wrapper.eq(Tenant::getStatus, tenant.getStatus());

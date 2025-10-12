@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Override
     public User getById(String id) {
-        return Optional.ofNullable(userMapper.selectById(Long.valueOf(id))).orElseThrow(() -> new NotFoundException("用户不存在"));
+        return Optional.ofNullable(userMapper.selectById(id)).orElseThrow(() -> new NotFoundException("用户不存在"));
 
     }
 
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(String id) {
-        int affectedRows = userMapper.deleteById(Long.valueOf(id));
+        int affectedRows = userMapper.deleteById(id);
         if (affectedRows <= 0) {
             throw new NotFoundException("用户信息删除失败，可能记录不存在");
         }

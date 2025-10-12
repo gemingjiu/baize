@@ -31,7 +31,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     @Override
     @Cacheable(cacheNames = "sys_dept", key = "#id", sync = true)
     public Dept getById(String id) {
-        return Optional.ofNullable(deptMapper.selectById(Long.valueOf(id))).orElseThrow(() -> new NotFoundException("部门不存在"));
+        return Optional.ofNullable(deptMapper.selectById(id)).orElseThrow(() -> new NotFoundException("部门不存在"));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     @Override
     @CacheEvict(cacheNames = "sys_dept", key = "#id")
     public void deleteById(String id) {
-        int affectedRows = deptMapper.deleteById(Long.valueOf(id));
+        int affectedRows = deptMapper.deleteById(id);
         if (affectedRows <= 0) {
             throw new NotFoundException("部门信息删除失败，可能记录不存在");
         }

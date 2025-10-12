@@ -27,7 +27,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Override
     public Post getById(String id) {
-        return Optional.ofNullable(postMapper.selectById(Long.valueOf(id))).orElseThrow(() -> new NotFoundException("部门不存在"));
+        return Optional.ofNullable(postMapper.selectById(id)).orElseThrow(() -> new NotFoundException("部门不存在"));
 
     }
 
@@ -55,7 +55,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Override
     public void deleteById(String id) {
-        int affectedRows = postMapper.deleteById(Long.valueOf(id));
+        int affectedRows = postMapper.deleteById(id);
         if (affectedRows <= 0) {
             throw new NotFoundException("部门信息删除失败，可能记录不存在");
         }

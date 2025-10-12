@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class TenantController {
 
     @Autowired
-    private TenantService TenantService;
+    private TenantService tenantService;
 
     @GetMapping("/{id}")
     @Operation(summary = "根据业务ID获取租户", description = "根据业务ID查询租户信息")
@@ -30,7 +30,7 @@ public class TenantController {
         if (StringUtils.isBlank(id)) {
             throw new BadRequestException("请求参数id不能为空");
         }
-        Tenant tenant = TenantService.getById(id);
+        Tenant tenant = tenantService.getById(id);
         TenantDTO dto = new TenantDTO();
         BeanUtils.copyProperties(tenant, dto);
         return Result.success(dto);
@@ -41,7 +41,7 @@ public class TenantController {
     public Result<Integer> create(@Valid @RequestBody TenantDTO dto) {
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);
-        return Result.success(TenantService.create(tenant));
+        return Result.success(tenantService.create(tenant));
     }
 
     @PutMapping("/{id}")
@@ -53,14 +53,14 @@ public class TenantController {
         }
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);
-        TenantService.updateById(tenant);
+        tenantService.updateById(tenant);
         return Result.success();
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除租户")
     public Result<Void> delete(@PathVariable("id") String id) {
-        TenantService.deleteById(id);
+        tenantService.deleteById(id);
         return Result.success();
     }
 
@@ -70,9 +70,14 @@ public class TenantController {
         PageParam pageParam = new PageParam(current, size);
         Tenant tenant = new Tenant();
         BeanUtils.copyProperties(dto, tenant);
-        Page<Tenant> tenantPage = TenantService.page(pageParam, tenant);
-        Page<TenantDTO> pageDTO = new Page<>();
-        BeanUtils.copyProperties(tenantPage, pageDTO);
+        Page<Tenant> tenantPage = tenantService.page(pageParam, tenant);
+        Page<TenantDTO> pageDTO = (Page<TenantDTO>) tenantPage.convert(
+                item -> {
+                    TenantDTO tenantDTO = new TenantDTO();
+                    BeanUtils.copyProperties(item, tenantDTO);
+                    return tenantDTO;
+                });
+
         return Result.success(pageDTO);
     }
 }

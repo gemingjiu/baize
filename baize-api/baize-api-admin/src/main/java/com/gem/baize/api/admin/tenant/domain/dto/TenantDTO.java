@@ -1,6 +1,7 @@
 package com.gem.baize.api.admin.tenant.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gem.baize.common.core.model.dto.BaseDto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -9,11 +10,8 @@ import java.time.LocalDateTime;
  * 租户信息
  */
 @Data
-public class TenantDTO {
-    /**
-     *  租户ID
-     */
-    private String id;
+public class TenantDTO extends BaseDto {
+
     /**
      * 租户名称
      */
