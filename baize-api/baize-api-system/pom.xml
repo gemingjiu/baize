@@ -4,35 +4,30 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.gem</groupId>
-        <artifactId>baize-modules</artifactId>
+        <artifactId>baize-api</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>baize-example</artifactId>
+    <artifactId>baize-api-system</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>baize-example</name>
-    <description>baize-example</description>
+    <name>baize-api-system</name>
+    <description>baize-api-system</description>
+
     <dependencies>
-        <!-- SpringCloud Alibaba Nacos -->
+        <!-- SpringCloud Openfeign -->
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!-- SpringCloud Alibaba Nacos Config -->
+        <!-- SpringCloud Loadbalancer -->
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
-
-        <!-- SpringBoot Web -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>com.gem</groupId>
+            <artifactId>baize-common-core</artifactId>
         </dependency>
 
         <dependency>
@@ -40,12 +35,8 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.gem</groupId>
-            <artifactId>baize-api-system</artifactId>
-        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>

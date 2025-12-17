@@ -14,7 +14,7 @@
 
 
     <modules>
-        <module>baize-admin</module>
+        <module>baize-system</module>
         <module>baize-example</module>
     </modules>
 </project>

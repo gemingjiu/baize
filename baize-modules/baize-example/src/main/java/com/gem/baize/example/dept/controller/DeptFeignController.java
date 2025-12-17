@@ -8,7 +8,7 @@ import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/feign/admin/dept")
+@RequestMapping("/feign/system/dept")
 public class DeptFeignController {
 
     @Resource
@@ -19,7 +19,7 @@ public class DeptFeignController {
         return deptFeignClient.getById(id);
     }
 
-    @PostMapping(value = "/page")
+    @PostMapping(value = "/search")
     public Result<PageResult<DeptDTO>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @RequestBody DeptDTO dto) {
         return deptFeignClient.page(current, size, dto);
     }

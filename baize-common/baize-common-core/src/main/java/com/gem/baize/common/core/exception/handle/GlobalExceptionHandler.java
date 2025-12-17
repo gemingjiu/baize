@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     // 处理参数校验异常
     @ExceptionHandler(BadRequestException.class)
     public Result<Void> handleBadRequest(BadRequestException e) {
-        return Result.error(e.getCode(), e.getMessage());
+        return Result.error(e .getCode(), e.getMessage());
     }
 
     // 处理资源不存在异常

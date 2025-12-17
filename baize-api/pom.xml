@@ -16,7 +16,7 @@
 
 
     <modules>
-        <module>baize-api-admin</module>
+        <module>baize-api-system</module>
     </modules>
 
 </project>
