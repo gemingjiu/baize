@@ -31,19 +31,19 @@ public class GlobalExceptionHandler {
     // 处理参数校验异常
     @ExceptionHandler(BadRequestException.class)
     public Result<Void> handleBadRequest(BadRequestException e) {
-        return Result.error(e .getCode(), e.getMessage());
+        return Result.error(e);
     }
 
     // 处理资源不存在异常
     @ExceptionHandler(NotFoundException.class)
     public Result<Void> handleNotFound(NotFoundException e) {
-        return Result.error(e.getCode(), e.getMessage());
+        return Result.error(e);
     }
 
     // 处理权限不足异常
     @ExceptionHandler(ForbiddenException.class)
     public Result<Void> handleForbidden(ForbiddenException e) {
-        return Result.error(e.getCode(), e.getMessage());
+        return Result.error(e);
     }
 
     // 处理 BaseException

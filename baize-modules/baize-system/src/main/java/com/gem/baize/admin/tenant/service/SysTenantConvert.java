@@ -3,16 +3,12 @@ package com.gem.baize.admin.tenant.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.admin.tenant.entity.SysTenant;
 import com.gem.baize.api.admin.tenant.domain.dto.SysTenantDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+
 public interface SysTenantConvert {
 
-    SysTenantConvert INSTANCE = Mappers.getMapper(SysTenantConvert.class);
 
     // Entity -> DTO
     SysTenantDto toDto(SysTenant po);
@@ -21,7 +17,7 @@ public interface SysTenantConvert {
     SysTenant toEntity(SysTenantDto dto);
 
     // 使用DTO更新已存在的PO（忽略null值）
-    void updatePoFromDto(SysTenantDto dto, @MappingTarget SysTenant po);
+    void updatePoFromDto(SysTenantDto dto, SysTenant po);
 
     // 分页转换
     default Page<SysTenantDto> toDtoPage(Page<SysTenant> poPage) {

@@ -2,6 +2,7 @@ package com.gem.baize.gateway.filter;
 
 
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
+import com.gem.baize.common.security.domain.dto.Payload;
 import com.gem.baize.common.security.util.JwtUtils;
 import com.gem.baize.gateway.enums.FilterOrder;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +53,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return exchange.getResponse().setComplete();
         }
         try {
-            JwtUtils.Payload payload = jwtUtils.parsePayload(auth.replace(BEARER, ""));
+            Payload payload = jwtUtils.parsePayload(auth.replace(BEARER, ""));
             exchange.getRequest().mutate()
                     .header(CustomHttpHeaders.SUBJECT_ID, payload.getSubject())
                     .header(CustomHttpHeaders.TENANT_ID, payload.getTenantId())

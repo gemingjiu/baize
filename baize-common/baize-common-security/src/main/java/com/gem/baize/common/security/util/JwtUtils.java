@@ -2,6 +2,7 @@ package com.gem.baize.common.security.util;
 
 
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
+import com.gem.baize.common.security.domain.dto.Payload;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -133,14 +134,6 @@ public class JwtUtils {
     }
 
 
-    @Data
-    public static class Payload {
-        private String tenantId;
-        private String userId;
-        private String traceId;
-        private String subject;
-        private String userName;
-        private String role;
-    }
+
 }
 
