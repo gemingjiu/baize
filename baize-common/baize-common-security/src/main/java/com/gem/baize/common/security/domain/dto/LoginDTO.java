@@ -19,7 +19,7 @@ public class LoginDTO {
 
     @NotBlank(message = "用户名不能为空")
     @Pattern(regexp = "^[a-zA-Z0-9_]{4,20}$", message = "用户名格式错误")
-    @Schema(description = "用户名", example = "admin")
+    @Schema(description = "用户名", example = "system")
     private String username;
 
     @NotBlank(message = "密码不能为空")

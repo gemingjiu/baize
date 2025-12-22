@@ -40,8 +40,8 @@ class JwtUtilsTest {
             put(CustomHttpHeaders.TENANT_ID, "1");
             put(CustomHttpHeaders.USER_ID, "1");
             put(CustomHttpHeaders.TRACE_ID, "2caa18f6-62ed-11f0-9fe2-0242ac120002");
-            put(CustomHttpHeaders.USER_NAME, "admin");
-            put(CustomHttpHeaders.ROLE, "admin");
+            put(CustomHttpHeaders.USER_NAME, "system");
+            put(CustomHttpHeaders.ROLE, "system");
         }};
 
         // When
@@ -55,8 +55,8 @@ class JwtUtilsTest {
                 () -> assertThat(parsedClaims.get(CustomHttpHeaders.TENANT_ID)).isEqualTo("1"),
                 () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_ID)).isEqualTo("1"),
                 () -> assertThat(parsedClaims.get(CustomHttpHeaders.TRACE_ID)).isEqualTo("2caa18f6-62ed-11f0-9fe2-0242ac120002"),
-                () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_NAME)).isEqualTo("admin"),
-                () -> assertThat(parsedClaims.get(CustomHttpHeaders.ROLE)).isEqualTo("admin")
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_NAME)).isEqualTo("system"),
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.ROLE)).isEqualTo("system")
         );
 
         String tenantId = jwtUtils.getTenantId(token);
@@ -66,7 +66,7 @@ class JwtUtilsTest {
         String traceId = jwtUtils.getTraceId(token);
         assertThat(traceId).isEqualTo("2caa18f6-62ed-11f0-9fe2-0242ac120002");
         String userName = jwtUtils.getUserName(token);
-        assertThat(userName).isEqualTo("admin");
+        assertThat(userName).isEqualTo("system");
     }
 
     @Test
@@ -76,8 +76,8 @@ class JwtUtilsTest {
             put(CustomHttpHeaders.TENANT_ID, "1");
             put(CustomHttpHeaders.USER_ID, "1");
             put(CustomHttpHeaders.TRACE_ID, "2caa18f6-62ed-11f0-9fe2-0242ac120002");
-            put(CustomHttpHeaders.USER_NAME, "admin");
-            put(CustomHttpHeaders.ROLE, "admin");
+            put(CustomHttpHeaders.USER_NAME, "system");
+            put(CustomHttpHeaders.ROLE, "system");
         }};
 
         // When
@@ -91,8 +91,8 @@ class JwtUtilsTest {
                 () -> assertThat(payload.getTenantId()).isEqualTo("1"),
                 () -> assertThat(payload.getUserId()).isEqualTo("1"),
                 () -> assertThat(payload.getTraceId()).isEqualTo("2caa18f6-62ed-11f0-9fe2-0242ac120002"),
-                () -> assertThat(payload.getUserName()).isEqualTo("admin"),
-                () -> assertThat(payload.getRole()).isEqualTo("admin")
+                () -> assertThat(payload.getUserName()).isEqualTo("system"),
+                () -> assertThat(payload.getRole()).isEqualTo("system")
         );
     }
 

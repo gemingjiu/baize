@@ -1,7 +1,6 @@
 package com.gem.baize.common.core.model.vo;
 
 import com.gem.baize.common.core.exception.model.BaseException;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
@@ -9,7 +8,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 
-@AllArgsConstructor
 public class Result<T> implements Serializable {
     private final Integer code;
     private final String message;
@@ -17,15 +15,23 @@ public class Result<T> implements Serializable {
 
 
     public Result(int code, String message) {
-        this(code, message, null);
+        this.code = code;
+        this.message = message;
+        this.data = null;
+    }
+
+    public Result(Integer code, String message, T data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
     }
 
 
-    public static <T> Result<T> of(int code, String message, Optional<T> data) {
-        if (data.isPresent()) {
-            return new Result<>(code, message, data.get());
-        }
+    public static <T> Result<T> of(Integer code, String message, T data) {
+        return new Result<>(code, message, data);
+    }
 
+    public static <T> Result<T> of(Integer code, String message) {
         return new Result<>(code, message);
     }
 
@@ -46,22 +52,23 @@ public class Result<T> implements Serializable {
 
     // 错误响应（仅 code + message）
     public static <T> Result<T> error(int code, String message) {
-        return of(code, message, Optional.empty());
+        return of(code, message);
     }
 
     // 错误响应（code + message + data）
     public static <T> Result<T> error(int code, String message, T data) {
-        return of(code, message, Optional.ofNullable(data));
+        return of(code, message,data);
     }
 
     // 从 BaseException 转换
     public static <T> Result<T> error(BaseException e) {
-        return of(e.getCode(), e.getMessage(), Optional.empty());
+//        return of(e.getCode(), e.getMessage());
+        return null;
     }
 
     // 支持 HttpStatus（Spring 提供）
     public static <T> Result<T> error(HttpStatus status, String message) {
-        return of(status.value(), message, Optional.empty());
+        return of(status.value(), message);
     }
 
     // 提供 builder() 方法 - 改进版

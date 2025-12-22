@@ -1,1 +1,1 @@
-com.gem.baize.api.admin.dept.factory.DeptFeignClientFallbackFactory
+com.gem.baize.api.system.dept.factory.SysDeptFeignClientFallbackFactory

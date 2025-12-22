@@ -13972,7 +13972,7 @@
       {
         "id": "15E853C1-1504-4405-83EB-2335B4B27847",
         "type": "P",
-        "defKey": "baize-sysUserPo-role-relation",
+        "defKey": "baize-sysUserPo-sysRole-relation",
         "defName": "用户权限关联关系",
         "entityRelationRank": "F",
         "props": {
