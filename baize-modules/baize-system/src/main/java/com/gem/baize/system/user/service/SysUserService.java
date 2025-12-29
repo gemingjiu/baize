@@ -1,17 +1,17 @@
 package com.gem.baize.system.user.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gem.baize.system.user.po.SysUserPo;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.gem.baize.api.system.user.domain.dto.SysUserDto;
 import com.gem.baize.common.core.model.dto.PageParam;
+import com.gem.baize.system.user.entity.SysUser;
 
-public interface SysUserService {
-    SysUserPo getById(String id);
+public interface SysUserService extends IService<SysUser> {
+    SysUserDto getById(String id);
 
-    Integer create(SysUserPo sysUserPo);
+    Integer create(SysUserDto sysUserDto);
 
-    void update(SysUserPo sysUserPo);
+    void update(SysUserDto sysUserDto);
 
-    void deleteById(String id);
-
-    Page<SysUserPo> page(PageParam pageParam, SysUserPo sysUserPo);
+    Page<SysUserDto> page(Page<SysUser> page, SysUserDto sysUserDto);
 }

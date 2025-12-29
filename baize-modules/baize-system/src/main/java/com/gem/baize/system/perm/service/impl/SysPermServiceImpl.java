@@ -1,15 +1,19 @@
 package com.gem.baize.system.perm.service.impl;
 
 
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
+import com.gem.baize.common.core.exception.model.DataCreationException;
+import com.gem.baize.common.core.exception.model.DuplicateException;
+import com.gem.baize.common.core.exception.model.IntegrityViolationException;
+import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.system.perm.entity.SysPerm;
 import com.gem.baize.system.perm.mapper.SysPermMapper;
 import com.gem.baize.system.perm.service.SysPermService;
-import com.gem.baize.common.core.exception.model.DataCreationException;
-import com.gem.baize.common.core.exception.model.IntegrityViolationException;
-import com.gem.baize.common.core.exception.model.NotFoundException;
-import com.gem.baize.common.core.model.dto.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,14 +29,25 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     @Autowired
     private SysPermMapper sysPermMapper;
 
+    @Autowired
+    private SysPermConvert sysPermConvert;
+
     @Override
-    public SysPerm getById(String id) {
-        return Optional.ofNullable(sysPermMapper.selectById(id)).orElseThrow(() -> new NotFoundException("权限不存在"));
+    public SysPermDto getById(String id) {
+        SysPerm sysPerm = Optional.ofNullable(sysPermMapper.selectById(id)).orElseThrow(() -> new NotFoundException("权限不存在"));
+        return sysPermConvert.toDto(sysPerm);
 
     }
 
     @Override
-    public Integer create(SysPerm sysPerm) {
+    public Integer create(SysPermDto sysPermDto) {
+        SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
+
+        boolean exists = sysPermMapper.exists(Wrappers.<SysPerm>lambdaQuery()
+                .eq(SysPerm::getPermCode, sysPermDto.getPermCode()));
+        if (exists) {
+            throw new DuplicateException("权限编码已存在，请更换后重试");
+        }
         int result = sysPermMapper.insert(sysPerm);
         if (result <= 0) {
             throw new DataCreationException("权限创建失败");
@@ -41,7 +56,14 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     }
 
     @Override
-    public void update(SysPerm sysPerm) {
+    public void update(SysPermDto sysPermDto) {
+        SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
+
+        boolean exists = sysPermMapper.exists(Wrappers.<SysPerm>lambdaQuery()
+                .eq(SysPerm::getPermCode, sysPermDto.getPermCode()));
+        if (!exists) {
+            throw new DuplicateException("权限编码不存在，请更换后重试");
+        }
         int affectedRows = sysPermMapper.updateById(sysPerm);
 
         if (affectedRows <= 0) {
@@ -53,21 +75,29 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
         }
     }
 
-    @Override
-    public void deleteById(String id) {
-        int affectedRows = sysPermMapper.deleteById(id);
-        if (affectedRows <= 0) {
-            throw new NotFoundException("权限信息删除失败，可能记录不存在");
-        }
-        if (affectedRows > 1) {
-            throw new IntegrityViolationException("权限信息删除异常，影响了多条记录");
-        }
-    }
 
     @Override
-    public Page<SysPerm> page(PageParam pageParam, SysPerm sysPerm) {
-        return Optional.ofNullable(sysPermMapper.selectPage(pageParam, sysPerm))
+    public Page<SysPermDto> page(Page<SysPerm> page, SysPermDto sysPermDto) {
+        // 构建查询条件
+        LambdaQueryWrapper<SysPerm> wrapper = new LambdaQueryWrapper<>();
+
+        // 默认排序
+        wrapper.orderByAsc(SysPerm::getSort);
+
+        // 动态条件查询
+        if (StringUtils.isNotBlank(sysPermDto.getPermCode())) {
+            wrapper.like(SysPerm::getPermCode, sysPermDto.getPermCode());
+        }
+        if (StringUtils.isNotBlank(sysPermDto.getPermName())) {
+            wrapper.like(SysPerm::getPermName, sysPermDto.getPermName());
+        }
+        if (StringUtils.isNotBlank(sysPermDto.getParentId())) {
+            wrapper.eq(SysPerm::getParentId, sysPermDto.getParentId());
+        }
+
+        Page<SysPerm> sysPermPage = Optional.ofNullable(sysPermMapper.selectPage(page, wrapper))
                 .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到权限信息"));
+                .orElseThrow(() -> new NotFoundException("未找到授权信息"));
+        return sysPermConvert.toDtoPage(sysPermPage);
     }
 }

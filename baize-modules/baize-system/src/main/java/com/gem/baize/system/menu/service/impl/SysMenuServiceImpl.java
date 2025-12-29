@@ -1,15 +1,19 @@
 package com.gem.baize.system.menu.service.impl;
 
 
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
+import com.gem.baize.common.core.exception.model.DataCreationException;
+import com.gem.baize.common.core.exception.model.DuplicateException;
+import com.gem.baize.common.core.exception.model.IntegrityViolationException;
+import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.system.menu.entity.SysMenu;
 import com.gem.baize.system.menu.mapper.SysMenuMapper;
 import com.gem.baize.system.menu.service.SysMenuService;
-import com.gem.baize.common.core.exception.model.DataCreationException;
-import com.gem.baize.common.core.exception.model.IntegrityViolationException;
-import com.gem.baize.common.core.exception.model.NotFoundException;
-import com.gem.baize.common.core.model.dto.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,48 +29,76 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Autowired
     private SysMenuMapper sysMenuMapper;
 
+    @Autowired
+    private SysMenuConvert sysMenuConvert;
+
     @Override
-    public SysMenu getById(String id) {
-        return Optional.ofNullable(sysMenuMapper.selectById(id)).orElseThrow(() -> new NotFoundException("部门不存在"));
+    public SysMenuDto getById(String id) {
+        SysMenu sysMenu = Optional.ofNullable(sysMenuMapper.selectById(id)).orElseThrow(() -> new NotFoundException("菜单不存在"));
+        return sysMenuConvert.toDto(sysMenu);
     }
 
     @Override
-    public Integer create(SysMenu sysMenu) {
+    public Integer create(SysMenuDto sysMenuDto) {
+        SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
+
+        boolean exists = sysMenuMapper.exists(Wrappers.<SysMenu>lambdaQuery()
+                .eq(SysMenu::getMenuName, sysMenuDto.getMenuName()));
+
+        if (exists) {
+            throw new DuplicateException("菜单名称已存在，请更换后重试");
+        }
         int result = sysMenuMapper.insert(sysMenu);
         if (result <= 0) {
-            throw new DataCreationException("部门创建失败");
+            throw new DataCreationException("菜单创建失败");
         }
         return result;
     }
 
     @Override
-    public void update(SysMenu sysMenu) {
+    public void update(SysMenuDto sysMenuDto) {
+        SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
+
+        boolean exists = sysMenuMapper.exists(Wrappers.<SysMenu>lambdaQuery()
+                .eq(SysMenu::getMenuName, sysMenuDto.getMenuName()));
+
+        if (!exists) {
+            throw new DuplicateException("菜单名称不存在，请更换后重试");
+        }
         int affectedRows = sysMenuMapper.updateById(sysMenu);
 
         if (affectedRows <= 0) {
-            throw new NotFoundException("部门信息更新失败，记录不存在");
+            throw new NotFoundException("菜单信息更新失败，记录不存在");
         }
 
         if (affectedRows > 1) {
-            throw new IntegrityViolationException("部门信息更新异常，影响了多条记录");
+            throw new IntegrityViolationException("菜单信息更新异常，影响了多条记录");
         }
     }
 
-    @Override
-    public void deleteById(String id) {
-        int affectedRows = sysMenuMapper.deleteById(id);
-        if (affectedRows <= 0) {
-            throw new NotFoundException("部门信息删除失败，可能记录不存在");
-        }
-        if (affectedRows > 1) {
-            throw new IntegrityViolationException("部门信息删除异常，影响了多条记录");
-        }
-    }
 
     @Override
-    public Page<SysMenu> page(PageParam pageParam, SysMenu sysMenu) {
-        return Optional.ofNullable(sysMenuMapper.selectPage(pageParam, sysMenu))
+    public Page<SysMenuDto> page(Page<SysMenu> page, SysMenuDto sysMenuDto) {
+        // 构建查询条件
+        LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
+
+        // 默认排序
+        wrapper.orderByAsc(SysMenu::getSort);
+
+        // 动态条件查询
+        if (StringUtils.isNotBlank(sysMenuDto.getMenuName())) {
+            wrapper.like(SysMenu::getMenuName, sysMenuDto.getMenuName());
+        }
+        if (StringUtils.isNotBlank(sysMenuDto.getMenuType())) {
+            wrapper.like(SysMenu::getMenuType, sysMenuDto.getMenuType());
+        }
+        if (StringUtils.isNotBlank(sysMenuDto.getParentId())) {
+            wrapper.eq(SysMenu::getParentId, sysMenuDto.getParentId());
+        }
+
+        Page<SysMenu> sysPermPage = Optional.ofNullable(sysMenuMapper.selectPage(page, wrapper))
                 .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到部门信息"));
+                .orElseThrow(() -> new NotFoundException("未找到菜单信息"));
+        return sysMenuConvert.toDtoPage(sysPermPage);
     }
 }

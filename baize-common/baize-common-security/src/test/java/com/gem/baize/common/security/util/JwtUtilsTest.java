@@ -1,6 +1,7 @@
 package com.gem.baize.common.security.util;
 
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
+import com.gem.baize.common.security.domain.dto.Payload;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,7 @@ class JwtUtilsTest {
         System.out.println("Generated Token: " + token);
 
         // Then
-        JwtUtils.Payload payload = jwtUtils.parsePayload(token);
+        Payload payload = jwtUtils.parsePayload(token);
         assertAll(
                 () -> assertThat(payload.getSubject()).isEqualTo("1:1"),
                 () -> assertThat(payload.getTenantId()).isEqualTo("1"),

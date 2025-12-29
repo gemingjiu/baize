@@ -5,6 +5,7 @@ import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.common.webmvc.context.RequestContextHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 /**
@@ -22,13 +23,24 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
 
 
         // 存到上下文里，方便业务层使用
-        RequestContextHolder.setTenantId(tenantId);
-        RequestContextHolder.setTraceId(traceId);
-        RequestContextHolder.setUserId(userId);
-        RequestContextHolder.setUserKey(userKey);
-        RequestContextHolder.setUserName(userName);
-        RequestContextHolder.setUserKey(userKey);
-        RequestContextHolder.setRole(role);
+        if (StringUtils.isNotBlank(tenantId)) {
+            RequestContextHolder.setTenantId(tenantId);
+        }
+        if (StringUtils.isNotBlank(traceId)) {
+            RequestContextHolder.setTraceId(traceId);
+        }
+        if (StringUtils.isNotBlank(userId)) {
+            RequestContextHolder.setUserId(userId);
+        }
+        if (StringUtils.isNotBlank(userKey)) {
+            RequestContextHolder.setUserKey(userKey);
+        }
+        if (StringUtils.isNotBlank(userName)) {
+            RequestContextHolder.setUserName(userName);
+        }
+        if (StringUtils.isNotBlank(role)) {
+            RequestContextHolder.setRole(role);
+        }
 
         return true;
     }

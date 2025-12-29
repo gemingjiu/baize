@@ -1,6 +1,6 @@
 package com.gem.baize.api.system.dept.client;
 
-import com.gem.baize.api.system.dept.domain.dto.SysDeptDTO;
+import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
 import com.gem.baize.api.system.dept.factory.SysDeptFeignClientFallbackFactory;
 import com.gem.baize.common.core.model.vo.PageResult;
 import com.gem.baize.common.core.model.vo.Result;
@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 public interface SysDeptFeignClient {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    Result<Integer> create(@RequestBody SysDeptDTO sysDeptDTO);
+    Result<Integer> create(@RequestBody SysDeptDto sysDeptDTO);
 
     @RequestMapping(value = "/search")
-    Result<PageResult<SysDeptDTO>> page(@RequestParam("current") int current, @RequestParam("size") int size, @RequestBody SysDeptDTO dto);
+    Result<PageResult<SysDeptDto>> page(@RequestParam("current") int current, @RequestParam("size") int size, @RequestBody SysDeptDto dto);
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    Result<SysDeptDTO> getById(@PathVariable("id") String id);
+    Result<SysDeptDto> getById(@PathVariable("id") String id);
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    Result<Void> update(@PathVariable String id, @RequestBody SysDeptDTO dto);
+    Result<Void> update(@PathVariable String id, @RequestBody SysDeptDto dto);
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     Result<Void> delete(@PathVariable String id);

@@ -2,6 +2,7 @@ package com.gem.baize.system.role.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gem.baize.api.system.role.domain.dto.SysRoleDto;
 import com.gem.baize.system.role.entity.SysRole;
 import com.gem.baize.common.core.model.dto.PageParam;
 
@@ -10,13 +11,11 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface SysRoleService extends IService<SysRole> {
 
-    SysRole getById(String id);
+    SysRoleDto getById(String id);
 
-    Integer create(SysRole sysRole);
+    Integer create(SysRoleDto sysRoleDto);
 
-    void update(SysRole sysRole);
+    void update(SysRoleDto sysRoleDto);
 
-    void deleteById(String id);
-
-    Page<SysRole> page(PageParam pageParam, SysRole sysRole);
+    Page<SysRoleDto> page(Page<SysRole> page, SysRoleDto sysRoleDto);
 }

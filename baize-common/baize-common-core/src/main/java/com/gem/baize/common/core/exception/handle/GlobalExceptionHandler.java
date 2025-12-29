@@ -1,10 +1,9 @@
 package com.gem.baize.common.core.exception.handle;
 
-import com.gem.baize.common.core.exception.model.BadRequestException;
-import com.gem.baize.common.core.exception.model.BaseException;
-import com.gem.baize.common.core.exception.model.ForbiddenException;
-import com.gem.baize.common.core.exception.model.NotFoundException;
+import com.gem.baize.common.core.exception.model.*;
 import com.gem.baize.common.core.model.vo.Result;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -15,11 +14,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * 全局异常拦截器
  */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
     // 数据库统一拦截异常
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<Void> handleDuplicateKey(DuplicateKeyException e) {
+        return Result.error(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    public Result<Void> handleDuplicate(DuplicateException e) {
         return Result.error(HttpStatus.CONFLICT, e.getMessage());
     }
 

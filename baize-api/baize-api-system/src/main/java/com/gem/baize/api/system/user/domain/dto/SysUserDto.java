@@ -3,7 +3,7 @@ package com.gem.baize.api.system.user.domain.dto;
 import lombok.Data;
 
 @Data
-public class SysUserDTO {
+public class SysUserDto {
     /**
      * 业务ID
      */

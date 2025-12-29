@@ -3,7 +3,7 @@ package com.gem.baize.api.system.role.domain.dto;
 import lombok.Data;
 
 @Data
-public class SysRoleDTO {
+public class SysRoleDto {
     /**
      * ID
      */

@@ -1,15 +1,20 @@
 package com.gem.baize.system.role.service.impl;
 
 
+import com.alibaba.cloud.commons.lang.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gem.baize.api.system.role.domain.dto.SysRoleDto;
+import com.gem.baize.common.core.exception.model.DataCreationException;
+import com.gem.baize.common.core.exception.model.DuplicateException;
+import com.gem.baize.common.core.exception.model.IntegrityViolationException;
+import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.system.role.entity.SysRole;
 import com.gem.baize.system.role.mapper.SysRoleMapper;
 import com.gem.baize.system.role.service.SysRoleService;
-import com.gem.baize.common.core.exception.model.DataCreationException;
-import com.gem.baize.common.core.exception.model.IntegrityViolationException;
-import com.gem.baize.common.core.exception.model.NotFoundException;
-import com.gem.baize.common.core.model.dto.PageParam;
+import com.gem.baize.system.tenant.entity.SysTenant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,14 +30,24 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Autowired
     private SysRoleMapper sysRoleMapper;
 
-    @Override
-    public SysRole getById(String id) {
-        return Optional.ofNullable(sysRoleMapper.selectById(id)).orElseThrow(() -> new NotFoundException("角色不存在"));
+    @Autowired
+    private SysRoleConvert sysRoleConvert;
 
+    @Override
+    public SysRoleDto getById(String id) {
+        SysRole sysRole = Optional.ofNullable(sysRoleMapper.selectById(id)).orElseThrow(() -> new NotFoundException("角色不存在"));
+        return sysRoleConvert.toDto(sysRole);
     }
 
     @Override
-    public Integer create(SysRole sysRole) {
+    public Integer create(SysRoleDto sysRoleDto) {
+        SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
+        boolean exists = sysRoleMapper.exists(Wrappers.<SysRole>lambdaQuery()
+                .eq(SysRole::getRoleCode, sysRoleDto.getRoleCode()));
+        if (exists) {
+            throw new DuplicateException("角色编码已存在，请更换后重试");
+        }
+
         int result = sysRoleMapper.insert(sysRole);
         if (result <= 0) {
             throw new DataCreationException("角色创建失败");
@@ -41,7 +56,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public void update(SysRole sysRole) {
+    public void update(SysRoleDto sysRoleDto) {
+
+        SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
+        boolean exists = sysRoleMapper.exists(Wrappers.<SysRole>lambdaQuery()
+                .eq(SysRole::getRoleCode, sysRoleDto.getRoleCode()));
+        if (!exists) {
+            throw new DuplicateException("角色编码不存在，请更换后重试");
+        }
         int affectedRows = sysRoleMapper.updateById(sysRole);
 
         if (affectedRows <= 0) {
@@ -53,21 +75,29 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
     }
 
-    @Override
-    public void deleteById(String id) {
-        int affectedRows = sysRoleMapper.deleteById(id);
-        if (affectedRows <= 0) {
-            throw new NotFoundException("角色信息删除失败，可能记录不存在");
-        }
-        if (affectedRows > 1) {
-            throw new IntegrityViolationException("角色信息删除异常，影响了多条记录");
-        }
-    }
 
     @Override
-    public Page<SysRole> page(PageParam pageParam, SysRole sysRole) {
-        return Optional.ofNullable(sysRoleMapper.selectPage(pageParam, sysRole))
+    public Page<SysRoleDto> page(Page<SysRole> page, SysRoleDto sysRoleDto) {
+        // 构建查询条件
+        LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
+
+        // 默认排序
+        wrapper.orderByAsc(SysRole::getSort);
+
+        // 动态条件查询
+        if (StringUtils.isNotBlank(sysRoleDto.getRoleName())) {
+            wrapper.like(SysRole::getRoleName, sysRoleDto.getRoleName());
+        }
+        if (StringUtils.isNotBlank(sysRoleDto.getRoleCode())) {
+            wrapper.like(SysRole::getRoleCode, sysRoleDto.getRoleCode());
+        }
+        if (StringUtils.isNotBlank(sysRoleDto.getTenantId())) {
+            wrapper.eq(SysRole::getTenantId, sysRoleDto.getTenantId());
+        }
+
+        Page<SysRole> sysRolePage = Optional.ofNullable(sysRoleMapper.selectPage(page, wrapper))
                 .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
                 .orElseThrow(() -> new NotFoundException("未找到角色信息"));
+        return sysRoleConvert.toDtoPage(sysRolePage);
     }
 }

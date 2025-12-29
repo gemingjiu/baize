@@ -1,7 +1,7 @@
 package com.gem.baize.api.system.dept.factory;
 
 import com.gem.baize.api.system.dept.client.SysDeptFeignClient;
-import com.gem.baize.api.system.dept.domain.dto.SysDeptDTO;
+import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
 import com.gem.baize.common.core.model.vo.PageResult;
 import com.gem.baize.common.core.model.vo.Result;
 import org.slf4j.Logger;
@@ -16,17 +16,17 @@ public class SysDeptFeignClientFallbackFactory implements FallbackFactory<SysDep
         return new SysDeptFeignClient() {
 
             @Override
-            public Result<SysDeptDTO> getById(String id) {
+            public Result<SysDeptDto> getById(String id) {
                 return null;
             }
 
             @Override
-            public Result<Integer> create(SysDeptDTO sysDeptDTO) {
+            public Result<Integer> create(SysDeptDto sysDeptDTO) {
                 return null;
             }
 
             @Override
-            public Result<Void> update(String id, SysDeptDTO dto) {
+            public Result<Void> update(String id, SysDeptDto dto) {
                 return null;
             }
 
@@ -36,7 +36,7 @@ public class SysDeptFeignClientFallbackFactory implements FallbackFactory<SysDep
             }
 
             @Override
-            public Result<PageResult<SysDeptDTO>> page(int current, int size, SysDeptDTO dto) {
+            public Result<PageResult<SysDeptDto>> page(int current, int size, SysDeptDto dto) {
                 return null;
             }
         };

@@ -1,4 +1,4 @@
-package com.gem.baize.system.user.po;
+package com.gem.baize.system.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_user")
-public class SysUserPo extends BaseEntity {
+public class SysUser extends BaseEntity {
     /**
      * 租户ID
      */

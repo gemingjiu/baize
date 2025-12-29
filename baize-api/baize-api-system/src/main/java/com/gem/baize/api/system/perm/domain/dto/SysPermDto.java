@@ -3,7 +3,7 @@ package com.gem.baize.api.system.perm.domain.dto;
 import lombok.Data;
 
 @Data
-public class SysPermDTO {
+public class SysPermDto {
     /**
      * 业务ID
      */

@@ -1,4 +1,4 @@
-package com.gem.baize.system.tenant.service;
+package com.gem.baize.system.tenant.service.impl;
 
 import com.gem.baize.system.tenant.entity.SysTenant;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
@@ -16,7 +16,6 @@ public class SysTenantConvert extends BaseConvert<SysTenant, SysTenantDto> {
         SysTenantDto dto = new SysTenantDto();
         BeanUtils.copyProperties(entity, dto);
         // 特殊字段处理
-        // dto.setStatusName(convertStatus(entity.getStatus()));
         return dto;
     }
 
@@ -28,7 +27,6 @@ public class SysTenantConvert extends BaseConvert<SysTenant, SysTenantDto> {
         SysTenant entity = new SysTenant();
         BeanUtils.copyProperties(dto, entity);
         // 初始化Entity特殊字段
-        // entity.setCreateTime(LocalDateTime.now());
         return entity;
     }
 }

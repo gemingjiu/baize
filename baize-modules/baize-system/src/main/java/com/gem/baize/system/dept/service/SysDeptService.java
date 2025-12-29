@@ -2,6 +2,7 @@ package com.gem.baize.system.dept.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
 import com.gem.baize.system.dept.entity.SysDept;
 import com.gem.baize.common.core.model.dto.PageParam;
 
@@ -10,13 +11,11 @@ import com.gem.baize.common.core.model.dto.PageParam;
  */
 public interface SysDeptService extends IService<SysDept> {
 
-    SysDept getById(String id);
+    SysDeptDto getById(String id);
 
-    Integer create(SysDept sysDept);
+    Integer create(SysDeptDto sysDeptDto);
 
-    void update(SysDept sysDept);
+    void update(SysDeptDto sysDeptDto);
 
-    void deleteById(String id);
-
-    Page<SysDept> page(PageParam pageParam, SysDept sysDept);
+    Page<SysDeptDto> page(Page<SysDept> page, SysDeptDto sysDeptDto);
 }

@@ -13,4 +13,13 @@ public abstract class BaseDto implements Serializable {
     private String status;
 
     private String remark;
+
+
+    public String getRemark() {
+        return remark == null ? "" : remark;
+    }
+
+    public String getStatus() {
+        return status == null ? "" : status;
+    }
 }

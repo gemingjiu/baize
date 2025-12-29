@@ -3,7 +3,7 @@ package com.gem.baize.api.system.post.domain.dto;
 import lombok.Data;
 
 @Data
-public class SysPostDTO {
+public class SysPostDto {
     /**
      * 业务ID
      */
