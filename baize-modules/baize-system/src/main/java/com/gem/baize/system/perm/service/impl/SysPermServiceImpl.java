@@ -15,7 +15,11 @@ import com.gem.baize.system.perm.entity.SysPerm;
 import com.gem.baize.system.perm.mapper.SysPermMapper;
 import com.gem.baize.system.perm.service.SysPermService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
@@ -33,6 +37,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     private SysPermConvert sysPermConvert;
 
     @Override
+    @Cacheable(cacheNames = "sys_perm", key = "#id")
     public SysPermDto getById(String id) {
         SysPerm sysPerm = Optional.ofNullable(sysPermMapper.selectById(id)).orElseThrow(() -> new NotFoundException("权限不存在"));
         return sysPermConvert.toDto(sysPerm);
@@ -40,6 +45,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     }
 
     @Override
+    @Transactional
     public Integer create(SysPermDto sysPermDto) {
         SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
 
@@ -56,7 +62,9 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     }
 
     @Override
-    public void update(SysPermDto sysPermDto) {
+    @Transactional
+    @CachePut(cacheNames = "sys_perm", key = "#sysPermDto.id")
+    public void updateById(SysPermDto sysPermDto) {
         SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
 
         boolean exists = sysPermMapper.exists(Wrappers.<SysPerm>lambdaQuery()
@@ -73,6 +81,12 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
         if (affectedRows > 1) {
             throw new IntegrityViolationException("权限信息更新异常，影响了多条记录");
         }
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "sys_perm",key ="#id")
+    public void removeById(String id) {
+        super.removeById(id);
     }
 
 

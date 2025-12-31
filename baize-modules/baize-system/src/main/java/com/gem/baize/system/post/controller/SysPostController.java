@@ -1,17 +1,14 @@
 package com.gem.baize.system.post.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gem.baize.system.dept.entity.SysDept;
 import com.gem.baize.system.post.entity.SysPost;
 import com.gem.baize.system.post.service.SysPostService;
 import com.gem.baize.api.system.post.domain.dto.SysPostDto;
 import com.gem.baize.common.core.exception.model.BadRequestException;
-import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +40,7 @@ public class SysPostController {
         if(!id.equals(dto.getId())) {
             throw new BadRequestException("请求参数id不一致");
         }
-        sysPostService.update(dto);
+        sysPostService.updateById(dto);
         return Result.success();
     }
 

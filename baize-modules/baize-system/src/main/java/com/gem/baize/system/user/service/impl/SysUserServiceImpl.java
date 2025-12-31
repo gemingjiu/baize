@@ -14,6 +14,9 @@ import com.gem.baize.system.user.entity.SysUser;
 import com.gem.baize.system.user.mapper.SysUserMapper;
 import com.gem.baize.system.user.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -28,13 +31,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserConvert sysUserConvert;
 
     @Override
+    @Cacheable(cacheNames = "sys_user",key ="#id")
     public SysUserDto getById(String id) {
         SysUser sysUser = Optional.ofNullable(sysUserMapper.selectById(id)).orElseThrow(() -> new NotFoundException("用户不存在"));
         return sysUserConvert.toDto(sysUser);
     }
 
-    @Transactional
+
     @Override
+    @Transactional
     public Integer create(SysUserDto sysUserDto) {
         SysUser sysUser = sysUserConvert.toEntity(sysUserDto);
 
@@ -51,9 +56,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return result;
     }
 
-    @Transactional
+
     @Override
-    public void update(SysUserDto sysUserDto) {
+    @Transactional
+    @CachePut(cacheNames = "sys_user", key = "#sysUserDto.id")
+    public void updateById(SysUserDto sysUserDto) {
         SysUser sysUser = sysUserConvert.toEntity(sysUserDto);
 
         boolean exists = sysUserMapper.exists(Wrappers.<SysUser>lambdaQuery()
@@ -70,6 +77,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (affectedRows > 1) {
             throw new IntegrityViolationException("用户信息更新异常，影响了多条记录");
         }
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "sys_user",key ="#id")
+    public void removeById(String id) {
+        super.removeById(id);
     }
 
 

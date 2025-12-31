@@ -16,7 +16,11 @@ import com.gem.baize.system.role.mapper.SysRoleMapper;
 import com.gem.baize.system.role.service.SysRoleService;
 import com.gem.baize.system.tenant.entity.SysTenant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
@@ -34,12 +38,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private SysRoleConvert sysRoleConvert;
 
     @Override
+    @Cacheable(cacheNames = "sys_role",key ="#id")
     public SysRoleDto getById(String id) {
         SysRole sysRole = Optional.ofNullable(sysRoleMapper.selectById(id)).orElseThrow(() -> new NotFoundException("角色不存在"));
         return sysRoleConvert.toDto(sysRole);
     }
 
     @Override
+    @Transactional
+    @CachePut(cacheNames = "sys_role", key = "#sysRoleDto.id")
     public Integer create(SysRoleDto sysRoleDto) {
         SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
         boolean exists = sysRoleMapper.exists(Wrappers.<SysRole>lambdaQuery()
@@ -56,7 +63,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public void update(SysRoleDto sysRoleDto) {
+    @Transactional
+    @CachePut(cacheNames = "sys_role", key = "#sysRoleDto.id")
+    public void updateById(SysRoleDto sysRoleDto) {
 
         SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
         boolean exists = sysRoleMapper.exists(Wrappers.<SysRole>lambdaQuery()
@@ -73,6 +82,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (affectedRows > 1) {
             throw new IntegrityViolationException("角色信息更新异常，影响了多条记录");
         }
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "sys_role",key ="#id")
+    public void removeById(String id) {
+        super.removeById(id);
     }
 
 

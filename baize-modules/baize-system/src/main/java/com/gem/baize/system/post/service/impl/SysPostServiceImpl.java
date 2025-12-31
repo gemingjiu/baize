@@ -7,18 +7,19 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.post.domain.dto.SysPostDto;
-import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.common.core.exception.model.DataCreationException;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.IntegrityViolationException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
-import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.system.post.entity.SysPost;
 import com.gem.baize.system.post.mapper.SysPostMapper;
 import com.gem.baize.system.post.service.SysPostService;
-import com.gem.baize.system.tenant.entity.SysTenant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private SysPostConvert sysPostConvert;
 
     @Override
+    @Cacheable(cacheNames = "sys_post",key ="#id")
     public SysPostDto getById(String id) {
         SysPost sysPost = Optional.ofNullable(sysPostMapper.selectById(id)).orElseThrow(() -> new NotFoundException("岗位不存在"));
         return sysPostConvert.toDto(sysPost);
@@ -43,6 +45,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
+    @Transactional
     public Integer create(SysPostDto sysPostDto) {
         SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
         boolean exists = sysPostMapper.exists(Wrappers.<SysPost>lambdaQuery()
@@ -58,7 +61,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
-    public void update(SysPostDto sysPostDto) {
+    @Transactional
+    @CachePut(cacheNames = "sys_post", key = "#sysPostDto.id")
+    public void updateById(SysPostDto sysPostDto) {
         SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
         boolean exists = sysPostMapper.exists(Wrappers.<SysPost>lambdaQuery()
                 .eq(SysPost::getPostCode, sysPostDto.getPostCode()));
@@ -74,6 +79,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         if (affectedRows > 1) {
             throw new IntegrityViolationException("岗位信息更新异常，影响了多条记录");
         }
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "sys_post",key ="#id")
+    public void removeById(String id) {
+        super.removeById(id);
     }
 
 

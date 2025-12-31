@@ -48,7 +48,7 @@ public class SysTenantController {
             throw new BadRequestException("请求参数id不一致");
         }
 
-        sysTenantService.update(dto);
+        sysTenantService.updateById(dto);
 
         return Result.success();
     }

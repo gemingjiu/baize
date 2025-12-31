@@ -43,7 +43,7 @@ public class SysUserController {
             throw new BadRequestException("请求参数id不一致");
         }
 
-        sysUserService.update(dto);
+        sysUserService.updateById(dto);
         return Result.success();
     }
 

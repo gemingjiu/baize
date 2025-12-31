@@ -3,15 +3,12 @@ package com.gem.baize.system.perm.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
 import com.gem.baize.common.core.exception.model.BadRequestException;
-import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.common.core.model.vo.Result;
-import com.gem.baize.system.dept.entity.SysDept;
 import com.gem.baize.system.perm.entity.SysPerm;
 import com.gem.baize.system.perm.service.SysPermService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +40,7 @@ public class SysPermController {
         if (!id.equals(dto.getId())) {
             throw new BadRequestException("请求参数id不一致");
         }
-        sysPermService.update(dto);
+        sysPermService.updateById(dto);
         return Result.success();
     }
 

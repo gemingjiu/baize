@@ -15,7 +15,11 @@ import com.gem.baize.system.menu.entity.SysMenu;
 import com.gem.baize.system.menu.mapper.SysMenuMapper;
 import com.gem.baize.system.menu.service.SysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
@@ -33,12 +37,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private SysMenuConvert sysMenuConvert;
 
     @Override
+    @Cacheable(cacheNames = "sys_menu",key ="#id")
     public SysMenuDto getById(String id) {
         SysMenu sysMenu = Optional.ofNullable(sysMenuMapper.selectById(id)).orElseThrow(() -> new NotFoundException("菜单不存在"));
         return sysMenuConvert.toDto(sysMenu);
     }
 
     @Override
+    @Transactional
     public Integer create(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
 
@@ -56,7 +62,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public void update(SysMenuDto sysMenuDto) {
+    @Transactional
+    @CachePut(cacheNames = "sys_menu", key = "#sysMenuDto.id")
+    public void updateById(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
 
         boolean exists = sysMenuMapper.exists(Wrappers.<SysMenu>lambdaQuery()
@@ -76,6 +84,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
     }
 
+    @Override
+    @CacheEvict(cacheNames = "sys_menu",key ="#id")
+    public void removeById(String id) {
+        super.removeById(id);
+    }
 
     @Override
     public Page<SysMenuDto> page(Page<SysMenu> page, SysMenuDto sysMenuDto) {

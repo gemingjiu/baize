@@ -41,7 +41,7 @@ public class SysMenuController {
             throw new BadRequestException("请求参数id不一致");
         }
 
-        sysMenuService.update(dto);
+        sysMenuService.updateById(dto);
         return Result.success();
     }
 

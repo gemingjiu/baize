@@ -42,9 +42,8 @@ public class SysDeptController {
         if (!id.equals(dto.getId())) {
             throw new BadRequestException("请求参数id不一致");
         }
-        SysDept sysDept = new SysDept();
-        BeanUtils.copyProperties(dto, sysDept);
-        sysDeptService.updateById(sysDept);
+
+        sysDeptService.updateById(dto);
         return Result.success();
     }
 

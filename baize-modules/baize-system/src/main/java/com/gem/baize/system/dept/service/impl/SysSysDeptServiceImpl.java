@@ -7,17 +7,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
-import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.common.core.exception.model.DataCreationException;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.IntegrityViolationException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
-import com.gem.baize.common.core.model.dto.PageParam;
 import com.gem.baize.system.dept.entity.SysDept;
 import com.gem.baize.system.dept.mapper.SysDeptMapper;
 import com.gem.baize.system.dept.service.SysDeptService;
-import com.gem.baize.system.tenant.entity.SysTenant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -39,15 +37,14 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     private SysDeptConvert sysDeptConvert;
 
     @Override
-    @Cacheable(cacheNames = "sys_dept", key = "#id", sync = true)
+    @Cacheable(cacheNames = "sys_dept", key = "#id")
     public SysDeptDto getById(String id) {
         SysDept sysDept = Optional.ofNullable(sysDeptMapper.selectById(id)).orElseThrow(() -> new NotFoundException("部门不存在"));
         return sysDeptConvert.toDto(sysDept);
     }
 
-    @Transactional
     @Override
-    @CachePut(cacheNames = "sys_dept", key = "#sysDept.id")
+    @Transactional
     public Integer create(SysDeptDto sysDeptDto) {
         SysDept sysDept = sysDeptConvert.toEntity(sysDeptDto);
         boolean exists = sysDeptMapper.exists(Wrappers.<SysDept>lambdaQuery()
@@ -63,10 +60,10 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
         return result;
     }
 
-    @Transactional
     @Override
-    @CachePut(cacheNames = "sys_dept", key = "#sysDept.id")
-    public void update(SysDeptDto sysDeptDto) {
+    @Transactional
+    @CachePut(cacheNames = "sys_dept", key = "#sysDeptDto.id")
+    public void updateById(SysDeptDto sysDeptDto) {
         SysDept sysDept = sysDeptConvert.toEntity(sysDeptDto);
         boolean exists = sysDeptMapper.exists(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptName, sysDeptDto.getDeptName()));
@@ -85,6 +82,11 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
         }
     }
 
+    @Override
+    @CacheEvict(value = "sys_dept", key = "#id")  // 删除缓存
+    public void removeById(String id) {
+        super.removeById(id);
+    }
 
     @Override
     public Page<SysDeptDto> page(Page<SysDept> page, SysDeptDto sysDeptDto) {

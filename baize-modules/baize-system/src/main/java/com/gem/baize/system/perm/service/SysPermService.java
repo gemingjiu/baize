@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
 import com.gem.baize.system.perm.entity.SysPerm;
-import com.gem.baize.common.core.model.dto.PageParam;
 
 /**
  * 部门服务类接口
@@ -15,7 +14,9 @@ public interface SysPermService extends IService<SysPerm> {
 
     Integer create(SysPermDto sysPermDto);
 
-    void update(SysPermDto sysPermDto);
+    void updateById(SysPermDto sysPermDto);
+
+    void removeById(String id);
 
     Page<SysPermDto> page(Page<SysPerm> page, SysPermDto sysPermDto);
 }

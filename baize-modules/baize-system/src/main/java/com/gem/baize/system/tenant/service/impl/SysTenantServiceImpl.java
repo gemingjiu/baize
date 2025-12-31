@@ -14,6 +14,9 @@ import com.gem.baize.system.tenant.entity.SysTenant;
 import com.gem.baize.system.tenant.mapper.SysTenantMapper;
 import com.gem.baize.system.tenant.service.SysTenantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -34,13 +37,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
 
     @Override
+    @Cacheable(cacheNames = "sys_tenant",key ="#id")
     public SysTenantDto getById(String id) {
         SysTenant sysTenant = Optional.ofNullable(sysTenantMapper.selectById(id)).orElseThrow(() -> new NotFoundException("租户不存在"));
         return sysTenantConvert.toDto(sysTenant);
     }
 
-    @Transactional
+
     @Override
+    @Transactional
     public Integer create(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = sysTenantConvert.toEntity(sysTenantDto);
         boolean exists = sysTenantMapper.exists(Wrappers.<SysTenant>lambdaQuery()
@@ -56,9 +61,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         return result;
     }
 
-    @Transactional
+
     @Override
-    public void update(SysTenantDto sysTenantDto) {
+    @Transactional
+    @CachePut(cacheNames = "sys_tenant", key = "#sysTenantDto.id")
+    public void updateById(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = sysTenantConvert.toEntity(sysTenantDto);
 
         boolean exists = sysTenantMapper.exists(Wrappers.<SysTenant>lambdaQuery()
@@ -74,6 +81,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         if (affectedRows > 1) {
             throw new IntegrityViolationException("租户信息更新异常，影响了多条记录");
         }
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "sys_tenant",key ="#id")
+    public void removeById(String id) {
+        super.removeById(id);
     }
 
 

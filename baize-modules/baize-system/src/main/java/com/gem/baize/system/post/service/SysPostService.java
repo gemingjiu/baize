@@ -14,7 +14,9 @@ public interface SysPostService extends IService<SysPost> {
 
     Integer create(SysPostDto sysPostDto);
 
-    void update(SysPostDto sysPostDto);
+    void updateById(SysPostDto sysPostDto);
+
+    void removeById(String id);
 
     Page<SysPostDto> page(Page<SysPost> page, SysPostDto sysPostDto);
 }

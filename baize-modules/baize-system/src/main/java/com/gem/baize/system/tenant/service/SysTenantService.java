@@ -14,7 +14,9 @@ public interface SysTenantService extends IService<SysTenant> {
 
     Integer create(SysTenantDto sysTenantDto);
 
-    void update(SysTenantDto sysTenantDto);
+    void updateById(SysTenantDto sysTenantDto);
+
+    void removeById(String id);
 
     Page<SysTenantDto> page(Page<SysTenant> page, SysTenantDto sysTenantDto);
 }
