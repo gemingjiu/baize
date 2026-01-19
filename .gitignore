@@ -2,9 +2,8 @@
 .idea
 target
 logs
+log
 .back_baize
-
+.baize
 
 # file
-*.log
-.白泽管理系统

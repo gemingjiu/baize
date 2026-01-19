@@ -1,7 +1,7 @@
 {
-  "id": "DA4861BD-90D1-4974-BE86-BDCACC47CB43",
+  "id": "5AD7E9D2-C168-4FBA-9439-B71E896EA941",
   "profile": {
-    "version": "0.0.1",
+    "version": "0.0.3",
     "global": {
       "dbDialects": [
         {
@@ -3329,462 +3329,7 @@
       "status": "EDIT",
       "allow": "W",
       "setting": {
-        "physicEntityPresetFields": [
-          {
-            "id": "D956364E-3821-4483-91B5-AAFA94CB8FFB",
-            "defKey": "default",
-            "defName": "默认方案",
-            "data": [
-              {
-                "id": "CD66B3C0-6770-4039-98C8-7943C6F23C6B",
-                "defKey": "id",
-                "defName": "参数主键",
-                "intro": "",
-                "baseDataType": "BIGSERIAL",
-                "bizDomainType": "ID",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 1,
-                "notNull": 1,
-                "autoIncrement": 1,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE",
-                "dbDataType": "SERIAL8"
-              },
-              {
-                "id": "5EC2513A-9B3A-4780-831B-A1AFA49F1318",
-                "defKey": "sort",
-                "defName": "排序",
-                "intro": "",
-                "baseDataType": "INT",
-                "bizDomainType": "",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 1,
-                "autoIncrement": 0,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE",
-                "dbDataType": "INT4"
-              },
-              {
-                "id": "30631902-B4F6-4D86-9FD7-0427E4308E81",
-                "defKey": "status",
-                "defName": "启用状态",
-                "intro": "0:记录有效,1:记录无效",
-                "baseDataType": "VARCHAR",
-                "bizDomainType": "STATUS",
-                "dbDataType": "VARCHAR",
-                "dataLen": 1,
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 1,
-                "autoIncrement": 0,
-                "defaultValue": "'0'",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE"
-              },
-              {
-                "id": "5048247D-41AC-4BC3-921C-AE2E7FD51CEE",
-                "defKey": "deleted",
-                "defName": "删除标记",
-                "intro": "0:正常标记,1:删除标记",
-                "baseDataType": "VARCHAR",
-                "bizDomainType": "STATUS",
-                "dbDataType": "VARCHAR",
-                "dataLen": 1,
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 1,
-                "autoIncrement": 0,
-                "defaultValue": "'0'",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE"
-              },
-              {
-                "id": "4D705806-D96D-4F6B-B4A0-A35D36B261BE",
-                "defKey": "version",
-                "defName": "乐观锁",
-                "intro": "",
-                "baseDataType": "INT",
-                "bizDomainType": "",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 1,
-                "autoIncrement": 0,
-                "defaultValue": "0",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE",
-                "dbDataType": "INT4"
-              },
-              {
-                "id": "55C2234C-E6F9-48DC-9709-6A5353BAE768",
-                "defKey": "created_dept",
-                "defName": "创建部门",
-                "intro": "",
-                "baseDataType": "BIGINT",
-                "bizDomainType": "INNER_ID",
-                "dbDataType": "INT8",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 1,
-                "autoIncrement": 0,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndFieldId": "",
-                "stndDictKey": "",
-                "stndFieldKey": "",
-                "stndComplianceLevel": "",
-                "stndComplianceType": "",
-                "dictFrom": "",
-                "dictItems": null,
-                "fieldTier": "",
-                "mark": null,
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE"
-              },
-              {
-                "id": "C66FC604-B4AD-49E8-BDB9-03D8C67F212F",
-                "defKey": "created_by",
-                "defName": "创建人",
-                "intro": "",
-                "baseDataType": "BIGINT",
-                "bizDomainType": "INNER_ID",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 1,
-                "autoIncrement": 0,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE",
-                "dbDataType": "INT8"
-              },
-              {
-                "id": "889EEE02-1B19-4BC2-A8D3-5B47A593E2BF",
-                "defKey": "created_time",
-                "defName": "创建时间",
-                "intro": "",
-                "baseDataType": "TIMESTAMP",
-                "bizDomainType": "",
-                "dbDataType": "TIMESTAMP",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 1,
-                "autoIncrement": 0,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE"
-              },
-              {
-                "id": "22581086-1950-4F3D-B86D-C53F4738AE66",
-                "defKey": "modified_by",
-                "defName": "更新人",
-                "intro": "",
-                "baseDataType": "BIGINT",
-                "bizDomainType": "",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 0,
-                "autoIncrement": 0,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE",
-                "dbDataType": "INT8"
-              },
-              {
-                "id": "28D9C609-EFFE-4D75-AC40-08FC24FEB1C5",
-                "defKey": "modified_time",
-                "defName": "更新时间",
-                "intro": "",
-                "baseDataType": "TIMESTAMP",
-                "bizDomainType": "TIMESTAMP",
-                "dbDataType": "TIMESTAMP",
-                "dataLen": "",
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 0,
-                "autoIncrement": 0,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE"
-              },
-              {
-                "id": "E0D520BE-1367-48E3-B8F0-E4D3450D676D",
-                "defKey": "remark",
-                "defName": "备注",
-                "intro": "",
-                "baseDataType": "VARCHAR",
-                "bizDomainType": "REMARK",
-                "dbDataType": "VARCHAR",
-                "dataLen": 255,
-                "numScale": "",
-                "primaryKey": 0,
-                "notNull": 0,
-                "autoIncrement": 0,
-                "defaultValue": "",
-                "stndDictId": "",
-                "stndDictKey": "",
-                "stndFieldId": "",
-                "stndFieldKey": "",
-                "attr1": "",
-                "attr2": "",
-                "attr3": "",
-                "attr4": "",
-                "attr5": "",
-                "attr6": "",
-                "attr7": "",
-                "attr8": "",
-                "attr9": "",
-                "attr10": "",
-                "attr11": "",
-                "attr12": "",
-                "attr13": "",
-                "attr14": "",
-                "attr15": "",
-                "attr16": "",
-                "attr17": "",
-                "attr18": "PDManer",
-                "attr19": "",
-                "attr20": "",
-                "origin": "PASTE"
-              }
-            ],
-            "isDefault": 1
-          }
-        ],
+        "physicEntityPresetFields": [],
         "physicEntityAttr": {
           "attr1": {
             "enable": 0,
@@ -4173,47 +3718,47 @@
           "attr1": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 17
+            "orderValue": 18
           },
           "attr2": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 18
+            "orderValue": 19
           },
           "attr3": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 19
+            "orderValue": 20
           },
           "attr4": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 20
+            "orderValue": 21
           },
           "attr5": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 21
+            "orderValue": 22
           },
           "attr6": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 22
+            "orderValue": 23
           },
           "attr7": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 23
+            "orderValue": 24
           },
           "attr8": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 24
+            "orderValue": 25
           },
           "attr9": {
             "enable": 0,
             "columnWidth": 100,
-            "orderValue": 25
+            "orderValue": 26
           },
           "intro": {
             "enable": 1,
@@ -4340,6 +3885,11 @@
             "columnWidth": 100,
             "orderValue": 16
           },
+          "fieldTier": {
+            "enable": 1,
+            "columnWidth": 100,
+            "orderValue": 17
+          },
           "stndDictId": {
             "enable": 1,
             "columnWidth": 230,
@@ -4349,11 +3899,6 @@
             "enable": 1,
             "columnWidth": 230,
             "orderValue": 14
-          },
-          "fieldTier": {
-            "enable": 1,
-            "columnWidth": 100,
-            "orderValue": 17
           }
         },
         "fieldTier": [
@@ -4363,8 +3908,7 @@
             "defName": "核心级",
             "intro": "业务流程运转关键字段，缺失导致系统功能中断",
             "frequency": "90%+ (极高)",
-            "illustrate": "order_id（主键）、user_id（外键）、amount（金额）、status（状态值）",
-            "id": "967133CB-7B9D-4613-8C26-ECF3DA07095E"
+            "illustrate": "order_id（主键）、user_id（外键）、amount（金额）、status（状态值）"
           },
           {
             "defKey": "2",
@@ -4372,8 +3916,7 @@
             "defName": "描述级",
             "intro": "实体静态特征描述，支撑业务语义理解与可视化",
             "frequency": "60%-80% (高)",
-            "illustrate": "product_name（名称）、category（分类）、delivery_address（地址）、color_code（颜色编码）",
-            "id": "106C0DF8-DCA8-4A39-B7BB-7DA706514C7F"
+            "illustrate": "product_name（名称）、category（分类）、delivery_address（地址）、color_code（颜色编码）"
           },
           {
             "defKey": "3",
@@ -4381,8 +3924,7 @@
             "defName": "扩展级",
             "intro": "低频业务扩展属性，避免核心表频繁变更",
             "frequency": "20%-50% (中)",
-            "illustrate": "config_options（JSON配置）、discounted_price（冗余计算值）",
-            "id": "BB7D57A4-CC04-4A28-9475-57C05877A4D3"
+            "illustrate": "config_options（JSON配置）、discounted_price（冗余计算值）"
           },
           {
             "defKey": "4",
@@ -4390,8 +3932,7 @@
             "defName": "技术级",
             "intro": "系统运维元数据，与业务逻辑解耦",
             "frequency": "<10% (低)",
-            "illustrate": "created_by（创建人）、created_at（创建时间）、etl_batch_id（ETL批次号）、source_system（数据源编码）、debug_flag（调试标记）",
-            "id": "8B745D41-476E-4FD5-B9B1-195419F7BEA3"
+            "illustrate": "created_by（创建人）、created_at（创建时间）、etl_batch_id（ETL批次号）、source_system（数据源编码）、debug_flag（调试标记）"
           },
           {
             "defKey": "5",
@@ -4399,8 +3940,7 @@
             "defName": "冗余级",
             "intro": "容错与灾备设计，提升系统可靠性",
             "frequency": "<5% (极低)",
-            "illustrate": " data_hash（校验哈希）、is_deleted（软删除标记）、backup_shard_id（灾备分片ID）",
-            "id": "156281B7-D7A3-4F03-8C53-7930D47BF8DF"
+            "illustrate": " data_hash（校验哈希）、is_deleted（软删除标记）、backup_shard_id（灾备分片ID）"
           }
         ],
         "dictExportTpl": [
@@ -4414,32 +3954,10 @@
       }
     },
     "team": {
-      "dbEnvironments": [
-        {
-          "defName": "白泽管理系统",
-          "defKey": "baize-admin",
-          "dbDialect": "PostgreSQL",
-          "dbConnections": [
-            {
-              "defName": "多合一",
-              "usedFor": "ALL_IN_ONE",
-              "dbDialectKey": "PostgreSQL",
-              "driverFiles": "postgresql-42.7.3.jar",
-              "extParams": "schemaName=baize-admin",
-              "password": "EA9Xhn66XgiHXzbCGOyE0g==",
-              "id": "E40DAE77-2ADD-4E6C-9BC7-807A7405AD79",
-              "username": "+2l1aTZhHrIKIYY0WN81JQ==",
-              "driverClassName": "org.postgresql.Driver",
-              "url": "vm80JkS4L+Rie10lITknInUkivJZ6DNp0kKPuEKzss6JHdG1ZCLiHo5XIlwYYSXq",
-              "envId": "87A3B5DE-5BBE-4F6E-B01F-D86A59716B17"
-            }
-          ],
-          "id": "87A3B5DE-5BBE-4F6E-B01F-D86A59716B17"
-        }
-      ],
+      "dbEnvironments": [],
       "bizDomainTypes": []
     },
-    "sysUser": {
+    "user": {
       "modelingNavDisplay": {
         "hierarchyType": "TREE",
         "nodeType": "ALL",
@@ -4485,109 +4003,109 @@
   },
   "project": {
     "avatar": "<svg t=\"1745274474022\" class=\"icon\" viewBox=\"0 0 1024 1024\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" p-id=\"9471\" width=\"200\" height=\"200\"><path d=\"M98.3 540.2l2.3 2.1 345.3 189.1c17.6 14.7 40.5 22.8 64.6 22.8 24.1 0 47-8.1 64.6-22.8l344.8-188.8 0.5-0.3 2.3-2.1c34.8-31.3 39-82 9.8-118-1.7-2.1-4.9-2.5-7-0.7l-33.7 27.4c-2.1 1.7-2.5 4.9-0.7 7 10.6 13 9.7 30.5-2.1 42.7L544.7 687.1l-0.5 0.3-2.3 2.1c-17 15.3-45.8 15.3-62.8 0l-2.3-2.1-344.7-188.8c-11.8-12.2-12.7-29.7-2.1-42.7 1.7-2.1 1.4-5.3-0.7-7l-33.7-27.4c-2.1-1.7-5.3-1.4-7 0.7-29.4 35.9-25.1 86.7 9.7 118z\" fill=\"#424242\" p-id=\"9472\"></path><path d=\"M925.5 608.3l-33.7 27.4c-2.1 1.7-2.5 4.9-0.7 7 10.6 13 9.7 30.5-2.1 42.7L544.7 873.9l-0.5 0.3-2.3 2.1c-17 15.3-45.8 15.3-62.8 0l-2.3-2.1-344.7-188.8c-11.8-12.2-12.7-29.7-2.1-42.7 1.7-2.1 1.4-5.3-0.7-7l-33.7-27.4c-2.1-1.7-5.3-1.4-7 0.7-29.2 35.9-25 86.7 9.8 118l2.3 2.1L446 918.2c17.6 14.7 40.5 22.8 64.6 22.8 24.1 0 47-8.1 64.6-22.8L920 729.4l0.5-0.3 2.3-2.1c34.8-31.3 39-82 9.8-118-1.8-2.1-4.9-2.5-7.1-0.7zM116.1 372.6l54.5 29.8 290.6 159.1c27.2 24.5 71.4 24.5 98.6 0l290.6-159.1 54.5-29.8c2.6-2.3 4.9-4.8 7-7.4 19.9-24.5 17.7-59.1-7-81.3L559.8 99.3c-27.2-24.5-71.4-24.5-98.6 0L116.1 283.9c-24.6 22.2-26.9 56.7-7 81.3 2.2 2.6 4.4 5.1 7 7.4z\" fill=\"#424242\" p-id=\"9473\"></path></svg>",
-    "name": "白泽管理系统",
+    "name": "baize",
     "categories": [
       {
-        "id": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "id": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "defKey": "baize-system",
         "defName": "baize-system",
         "peerOrder": 1,
         "intro": "",
         "entityRefs": [
           {
-            "refObjectId": "6E70F47A-97E4-47E6-B8C1-F64D5B65B3E6",
+            "refObjectId": "B8F36F42-CC82-41B7-A907-1CAA870B0EF3",
             "refObjectType": "P",
             "orderValue": 1
           },
           {
-            "refObjectId": "B5D66411-A98A-4D5E-B0BF-108B205BBA18",
+            "refObjectId": "E26CD6F2-AA2E-440E-B9C6-E6D6DAAD908D",
             "refObjectType": "P",
             "orderValue": 2
           },
           {
-            "refObjectId": "CCA18617-0F15-4486-B673-74CAF62A89A9",
+            "refObjectId": "B5285927-A263-49BE-A643-AB849D0DA205",
             "refObjectType": "P",
             "orderValue": 3
           },
           {
-            "refObjectId": "97EF4676-D8BD-4F7D-B125-246365A65314",
+            "refObjectId": "867625D6-51AB-4A56-822D-CE9B17769557",
             "refObjectType": "P",
             "orderValue": 4
           },
           {
-            "refObjectId": "5FB15912-2FC0-4CCD-9FE3-BA92CB7FCC89",
+            "refObjectId": "20F7618D-47EA-4E50-9486-1B1A1BE68AC5",
             "refObjectType": "P",
             "orderValue": 5
           },
           {
-            "refObjectId": "41113722-4D74-4760-82BD-C63391304CC2",
+            "refObjectId": "A1B193D0-1AAE-445C-BB85-C2622CDFDA55",
             "refObjectType": "P",
             "orderValue": 6
           },
           {
-            "refObjectId": "5B00FDD5-D13F-4E71-B8F9-86D798634C96",
+            "refObjectId": "837D90BC-F392-4611-8F50-3870EAA666F1",
             "refObjectType": "P",
             "orderValue": 7
           },
           {
-            "refObjectId": "D81DF0E0-6328-44A7-BC7C-0CFA619BD1DF",
+            "refObjectId": "0BD862BE-620F-4340-A13B-B23794C12BDE",
             "refObjectType": "P",
             "orderValue": 8
           },
           {
-            "refObjectId": "9B4B5BDC-AC7E-4C53-B851-05D550649347",
+            "refObjectId": "5B0BB4C8-ECBE-4A31-B1FD-AF0E1980B159",
             "refObjectType": "P",
             "orderValue": 9
           },
           {
-            "refObjectId": "763EC2FC-225A-46A6-A1C5-6AB8F97CA3D9",
+            "refObjectId": "C792C25F-ADA5-4EC9-9E6A-0B89B67D6C3D",
             "refObjectType": "P",
             "orderValue": 10
           },
           {
-            "refObjectId": "5EF8B16C-9C8E-4CA0-BE0F-E847CEF9395D",
+            "refObjectId": "66BCD789-E839-4E78-A835-766562E4570D",
             "refObjectType": "P",
             "orderValue": 11
           },
           {
-            "refObjectId": "68868AB2-B264-47FD-B832-973ACA3A3F97",
+            "refObjectId": "3E48F64E-4201-4B53-8A84-44E6F8D5BFDF",
             "refObjectType": "P",
             "orderValue": 12
           },
           {
-            "refObjectId": "E03BF331-FDE8-4C0A-A2B2-5E43C8E66689",
+            "refObjectId": "2A9C8E21-CD1C-4F9C-B7B6-0C2B66E88C39",
             "refObjectType": "P",
             "orderValue": 13
           },
           {
-            "refObjectId": "8B20766E-956A-4AA1-A05C-7E0CF8A02719",
+            "refObjectId": "5E60777F-7538-4C17-A852-6DF26D4AB269",
             "refObjectType": "P",
             "orderValue": 14
           },
           {
-            "refObjectId": "F11BAC3C-31D4-4FB2-9644-38CB317F6E42",
+            "refObjectId": "5AE6C0D5-56D6-4FCA-9349-A1255B2EF244",
             "refObjectType": "P",
             "orderValue": 15
           },
           {
-            "refObjectId": "B9D4E01F-047B-438F-B281-FA3AEF1E2D20",
+            "refObjectId": "B0328BC1-E733-4650-8F27-4CFEC8C5A837",
             "refObjectType": "P",
             "orderValue": 16
           },
           {
-            "refObjectId": "39617914-3E9F-4AB9-BB8A-E8D2F80B41E2",
+            "refObjectId": "3347CCDA-8F03-4A33-95C0-505BE978B7BF",
             "refObjectType": "P",
             "orderValue": 17
           }
         ],
         "diagramRefs": [
           {
-            "refObjectId": "15E853C1-1504-4405-83EB-2335B4B27847",
+            "refObjectId": "0229A04D-FEEA-4217-A0B7-35AFCE6ABDE3",
             "refObjectType": "P",
             "orderValue": 1
           },
           {
-            "refObjectId": "C7A6820D-DBA3-4988-AD42-6D8B55CFA254",
+            "refObjectId": "88DBBF47-ADA0-4B56-A4E5-14D52F8AE5BA",
             "refObjectType": "P",
             "orderValue": 2
           }
@@ -4601,99 +4119,99 @@
     "flat": {
       "entityRefs": [
         {
-          "refObjectId": "6E70F47A-97E4-47E6-B8C1-F64D5B65B3E6",
+          "refObjectId": "B8F36F42-CC82-41B7-A907-1CAA870B0EF3",
           "refObjectType": "P",
           "orderValue": 1
         },
         {
-          "refObjectId": "5FB15912-2FC0-4CCD-9FE3-BA92CB7FCC89",
+          "refObjectId": "E26CD6F2-AA2E-440E-B9C6-E6D6DAAD908D",
           "refObjectType": "P",
           "orderValue": 2
         },
         {
-          "refObjectId": "41113722-4D74-4760-82BD-C63391304CC2",
+          "refObjectId": "B5285927-A263-49BE-A643-AB849D0DA205",
           "refObjectType": "P",
           "orderValue": 3
         },
         {
-          "refObjectId": "D81DF0E0-6328-44A7-BC7C-0CFA619BD1DF",
+          "refObjectId": "867625D6-51AB-4A56-822D-CE9B17769557",
           "refObjectType": "P",
           "orderValue": 4
         },
         {
-          "refObjectId": "5B00FDD5-D13F-4E71-B8F9-86D798634C96",
+          "refObjectId": "20F7618D-47EA-4E50-9486-1B1A1BE68AC5",
           "refObjectType": "P",
           "orderValue": 5
         },
         {
-          "refObjectId": "9B4B5BDC-AC7E-4C53-B851-05D550649347",
+          "refObjectId": "A1B193D0-1AAE-445C-BB85-C2622CDFDA55",
           "refObjectType": "P",
           "orderValue": 6
         },
         {
-          "refObjectId": "763EC2FC-225A-46A6-A1C5-6AB8F97CA3D9",
+          "refObjectId": "837D90BC-F392-4611-8F50-3870EAA666F1",
           "refObjectType": "P",
           "orderValue": 7
         },
         {
-          "refObjectId": "5EF8B16C-9C8E-4CA0-BE0F-E847CEF9395D",
+          "refObjectId": "0BD862BE-620F-4340-A13B-B23794C12BDE",
           "refObjectType": "P",
           "orderValue": 8
         },
         {
-          "refObjectId": "68868AB2-B264-47FD-B832-973ACA3A3F97",
+          "refObjectId": "5B0BB4C8-ECBE-4A31-B1FD-AF0E1980B159",
           "refObjectType": "P",
           "orderValue": 9
         },
         {
-          "refObjectId": "E03BF331-FDE8-4C0A-A2B2-5E43C8E66689",
+          "refObjectId": "C792C25F-ADA5-4EC9-9E6A-0B89B67D6C3D",
           "refObjectType": "P",
           "orderValue": 10
         },
         {
-          "refObjectId": "8B20766E-956A-4AA1-A05C-7E0CF8A02719",
+          "refObjectId": "66BCD789-E839-4E78-A835-766562E4570D",
           "refObjectType": "P",
           "orderValue": 11
         },
         {
-          "refObjectId": "F11BAC3C-31D4-4FB2-9644-38CB317F6E42",
+          "refObjectId": "3E48F64E-4201-4B53-8A84-44E6F8D5BFDF",
           "refObjectType": "P",
           "orderValue": 12
         },
         {
-          "refObjectId": "97EF4676-D8BD-4F7D-B125-246365A65314",
+          "refObjectId": "2A9C8E21-CD1C-4F9C-B7B6-0C2B66E88C39",
           "refObjectType": "P",
           "orderValue": 13
         },
         {
-          "refObjectId": "B5D66411-A98A-4D5E-B0BF-108B205BBA18",
+          "refObjectId": "5E60777F-7538-4C17-A852-6DF26D4AB269",
           "refObjectType": "P",
           "orderValue": 14
         },
         {
-          "refObjectId": "B9D4E01F-047B-438F-B281-FA3AEF1E2D20",
+          "refObjectId": "5AE6C0D5-56D6-4FCA-9349-A1255B2EF244",
           "refObjectType": "P",
           "orderValue": 15
         },
         {
-          "refObjectId": "39617914-3E9F-4AB9-BB8A-E8D2F80B41E2",
+          "refObjectId": "B0328BC1-E733-4650-8F27-4CFEC8C5A837",
           "refObjectType": "P",
           "orderValue": 16
         },
         {
-          "refObjectId": "CCA18617-0F15-4486-B673-74CAF62A89A9",
+          "refObjectId": "3347CCDA-8F03-4A33-95C0-505BE978B7BF",
           "refObjectType": "P",
           "orderValue": 17
         }
       ],
       "diagramRefs": [
         {
-          "refObjectId": "15E853C1-1504-4405-83EB-2335B4B27847",
+          "refObjectId": "0229A04D-FEEA-4217-A0B7-35AFCE6ABDE3",
           "refObjectType": "P",
           "orderValue": 1
         },
         {
-          "refObjectId": "C7A6820D-DBA3-4988-AD42-6D8B55CFA254",
+          "refObjectId": "88DBBF47-ADA0-4B56-A4E5-14D52F8AE5BA",
           "refObjectType": "P",
           "orderValue": 2
         }
@@ -4701,16 +4219,16 @@
     },
     "entities": [
       {
-        "id": "6E70F47A-97E4-47E6-B8C1-F64D5B65B3E6",
+        "id": "B8F36F42-CC82-41B7-A907-1CAA870B0EF3",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_config",
         "defName": "参数配置表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "AA5A2237-5F98-4B2F-BFB7-4DA606B56E62",
+            "id": "67032777-B70D-4EF2-8F94-E5ACC5E88622",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -4750,7 +4268,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "BFD9B680-E607-420D-834A-D9303F3ED6D6",
+            "id": "AECFB3DD-80B8-4380-BA59-27E47EBE3395",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -4790,7 +4308,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "B3A684F8-F41C-4066-9200-D7A6E59808A3",
+            "id": "50C4BE2D-1692-4C6D-B39A-1506EBD27610",
             "defKey": "config_name",
             "defName": "参数名称",
             "intro": "",
@@ -4830,7 +4348,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "DF1512E8-FD69-4413-AA76-C19309FA9EBA",
+            "id": "2936FF24-D05A-4FCC-BAE7-7836A70D1E23",
             "defKey": "config_key",
             "defName": "参数键名",
             "intro": "",
@@ -4870,7 +4388,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "D4B7826A-E216-41C7-969C-D197E50ADD22",
+            "id": "595D210E-9C3E-48BC-B1A4-087E40F0BC54",
             "defKey": "config_value",
             "defName": "参数键值",
             "intro": "",
@@ -4910,7 +4428,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "E79059D3-881D-4727-8B69-92453485C370",
+            "id": "0E7CB087-58E7-401F-ABB6-D5FD88FD6BD7",
             "defKey": "config_type",
             "defName": "系统内置",
             "intro": "系统内置（0否 1是）",
@@ -4950,7 +4468,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "0E5CB30E-BB3A-4307-A8BF-BBC93B2F5920",
+            "id": "6B39C1E8-B52B-4DC0-9F0F-08F51ECBE4B9",
             "defKey": "sort",
             "defName": "排序",
             "intro": "",
@@ -4990,7 +4508,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "D8A17599-6D2A-454F-976B-E95FAE173838",
+            "id": "F59CAD52-F656-40A3-B60A-6D919DADD11B",
             "defKey": "status",
             "defName": "启用状态",
             "intro": "0:记录有效,1:记录无效",
@@ -5030,7 +4548,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "BEE4C80A-A6B4-46F4-8935-2C41110A88C7",
+            "id": "D55E6234-4CA6-424B-B04D-C03C22484D51",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -5070,7 +4588,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "C8078463-70B2-45DD-9304-338CE900FE41",
+            "id": "EAAFE7F2-A68D-43A7-A12F-2B74F0802280",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -5110,7 +4628,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "BBAF29D3-D3D6-4FF0-9323-58944D4EBAC7",
+            "id": "175CEF45-4921-4728-A86A-249F20FE2197",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -5150,7 +4668,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "8FED8B36-33D8-48B5-AF9F-A3C7D9FF4C92",
+            "id": "94D02B97-3018-41B2-BF95-6570398253BA",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -5190,7 +4708,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "BA3AF0AF-61FE-40FD-BD75-469FDAEF65EA",
+            "id": "4536A072-5843-4B0F-965C-65D6C659BF8B",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -5230,7 +4748,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "FF48EB91-9911-4A58-8BAC-408F31DC2AE8",
+            "id": "E18DBD2F-7F3C-47F5-865C-545DE4382C41",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -5270,7 +4788,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "287D32CE-AB55-4609-9C6E-49A09269E978",
+            "id": "86E58FAD-9347-4CE0-8AA0-8581B7E6134C",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -5312,42 +4830,42 @@
         ],
         "indexes": [
           {
-            "id": "FA816541-CC3D-4133-9D96-A074E47E10D7",
+            "id": "CA133914-8EC5-48D9-B8DB-BDD337E68430",
             "type": "UNIQUE",
             "defKey": "sys_config_name_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "CACF96AF-D5A0-4D7C-A977-A8B0D5A94AF8",
-                "fieldId": "BFD9B680-E607-420D-834A-D9303F3ED6D6",
+                "id": "E40DDBCE-56F9-4513-8028-EF4E171A2789",
+                "fieldId": "AECFB3DD-80B8-4380-BA59-27E47EBE3395",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "3D13DB64-A3AF-4248-AEF3-9F914CBD8E63",
-                "fieldId": "B3A684F8-F41C-4066-9200-D7A6E59808A3",
+                "id": "861DD190-E39A-40AF-97BD-18274B7FFE19",
+                "fieldId": "50C4BE2D-1692-4C6D-B39A-1506EBD27610",
                 "fieldDefKey": "config_name",
                 "sortType": "ASC"
               }
             ]
           },
           {
-            "id": "13A69AFA-93CB-4B6F-B2EB-F9A9C9B0DD8C",
+            "id": "CCCCA70C-C45D-447D-ADCF-663ADC7C1891",
             "type": "UNIQUE",
             "defKey": "sys_config_key_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "F3EDCBF8-46BF-4E7E-BA02-FE22B3AE2E68",
-                "fieldId": "BFD9B680-E607-420D-834A-D9303F3ED6D6",
+                "id": "D826DEB9-3AD1-4D7C-9239-DDA65518F6BB",
+                "fieldId": "AECFB3DD-80B8-4380-BA59-27E47EBE3395",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "AFA4F695-DDE6-4A73-9425-4BAD137FAD58",
-                "fieldId": "DF1512E8-FD69-4413-AA76-C19309FA9EBA",
+                "id": "82DA4D0E-2DC1-483A-8927-72A4B24F0F64",
+                "fieldId": "2936FF24-D05A-4FCC-BAE7-7836A70D1E23",
                 "fieldDefKey": "config_key",
                 "sortType": "ASC"
               }
@@ -5357,16 +4875,16 @@
         "refers": []
       },
       {
-        "id": "5FB15912-2FC0-4CCD-9FE3-BA92CB7FCC89",
+        "id": "E26CD6F2-AA2E-440E-B9C6-E6D6DAAD908D",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_dept",
         "defName": "部门信息表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "28F3B16A-523C-4B80-8F61-3D402000E776",
+            "id": "BCBAAF11-4EBF-418A-87B7-A7595ED658CF",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -5406,7 +4924,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "8204D121-29DD-4A8C-BD35-D2426333CECE",
+            "id": "A624ED35-943C-4461-80DA-CCBAAEEB04C1",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -5446,7 +4964,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "59B0B3AC-7756-4D88-A126-D489731B60BC",
+            "id": "FDE2F5C8-0FF9-4DEB-8AC7-1C27137248C4",
             "defKey": "parent_id",
             "defName": "父部门id",
             "intro": "",
@@ -5486,7 +5004,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "4345C2EC-2162-418B-929B-A8EEF6A88212",
+            "id": "C0D4B92F-828B-4A99-9107-5155B528472C",
             "defKey": "dept_name",
             "defName": "部门名称",
             "intro": "",
@@ -5526,7 +5044,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "8A6CA4A5-8EAF-4853-8DA8-B35CCE654132",
+            "id": "5635790C-CEDE-4177-9DFE-0AAC03C6E6D0",
             "defKey": "leader",
             "defName": "负责人",
             "intro": "",
@@ -5566,7 +5084,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "864372CC-51ED-4F6D-9EA2-69044D18208A",
+            "id": "686DCFF5-5903-4750-AC04-DA38D5702E63",
             "defKey": "phone",
             "defName": "电话",
             "intro": "",
@@ -5606,7 +5124,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "1B7F1516-482B-49FA-9862-0D11CBADCC04",
+            "id": "A56328ED-36C5-48CA-943B-E8CA510B5E79",
             "defKey": "email",
             "defName": "邮箱",
             "intro": "",
@@ -5646,7 +5164,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "811991B1-145D-425E-A0C8-37C42EFE006C",
+            "id": "E913FF7D-1DD6-43B8-8DA5-3D477A8D895A",
             "defKey": "sort",
             "defName": "显示顺序",
             "intro": "",
@@ -5686,7 +5204,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "A5A65577-5870-4415-8E5A-56D736D19783",
+            "id": "AF663A08-8127-4306-AD49-9CB0D5CCB9A4",
             "defKey": "status",
             "defName": "记录状态",
             "intro": "0:记录有效,1:记录无效",
@@ -5726,7 +5244,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "E3F1133F-5FEB-4BD9-80DF-FCC23BD6FE5A",
+            "id": "9E7DDFE6-A3EB-465A-A446-6B4EC719421E",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -5766,7 +5284,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "7BA6FD8D-8211-4535-8827-D0F9A10A6FFF",
+            "id": "D238F5CB-7BD8-44D3-87ED-2B2A9AE36CF9",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -5806,7 +5324,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "6E75966D-34C1-4695-8246-BCA9B2198735",
+            "id": "51DA6EDD-A182-4287-9F01-717BB0157E30",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -5846,7 +5364,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "2137AA17-B30B-44CD-94A2-E7FF66C0B352",
+            "id": "469F8650-B113-43B5-A7E3-CA26840BBDC1",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -5886,7 +5404,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "FA1F516D-C379-43A5-8984-4F44C3AF4B9F",
+            "id": "67F36117-897B-4024-A437-46C0096D3CEA",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -5926,7 +5444,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "361077D6-744A-4A6C-A417-D2505B41A458",
+            "id": "7BF556DD-2A2E-4CAA-B14B-CAB57DCFE48F",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -5966,7 +5484,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "E9D50A70-0624-463A-8466-3D0EFEA855BA",
+            "id": "92324CC4-98E0-414D-ABA1-6A1567CFD9A8",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -6008,21 +5526,21 @@
         ],
         "indexes": [
           {
-            "id": "A0A2D25B-7F75-48C4-B9B3-6C63FEC43D70",
+            "id": "7F2C151D-FD9D-4027-8B8E-4C13C5CDB80E",
             "type": "UNIQUE",
             "defKey": "sys_dept_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "90DE3C07-49DE-4E5D-B96B-C3651B4CA48E",
-                "fieldId": "8204D121-29DD-4A8C-BD35-D2426333CECE",
+                "id": "3BE7ED9D-4212-4736-BBD9-6C8FFE69CEFD",
+                "fieldId": "A624ED35-943C-4461-80DA-CCBAAEEB04C1",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "B4D37506-382B-4C5E-BD4C-7BCB2F421728",
-                "fieldId": "4345C2EC-2162-418B-929B-A8EEF6A88212",
+                "id": "953C9DD4-314D-4708-A30D-120E756D0048",
+                "fieldId": "C0D4B92F-828B-4A99-9107-5155B528472C",
                 "fieldDefKey": "dept_name",
                 "sortType": "ASC"
               }
@@ -6032,16 +5550,16 @@
         "refers": []
       },
       {
-        "id": "41113722-4D74-4760-82BD-C63391304CC2",
+        "id": "B5285927-A263-49BE-A643-AB849D0DA205",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_dict_type",
         "defName": "字典类型表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "4793F214-53D7-4CB0-B13A-7CD91F2EED45",
+            "id": "C30E42A4-90DF-45DD-8B47-F65F29DC4016",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -6081,7 +5599,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "9CE022A9-59DB-40D3-AD72-4FF2534CAECD",
+            "id": "B37B4D6D-DFB8-4A5F-BF99-FD040858B492",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -6121,7 +5639,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "5BDFE17D-A709-4210-A096-D765A3A5024C",
+            "id": "69B13594-7792-47CE-861E-CF8AED14D378",
             "defKey": "dict_name",
             "defName": "字典名称",
             "intro": "",
@@ -6161,7 +5679,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "A9A15E6B-0747-44D1-B4D6-6F54BB30A218",
+            "id": "E7304D1F-B7FB-4D39-8591-A1323C029EF0",
             "defKey": "dict_type",
             "defName": "字典类型",
             "intro": "",
@@ -6201,7 +5719,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "C8AA2704-9157-4AD2-8374-B7CCB42E9908",
+            "id": "661B427F-CAFA-4DB4-9B18-E818CA30AB90",
             "defKey": "sort",
             "defName": "记录排序",
             "intro": "",
@@ -6241,7 +5759,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "0B00B045-4D4E-4F6E-BB0D-58B1CBD0F984",
+            "id": "D4E1F964-19F7-495F-B0EF-3378B3595E7E",
             "defKey": "status",
             "defName": "记录状态",
             "intro": "0:记录有效,1:记录无效",
@@ -6281,7 +5799,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "9D685320-149C-442B-9EB9-BF0B08A3CE43",
+            "id": "F3822135-E809-4767-8A70-AC05514E153A",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -6321,7 +5839,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "95AA2D25-3FB5-4D65-A1E5-46C7FC923C39",
+            "id": "BD2BA10B-7732-4044-B607-9FB51C743E45",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -6361,7 +5879,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "8EFC012B-7559-482E-A5BC-9C1BCDAA94BF",
+            "id": "B627A35C-8DC9-4DB4-8EF0-A15B19623F1F",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -6401,7 +5919,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "CAEF769E-CC56-40A1-8396-13F821CC567E",
+            "id": "5667D1AD-540E-4355-B0B9-30B99532899B",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -6441,7 +5959,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "B862B2DD-E6CE-4C02-BF57-C9A1C9C5A25E",
+            "id": "2363F1C8-7B55-49BF-9F7C-6CB35E067D1A",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -6481,7 +5999,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "090886CF-2477-42C0-B352-54121FC43B96",
+            "id": "59A927AF-01BE-437A-AC5B-2A2ADCF9E874",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -6521,7 +6039,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "E9F5FBD9-43EF-4E6D-9136-68C9E1170A61",
+            "id": "4B994354-25C2-4E8A-B966-A84A60867418",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -6563,42 +6081,42 @@
         ],
         "indexes": [
           {
-            "id": "83644483-E25A-4CB8-8459-F508DEC5B46E",
+            "id": "021421FC-C795-4FCD-A0A6-43DC1CD2F68D",
             "type": "UNIQUE",
             "defKey": "sys_dict_type_name_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "EBD50AFE-0A4C-44FE-A090-4173A99663D4",
-                "fieldId": "9CE022A9-59DB-40D3-AD72-4FF2534CAECD",
+                "id": "107C3977-BF8A-44B8-969D-0A5F5678F41D",
+                "fieldId": "B37B4D6D-DFB8-4A5F-BF99-FD040858B492",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "DB43D48C-ADBC-413F-8F2D-685322F535F8",
-                "fieldId": "5BDFE17D-A709-4210-A096-D765A3A5024C",
+                "id": "20BE8B60-D7ED-4658-BF2C-41E70048A0AD",
+                "fieldId": "69B13594-7792-47CE-861E-CF8AED14D378",
                 "fieldDefKey": "dict_name",
                 "sortType": "ASC"
               }
             ]
           },
           {
-            "id": "676525B3-DA8C-48B3-9A7D-208FBB6FD462",
+            "id": "48BB91CB-4789-452A-823F-89835A97BEFA",
             "type": "UNIQUE",
             "defKey": "sys_dict_type_type_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "DD0A35AF-6023-481A-B056-F88597FD9320",
-                "fieldId": "9CE022A9-59DB-40D3-AD72-4FF2534CAECD",
+                "id": "58338A55-701F-4A63-948C-E5338F389727",
+                "fieldId": "B37B4D6D-DFB8-4A5F-BF99-FD040858B492",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "B5E7928F-6302-4B91-B1B4-40F5C77C2D77",
-                "fieldId": "A9A15E6B-0747-44D1-B4D6-6F54BB30A218",
+                "id": "6DA21C16-01CE-403B-8A01-A289C6C61677",
+                "fieldId": "E7304D1F-B7FB-4D39-8591-A1323C029EF0",
                 "fieldDefKey": "dict_type",
                 "sortType": "ASC"
               }
@@ -6608,16 +6126,16 @@
         "refers": []
       },
       {
-        "id": "D81DF0E0-6328-44A7-BC7C-0CFA619BD1DF",
+        "id": "867625D6-51AB-4A56-822D-CE9B17769557",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_data_perm",
         "defName": "数据权限表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "2940CCF5-3266-4C6E-86A7-231D59F6E50F",
+            "id": "F4F7985E-C01E-4CBB-9370-B39A7A327746",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -6657,7 +6175,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "4806AFC5-B7DD-49ED-8E4A-C2815366AF82",
+            "id": "E4B44AC1-3138-4121-A789-54C33F5958E2",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -6697,7 +6215,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "6760D39D-7A7F-4487-9497-F22895ADF001",
+            "id": "3FE7E809-0A33-408B-AB79-8304E12833F4",
             "defKey": "rule_name",
             "defName": "规则名称",
             "intro": "",
@@ -6737,7 +6255,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "EE0FCFCE-02CB-4EF3-BFCF-96ADB854435C",
+            "id": "FA29D3FD-1F2E-4B8F-AE6C-F4DBEFEC2795",
             "defKey": "sort",
             "defName": "排序",
             "intro": "",
@@ -6777,7 +6295,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "8455107C-E874-40D4-955D-6CAE2729F747",
+            "id": "0F88AB96-E26A-4228-9329-F093161AF2DA",
             "defKey": "status",
             "defName": "启用状态",
             "intro": "0:启用,1:关闭",
@@ -6817,7 +6335,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "3A0ACBC8-B038-4F84-9B0B-66659F66DD94",
+            "id": "7A4725D3-BB57-4518-882D-6EB16F2E8FB5",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -6857,7 +6375,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "FB50946F-952B-4C69-B24A-1960304DBD00",
+            "id": "34312592-DC57-4C73-B943-E35C086BDD25",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -6897,7 +6415,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "42F6BE94-2CCB-4ABD-B7E3-2E028A2807B9",
+            "id": "C76CDAEA-A657-4B60-88A3-E26F52F84C4B",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -6937,7 +6455,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "2A2393BA-0595-40B8-A4B5-1CF1E1DE016B",
+            "id": "E1606002-F3A2-4929-9A68-E002850E420E",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -6977,7 +6495,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "7E8AA457-CE39-4A28-9A73-EA4341D3F441",
+            "id": "DD46BCF2-1FAC-4B4E-80D0-8C8BD0CBA8AB",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -7017,7 +6535,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "13719D84-08F1-480F-89A9-5093D48C5084",
+            "id": "2DECD411-4AE0-4C95-82A6-45CDBBC4030E",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -7057,7 +6575,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "765DE8E4-1743-40D5-82F6-7DFCCA8F447F",
+            "id": "CEC192D8-3B2D-4DF5-AA09-49A9571337E9",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -7099,21 +6617,21 @@
         ],
         "indexes": [
           {
-            "id": "0D041C18-9BE4-4991-8BDA-6B5BF9FD074B",
+            "id": "8EDF743D-C6CC-48D2-89F1-A62AD211EC4E",
             "type": "UNIQUE",
             "defKey": "sys_data_perm_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "317E1891-78E5-492D-A923-C63B66D82530",
-                "fieldId": "4806AFC5-B7DD-49ED-8E4A-C2815366AF82",
+                "id": "70ACB4BB-DBFF-407E-9B66-0F3CC07A910F",
+                "fieldId": "E4B44AC1-3138-4121-A789-54C33F5958E2",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "6C439D03-824A-4EAB-8E0E-519C1536106D",
-                "fieldId": "6760D39D-7A7F-4487-9497-F22895ADF001",
+                "id": "D1D0F67C-CCC3-4D00-A9C5-012A3FBFA42A",
+                "fieldId": "3FE7E809-0A33-408B-AB79-8304E12833F4",
                 "fieldDefKey": "rule_name",
                 "sortType": "ASC"
               }
@@ -7123,16 +6641,16 @@
         "refers": []
       },
       {
-        "id": "5B00FDD5-D13F-4E71-B8F9-86D798634C96",
+        "id": "20F7618D-47EA-4E50-9486-1B1A1BE68AC5",
         "type": "P",
         "schemaName": null,
         "defKey": "sys_dict_data",
         "defName": "字典数据表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "63637C3B-A62F-454F-9344-0273DF6251EB",
+            "id": "D8727FFC-281E-4131-AB0D-125F3191CE95",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -7172,7 +6690,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "E9F61BF7-1F3E-4835-9A06-35E3B9EEB202",
+            "id": "97F2177F-C92E-416E-843B-C7B01224F1E3",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -7212,7 +6730,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "E71C281B-5F84-42CF-9B29-D0FF4F0531CA",
+            "id": "3A9A96D0-DE56-414F-A932-C0A9E2F75E02",
             "defKey": "dict_type",
             "defName": "字典类型",
             "intro": "",
@@ -7252,7 +6770,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "B0BF94DB-5849-4B40-9366-3C60A2D98E58",
+            "id": "71F54E12-71E4-4563-948D-D64E7FCE8957",
             "defKey": "dict_label",
             "defName": "字典标签",
             "intro": "",
@@ -7292,7 +6810,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "C6DEEF66-21E1-4B3C-AE35-277A061E4C09",
+            "id": "DF7D3712-3348-490C-BFE7-8A4427972437",
             "defKey": "dict_value",
             "defName": "字典键值",
             "intro": "",
@@ -7332,7 +6850,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "0F336210-7675-4CBD-9DD3-EC4B1D2489CA",
+            "id": "484AD08C-57B5-4DAA-9F26-483ECD103D41",
             "defKey": "css_class",
             "defName": "样式属性",
             "intro": "",
@@ -7372,7 +6890,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "A17BD88E-470D-4340-8D14-3F67E532754E",
+            "id": "D225E1F5-3502-4674-9FAF-0944082730DF",
             "defKey": "list_class",
             "defName": "表格回显样式",
             "intro": "",
@@ -7412,7 +6930,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "FE2E9B44-A03D-411C-8D7E-09ED61EE1C00",
+            "id": "AC9A1BB5-8E31-4C7B-8F9E-B189CC98A214",
             "defKey": "defaulted",
             "defName": "是否默认",
             "intro": "是否默认: 0:否,1:是",
@@ -7452,7 +6970,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "3CCEC00F-31A3-44C9-862F-560C5DBD0154",
+            "id": "C940F6C4-D013-4AA1-9DD1-594DFBF15ACF",
             "defKey": "sort",
             "defName": "字典排序",
             "intro": "",
@@ -7492,7 +7010,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "F3A5E436-2C85-43FA-9DC7-A44982A885C7",
+            "id": "7E46D202-ADDE-4282-A9BC-C2758389E7A7",
             "defKey": "status",
             "defName": "启用状态",
             "intro": "0:记录有效,1:记录无效",
@@ -7532,7 +7050,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "2B76A56E-23CD-4DCB-B8B6-4E355A58A80C",
+            "id": "7F3303BC-0A81-4728-AF7E-E09A2E89CCF2",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -7572,7 +7090,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "88777565-97C0-4CCE-8BF8-96AA2BE39E2F",
+            "id": "97ECF114-080C-4109-BE3B-ADAEAC14C602",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -7612,7 +7130,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "C290DB6E-09B5-4980-937D-F5762396FFC5",
+            "id": "63323E5E-2C3D-4C9C-8331-4683D8EABEBE",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -7652,7 +7170,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "50D4C960-141B-4A1E-AF15-1FA4AA4FA118",
+            "id": "8A7B589F-B15A-487A-955D-BBA70B24111F",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -7692,7 +7210,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "CB5F17D2-E0DD-4D1E-99A6-6175A1897573",
+            "id": "7FF3159F-329E-46C4-877F-7C8A88A25DD5",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -7732,7 +7250,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "8961744C-A277-4201-A8BD-6AE194B232D7",
+            "id": "CA3C32A3-F5FB-41E1-958F-82531F2FCD40",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -7772,7 +7290,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "5FF80C43-670F-44DA-881E-2980DBE210DA",
+            "id": "9838A321-FC78-4207-88E7-22601DA8D72E",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -7814,21 +7332,21 @@
         ],
         "indexes": [
           {
-            "id": "B93B9170-741E-439C-9752-89DD5B344B19",
+            "id": "01D813DB-6977-4BF7-BBFE-4426F93BCFF7",
             "type": "UNIQUE",
             "defKey": "sys_dict_data_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "58A54BA1-399D-4611-8859-8536A4771226",
-                "fieldId": "E9F61BF7-1F3E-4835-9A06-35E3B9EEB202",
+                "id": "71282BD2-9E85-43C1-9061-E32EB4B00B24",
+                "fieldId": "97F2177F-C92E-416E-843B-C7B01224F1E3",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "900C7632-EB4D-4406-9034-C85AF0E23DA5",
-                "fieldId": "B0BF94DB-5849-4B40-9366-3C60A2D98E58",
+                "id": "AFB0D1F7-7595-4CA1-B7C2-6770E9F05EDA",
+                "fieldId": "71F54E12-71E4-4563-948D-D64E7FCE8957",
                 "fieldDefKey": "dict_label",
                 "sortType": "ASC"
               }
@@ -7850,16 +7368,16 @@
         ]
       },
       {
-        "id": "9B4B5BDC-AC7E-4C53-B851-05D550649347",
+        "id": "A1B193D0-1AAE-445C-BB85-C2622CDFDA55",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_menu",
         "defName": "菜单信息表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "889030B2-EA50-47FA-B87B-66123DD0F1EC",
+            "id": "107EDE73-0FF9-4A49-98BC-CA5058A37745",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -7899,7 +7417,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "20B560C2-0F7F-437F-8C41-A4EC1A2AB759",
+            "id": "9D2ADDCF-E067-448C-BBE7-1F1837DED266",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -7939,7 +7457,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "AED80058-1D38-491A-A92C-4D887FAD8C5D",
+            "id": "682740E9-8678-4158-AA6F-9CA010BAAD03",
             "defKey": "parent_id",
             "defName": "父菜单ID",
             "intro": "",
@@ -7979,7 +7497,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "2736D877-BD44-4F13-AC70-24CADC413364",
+            "id": "48973877-4FFF-4EBE-8083-DD87601FDD3B",
             "defKey": "menu_name",
             "defName": "菜单名称",
             "intro": "",
@@ -8019,7 +7537,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "E43C688F-D3A4-4A63-9E64-2D52631A8043",
+            "id": "5CEDB496-047B-4D10-9511-9BF3D62058AE",
             "defKey": "path",
             "defName": "路由地址",
             "intro": "",
@@ -8059,7 +7577,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "2FD1C57F-6CCD-4DE2-B3F0-1256AD0FDA26",
+            "id": "8E4E8F7F-3016-4E40-A9F6-12020AD99079",
             "defKey": "component",
             "defName": "组件路径",
             "intro": "",
@@ -8099,7 +7617,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "8C3EDE07-BB7D-4FBD-93AE-DB33E89D5C7B",
+            "id": "278C60FB-499D-4EDC-A197-57CAB266F8CB",
             "defKey": "parameters",
             "defName": "路由参数",
             "intro": "",
@@ -8139,7 +7657,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "AC6FE73A-16ED-4FD1-9CD5-41E6FC5D5EBE",
+            "id": "684D00EA-7D33-4FEC-B06C-21B62512AF09",
             "defKey": "external",
             "defName": "是否外链",
             "intro": "0:内链,1:外链",
@@ -8179,7 +7697,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "F538BA9F-6555-4B41-A8A3-AB9460E16373",
+            "id": "A81DFD69-EDF2-4A61-9301-6E5573A004DE",
             "defKey": "cacheable",
             "defName": "是否缓存",
             "intro": "0:不缓存,1:缓存",
@@ -8219,7 +7737,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "11B66EB1-DBE8-4B55-B226-67573F203E94",
+            "id": "E33B9061-5CCF-4619-AD1D-99942FC40E52",
             "defKey": "menu_type",
             "defName": "菜单类型",
             "intro": "0:目录,1:菜单，2:按钮",
@@ -8259,7 +7777,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "6391791B-5DAC-4E09-8F34-2743FF80AF0A",
+            "id": "5E12AA9A-0C38-454E-A6C8-38678BF4A883",
             "defKey": "visible",
             "defName": "菜单状态",
             "intro": "0:显示1:隐藏",
@@ -8299,7 +7817,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "2119A09F-64DE-4BEC-B22D-3CA903A0185B",
+            "id": "36380E0F-21CD-4E35-B37F-28B1D7313A49",
             "defKey": "icon",
             "defName": "菜单图标",
             "intro": "",
@@ -8339,7 +7857,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "05283853-7A95-4DD8-9807-03D069851CF8",
+            "id": "D77B88CF-859B-44FE-9015-C5806F2EB8BB",
             "defKey": "perms",
             "defName": "权限字段",
             "intro": "",
@@ -8379,7 +7897,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "8871DFAD-52C8-4F52-B631-7D6487E97C9B",
+            "id": "257B5497-FE96-46A1-9B48-2C12F7ADA004",
             "defKey": "sort",
             "defName": "显示顺序",
             "intro": "",
@@ -8419,7 +7937,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "C63EBA7E-F494-4149-9F9B-82DEADA0AA3C",
+            "id": "AABC1BD6-4031-4555-B759-849B4E9DF751",
             "defKey": "status",
             "defName": "记录状态",
             "intro": "0:记录有效,1:记录无效",
@@ -8459,7 +7977,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "7E16D201-BE6F-4423-9AE0-A300CA5B3F66",
+            "id": "EA1BEDE8-D470-4D80-B49C-8FEC55E9B538",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -8499,7 +8017,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "B8F83A76-F003-4B7F-96DA-5865FD158753",
+            "id": "8F60025E-D260-49E6-9008-8AE2C5D497F0",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -8539,7 +8057,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "13785A42-F7E5-481A-870E-2A1DF793AF2F",
+            "id": "7215526D-775B-4F3A-910B-889A2BDD0E43",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -8579,7 +8097,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "B1D0E47F-BB7C-4FC6-AF98-B123D999C3E4",
+            "id": "AD4449F5-AEB6-411F-B757-8A4161983079",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -8619,7 +8137,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "B326351F-FC24-46FC-8006-6006703256AC",
+            "id": "44DE1EEB-243A-49FC-BA4D-9EDC0C0C0620",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -8659,7 +8177,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "87448432-EFB9-4E33-A389-3AC48B48F01C",
+            "id": "11D53532-EEC4-4BE6-B51B-8F3C41577EA7",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -8699,7 +8217,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "BF2C0A38-BB4B-4A78-A100-ADACB0AD795C",
+            "id": "FBAFE9C5-B1A0-405C-8110-5FE586F2AA17",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -8741,21 +8259,21 @@
         ],
         "indexes": [
           {
-            "id": "3B69F7B7-C3BE-495B-9CDB-E5E473EE6E4E",
+            "id": "1B52E648-FB94-4E19-ACB0-8C9FE04ADF4D",
             "type": "UNIQUE",
             "defKey": "sys_menu_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "50316B33-7F7B-47D4-B04C-47EED2551310",
-                "fieldId": "20B560C2-0F7F-437F-8C41-A4EC1A2AB759",
+                "id": "03A2AA81-9276-46D9-805D-801A3EBC4DCF",
+                "fieldId": "9D2ADDCF-E067-448C-BBE7-1F1837DED266",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "062D2F3A-5DDD-4D9A-A31A-9BCEF63A8503",
-                "fieldId": "2736D877-BD44-4F13-AC70-24CADC413364",
+                "id": "166465E8-13C3-4845-AB26-B6A55C71EE90",
+                "fieldId": "48973877-4FFF-4EBE-8083-DD87601FDD3B",
                 "fieldDefKey": "menu_name",
                 "sortType": "ASC"
               }
@@ -8765,16 +8283,16 @@
         "refers": []
       },
       {
-        "id": "763EC2FC-225A-46A6-A1C5-6AB8F97CA3D9",
+        "id": "837D90BC-F392-4611-8F50-3870EAA666F1",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_perm",
         "defName": "权限信息表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "EF5CE4A9-5795-4918-9BAE-29FF5BCF0EB7",
+            "id": "AF37136A-559E-4E7F-B343-AF0A2C7E163C",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -8814,7 +8332,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "AA304AC6-8F4C-460E-923B-BD8DA2F997D3",
+            "id": "1B6EEFA8-9818-4573-8CE7-B109B33F7CE9",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -8854,7 +8372,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "5D8D7F85-8B82-4DFB-BF42-EAAD9D1EF852",
+            "id": "5642A62F-ABA3-4DE7-A9AE-44DD841F4AD4",
             "defKey": "parent_id",
             "defName": "父级ID",
             "intro": "",
@@ -8894,7 +8412,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "1FF30EC6-96B8-4DBD-AE01-3FDFC78B920A",
+            "id": "0A00533E-DA9E-4819-969B-D5744F123BA4",
             "defKey": "perm_code",
             "defName": "权限编码",
             "intro": "",
@@ -8934,7 +8452,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "94D60DF6-6886-4D32-A566-9E1FEF4A299A",
+            "id": "CB8107DA-ABD1-47FC-8E12-AC4ABA42FBF7",
             "defKey": "perm_name",
             "defName": "权限名称",
             "intro": "",
@@ -8974,7 +8492,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "1DC16A8C-1949-4E78-BB87-F1929613D38F",
+            "id": "6B9D03CF-B73F-4C72-AF96-E2F211EB5D24",
             "defKey": "sort",
             "defName": "排序",
             "intro": "",
@@ -9014,7 +8532,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "37E029AE-98C2-4ECF-B096-12E0768E845A",
+            "id": "E3D14BFF-8036-4B2F-BB04-8F66A4B8D4DB",
             "defKey": "status",
             "defName": "启用状态",
             "intro": "0:启用,1:关闭",
@@ -9054,7 +8572,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "DFF96046-DF82-4A4C-AFD9-9B4E22C2F980",
+            "id": "3F4A3998-91D4-4D2C-8D63-9B7F61AE5764",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -9094,7 +8612,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "18A8DE90-99D0-4D8F-86C1-A2BF87AE5D0B",
+            "id": "1F410EA2-8814-49EE-B93D-028CFC39164B",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -9134,7 +8652,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "21B86D98-8B4C-4C3E-94F9-B0EDA2704263",
+            "id": "FEB1B8C9-3159-4366-B4BF-7D7502AF3100",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -9174,7 +8692,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "288F0465-C21D-4E72-B058-7EAE2A2069FE",
+            "id": "3E557F78-AB91-45EE-AAEF-7DF9FBFA4321",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -9214,7 +8732,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "BE3001AC-AFBA-4AFB-8D21-DDE2C5431713",
+            "id": "76F76DF8-EC40-4A64-B3AD-E26A0789439C",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -9254,7 +8772,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "9ABDE165-6D06-4616-A25D-3B40085BBEC2",
+            "id": "98E22F08-99D2-429F-9819-BDA8D67E1070",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -9294,7 +8812,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "06741DEB-1D81-4A13-8FC4-4D7343FC72FD",
+            "id": "C43CE340-4301-410F-90FE-10ED1506DC6D",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -9336,42 +8854,42 @@
         ],
         "indexes": [
           {
-            "id": "2297451A-9142-452B-8C16-5ED178613A42",
+            "id": "DADC3B1E-8623-4D75-9F12-A3A6B4939203",
             "type": "UNIQUE",
             "defKey": "sys_perm_name_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "7F979B1E-715D-4DFB-BEAA-F9391A02E301",
-                "fieldId": "AA304AC6-8F4C-460E-923B-BD8DA2F997D3",
+                "id": "33486162-2E20-46BF-8696-6F11032B3B53",
+                "fieldId": "1B6EEFA8-9818-4573-8CE7-B109B33F7CE9",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "834465A9-B8D8-4E61-9418-1B57E1BF09F7",
-                "fieldId": "94D60DF6-6886-4D32-A566-9E1FEF4A299A",
+                "id": "4915533A-6794-4346-B65D-74A8F7AE0C95",
+                "fieldId": "CB8107DA-ABD1-47FC-8E12-AC4ABA42FBF7",
                 "fieldDefKey": "perm_name",
                 "sortType": "ASC"
               }
             ]
           },
           {
-            "id": "07554E59-D61F-42DF-94B0-2BA1CCE68687",
+            "id": "D7F4BF25-6B25-4D21-9CAB-911AA74F6214",
             "type": "UNIQUE",
             "defKey": "sys_perm_code_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "DF10D290-581B-4401-939C-1507BED3D5D0",
-                "fieldId": "AA304AC6-8F4C-460E-923B-BD8DA2F997D3",
+                "id": "4A943AFF-4A02-441A-82D4-B1F7F36C0EAD",
+                "fieldId": "1B6EEFA8-9818-4573-8CE7-B109B33F7CE9",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "8B0297B9-2E27-40B2-BD3D-C51B17309A06",
-                "fieldId": "1FF30EC6-96B8-4DBD-AE01-3FDFC78B920A",
+                "id": "431B68CE-1D4D-4952-996C-8723EDBE2B9D",
+                "fieldId": "0A00533E-DA9E-4819-969B-D5744F123BA4",
                 "fieldDefKey": "perm_code",
                 "sortType": "ASC"
               }
@@ -9381,16 +8899,16 @@
         "refers": []
       },
       {
-        "id": "5EF8B16C-9C8E-4CA0-BE0F-E847CEF9395D",
+        "id": "0BD862BE-620F-4340-A13B-B23794C12BDE",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_post",
         "defName": "岗位信息表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "E657A87A-5794-4EFE-86BB-B8EB7464C31E",
+            "id": "1D955781-6B9F-44E6-8043-446917912CB3",
             "defKey": "id",
             "defName": "岗位ID",
             "intro": "",
@@ -9430,7 +8948,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "E3649DCB-222E-48E2-AC59-0B7A7B64A9FC",
+            "id": "F8A9217C-3902-4D38-82CD-213F2CD9CAD7",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -9470,7 +8988,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "E813B0D5-E2D7-406A-AB4D-063B3620B85D",
+            "id": "2D39656D-961C-445A-A250-5F455C15B2DB",
             "defKey": "post_code",
             "defName": "岗位编码",
             "intro": "",
@@ -9510,7 +9028,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "918D5DDD-BF26-4479-A708-F97F3B79E0A0",
+            "id": "805ED0F9-9D67-45B3-9719-9FC2F1B24417",
             "defKey": "post_name",
             "defName": "岗位名称",
             "intro": "",
@@ -9550,7 +9068,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "1E0A18A3-D55C-44C7-A1F2-ED85FF060400",
+            "id": "57F24BB0-42DB-4591-B550-6BC265A30B06",
             "defKey": "sort",
             "defName": "岗位顺序",
             "intro": "",
@@ -9590,7 +9108,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "B04FCA7D-DDA0-4A98-AA38-5632C017EA2B",
+            "id": "45A3C8DC-8340-4F6C-9A4F-E2ADCD626872",
             "defKey": "status",
             "defName": "记录状态",
             "intro": "0:记录有效,1:记录无效",
@@ -9630,7 +9148,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "B837501D-F0FE-459D-A31A-2AEDE447333B",
+            "id": "1BD8C904-688C-4833-8E34-EB8813B81549",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -9670,7 +9188,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "E8302D09-6CD5-420A-8F15-31CF2E4A6D45",
+            "id": "B2074DBD-3AD6-4148-9FCB-2C75A1CEBCE2",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -9710,7 +9228,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "23C3DED9-ECBD-4F9D-BF0B-54F2E8D74227",
+            "id": "F87FCF1E-01CE-442A-88D7-E3A40D8ED88B",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -9750,7 +9268,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "9A806B92-DD41-46BC-953C-1539C5ACBBE5",
+            "id": "FEBDF7EC-D000-407B-A647-19CB069A1BD3",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -9790,7 +9308,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "D8B8CFE4-ECBB-44EE-A1F4-32CD9E29DB7C",
+            "id": "75203B96-8F41-4F10-B421-6DEE3472E58E",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -9830,7 +9348,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "47950670-2C92-4B48-B05E-71E1D76125DB",
+            "id": "6B43504F-2A5F-4167-ADC6-AEF9D292D041",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -9870,7 +9388,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "2C53FC5E-738F-4294-9036-B3C25E158C51",
+            "id": "4F299A8C-754F-455B-944A-3D35DE10C9C9",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -9912,42 +9430,42 @@
         ],
         "indexes": [
           {
-            "id": "78F31CD9-CC2D-4E09-B7AF-6EE1DA6FFF15",
+            "id": "5BD8D939-BD62-4583-8D96-5C550044379B",
             "type": "UNIQUE",
             "defKey": "sys_post_name_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "AFBC8DCF-1F74-4337-BD84-6CFACC86ACF3",
-                "fieldId": "E3649DCB-222E-48E2-AC59-0B7A7B64A9FC",
+                "id": "FD8DF11E-4739-4163-8BE1-FBF5A4B01962",
+                "fieldId": "F8A9217C-3902-4D38-82CD-213F2CD9CAD7",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "D9E4411D-303F-4C20-9FD5-31283A108866",
-                "fieldId": "918D5DDD-BF26-4479-A708-F97F3B79E0A0",
+                "id": "1D3C35A3-B4D8-4A6C-9CEC-47172B617EF0",
+                "fieldId": "805ED0F9-9D67-45B3-9719-9FC2F1B24417",
                 "fieldDefKey": "post_name",
                 "sortType": "ASC"
               }
             ]
           },
           {
-            "id": "72F683DB-B2BA-4C8D-B2D1-8A1234C56F19",
+            "id": "B96EEC49-4CE8-4377-960B-BD45C2E95FC3",
             "type": "UNIQUE",
             "defKey": "sys_post_code_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "E6A4C4E1-A903-4FB7-86CF-40E928F10B40",
-                "fieldId": "E3649DCB-222E-48E2-AC59-0B7A7B64A9FC",
+                "id": "DA7C9B88-93D0-4CBA-B558-9C5AA7F4AAF5",
+                "fieldId": "F8A9217C-3902-4D38-82CD-213F2CD9CAD7",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "D0CB01D9-03C3-4BA6-8DAC-A5092BFA01C9",
-                "fieldId": "E813B0D5-E2D7-406A-AB4D-063B3620B85D",
+                "id": "A9FB9E19-307F-430D-BC9C-8DDD50715591",
+                "fieldId": "2D39656D-961C-445A-A250-5F455C15B2DB",
                 "fieldDefKey": "post_code",
                 "sortType": "ASC"
               }
@@ -9957,16 +9475,16 @@
         "refers": []
       },
       {
-        "id": "68868AB2-B264-47FD-B832-973ACA3A3F97",
+        "id": "5B0BB4C8-ECBE-4A31-B1FD-AF0E1980B159",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_role",
         "defName": "角色信息表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "541DEADC-47F5-42F3-BC83-7C7861CDA86E",
+            "id": "D1ECB0A2-175A-42E3-AE6D-43458E113AB6",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -10006,7 +9524,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "DF8AEF0E-4A81-4752-AF41-E461675F44D9",
+            "id": "61A7E8BB-C9AA-42D6-9D3F-7BCD40617690",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -10046,7 +9564,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "59683FE3-67B0-409D-BA4F-1845DC8D7325",
+            "id": "B497C726-6C7F-4AED-B5EB-A49083B37CD7",
             "defKey": "role_name",
             "defName": "角色名称",
             "intro": "",
@@ -10086,7 +9604,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "F8C451F0-00A2-4B7D-982F-365625356803",
+            "id": "6AF3BB4C-E4FB-4CA6-9CB7-96116CB48392",
             "defKey": "role_code",
             "defName": "角色权限字符串",
             "intro": "",
@@ -10126,7 +9644,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "7F14DCDD-B3FC-43CD-9A0C-C529E1DD425C",
+            "id": "06C5E48B-EB4F-4BD4-9233-FA334F4EC2D8",
             "defKey": "data_scope",
             "defName": "数据范围",
             "intro": "1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限",
@@ -10166,7 +9684,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "BE22E321-AA89-4F34-A9DF-A2555E5E68DA",
+            "id": "A0A29CA8-7232-478E-AFC4-6FEFB7CEED1F",
             "defKey": "menu_check_strictly",
             "defName": "菜单树选择项是否关联显示",
             "intro": "",
@@ -10206,7 +9724,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "B912A51C-50B5-4B63-8F4F-60D963BB2482",
+            "id": "FCEE3BAA-6E0D-44E0-81F1-08419BF27224",
             "defKey": "dept_check_strictly",
             "defName": "部门树选择项是否关联显示",
             "intro": "",
@@ -10246,7 +9764,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "1CB85C05-4C62-47D9-A0A3-F0A3605AA97F",
+            "id": "FE5B5326-317D-4BAC-B700-DDDC2A51DE55",
             "defKey": "sort",
             "defName": "显示顺序",
             "intro": "",
@@ -10286,7 +9804,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "B9D089CF-3903-464A-B48F-1706AF40030C",
+            "id": "6E6592AD-77AE-47A2-A219-F1931AF54B67",
             "defKey": "status",
             "defName": "记录状态",
             "intro": "0:记录有效,1:记录无效",
@@ -10326,7 +9844,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "59C36155-263D-4747-B3A5-07EC2F86EFC3",
+            "id": "F53FC290-1A91-4E1E-A46F-5F4E867AF4C7",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -10366,7 +9884,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "1B645300-B69B-4510-8F07-716B0A8D25F5",
+            "id": "AA2452E2-32D9-4269-902C-74C5B8BEC6E4",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -10406,7 +9924,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "466E3A5C-66A6-461B-BB47-A7731C64173F",
+            "id": "BC5950F9-EAEC-44C5-AD56-F612BCC13268",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -10446,7 +9964,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "709B1E8B-DC54-405F-8A98-D22AB3584AB3",
+            "id": "E771529C-463E-46E7-9DF8-386FB8B54477",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -10486,7 +10004,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "3C04D3DB-2E9A-440D-92C1-EFC5930CCB05",
+            "id": "C01C3707-AA41-4407-99D7-079D43B59E0E",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -10526,7 +10044,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "D67BAF6B-7754-4EA0-88EB-55F43AE04FD2",
+            "id": "FC807D7B-F521-4FFB-AC4B-EC09DEA61079",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -10566,7 +10084,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "CD89CBF7-2863-42B0-ABC0-556E5F107BFE",
+            "id": "1079BF61-B02A-4EC5-A8E1-8FE0CEA6C9AA",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -10608,42 +10126,42 @@
         ],
         "indexes": [
           {
-            "id": "44F92F1A-FBBA-4337-8793-B35418FF0547",
+            "id": "1BEED971-E045-42A7-8E8D-EB7796886AE5",
             "type": "UNIQUE",
             "defKey": "sys_role_name_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "B9D7A146-9599-4A9B-9E72-A1F4EDA42385",
-                "fieldId": "DF8AEF0E-4A81-4752-AF41-E461675F44D9",
+                "id": "7253BE2A-77F4-4C87-8AB2-B9ED96668E63",
+                "fieldId": "61A7E8BB-C9AA-42D6-9D3F-7BCD40617690",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "B70C34EB-AB80-4EFA-B570-647C2871D8A4",
-                "fieldId": "59683FE3-67B0-409D-BA4F-1845DC8D7325",
+                "id": "5130DD60-DB83-4953-9E0E-B239516FAC85",
+                "fieldId": "B497C726-6C7F-4AED-B5EB-A49083B37CD7",
                 "fieldDefKey": "role_name",
                 "sortType": "ASC"
               }
             ]
           },
           {
-            "id": "39B098AA-4FB8-4251-BAEC-F384D050C982",
+            "id": "7FF0E435-E535-42BD-82C0-3B444FBF71B0",
             "type": "UNIQUE",
             "defKey": "sys_role_code_ukey",
             "defName": "",
             "intro": "",
             "fields": [
               {
-                "id": "1AD1BF33-27D2-4C68-A0ED-2EF56FFC6768",
-                "fieldId": "DF8AEF0E-4A81-4752-AF41-E461675F44D9",
+                "id": "5A6BDC94-45FA-4C6A-A5D4-B568548011F7",
+                "fieldId": "61A7E8BB-C9AA-42D6-9D3F-7BCD40617690",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "6B25A9F0-FD3D-4C46-AB59-41B73CE47C32",
-                "fieldId": "F8C451F0-00A2-4B7D-982F-365625356803",
+                "id": "FE54DDA0-8330-4487-A510-9D41E6CE4220",
+                "fieldId": "6AF3BB4C-E4FB-4CA6-9CB7-96116CB48392",
                 "fieldDefKey": "role_code",
                 "sortType": "ASC"
               }
@@ -10653,16 +10171,16 @@
         "refers": []
       },
       {
-        "id": "E03BF331-FDE8-4C0A-A2B2-5E43C8E66689",
+        "id": "C792C25F-ADA5-4EC9-9E6A-0B89B67D6C3D",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_role_dept",
         "defName": "角色和部门关联表1-N",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "46DF4CC5-66C4-4662-98FA-68A39552BFD4",
+            "id": "B1F1CDEA-7933-44BB-949B-3B53CE56FB7C",
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
@@ -10702,7 +10220,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "42B83B35-BD6C-4D7F-9911-447749932C7F",
+            "id": "E0C2EF0E-5D71-450D-93F4-1B24F507133D",
             "defKey": "dept_id",
             "defName": "部门ID",
             "intro": "",
@@ -10744,21 +10262,21 @@
         ],
         "indexes": [
           {
-            "id": "4F1106DC-B154-4462-ACF2-A48843109A36",
+            "id": "EDFFDB34-04B1-4A83-A24F-E94FD704218C",
             "type": "UNIQUE",
             "defKey": "sys_roel_dept_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "DFC130E1-A95C-494B-9127-469C4454EB4C",
-                "fieldId": "46DF4CC5-66C4-4662-98FA-68A39552BFD4",
+                "id": "2499DC26-F953-4F31-B6C9-395A19B0454D",
+                "fieldId": "B1F1CDEA-7933-44BB-949B-3B53CE56FB7C",
                 "fieldDefKey": "role_id",
                 "sortType": "ASC"
               },
               {
-                "id": "8D64546B-1CC1-41CC-93D2-F72AE4BE9DB7",
-                "fieldId": "42B83B35-BD6C-4D7F-9911-447749932C7F",
+                "id": "C7359B22-194A-43D4-AC78-F1E703F18D5A",
+                "fieldId": "E0C2EF0E-5D71-450D-93F4-1B24F507133D",
                 "fieldDefKey": "dept_id",
                 "sortType": "ASC"
               }
@@ -10791,16 +10309,16 @@
         ]
       },
       {
-        "id": "8B20766E-956A-4AA1-A05C-7E0CF8A02719",
+        "id": "66BCD789-E839-4E78-A835-766562E4570D",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_role_menu",
         "defName": "角色和菜单关联表1-N",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "B19725F4-413A-4ED2-B3E4-63E952A4950B",
+            "id": "CCC4B6C5-7EF8-4CF6-9579-13CEFEAE7663",
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
@@ -10840,7 +10358,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "7D703735-3874-4BD8-89FD-E351624DBF9B",
+            "id": "50EEA642-A247-4B2F-99DF-0287306434CA",
             "defKey": "menu_id",
             "defName": "菜单ID",
             "intro": "",
@@ -10882,21 +10400,21 @@
         ],
         "indexes": [
           {
-            "id": "4AFD2905-3F8E-4398-8264-2BDA361695BA",
+            "id": "49AE4BFA-2203-441E-AAC4-7D551AEA53F1",
             "type": "NORMAL",
             "defKey": "sys_role_menu_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "B33538F8-59A1-4227-9342-48DA7DBECD2F",
-                "fieldId": "B19725F4-413A-4ED2-B3E4-63E952A4950B",
+                "id": "8BEE38AF-9E82-4601-BB15-359B44FBCC7F",
+                "fieldId": "CCC4B6C5-7EF8-4CF6-9579-13CEFEAE7663",
                 "fieldDefKey": "role_id",
                 "sortType": "ASC"
               },
               {
-                "id": "392E5135-2AE0-4326-A8DA-C400489E164F",
-                "fieldId": "7D703735-3874-4BD8-89FD-E351624DBF9B",
+                "id": "14D00DB6-1889-46E3-9303-EC3680AB4F72",
+                "fieldId": "50EEA642-A247-4B2F-99DF-0287306434CA",
                 "fieldDefKey": "menu_id",
                 "sortType": "ASC"
               }
@@ -10929,16 +10447,16 @@
         ]
       },
       {
-        "id": "F11BAC3C-31D4-4FB2-9644-38CB317F6E42",
+        "id": "3E48F64E-4201-4B53-8A84-44E6F8D5BFDF",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_role_perm",
         "defName": "角色和权限关联表1-N",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "1C36D0C7-E4B9-4344-892F-E86D4216CF45",
+            "id": "34AE61D7-E403-42FC-BA4A-9A7B825198C7",
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
@@ -10978,7 +10496,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "E9E9A057-077F-49D6-97D2-52A0C92CE794",
+            "id": "9AE8E93A-AA5A-4E82-9905-26C0F557913B",
             "defKey": "perm_id",
             "defName": "权限ID",
             "intro": "",
@@ -11020,21 +10538,21 @@
         ],
         "indexes": [
           {
-            "id": "169C2FEA-0CC4-437C-AC24-25E7DB87596A",
+            "id": "6337915F-C8A2-4D49-B479-FB930D3B5170",
             "type": "UNIQUE",
             "defKey": "sys_role_perm_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "95736440-1502-4EA4-88F3-758286C5449E",
-                "fieldId": "1C36D0C7-E4B9-4344-892F-E86D4216CF45",
+                "id": "E918A730-2044-4D01-BCA0-F572B9AFE069",
+                "fieldId": "34AE61D7-E403-42FC-BA4A-9A7B825198C7",
                 "fieldDefKey": "role_id",
                 "sortType": "ASC"
               },
               {
-                "id": "BFD2EA71-438D-49B2-AB80-BEE333271FF3",
-                "fieldId": "E9E9A057-077F-49D6-97D2-52A0C92CE794",
+                "id": "351E4458-1F46-43A3-B681-80BEDDFB4E62",
+                "fieldId": "9AE8E93A-AA5A-4E82-9905-26C0F557913B",
                 "fieldDefKey": "perm_id",
                 "sortType": "ASC"
               }
@@ -11067,16 +10585,16 @@
         ]
       },
       {
-        "id": "97EF4676-D8BD-4F7D-B125-246365A65314",
+        "id": "2A9C8E21-CD1C-4F9C-B7B6-0C2B66E88C39",
         "type": "P",
         "schemaName": null,
         "defKey": "sys_user",
         "defName": "用户信息表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "3791EF18-D8C7-4DEF-8399-86569E8B5765",
+            "id": "3E12A35C-F356-4501-A197-B4894B47F72C",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -11116,7 +10634,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "955A3E36-CF23-4DBA-918B-77EEF74F9DF6",
+            "id": "DD6EAE17-2E36-43F5-96EA-15C13653032C",
             "defKey": "tenant_id",
             "defName": "租户ID",
             "intro": "",
@@ -11156,7 +10674,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "483B37DB-89DD-4746-BE5D-7A5B5ED28998",
+            "id": "D8F853DF-0DA7-4662-93AF-3DF7BE5405BB",
             "defKey": "dept_id",
             "defName": "部门ID",
             "intro": "",
@@ -11196,7 +10714,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "B4A9BB49-B1BC-4609-BE81-7E98F3F91746",
+            "id": "7E785EFC-8A2F-474F-BC18-3F05249DD0DE",
             "defKey": "user_name",
             "defName": "用户账号",
             "intro": "",
@@ -11236,7 +10754,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "0364D27C-72EF-4C65-8219-105721B2790D",
+            "id": "1371786E-1BFF-420E-858F-12E94BB97B35",
             "defKey": "nick_name",
             "defName": "用户昵称",
             "intro": "",
@@ -11276,7 +10794,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "6021E032-CF24-48D7-9A67-C255CE5C7A98",
+            "id": "100E3892-B02E-4878-9133-03989C242D8D",
             "defKey": "user_type",
             "defName": "用户类型",
             "intro": "",
@@ -11316,7 +10834,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "06A7799A-8451-4395-9F1C-2194344D713C",
+            "id": "8CA8FB5C-9032-4091-B280-8ED75253669A",
             "defKey": "email",
             "defName": "用户邮箱",
             "intro": "",
@@ -11356,7 +10874,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "4AC7C7C6-78E1-4181-A60C-CFE0703EA142",
+            "id": "E888D228-CB33-43AE-BE86-72A7D680303C",
             "defKey": "phone",
             "defName": "手机号码",
             "intro": "",
@@ -11396,7 +10914,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "52E29135-D631-4FCE-88B0-2096C02607CC",
+            "id": "602B1FF5-F8EE-4FB3-87EF-1356E8B0D80B",
             "defKey": "gender",
             "defName": "用户性别",
             "intro": "",
@@ -11436,7 +10954,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "32CC258D-9916-438A-9DF8-0B8CF4482331",
+            "id": "910D4441-9698-4FD9-BCF0-25DEDF844649",
             "defKey": "avatar",
             "defName": "用户头像",
             "intro": "",
@@ -11476,7 +10994,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "A6C44740-58CF-4C78-9877-6923354E1FDF",
+            "id": "70B6FE12-0114-4104-AF1F-D7A3A7E9C370",
             "defKey": "password",
             "defName": "密码",
             "intro": "",
@@ -11516,7 +11034,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "18028BF8-C4A0-4476-A330-DF6BA16F5E06",
+            "id": "F09BF03F-4E07-4E97-BDB5-A230A5FF88C4",
             "defKey": "login_ip",
             "defName": "最后登录IP",
             "intro": "",
@@ -11556,7 +11074,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "5DEAAF4C-2ABB-4DA4-B378-690F7D271389",
+            "id": "1ADC4C39-B507-4A3C-B6C4-A778BC71E78C",
             "defKey": "login_date",
             "defName": "最后登录时间",
             "intro": "",
@@ -11596,7 +11114,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "F875703F-2C0D-4CA2-A9D3-E56F2F356D6E",
+            "id": "C75945E8-EF30-4137-B023-A153B4E9499B",
             "defKey": "sort",
             "defName": "显示顺序",
             "intro": "",
@@ -11636,7 +11154,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "89A14FD6-1584-4F75-B913-564541BAA9E0",
+            "id": "0F5E1D78-E58B-41D9-8AFC-A26A96011618",
             "defKey": "status",
             "defName": "记录状态",
             "intro": "0:记录有效,1:记录无效",
@@ -11676,7 +11194,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "00CFB367-C948-4196-9666-0E7685CED59C",
+            "id": "5E1A0168-DA4E-45B2-9DB8-24AE9868CD6E",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -11716,7 +11234,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "74118F4E-C23B-420F-819A-F76A4531BAA1",
+            "id": "690141AB-ED6A-4BD8-9EF9-16A746ADE512",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -11756,7 +11274,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "994A5485-14FD-4120-90FF-2D2A89B289BC",
+            "id": "E9D423A7-C5DF-418F-8614-CF0B2B0BB5AF",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -11796,7 +11314,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "A1E59AD7-430A-44E9-A5CD-E076B50ECDE0",
+            "id": "F4FA68FA-0DA2-4C07-9D90-9329E6F05739",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -11836,7 +11354,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "6670A215-8ED5-447F-8ABB-3B990BCF4E0F",
+            "id": "55D1C27D-FDD3-484D-A15A-A3F12DB558FC",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -11876,7 +11394,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "2A111D22-7FE0-49C6-85E4-28A9F9392E3E",
+            "id": "568FF597-5118-4F0F-ABB0-764FB72CED14",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -11916,7 +11434,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "D72F7A80-1FFB-445D-B885-5610999CDD3A",
+            "id": "D3E7E9B1-B19F-43BA-BD65-8100162A094F",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -11958,21 +11476,21 @@
         ],
         "indexes": [
           {
-            "id": "5156FE27-3A46-4F83-8F52-6DFCC91D2C7E",
+            "id": "EAB6EC9A-7378-45F4-B01A-8BB7D0CC3FE0",
             "type": "UNIQUE",
             "defKey": "sys_user_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "A6EF12A4-A059-48FB-893F-C97BEDE69249",
-                "fieldId": "955A3E36-CF23-4DBA-918B-77EEF74F9DF6",
+                "id": "57AD0944-AA75-4876-BF55-46BE3E423501",
+                "fieldId": "DD6EAE17-2E36-43F5-96EA-15C13653032C",
                 "fieldDefKey": "tenant_id",
                 "sortType": "ASC"
               },
               {
-                "id": "1243955D-7EBB-4C1E-A8EA-819001B99C7F",
-                "fieldId": "B4A9BB49-B1BC-4609-BE81-7E98F3F91746",
+                "id": "05476D26-7AC5-4705-B19F-943D8E61B8E3",
+                "fieldId": "7E785EFC-8A2F-474F-BC18-3F05249DD0DE",
                 "fieldDefKey": "user_name",
                 "sortType": "ASC"
               }
@@ -11982,16 +11500,16 @@
         "refers": []
       },
       {
-        "id": "B5D66411-A98A-4D5E-B0BF-108B205BBA18",
+        "id": "5E60777F-7538-4C17-A852-6DF26D4AB269",
         "type": "P",
         "schemaName": null,
         "defKey": "sys_tenant",
         "defName": "租户信息表",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "4BD0D36E-7FC8-449A-97D0-0EC7707E99D9",
+            "id": "B81A3D85-F5D6-4F36-A566-9F1D4612BF08",
             "defKey": "id",
             "defName": "主键ID",
             "intro": "",
@@ -12034,10 +11552,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "F977A555-54C5-49AF-9AF7-EB697F1F9BA8",
+            "id": "B3193D7C-209E-4696-967E-680F9C06C4D1",
             "defKey": "tenant_code",
             "defName": "租户编码",
             "intro": "",
@@ -12077,7 +11595,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "356A3FFB-E8CB-4F91-A495-7FF3ECDF6C57",
+            "id": "0C1D49D1-C7B6-4121-9FBC-A6379F00D4E1",
             "defKey": "tenant_name",
             "defName": "租户名称",
             "intro": "",
@@ -12117,7 +11635,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "8046B956-DFE2-48DD-A578-6CD513634279",
+            "id": "2A25FA83-4A2D-42AC-A94E-34A6DD7B9CCC",
             "defKey": "intro",
             "defName": "简介",
             "intro": "",
@@ -12160,10 +11678,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "49C51B64-8B67-44F4-B974-2909084E0BC0",
+            "id": "50E821D9-E127-4341-9758-2BD695D94681",
             "defKey": "addres",
             "defName": "地址",
             "intro": "",
@@ -12206,10 +11724,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "0A587B2E-1425-4478-BC80-30E7CE351EC8",
+            "id": "0C9CB72D-CE4F-49FB-BD78-CA96FED476CD",
             "defKey": "domain",
             "defName": "域名",
             "intro": "",
@@ -12249,7 +11767,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "0BBC4CED-F380-47EE-9B4C-462B3DE6A588",
+            "id": "4D9EDB28-14DB-4410-859A-DFCEB5C3B445",
             "defKey": "social_code",
             "defName": "统一社会信用代码",
             "intro": "",
@@ -12292,10 +11810,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "AC1AFC2A-1A21-4C39-AB00-4F1A3AEB65A5",
+            "id": "FB058665-609F-4638-A78B-73CFA7EC3507",
             "defKey": "contact_person",
             "defName": "联系人",
             "intro": "",
@@ -12335,7 +11853,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "64260305-734A-471E-8A4C-B429070AB431",
+            "id": "040AFC6F-0DAC-428F-92BB-E20098B93299",
             "defKey": "contact_phone",
             "defName": "联系号码",
             "intro": "",
@@ -12375,7 +11893,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "EC4F15F3-B85F-421A-BF2A-8E708F1C1907",
+            "id": "253053EA-4A5A-41B5-A625-60BB386EDCCA",
             "defKey": "contact_email",
             "defName": "联系邮箱",
             "intro": "",
@@ -12415,7 +11933,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "805448C0-796F-430D-8611-E764E1A001FB",
+            "id": "B7E26B6E-E803-4C7A-A894-FF733A937933",
             "defKey": "package_id",
             "defName": "套餐ID",
             "intro": "",
@@ -12455,7 +11973,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "82117031-40FC-4096-9F50-62494D7FBC9C",
+            "id": "496EE927-04C8-43E6-9033-AF36784F2E55",
             "defKey": "expire_time",
             "defName": "过期时间",
             "intro": "",
@@ -12495,7 +12013,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "1165F032-36B7-40B9-B1BA-EDC3FFE78CEA",
+            "id": "8F2C8B8B-0D11-43A3-A130-104E0914B89B",
             "defKey": "max_user",
             "defName": "最大用户数",
             "intro": "",
@@ -12535,7 +12053,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "336FF57F-C064-4712-B84E-327B3EEDD44F",
+            "id": "C1611394-7D40-48D6-8ED8-DB27AD53F6C0",
             "defKey": "used_user",
             "defName": "已用用户数",
             "intro": "",
@@ -12578,10 +12096,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "C23DFE56-B005-4F9E-919E-044435652C79",
+            "id": "BFF9A313-B3EF-4FF5-B991-831D98DD8915",
             "defKey": "sort",
             "defName": "显示顺序",
             "intro": "",
@@ -12617,11 +12135,11 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE",
+            "origin": "IMPORT",
             "dbDataType": "INT4"
           },
           {
-            "id": "110E7519-03F6-4508-B854-1978781DFAA3",
+            "id": "B412F52D-3D5F-4660-A54E-31EA84640253",
             "defKey": "status",
             "defName": "记录状态",
             "intro": "0:记录有效,1:记录无效",
@@ -12661,7 +12179,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "8F9ECCAA-472F-442A-A67B-2A549178E418",
+            "id": "34D7C419-6F40-4734-9EE8-F40247AE8866",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -12701,7 +12219,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "8FC1F756-2FB8-4C95-9D82-4311361D20FD",
+            "id": "592B8B0C-3682-433B-8445-9997D2C807F7",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -12741,7 +12259,7 @@
             "dbDataType": "INT4"
           },
           {
-            "id": "D4D59B75-1FA6-4A43-82A6-43EFF94FB8E9",
+            "id": "CCCFC6ED-B51B-43B3-B185-7BD92F0A3710",
             "defKey": "created_dept",
             "defName": "创建部门",
             "intro": "",
@@ -12784,10 +12302,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "ED9227B4-6011-48D9-AFCF-CED92EA05663",
+            "id": "8E8A453A-8C5F-4ADF-90C9-7454CC46A5D0",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -12827,7 +12345,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "F31A0D0A-B57D-434F-A5DE-CDF9D697C77B",
+            "id": "63B8D8B9-4EFD-44E6-B78E-383322EA052F",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -12867,7 +12385,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "6FF9CBD0-4D4B-4F32-9F89-EC69C43E647C",
+            "id": "D84AD424-E9CC-4CC2-BA34-C97A9749985D",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -12907,7 +12425,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "26D72492-FD83-4A32-B5DB-CC31BAF39C95",
+            "id": "DB2CB1DB-9C2E-41AE-9445-C9FF79A9CF92",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -12947,7 +12465,7 @@
             "origin": "IMPORT"
           },
           {
-            "id": "CF35E6D6-EDC2-43DB-849E-449C73C66634",
+            "id": "AE3B6E41-EE92-45C3-B372-7BA8AB6ACE3B",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -12989,7 +12507,7 @@
         ],
         "indexes": [
           {
-            "id": "4EC6C9A1-2F69-4BEA-86B5-32B4816C9BD2",
+            "id": "1EE7D1E2-10F9-4C12-A514-114BD5B9C311",
             "type": "UNIQUE",
             "defKey": "sys_tenant_ukey",
             "defName": null,
@@ -12997,30 +12515,30 @@
             "fields": []
           },
           {
-            "id": "1E53378B-0473-47A5-B3E0-21DD38FAB88C",
+            "id": "44C8741A-39CD-4975-87EA-1E9CEAED4F38",
             "type": "UNIQUE",
             "defKey": "sys_tenant_code_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "8938BD5A-0735-4AB7-8C1A-777DBFE35FCA",
-                "fieldId": "F977A555-54C5-49AF-9AF7-EB697F1F9BA8",
+                "id": "351A3554-324D-44DE-BB1F-1EAB6A694C50",
+                "fieldId": "B3193D7C-209E-4696-967E-680F9C06C4D1",
                 "fieldDefKey": "tenant_code",
                 "sortType": "ASC"
               }
             ]
           },
           {
-            "id": "6ECCE503-72EF-4C1C-8A4C-3B411BDDE99B",
+            "id": "AF89992C-13B4-4778-84DC-AC48B5EA7C7A",
             "type": "UNIQUE",
             "defKey": "sys_tenant_name_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "EACDD305-B2BF-4011-9D19-C4A774CC484A",
-                "fieldId": "356A3FFB-E8CB-4F91-A495-7FF3ECDF6C57",
+                "id": "7B5B8BD6-DE96-4F5B-81B7-F58DFDC49D62",
+                "fieldId": "0C1D49D1-C7B6-4121-9FBC-A6379F00D4E1",
                 "fieldDefKey": "tenant_name",
                 "sortType": "ASC"
               }
@@ -13097,16 +12615,16 @@
         ]
       },
       {
-        "id": "B9D4E01F-047B-438F-B281-FA3AEF1E2D20",
+        "id": "5AE6C0D5-56D6-4FCA-9349-A1255B2EF244",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_user_post",
         "defName": "用户和岗位关联表1-N",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "27565CCB-1C46-4843-A01F-79B1C200A390",
+            "id": "380E2775-269E-4CBE-BA8A-1F9C873DB077",
             "defKey": "user_id",
             "defName": "用户ID",
             "intro": "",
@@ -13146,7 +12664,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "DB0225B1-FB65-4B71-B295-AF74807CF2F7",
+            "id": "9C55C393-1B1D-49E3-B7CB-49CF98D1BE89",
             "defKey": "post_id",
             "defName": "岗位ID",
             "intro": "",
@@ -13188,21 +12706,21 @@
         ],
         "indexes": [
           {
-            "id": "F3297674-2887-4D33-A7FB-133ACE00DA9D",
+            "id": "03260178-057E-449E-850C-6F442F521F03",
             "type": "UNIQUE",
             "defKey": "sys_user_post_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "01161B37-621E-414E-8EF4-71C1879548E6",
-                "fieldId": "27565CCB-1C46-4843-A01F-79B1C200A390",
+                "id": "30B85937-0135-49F1-9D0C-6FF1DBD7DF00",
+                "fieldId": "380E2775-269E-4CBE-BA8A-1F9C873DB077",
                 "fieldDefKey": "user_id",
                 "sortType": "ASC"
               },
               {
-                "id": "29F105BC-EE39-4979-AA97-4B4700984D7A",
-                "fieldId": "DB0225B1-FB65-4B71-B295-AF74807CF2F7",
+                "id": "2B1360EA-ACC5-4872-A5FF-828B269F8610",
+                "fieldId": "9C55C393-1B1D-49E3-B7CB-49CF98D1BE89",
                 "fieldDefKey": "post_id",
                 "sortType": "ASC"
               }
@@ -13235,16 +12753,16 @@
         ]
       },
       {
-        "id": "39617914-3E9F-4AB9-BB8A-E8D2F80B41E2",
+        "id": "B0328BC1-E733-4650-8F27-4CFEC8C5A837",
         "type": "P",
         "schemaName": "",
         "defKey": "sys_user_role",
         "defName": "用户和角色关联表N-1",
         "intro": "",
-        "categoryId": "9011C7F4-BC55-4D99-B3C4-47E0AFF79115",
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916",
         "fields": [
           {
-            "id": "64F4702A-DFEF-4329-A75B-5871FF7D2BA2",
+            "id": "A060655A-12CD-44F6-876C-1CE54C8B44E3",
             "defKey": "user_id",
             "defName": "用户ID",
             "intro": "",
@@ -13284,7 +12802,7 @@
             "dbDataType": "INT8"
           },
           {
-            "id": "75B3F0BA-8523-4AD0-A449-325D7DFC0A33",
+            "id": "E20015BD-4CD4-4661-920A-0D258878457A",
             "defKey": "role_id",
             "defName": "角色ID",
             "intro": "",
@@ -13326,21 +12844,21 @@
         ],
         "indexes": [
           {
-            "id": "4528977F-6165-4BB5-9E6B-5B39DC82E06D",
+            "id": "1FF4FC88-1ABD-46D8-AB69-A11234707C19",
             "type": "UNIQUE",
             "defKey": "sys_user_role_ukey",
             "defName": null,
             "intro": "",
             "fields": [
               {
-                "id": "F4BD74E7-6C06-44B1-B412-C64E7524B389",
-                "fieldId": "64F4702A-DFEF-4329-A75B-5871FF7D2BA2",
+                "id": "CC77B8F1-9A16-4540-8265-FB015CC6EA95",
+                "fieldId": "A060655A-12CD-44F6-876C-1CE54C8B44E3",
                 "fieldDefKey": "user_id",
                 "sortType": "ASC"
               },
               {
-                "id": "7D5BE2D6-AC58-48FE-B139-2C8943A512B5",
-                "fieldId": "75B3F0BA-8523-4AD0-A449-325D7DFC0A33",
+                "id": "BCFA2FED-6773-4593-9F62-D4787C6A3279",
+                "fieldId": "E20015BD-4CD4-4661-920A-0D258878457A",
                 "fieldDefKey": "role_id",
                 "sortType": "ASC"
               }
@@ -13373,7 +12891,7 @@
         ]
       },
       {
-        "id": "CCA18617-0F15-4486-B673-74CAF62A89A9",
+        "id": "3347CCDA-8F03-4A33-95C0-505BE978B7BF",
         "schemaName": null,
         "defKey": "sys_tenant_package",
         "defName": "租户套餐表",
@@ -13381,7 +12899,7 @@
         "type": "P",
         "fields": [
           {
-            "id": "8B2DDB44-2F79-4E00-A77E-EF8EE43AF08C",
+            "id": "5FEC4862-120A-49E7-BA5A-06E6DBF2E57A",
             "defKey": "id",
             "defName": "参数主键",
             "intro": "",
@@ -13417,11 +12935,11 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE",
+            "origin": "IMPORT",
             "dbDataType": "SERIAL8"
           },
           {
-            "id": "7031636F-7F83-494E-80E3-BEA7A50A2251",
+            "id": "F4685FF9-0CC6-4208-9685-23ED74718FA2",
             "defKey": "package_name",
             "defName": "套餐名称",
             "intro": "",
@@ -13464,10 +12982,10 @@
             "attr18": "",
             "attr19": "",
             "attr20": "",
-            "origin": "UI"
+            "origin": "IMPORT"
           },
           {
-            "id": "56C37898-7101-4671-A51B-90FE32B67741",
+            "id": "E76E6CE0-BC7A-468F-BA6A-3A810361FCFE",
             "defKey": "menu_ids",
             "defName": "菜单列表",
             "intro": "",
@@ -13510,10 +13028,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "EE2F674E-6C67-487A-80FC-D886EBE8BFB9",
+            "id": "AAF8EDFD-7A68-44F0-8F8F-F14A43547436",
             "defKey": "menu_check_strictly",
             "defName": "菜单树是否关联显示",
             "intro": "0:是,1:否",
@@ -13556,10 +13074,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "7E7458D4-CDA4-4E35-B7E4-10CA3F107B30",
+            "id": "33553E8F-5530-4952-8E36-0D49BB0A6F81",
             "defKey": "sort",
             "defName": "排序",
             "intro": "",
@@ -13595,11 +13113,11 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE",
+            "origin": "IMPORT",
             "dbDataType": "INT4"
           },
           {
-            "id": "3EC360D9-28F2-4898-91A1-B26255ABB2B4",
+            "id": "3A52D5CF-736F-4CB1-9A84-A3DCB536556C",
             "defKey": "status",
             "defName": "启用状态",
             "intro": "0:记录有效,1:记录无效",
@@ -13636,10 +13154,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "9D59021A-27E0-4E3B-9E1B-4378289F6428",
+            "id": "4F7CC08A-5F5D-4CED-BAA3-7256A3238628",
             "defKey": "deleted",
             "defName": "删除标记",
             "intro": "0:正常标记,1:删除标记",
@@ -13676,10 +13194,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "9D67DE63-9449-45E6-A99C-A797734D4596",
+            "id": "CDACB6B7-663F-40E2-850F-BD8A71DD5E1E",
             "defKey": "version",
             "defName": "乐观锁",
             "intro": "",
@@ -13715,11 +13233,11 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE",
+            "origin": "IMPORT",
             "dbDataType": "INT4"
           },
           {
-            "id": "9E945EDE-D38F-48E3-B800-1E911B131F27",
+            "id": "5C7711AD-AD53-4D44-B357-29A31A27C163",
             "defKey": "created_dept",
             "defName": "创建部门",
             "intro": "",
@@ -13762,10 +13280,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "7E123E90-823D-4BDA-9EA7-5591AFB4D7F7",
+            "id": "08056072-9F93-49C5-84FD-3B51217AACCD",
             "defKey": "created_by",
             "defName": "创建人",
             "intro": "",
@@ -13801,11 +13319,11 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE",
+            "origin": "IMPORT",
             "dbDataType": "INT8"
           },
           {
-            "id": "E5D652B6-71E8-439C-8485-B91FFC14137E",
+            "id": "790DAD92-9BDB-4D04-8593-3D127CB710EC",
             "defKey": "created_time",
             "defName": "创建时间",
             "intro": "",
@@ -13842,10 +13360,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "CF80379F-B84D-4301-AFAA-3FB68346B668",
+            "id": "68EA39FF-6A27-4630-A2C2-01DCAFE01C32",
             "defKey": "modified_by",
             "defName": "更新人",
             "intro": "",
@@ -13881,11 +13399,11 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE",
+            "origin": "IMPORT",
             "dbDataType": "INT8"
           },
           {
-            "id": "606A5F8B-00B2-42C1-A74D-E76E572AD6AC",
+            "id": "A92FFD89-A7C3-4533-8ADC-7BC402E0A91C",
             "defKey": "modified_time",
             "defName": "更新时间",
             "intro": "",
@@ -13922,10 +13440,10 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           },
           {
-            "id": "F0F70B4D-FFF4-4B25-A757-8B5856DD0BB7",
+            "id": "0FB2D619-8837-485B-8BC8-4AB0A902FE19",
             "defKey": "remark",
             "defName": "备注",
             "intro": "",
@@ -13962,17 +13480,18 @@
             "attr18": "PDManer",
             "attr19": "",
             "attr20": "",
-            "origin": "PASTE"
+            "origin": "IMPORT"
           }
         ],
-        "indexes": []
+        "indexes": [],
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916"
       }
     ],
     "diagrams": [
       {
-        "id": "15E853C1-1504-4405-83EB-2335B4B27847",
+        "id": "0229A04D-FEEA-4217-A0B7-35AFCE6ABDE3",
         "type": "P",
-        "defKey": "baize-sysUser-sysRole-relation",
+        "defKey": "baize-user-role-relation",
         "defName": "用户权限关联关系",
         "entityRelationRank": "F",
         "props": {
@@ -14171,7 +13690,7 @@
             "id": "42e48d16-78b0-4aa3-b7a3-0536b7bbed0c",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "97EF4676-D8BD-4F7D-B125-246365A65314"
+              "id": "2A9C8E21-CD1C-4F9C-B7B6-0C2B66E88C39"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -14391,7 +13910,7 @@
             "id": "e4738814-6d29-4ce2-bfb3-c462cf8ec4f8",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "5EF8B16C-9C8E-4CA0-BE0F-E847CEF9395D"
+              "id": "0BD862BE-620F-4340-A13B-B23794C12BDE"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -14611,7 +14130,7 @@
             "id": "da304a2f-8f6a-44cf-9fed-c6c6ab10dcfe",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "B9D4E01F-047B-438F-B281-FA3AEF1E2D20"
+              "id": "5AE6C0D5-56D6-4FCA-9349-A1255B2EF244"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -14855,11 +14374,11 @@
             },
             "source": {
               "cell": "e4738814-6d29-4ce2-bfb3-c462cf8ec4f8",
-              "port": "E657A87A-5794-4EFE-86BB-B8EB7464C31E_out"
+              "port": "1D955781-6B9F-44E6-8043-446917912CB3_out"
             },
             "target": {
               "cell": "da304a2f-8f6a-44cf-9fed-c6c6ab10dcfe",
-              "port": "DB0225B1-FB65-4B71-B295-AF74807CF2F7_in"
+              "port": "9C55C393-1B1D-49E3-B7CB-49CF98D1BE89_in"
             }
           },
           {
@@ -14881,7 +14400,7 @@
             "id": "390b2bc5-c029-400f-b198-c31c9f607877",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "68868AB2-B264-47FD-B832-973ACA3A3F97"
+              "id": "5B0BB4C8-ECBE-4A31-B1FD-AF0E1980B159"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -15125,11 +14644,11 @@
             },
             "source": {
               "cell": "42e48d16-78b0-4aa3-b7a3-0536b7bbed0c",
-              "port": "3791EF18-D8C7-4DEF-8399-86569E8B5765_out"
+              "port": "3E12A35C-F356-4501-A197-B4894B47F72C_out"
             },
             "target": {
               "cell": "da304a2f-8f6a-44cf-9fed-c6c6ab10dcfe",
-              "port": "27565CCB-1C46-4843-A01F-79B1C200A390_in"
+              "port": "380E2775-269E-4CBE-BA8A-1F9C873DB077_in"
             }
           },
           {
@@ -15151,7 +14670,7 @@
             "id": "b926de87-ba97-4044-a0c6-c1bf83f03cb5",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "5FB15912-2FC0-4CCD-9FE3-BA92CB7FCC89"
+              "id": "E26CD6F2-AA2E-440E-B9C6-E6D6DAAD908D"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -15374,7 +14893,7 @@
             "id": "81bb4c2c-b7d9-4c10-bf88-3afc92dbd183",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "39617914-3E9F-4AB9-BB8A-E8D2F80B41E2"
+              "id": "B0328BC1-E733-4650-8F27-4CFEC8C5A837"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -15594,7 +15113,7 @@
             "id": "4ab0b6bf-4394-4d6c-9f1b-60b20fe3f79e",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "9B4B5BDC-AC7E-4C53-B851-05D550649347"
+              "id": "A1B193D0-1AAE-445C-BB85-C2622CDFDA55"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -15815,7 +15334,7 @@
             "id": "90286d17-c71f-4a05-b763-7764ec944ea5",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "763EC2FC-225A-46A6-A1C5-6AB8F97CA3D9"
+              "id": "837D90BC-F392-4611-8F50-3870EAA666F1"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -16000,7 +15519,7 @@
             "id": "96e343a9-ae34-48ef-8db6-ce9c2cdfb1dd",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "8B20766E-956A-4AA1-A05C-7E0CF8A02719"
+              "id": "66BCD789-E839-4E78-A835-766562E4570D"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -16220,7 +15739,7 @@
             "id": "a648cc79-2881-4b94-a594-eca824cb8340",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "E03BF331-FDE8-4C0A-A2B2-5E43C8E66689"
+              "id": "C792C25F-ADA5-4EC9-9E6A-0B89B67D6C3D"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -16440,7 +15959,7 @@
             "id": "4d632bd6-a273-401a-8e56-21e6adf74dd4",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "F11BAC3C-31D4-4FB2-9644-38CB317F6E42"
+              "id": "3E48F64E-4201-4B53-8A84-44E6F8D5BFDF"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -16684,11 +16203,11 @@
             },
             "source": {
               "cell": "42e48d16-78b0-4aa3-b7a3-0536b7bbed0c",
-              "port": "3791EF18-D8C7-4DEF-8399-86569E8B5765_in"
+              "port": "3E12A35C-F356-4501-A197-B4894B47F72C_in"
             },
             "target": {
               "cell": "81bb4c2c-b7d9-4c10-bf88-3afc92dbd183",
-              "port": "64F4702A-DFEF-4329-A75B-5871FF7D2BA2_out"
+              "port": "A060655A-12CD-44F6-876C-1CE54C8B44E3_out"
             }
           },
           {
@@ -16734,11 +16253,11 @@
             },
             "source": {
               "cell": "390b2bc5-c029-400f-b198-c31c9f607877",
-              "port": "541DEADC-47F5-42F3-BC83-7C7861CDA86E_in"
+              "port": "D1ECB0A2-175A-42E3-AE6D-43458E113AB6_in"
             },
             "target": {
               "cell": "81bb4c2c-b7d9-4c10-bf88-3afc92dbd183",
-              "port": "75B3F0BA-8523-4AD0-A449-325D7DFC0A33_out"
+              "port": "E20015BD-4CD4-4661-920A-0D258878457A_out"
             }
           },
           {
@@ -16784,11 +16303,11 @@
             },
             "source": {
               "cell": "390b2bc5-c029-400f-b198-c31c9f607877",
-              "port": "541DEADC-47F5-42F3-BC83-7C7861CDA86E_in"
+              "port": "D1ECB0A2-175A-42E3-AE6D-43458E113AB6_in"
             },
             "target": {
               "cell": "a648cc79-2881-4b94-a594-eca824cb8340",
-              "port": "46DF4CC5-66C4-4662-98FA-68A39552BFD4_out"
+              "port": "B1F1CDEA-7933-44BB-949B-3B53CE56FB7C_out"
             }
           },
           {
@@ -16834,11 +16353,11 @@
             },
             "source": {
               "cell": "b926de87-ba97-4044-a0c6-c1bf83f03cb5",
-              "port": "28F3B16A-523C-4B80-8F61-3D402000E776_in"
+              "port": "BCBAAF11-4EBF-418A-87B7-A7595ED658CF_in"
             },
             "target": {
               "cell": "a648cc79-2881-4b94-a594-eca824cb8340",
-              "port": "42B83B35-BD6C-4D7F-9911-447749932C7F_out"
+              "port": "E0C2EF0E-5D71-450D-93F4-1B24F507133D_out"
             }
           },
           {
@@ -16884,11 +16403,11 @@
             },
             "source": {
               "cell": "4ab0b6bf-4394-4d6c-9f1b-60b20fe3f79e",
-              "port": "889030B2-EA50-47FA-B87B-66123DD0F1EC_in"
+              "port": "107EDE73-0FF9-4A49-98BC-CA5058A37745_in"
             },
             "target": {
               "cell": "96e343a9-ae34-48ef-8db6-ce9c2cdfb1dd",
-              "port": "7D703735-3874-4BD8-89FD-E351624DBF9B_out"
+              "port": "50EEA642-A247-4B2F-99DF-0287306434CA_out"
             }
           },
           {
@@ -16934,11 +16453,11 @@
             },
             "source": {
               "cell": "90286d17-c71f-4a05-b763-7764ec944ea5",
-              "port": "EF5CE4A9-5795-4918-9BAE-29FF5BCF0EB7_in"
+              "port": "AF37136A-559E-4E7F-B343-AF0A2C7E163C_in"
             },
             "target": {
               "cell": "4d632bd6-a273-401a-8e56-21e6adf74dd4",
-              "port": "E9E9A057-077F-49D6-97D2-52A0C92CE794_out"
+              "port": "9AE8E93A-AA5A-4E82-9905-26C0F557913B_out"
             }
           },
           {
@@ -16984,11 +16503,11 @@
             },
             "source": {
               "cell": "390b2bc5-c029-400f-b198-c31c9f607877",
-              "port": "541DEADC-47F5-42F3-BC83-7C7861CDA86E_in"
+              "port": "D1ECB0A2-175A-42E3-AE6D-43458E113AB6_in"
             },
             "target": {
               "cell": "96e343a9-ae34-48ef-8db6-ce9c2cdfb1dd",
-              "port": "B19725F4-413A-4ED2-B3E4-63E952A4950B_out"
+              "port": "CCC4B6C5-7EF8-4CF6-9579-13CEFEAE7663_out"
             }
           },
           {
@@ -17034,11 +16553,11 @@
             },
             "source": {
               "cell": "390b2bc5-c029-400f-b198-c31c9f607877",
-              "port": "541DEADC-47F5-42F3-BC83-7C7861CDA86E_in"
+              "port": "D1ECB0A2-175A-42E3-AE6D-43458E113AB6_in"
             },
             "target": {
               "cell": "4d632bd6-a273-401a-8e56-21e6adf74dd4",
-              "port": "1C36D0C7-E4B9-4344-892F-E86D4216CF45_out"
+              "port": "34AE61D7-E403-42FC-BA4A-9A7B825198C7_out"
             }
           },
           {
@@ -17060,7 +16579,7 @@
             "id": "a008bcf0-c415-4056-93a9-185cf6247cfd",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "B5D66411-A98A-4D5E-B0BF-108B205BBA18"
+              "id": "5E60777F-7538-4C17-A852-6DF26D4AB269"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -17304,11 +16823,11 @@
             },
             "source": {
               "cell": "42e48d16-78b0-4aa3-b7a3-0536b7bbed0c",
-              "port": "955A3E36-CF23-4DBA-918B-77EEF74F9DF6_out"
+              "port": "DD6EAE17-2E36-43F5-96EA-15C13653032C_out"
             },
             "target": {
               "cell": "a008bcf0-c415-4056-93a9-185cf6247cfd",
-              "port": "805448C0-796F-430D-8611-E764E1A001FB_in"
+              "port": "B7E26B6E-E803-4C7A-A894-FF733A937933_in"
             }
           },
           {
@@ -17354,11 +16873,11 @@
             },
             "source": {
               "cell": "e4738814-6d29-4ce2-bfb3-c462cf8ec4f8",
-              "port": "E3649DCB-222E-48E2-AC59-0B7A7B64A9FC_out"
+              "port": "F8A9217C-3902-4D38-82CD-213F2CD9CAD7_out"
             },
             "target": {
               "cell": "a008bcf0-c415-4056-93a9-185cf6247cfd",
-              "port": "805448C0-796F-430D-8611-E764E1A001FB_in"
+              "port": "B7E26B6E-E803-4C7A-A894-FF733A937933_in"
             }
           },
           {
@@ -17404,11 +16923,11 @@
             },
             "source": {
               "cell": "390b2bc5-c029-400f-b198-c31c9f607877",
-              "port": "DF8AEF0E-4A81-4752-AF41-E461675F44D9_out"
+              "port": "61A7E8BB-C9AA-42D6-9D3F-7BCD40617690_out"
             },
             "target": {
               "cell": "a008bcf0-c415-4056-93a9-185cf6247cfd",
-              "port": "805448C0-796F-430D-8611-E764E1A001FB_in"
+              "port": "B7E26B6E-E803-4C7A-A894-FF733A937933_in"
             }
           },
           {
@@ -17454,11 +16973,11 @@
             },
             "source": {
               "cell": "b926de87-ba97-4044-a0c6-c1bf83f03cb5",
-              "port": "8204D121-29DD-4A8C-BD35-D2426333CECE_out"
+              "port": "A624ED35-943C-4461-80DA-CCBAAEEB04C1_out"
             },
             "target": {
               "cell": "a008bcf0-c415-4056-93a9-185cf6247cfd",
-              "port": "805448C0-796F-430D-8611-E764E1A001FB_in"
+              "port": "B7E26B6E-E803-4C7A-A894-FF733A937933_in"
             }
           },
           {
@@ -17504,11 +17023,11 @@
             },
             "source": {
               "cell": "4ab0b6bf-4394-4d6c-9f1b-60b20fe3f79e",
-              "port": "20B560C2-0F7F-437F-8C41-A4EC1A2AB759_out"
+              "port": "9D2ADDCF-E067-448C-BBE7-1F1837DED266_out"
             },
             "target": {
               "cell": "a008bcf0-c415-4056-93a9-185cf6247cfd",
-              "port": "805448C0-796F-430D-8611-E764E1A001FB_in"
+              "port": "B7E26B6E-E803-4C7A-A894-FF733A937933_in"
             }
           },
           {
@@ -17554,17 +17073,18 @@
             },
             "source": {
               "cell": "90286d17-c71f-4a05-b763-7764ec944ea5",
-              "port": "AA304AC6-8F4C-460E-923B-BD8DA2F997D3_out"
+              "port": "1B6EEFA8-9818-4573-8CE7-B109B33F7CE9_out"
             },
             "target": {
               "cell": "a008bcf0-c415-4056-93a9-185cf6247cfd",
-              "port": "805448C0-796F-430D-8611-E764E1A001FB_in"
+              "port": "B7E26B6E-E803-4C7A-A894-FF733A937933_in"
             }
           }
-        ]
+        ],
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916"
       },
       {
-        "id": "C7A6820D-DBA3-4988-AD42-6D8B55CFA254",
+        "id": "88DBBF47-ADA0-4B56-A4E5-14D52F8AE5BA",
         "type": "P",
         "defKey": "baize-dict-relation",
         "defName": "字典关联关系",
@@ -17765,7 +17285,7 @@
             "id": "6cb0dee8-bedd-4418-ab5c-eccfc333eece",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "41113722-4D74-4760-82BD-C63391304CC2"
+              "id": "B5285927-A263-49BE-A643-AB849D0DA205"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -17985,7 +17505,7 @@
             "id": "0ea5e240-4b34-4673-beea-42f8bf87eaf6",
             "cellType": "physical-entity-node",
             "originData": {
-              "id": "5B00FDD5-D13F-4E71-B8F9-86D798634C96"
+              "id": "20F7618D-47EA-4E50-9486-1B1A1BE68AC5"
             },
             "autoSize": false,
             "entityRelationRank": "F",
@@ -18229,20 +17749,20 @@
             },
             "source": {
               "cell": "6cb0dee8-bedd-4418-ab5c-eccfc333eece",
-              "port": "A9A15E6B-0747-44D1-B4D6-6F54BB30A218_in"
+              "port": "E7304D1F-B7FB-4D39-8591-A1323C029EF0_in"
             },
             "target": {
               "cell": "0ea5e240-4b34-4673-beea-42f8bf87eaf6",
-              "port": "E71C281B-5F84-42CF-9B29-D0FF4F0531CA_in"
+              "port": "3A9A96D0-DE56-414F-A932-C0A9E2F75E02_in"
             }
           }
-        ]
+        ],
+        "categoryId": "6E5BCA7B-5FE8-420D-A3F3-EDA824440916"
       }
     ],
     "readonly": false,
     "allowWs": false
   },
-  "updateTime": 1765961506460,
-  "signature": "0df2d7efe87a4b04f597488302a6901c",
-  "branchId": "1111"
+  "updateTime": 1768805039471,
+  "signature": "399a23189ea5367cb067e31ce6f9a5f4"
 }
