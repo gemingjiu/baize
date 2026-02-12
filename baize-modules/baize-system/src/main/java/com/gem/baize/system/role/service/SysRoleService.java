@@ -12,7 +12,7 @@ public interface SysRoleService extends IService<SysRole> {
 
     SysRoleDto getById(String id);
 
-    Integer create(SysRoleDto sysRoleDto);
+    void create(SysRoleDto sysRoleDto);
 
     void updateById(SysRoleDto sysRoleDto);
 

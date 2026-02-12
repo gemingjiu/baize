@@ -1,7 +1,7 @@
 package com.gem.baize.common.core.exception.handle;
 
 import com.gem.baize.common.core.exception.model.*;
-import com.gem.baize.common.core.model.vo.Result;
+import com.gem.baize.common.core.model.vo.ApiResult;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
@@ -19,47 +19,47 @@ public class GlobalExceptionHandler {
 
     // 数据库统一拦截异常
     @ExceptionHandler(DuplicateKeyException.class)
-    public Result<Void> handleDuplicateKey(DuplicateKeyException e) {
-        return Result.error(HttpStatus.CONFLICT, e.getMessage());
+    public ApiResult<Void> handleDuplicateKey(DuplicateKeyException e) {
+        return ApiResult.fail(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(DuplicateException.class)
-    public Result<Void> handleDuplicate(DuplicateException e) {
-        return Result.error(HttpStatus.CONFLICT, e.getMessage());
+    public ApiResult<Void> handleDuplicate(DuplicateException e) {
+        return ApiResult.fail(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public Result<Void> handleDataAccessException(DataAccessException e) {
-        return Result.error(HttpStatus.CONFLICT, e.getMessage());
+    public ApiResult<Void> handleDataAccessException(DataAccessException e) {
+        return ApiResult.fail(HttpStatus.CONFLICT, e.getMessage());
     }
 
     // 处理参数校验异常
-    @ExceptionHandler(BadRequestException.class)
-    public Result<Void> handleBadRequest(BadRequestException e) {
-        return Result.error(e);
+    @ExceptionHandler(ParamException.class)
+    public ApiResult<Void> handleBadRequest(ParamException e) {
+        return ApiResult.fail(e);
     }
 
     // 处理资源不存在异常
     @ExceptionHandler(NotFoundException.class)
-    public Result<Void> handleNotFound(NotFoundException e) {
-        return Result.error(e);
+    public ApiResult<Void> handleNotFound(NotFoundException e) {
+        return ApiResult.fail(e);
     }
 
     // 处理权限不足异常
-    @ExceptionHandler(ForbiddenException.class)
-    public Result<Void> handleForbidden(ForbiddenException e) {
-        return Result.error(e);
+    @ExceptionHandler(AuthException.class)
+    public ApiResult<Void> handleForbidden(AuthException e) {
+        return ApiResult.fail(e);
     }
 
     // 处理 BaseException
     @ExceptionHandler(BaseException.class)
-    public Result<Void> handleBusinessException(BaseException e) {
-        return Result.error(e); // 自动转换
+    public ApiResult<Void> handleBusinessException(BaseException e) {
+        return ApiResult.fail(e); // 自动转换
     }
 
     // 处理兜底异常
     @ExceptionHandler(Exception.class)
-    public Result<Void> handleException(Exception e) {
-        return Result.error(HttpStatus.INTERNAL_SERVER_ERROR, "服务器错误: " + e.getMessage());
+    public ApiResult<Void> handleException(Exception e) {
+        return ApiResult.fail(HttpStatus.INTERNAL_SERVER_ERROR, "服务器错误: " + e.getMessage());
     }
 }

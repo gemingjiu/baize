@@ -2,8 +2,8 @@ package com.gem.baize.system.perm.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
-import com.gem.baize.common.core.exception.model.BadRequestException;
-import com.gem.baize.common.core.model.vo.Result;
+import com.gem.baize.common.core.exception.model.ParamException;
+import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.perm.entity.SysPerm;
 import com.gem.baize.system.perm.service.SysPermService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,41 +20,42 @@ public class SysPermController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取权限", description = "根据ID查询权限信息")
-    public Result<SysPermDto> getById(@PathVariable String id) {
+    public ApiResult<SysPermDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
-            throw new BadRequestException("请求参数id不能为空");
+            throw new ParamException("请求参数id不能为空");
         }
-        return Result.success(sysPermService.getById(id));
+        return ApiResult.ok(sysPermService.getById(id));
     }
 
     @PostMapping
     @Operation(summary = "创建权限")
-    public Result<Integer> create(@Valid @RequestBody SysPermDto dto) {
-        return Result.success(sysPermService.create(dto));
+    public ApiResult<Integer> create(@Valid @RequestBody SysPermDto dto) {
+        sysPermService.create(dto);
+        return ApiResult.ok();
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "更新权限")
-    public Result<Void> update(@PathVariable String id, @Valid @RequestBody SysPermDto dto) {
+    public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysPermDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
-            throw new BadRequestException("请求参数id不一致");
+            throw new ParamException("请求参数id不一致");
         }
         sysPermService.updateById(dto);
-        return Result.success();
+        return ApiResult.ok();
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除权限")
-    public Result<Void> delete(@PathVariable String id) {
+    public ApiResult<Void> delete(@PathVariable String id) {
         sysPermService.removeById(id);
-        return Result.success();
+        return ApiResult.ok();
     }
 
     @PostMapping("/page")
     @Operation(summary = "分页查询权限")
-    public Result<Page<SysPermDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysPermDto dto) {
+    public ApiResult<Page<SysPermDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysPermDto dto) {
         Page<SysPerm> page = new Page<>(pageNum, pageSize);
-        return Result.success(sysPermService.page(page, dto));
+        return ApiResult.ok(sysPermService.page(page, dto));
     }
 }

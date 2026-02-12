@@ -12,7 +12,7 @@ public interface SysTenantService extends IService<SysTenant> {
 
     SysTenantDto getById(String id);
 
-    Integer create(SysTenantDto sysTenantDto);
+    void create(SysTenantDto sysTenantDto);
 
     void updateById(SysTenantDto sysTenantDto);
 

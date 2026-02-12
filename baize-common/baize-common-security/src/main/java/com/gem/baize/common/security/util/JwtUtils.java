@@ -64,12 +64,32 @@ public class JwtUtils {
     }
 
     /**
+     * 创建JWT令牌（带自定义声明）
+     */
+    public String createToken(String subject, Map<String, Object> claims,boolean neverExpire) {
+        if (neverExpire) {
+            return Jwts.builder()
+                    .subject(subject)
+                    .claims(claims)
+                    .signWith(getSigningKey())
+                    .compact();
+        }
+        return createToken(subject,claims);
+    }
+
+    /**
      * 从声明中创建JWT（必须包含 tenantId 和 userId）
      */
     public String createToken(Map<String, Object> claims) {
         validateRequiredClaims(claims);
         String subject = claims.get(CustomHttpHeaders.TENANT_ID) + ":" + claims.get(CustomHttpHeaders.USER_ID);
         return createToken(subject, claims);
+    }
+
+    public String createToken(Map<String, Object> claims,boolean neverExpire) {
+        validateRequiredClaims(claims);
+        String subject = claims.get(CustomHttpHeaders.TENANT_ID) + ":" + claims.get(CustomHttpHeaders.USER_ID);
+        return createToken(subject, claims,neverExpire);
     }
 
     /**

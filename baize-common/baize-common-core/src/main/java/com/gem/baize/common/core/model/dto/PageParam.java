@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PageParam {
     @Schema(description = "当前页", example = "1")
-    private Integer pageNum = 1;
+    private Integer current = 1;
 
     @Schema(description = "每页大小", example = "10")
     private Integer pageSize = 10;
@@ -19,7 +19,7 @@ public class PageParam {
     private String sortOrder;
 
     public PageParam(int current, int size) {
-        this.pageNum = current;
+        this.current = current;
         this.pageSize = size;
         this.sortField = "id";
         this.sortOrder = "desc";

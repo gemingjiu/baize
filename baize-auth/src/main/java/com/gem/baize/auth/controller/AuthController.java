@@ -1,6 +1,6 @@
 package com.gem.baize.auth.controller;
 
-import com.gem.baize.common.core.model.vo.Result;
+import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.security.domain.dto.LoginDTO;
 import com.gem.baize.common.security.domain.dto.TokenRefreshDTO;
 import com.gem.baize.common.security.domain.vo.LoginVO;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
     @PostMapping("/login")
-    public Result<LoginVO> login(@RequestBody LoginDTO dto) {
+    public ApiResult<LoginVO> login(@RequestBody LoginDTO dto) {
         log.info("login request: {}", dto.toString());
         // 1. 验证租户
 
@@ -30,11 +30,11 @@ public class AuthController {
         // 5. 更新用户最后登录时间
         LoginVO loginVO = new LoginVO();
         BeanUtils.copyProperties(dto, loginVO);
-        return Result.success(loginVO);
+        return ApiResult.ok(loginVO);
     }
 
     @PostMapping("/logout")
-    public Result<Void> logout() {
+    public ApiResult<Void> logout() {
         // 1. 从请求头获取令牌
 
         // 2. 验证并解析令牌
@@ -45,12 +45,12 @@ public class AuthController {
 
         // 5. 清除其他会话数据(如有)
 
-        return Result.success();
+        return ApiResult.ok();
     }
 
     // 刷新JWT（简化示例，真实项目应校验刷新令牌）
     @PostMapping("/refresh")
-    public Result<LoginVO> refresh(@RequestBody TokenRefreshDTO request) {
+    public ApiResult<LoginVO> refresh(@RequestBody TokenRefreshDTO request) {
         // 1. 验证刷新令牌
 
         // 2. 检查令牌是否在有效存储中
@@ -63,21 +63,21 @@ public class AuthController {
 
         LoginVO loginVO = new LoginVO();
         BeanUtils.copyProperties(request, loginVO);
-        return Result.success(loginVO);
+        return ApiResult.ok(loginVO);
     }
 
     // 返回当前用户信息（简化示例）
     @GetMapping("/userinfo")
-    public Result<UserVO> userinfo(Authentication authentication) {
+    public ApiResult<UserVO> userinfo(Authentication authentication) {
         if (authentication == null) {
-            return Result.error(HttpStatus.UNAUTHORIZED, "未认证");
+            return ApiResult.fail(HttpStatus.UNAUTHORIZED, "未认证");
         }
-        return Result.success(new UserVO());
+        return ApiResult.ok(new UserVO());
     }
 
     // OAuth2登录成功回调
     @GetMapping("/oauth2/success")
-    public Result<LoginVO> oauth2Success(OAuth2AuthenticationToken authentication) {
+    public ApiResult<LoginVO> oauth2Success(OAuth2AuthenticationToken authentication) {
         // 1. 验证租户
 
         // 2. 验证用户
@@ -88,12 +88,12 @@ public class AuthController {
 
         // 5. 更新用户最后登录时间
         LoginVO loginVO = new LoginVO();
-        return Result.success(loginVO);
+        return ApiResult.ok(loginVO);
     }
 
     // OAuth2登录失败回调
     @GetMapping("/oauth2/failure")
-    public Result<LoginVO> oauth2Failure() {
-        return Result.error(HttpStatus.UNAUTHORIZED, "OAuth2 登录失败");
+    public ApiResult<LoginVO> oauth2Failure() {
+        return ApiResult.fail(HttpStatus.UNAUTHORIZED, "OAuth2 登录失败");
     }
 }

@@ -13,7 +13,7 @@ public interface SysMenuService extends IService<SysMenu> {
 
     SysMenuDto getById(String id);
 
-    Integer create(SysMenuDto sysMenuDto);
+    void create(SysMenuDto sysMenuDto);
 
     void updateById(SysMenuDto sysMenuDto);
 

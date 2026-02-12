@@ -8,7 +8,7 @@ import com.gem.baize.system.user.entity.SysUser;
 public interface SysUserService extends IService<SysUser> {
     SysUserDto getById(String id);
 
-    Integer create(SysUserDto sysUserDto);
+    void create(SysUserDto sysUserDto);
 
     void updateById(SysUserDto sysUserDto);
 

@@ -12,7 +12,7 @@ public interface SysPostService extends IService<SysPost> {
 
     SysPostDto getById(String id);
 
-    Integer create(SysPostDto sysPostDto);
+    void create(SysPostDto sysPostDto);
 
     void updateById(SysPostDto sysPostDto);
 

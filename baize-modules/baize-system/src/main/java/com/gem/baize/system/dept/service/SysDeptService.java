@@ -12,7 +12,7 @@ public interface SysDeptService extends IService<SysDept> {
 
     SysDeptDto getById(String id);
 
-    Integer create(SysDeptDto sysDeptDto);
+    void create(SysDeptDto sysDeptDto);
 
     void updateById(SysDeptDto sysDeptDto);
 

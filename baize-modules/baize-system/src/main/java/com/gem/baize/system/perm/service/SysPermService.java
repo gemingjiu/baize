@@ -12,7 +12,7 @@ public interface SysPermService extends IService<SysPerm> {
 
     SysPermDto getById(String id);
 
-    Integer create(SysPermDto sysPermDto);
+    void create(SysPermDto sysPermDto);
 
     void updateById(SysPermDto sysPermDto);
 

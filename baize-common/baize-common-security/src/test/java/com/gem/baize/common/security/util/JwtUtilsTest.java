@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = JwtUtils.class)
 @TestPropertySource(properties = {
-        "jwt.secret=test-secret-key-123456789012345678901234567890",
-        "jwt.expiration=3600000"
+        "jwt.secret=baize-a732659e-45e2-47a8-89ab-6c4b8af98bab",
+        "jwt.expiration=7200000"
 })
 class JwtUtilsTest {
     @Autowired
@@ -41,12 +41,12 @@ class JwtUtilsTest {
             put(CustomHttpHeaders.TENANT_ID, "1");
             put(CustomHttpHeaders.USER_ID, "1");
             put(CustomHttpHeaders.TRACE_ID, "2caa18f6-62ed-11f0-9fe2-0242ac120002");
-            put(CustomHttpHeaders.USER_NAME, "system");
-            put(CustomHttpHeaders.ROLE, "system");
+            put(CustomHttpHeaders.USER_NAME, "admin");
+            put(CustomHttpHeaders.ROLE, "admin");
         }};
 
         // When
-        String token = jwtUtils.createToken( claims);
+        String token = jwtUtils.createToken( claims,true);
         System.out.println("Generated Token: " + token);
 
         // Then
@@ -56,8 +56,8 @@ class JwtUtilsTest {
                 () -> assertThat(parsedClaims.get(CustomHttpHeaders.TENANT_ID)).isEqualTo("1"),
                 () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_ID)).isEqualTo("1"),
                 () -> assertThat(parsedClaims.get(CustomHttpHeaders.TRACE_ID)).isEqualTo("2caa18f6-62ed-11f0-9fe2-0242ac120002"),
-                () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_NAME)).isEqualTo("system"),
-                () -> assertThat(parsedClaims.get(CustomHttpHeaders.ROLE)).isEqualTo("system")
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.USER_NAME)).isEqualTo("admin"),
+                () -> assertThat(parsedClaims.get(CustomHttpHeaders.ROLE)).isEqualTo("admin")
         );
 
         String tenantId = jwtUtils.getTenantId(token);
@@ -67,7 +67,7 @@ class JwtUtilsTest {
         String traceId = jwtUtils.getTraceId(token);
         assertThat(traceId).isEqualTo("2caa18f6-62ed-11f0-9fe2-0242ac120002");
         String userName = jwtUtils.getUserName(token);
-        assertThat(userName).isEqualTo("system");
+        assertThat(userName).isEqualTo("admin");
     }
 
     @Test

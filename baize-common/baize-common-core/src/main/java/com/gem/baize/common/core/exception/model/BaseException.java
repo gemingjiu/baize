@@ -1,22 +1,23 @@
 package com.gem.baize.common.core.exception.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.gem.baize.common.core.enums.ErrorCode;
 
 /**
  * 基础异常类
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-public class BaseException extends RuntimeException {
-    private Integer code;
+public abstract class BaseException extends RuntimeException {
+    private final ErrorCode errorCode;
 
-    public BaseException(String message) {
-        this(400, message);
+    public BaseException(ErrorCode errorCode) {
+        super(errorCode.message());
+        this.errorCode = errorCode;
     }
 
-    public BaseException(Integer code, String message) {
+    public BaseException(ErrorCode errorCode, String message) {
         super(message);
-        this.code = code;
+        this.errorCode = errorCode;
+    }
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 }

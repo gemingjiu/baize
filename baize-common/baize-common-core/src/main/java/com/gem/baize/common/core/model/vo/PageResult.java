@@ -15,7 +15,7 @@ public class PageResult<T> {
     /**
      * 煤业显示条数
      */
-    private Long size;
+    private Long pageSize;
     /**
      * 当前页
      */
@@ -23,15 +23,7 @@ public class PageResult<T> {
     /**
      * 查询数据列表
      */
-    private List<T> records;
-    /**
-     * 排序字段信息
-     */
-    private List<OrderItem> orders;
-    /**
-     * 单页分页条数限制
-     */
-    private Long maxLimit;
+    private List<T> list;
     /**
      * countId
      */

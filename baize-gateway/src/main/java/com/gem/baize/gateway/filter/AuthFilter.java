@@ -27,7 +27,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private static final String SKIP_AUTH_METADATA_KEY = "skipAuth";
 
     @Autowired
-    private static JwtUtils jwtUtils;
+    private  JwtUtils jwtUtils;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -40,7 +40,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         return authenticate(exchange, chain);
     }
 
-    private static Mono<Void> authenticate(ServerWebExchange exchange, GatewayFilterChain chain) {
+    private Mono<Void> authenticate(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String auth = request.getHeaders().getFirst(CustomHttpHeaders.AUTHORIZATION);
         if (StringUtils.isBlank(auth)) {

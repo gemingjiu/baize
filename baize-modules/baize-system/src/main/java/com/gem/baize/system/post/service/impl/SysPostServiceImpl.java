@@ -3,13 +3,10 @@ package com.gem.baize.system.post.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.post.domain.dto.SysPostDto;
-import com.gem.baize.common.core.exception.model.DataCreationException;
 import com.gem.baize.common.core.exception.model.DuplicateException;
-import com.gem.baize.common.core.exception.model.IntegrityViolationException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.system.post.entity.SysPost;
 import com.gem.baize.system.post.mapper.SysPostMapper;
@@ -18,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,34 +28,26 @@ import java.util.Optional;
 @Service
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements SysPostService {
 
-    @Autowired
-    private SysPostMapper sysPostMapper;
 
     @Autowired
     private SysPostConvert sysPostConvert;
 
     @Override
-    @Cacheable(cacheNames = "sys_post",key ="#id")
+    @Cacheable(cacheNames = "sys_post", key = "#id")
     public SysPostDto getById(String id) {
-        SysPost sysPost = Optional.ofNullable(sysPostMapper.selectById(id)).orElseThrow(() -> new NotFoundException("岗位不存在"));
+        SysPost sysPost = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("岗位不存在"));
         return sysPostConvert.toDto(sysPost);
 
     }
 
     @Override
-    @Transactional
-    public Integer create(SysPostDto sysPostDto) {
+    public void create(SysPostDto sysPostDto) {
         SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
-        boolean exists = sysPostMapper.exists(Wrappers.<SysPost>lambdaQuery()
-                .eq(SysPost::getPostCode, sysPostDto.getPostCode()));
-        if (exists) {
+        try {
+            super.save(sysPost);
+        } catch (DuplicateKeyException e) {
             throw new DuplicateException("岗位编码已存在，请更换后重试");
         }
-        int result = sysPostMapper.insert(sysPost);
-        if (result <= 0) {
-            throw new DataCreationException("岗位创建失败");
-        }
-        return result;
     }
 
     @Override
@@ -65,26 +55,19 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @CachePut(cacheNames = "sys_post", key = "#sysPostDto.id")
     public void updateById(SysPostDto sysPostDto) {
         SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
-        boolean exists = sysPostMapper.exists(Wrappers.<SysPost>lambdaQuery()
-                .eq(SysPost::getPostCode, sysPostDto.getPostCode()));
-        if (!exists) {
-            throw new DuplicateException("岗位编码不存在，请更换后重试");
-        }
-        int affectedRows = sysPostMapper.updateById(sysPost);
-
-        if (affectedRows <= 0) {
-            throw new NotFoundException("岗位信息更新失败，记录不存在");
-        }
-
-        if (affectedRows > 1) {
-            throw new IntegrityViolationException("岗位信息更新异常，影响了多条记录");
+        boolean success = super.updateById(sysPost);
+        if (!success) {
+            throw new NotFoundException("岗位不存在或已删除");
         }
     }
 
     @Override
-    @CacheEvict(cacheNames = "sys_post",key ="#id")
+    @CacheEvict(cacheNames = "sys_post", key = "#id")
     public void removeById(String id) {
-        super.removeById(id);
+        boolean success = super.removeById(id);
+        if (!success) {
+            throw new NotFoundException("岗位不存在或已删除");
+        }
     }
 
 
@@ -107,9 +90,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
             wrapper.eq(SysPost::getTenantId, sysPostDto.getTenantId());
         }
 
-        Page<SysPost> sysPostPage = Optional.ofNullable(sysPostMapper.selectPage(page, wrapper))
+        Page<SysPost> sysPostPage = Optional.ofNullable(super.page(page, wrapper))
                 .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到租户信息"));
+                .orElseThrow(() -> new NotFoundException("岗位不存在"));
         return sysPostConvert.toDtoPage(sysPostPage);
     }
 }
