@@ -2,6 +2,8 @@ package com.gem.baize.api.system.dept.domain.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class SysDeptDto {
     /**
@@ -35,4 +37,8 @@ public class SysDeptDto {
      * 邮箱
      */
     private String email;
+    /**
+     * 子部门
+     */
+    private List<SysDeptDto> children;
 }

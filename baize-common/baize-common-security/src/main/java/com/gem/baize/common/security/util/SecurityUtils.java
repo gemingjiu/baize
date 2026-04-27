@@ -13,8 +13,8 @@ public class SecurityUtils {
         return (UserVO) authentication.getPrincipal();
     }
 
-    public static Long getUserId() {
-        return getCurrentUser().getUserId();
+    public static String getUserId() {
+        return getCurrentUser().getId();
     }
 
     public static String getUsername() {

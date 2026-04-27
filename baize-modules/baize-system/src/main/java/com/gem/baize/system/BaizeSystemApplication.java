@@ -18,9 +18,9 @@ public class BaizeSystemApplication {
 
     private static void printWelcomeMessage() {
         if (log.isInfoEnabled()){
-            log.info("\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89");
-            log.info("\uD83C\uDF89 欢迎使用Baize系统 \uD83C\uDF89");
-            log.info("\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89");
+            log.info("🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉");
+            log.info("🎉 欢迎使用Baize系统 🎉");
+            log.info("🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉");
         }
     }
 }

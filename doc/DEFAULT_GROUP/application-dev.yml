@@ -1,0 +1,65 @@
+spring:
+  data:
+    redis:
+      host: ${baize.redis.host}
+      port: ${baize.redis.port}
+      password: ${baize.redis.password}
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8858
+        port: 8719
+      eager: true
+    loadbalancer:
+      enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      default-filters:
+        - AddRequestHeader=Gateway-Request, From-Gateway
+      routes:
+        # 认证中心
+        - id: baize-auth
+          uri: lb://baize-auth
+          predicates:
+            - Path=/auth/**
+          metadata:
+            skipAuth: true
+
+        # 系统模块
+        - id: baize-system
+          uri: lb://baize-system
+          predicates:
+            - Path=/system/**
+
+logging:
+  level:
+    org.springframework: info
+    com.gem: debug
+# 安全配置
+baize:
+  gateway:
+    # 验证码
+    captcha:
+      enabled: true
+      type: math
+    # 防止XSS攻击
+    xss:
+      enabled: true
+      excludeUrls:
+        - /system/notice
+  datasource:
+    druid:
+      username: baize
+      password: baize@2023
+    master:
+      addr: localhost:5432
+      schema: baize
+      username: baize
+      password: baize@2023
+  redis:
+    host: localhost
+    port: 6379
+    password:

@@ -9,13 +9,16 @@ import java.io.Serializable;
 
 @Data
 public class ApiResult<T> implements Serializable {
-    private final boolean success;
-    private final T data;
-    private final int errorCode;
-    private final String errorMessage;
-    private final int showType;
-    private final String traceId;
-    private final long timeStamp;
+    private boolean success;
+    private T data;
+    private int errorCode;
+    private String errorMessage;
+    private int showType;
+    private String traceId;
+    private long timeStamp;
+
+    public ApiResult() {
+    }
 
     public ApiResult(int errorCode, String errorMessage) {
         this.success = errorCode == ErrorCode.SUCCESS.code();

@@ -23,4 +23,11 @@ public enum FilterOrder {
         this.desc = desc;
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
 }

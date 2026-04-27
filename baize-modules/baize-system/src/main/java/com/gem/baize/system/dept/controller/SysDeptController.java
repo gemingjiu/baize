@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/system/dept")
 public class SysDeptController {
@@ -59,5 +61,31 @@ public class SysDeptController {
     public ApiResult<Page<SysDeptDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysDeptDto dto) {
         Page<SysDept> page = new Page<>(pageNum, pageSize);
         return ApiResult.ok(sysDeptService.page(page, dto));
+    }
+
+    @PostMapping("/tree")
+    @Operation(summary = "查询部门树")
+    public ApiResult<List<SysDeptDto>> tree(@RequestBody(required = false) SysDeptDto dto) {
+        if (dto == null) {
+            dto = new SysDeptDto();
+        }
+        return ApiResult.ok(sysDeptService.tree(dto));
+    }
+
+    @GetMapping("/treeselect")
+    @Operation(summary = "获取部门树选择框数据")
+    public ApiResult<List<SysDeptDto>> treeselect(@RequestParam(required = false) String tenantId) {
+        SysDeptDto dto = new SysDeptDto();
+        dto.setTenantId(tenantId);
+        return ApiResult.ok(sysDeptService.tree(dto));
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "获取部门列表")
+    public ApiResult<List<SysDeptDto>> list(@RequestBody(required = false) SysDeptDto dto) {
+        if (dto == null) {
+            dto = new SysDeptDto();
+        }
+        return ApiResult.ok(sysDeptService.list(dto));
     }
 }

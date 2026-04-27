@@ -2,6 +2,8 @@ package com.gem.baize.api.system.menu.domain.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class SysMenuDto {
     /**
@@ -56,4 +58,8 @@ public class SysMenuDto {
      * 权限字段
      */
     private String perms;
+    /**
+     * 子菜单
+     */
+    private List<SysMenuDto> children;
 }

@@ -19,4 +19,11 @@ public interface SysTenantService extends IService<SysTenant> {
     void removeById(String id);
 
     Page<SysTenantDto> page(Page<SysTenant> page, SysTenantDto sysTenantDto);
+
+    /**
+     * 根据租户编码或域名获取租户信息
+     * @param tenant 租户编码或域名
+     * @return 租户信息
+     */
+    SysTenantDto getByTenantCodeOrDomain(String tenant);
 }

@@ -19,10 +19,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * 部门服务类实现
+ * 菜单服务类实现
  */
 @Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
@@ -84,7 +85,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             wrapper.like(SysMenu::getMenuName, sysMenuDto.getMenuName());
         }
         if (StringUtils.isNotBlank(sysMenuDto.getMenuType())) {
-            wrapper.like(SysMenu::getMenuType, sysMenuDto.getMenuType());
+            wrapper.eq(SysMenu::getMenuType, sysMenuDto.getMenuType());
         }
         if (StringUtils.isNotBlank(sysMenuDto.getParentId())) {
             wrapper.eq(SysMenu::getParentId, sysMenuDto.getParentId());
@@ -94,5 +95,53 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
                 .orElseThrow(() -> new NotFoundException("未找到菜单信息"));
         return sysMenuConvert.toDtoPage(sysPermPage);
+    }
+
+    @Override
+    public List<SysMenuDto> tree(SysMenuDto sysMenuDto) {
+        // 构建查询条件
+        LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(SysMenu::getSort);
+
+        if (StringUtils.isNotBlank(sysMenuDto.getMenuName())) {
+            wrapper.like(SysMenu::getMenuName, sysMenuDto.getMenuName());
+        }
+        if (StringUtils.isNotBlank(sysMenuDto.getTenantId())) {
+            wrapper.eq(SysMenu::getTenantId, sysMenuDto.getTenantId());
+        }
+
+        List<SysMenu> menuList = list(wrapper);
+        List<SysMenuDto> dtoList = sysMenuConvert.toDtoList(menuList);
+
+        return buildTree(dtoList);
+    }
+
+    @Override
+    public List<SysMenuDto> getMenuTreeByUserId(String userId) {
+        // 由SysRoleMenuService实现，避免循环依赖
+        SysMenuDto dto = new SysMenuDto();
+        return tree(dto);
+    }
+
+    /**
+     * 构建菜单树
+     */
+    private List<SysMenuDto> buildTree(List<SysMenuDto> menuList) {
+        if (CollectionUtils.isEmpty(menuList)) {
+            return Collections.emptyList();
+        }
+
+        // 按parentId分组
+        Map<String, List<SysMenuDto>> parentIdMap = menuList.stream()
+                .filter(menu -> StringUtils.isNotBlank(menu.getParentId()))
+                .collect(Collectors.groupingBy(SysMenuDto::getParentId));
+
+        // 设置子菜单
+        menuList.forEach(menu -> menu.setChildren(parentIdMap.get(menu.getId())));
+
+        // 返回根节点（parentId为空或"0"的节点）
+        return menuList.stream()
+                .filter(menu -> StringUtils.isBlank(menu.getParentId()) || "0".equals(menu.getParentId()))
+                .collect(Collectors.toList());
     }
 }

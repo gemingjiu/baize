@@ -44,4 +44,8 @@ public class SysUserDto {
      * 用户头像
      */
     private String avatar;
+    /**
+     * 密码（仅内部Feign调用使用）
+     */
+    private String password;
 }

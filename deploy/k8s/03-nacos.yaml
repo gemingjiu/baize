@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nacos-config
+  namespace: baize
+data:
+  MODE: "standalone"
+  PREFER_HOST_MODE: "hostname"
+  NACOS_SERVER_PORT: "8848"
+  SPRING_DATASOURCE_PLATFORM: "derby"
+  NACOS_AUTH_ENABLE: "true"
+  NACOS_AUTH_TOKEN: "SecretKey012345678901234567890123456789012345678901234567890123456789"
+  NACOS_AUTH_IDENTITY_KEY: "nacos"
+  NACOS_AUTH_IDENTITY_VALUE: "nacos"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nacos-pvc
+  namespace: baize
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos
+  namespace: baize
+  labels:
+    app: nacos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      labels:
+        app: nacos
+    spec:
+      containers:
+        - name: nacos
+          image: nacos/nacos-server:v2.5.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8848
+              name: http
+            - containerPort: 9848
+              name: client-rpc
+          env:
+            - name: JVM_XMS
+              value: "512m"
+            - name: JVM_XMX
+              value: "512m"
+            - name: JVM_XMN
+              value: "256m"
+          envFrom:
+            - configMapRef:
+                name: nacos-config
+          volumeMounts:
+            - name: nacos-storage
+              mountPath: /home/nacos/logs
+              subPath: logs
+            - name: nacos-storage
+              mountPath: /home/nacos/data
+              subPath: data
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /nacos/v1/console/health/readiness
+              port: 8848
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 20
+          livenessProbe:
+            httpGet:
+              path: /nacos/v1/console/health/liveness
+              port: 8848
+            initialDelaySeconds: 180
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 10
+      volumes:
+        - name: nacos-storage
+          persistentVolumeClaim:
+            claimName: nacos-pvc
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos
+  namespace: baize
+  labels:
+    app: nacos
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8848
+      targetPort: 8848
+      protocol: TCP
+      name: http
+    - port: 9848
+      targetPort: 9848
+      protocol: TCP
+      name: client-rpc
+  selector:
+    app: nacos

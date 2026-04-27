@@ -100,4 +100,16 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 .orElseThrow(() -> new NotFoundException("未找到租户信息"));
         return sysTenantConvert.toDtoPage(sysTenantPage);
     }
+
+    @Override
+    public SysTenantDto getByTenantCodeOrDomain(String tenant) {
+        LambdaQueryWrapper<SysTenant> wrapper = new LambdaQueryWrapper<>();
+        wrapper.and(w -> w.eq(SysTenant::getTenantCode, tenant).or().eq(SysTenant::getDomain, tenant));
+        wrapper.last("LIMIT 1");
+        SysTenant sysTenant = super.getOne(wrapper);
+        if (sysTenant == null) {
+            throw new NotFoundException("租户不存在");
+        }
+        return sysTenantConvert.toDto(sysTenant);
+    }
 }

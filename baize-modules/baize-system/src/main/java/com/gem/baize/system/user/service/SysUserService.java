@@ -15,4 +15,34 @@ public interface SysUserService extends IService<SysUser> {
     void removeById(String id);
 
     Page<SysUserDto> page(Page<SysUser> page, SysUserDto sysUserDto);
+
+    /**
+     * 根据用户名查询用户
+     */
+    SysUserDto getByUsername(String username);
+
+    /**
+     * 根据用户名和租户ID查询用户
+     */
+    SysUserDto getByUsernameAndTenantId(String username, String tenantId);
+
+    /**
+     * 更新用户最后登录时间
+     */
+    void updateLastLoginTime(String userId, String loginIp);
+
+    /**
+     * 重置密码
+     */
+    void resetPassword(String userId, String newPassword);
+
+    /**
+     * 更新密码
+     */
+    void updatePassword(String userId, String oldPassword, String newPassword);
+
+    /**
+     * 更新用户状态
+     */
+    void changeStatus(String userId, String status);
 }

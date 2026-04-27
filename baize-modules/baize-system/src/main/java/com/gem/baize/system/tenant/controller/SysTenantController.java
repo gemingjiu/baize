@@ -66,4 +66,13 @@ public class SysTenantController {
 
         return ApiResult.ok(sysTenantService.page(page, dto));
     }
+
+    @GetMapping("/getByTenant")
+    @Operation(summary = "根据租户编码或域名获取租户", description = "根据租户编码或域名查询租户信息")
+    public ApiResult<SysTenantDto> getByTenant(@RequestParam("tenant") String tenant) {
+        if (StringUtils.isBlank(tenant)) {
+            throw new ParamException("租户标识不能为空");
+        }
+        return ApiResult.ok(sysTenantService.getByTenantCodeOrDomain(tenant));
+    }
 }

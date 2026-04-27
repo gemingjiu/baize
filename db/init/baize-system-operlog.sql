@@ -1,0 +1,26 @@
+-- 操作日志表
+CREATE TABLE IF NOT EXISTS `sys_oper_log` (
+    `id` VARCHAR(64) NOT NULL COMMENT '日志主键',
+    `tenant_id` VARCHAR(64) DEFAULT '0' COMMENT '租户ID',
+    `title` VARCHAR(50) DEFAULT '' COMMENT '模块标题',
+    `business_type` TINYINT DEFAULT 0 COMMENT '业务类型（0其它 1新增 2修改 3删除 4查询 5导出 6导入 7强退 8生成代码 9清空数据）',
+    `method` VARCHAR(100) DEFAULT '' COMMENT '方法名称',
+    `request_method` VARCHAR(10) DEFAULT '' COMMENT '请求方式',
+    `operator_type` TINYINT DEFAULT 0 COMMENT '操作类别（0其它 1后台用户 2手机端用户）',
+    `user_name` VARCHAR(50) DEFAULT '' COMMENT '操作人员',
+    `dept_name` VARCHAR(50) DEFAULT '' COMMENT '部门名称',
+    `oper_url` VARCHAR(255) DEFAULT '' COMMENT '请求URL',
+    `oper_ip` VARCHAR(128) DEFAULT '' COMMENT '主机地址',
+    `oper_location` VARCHAR(255) DEFAULT '' COMMENT '操作地点',
+    `oper_param` TEXT COMMENT '请求参数',
+    `json_result` TEXT COMMENT '返回参数',
+    `status` TINYINT DEFAULT 0 COMMENT '操作状态（0正常 1异常）',
+    `error_msg` TEXT COMMENT '错误消息',
+    `oper_time` DATETIME DEFAULT NULL COMMENT '操作时间',
+    `cost_time` BIGINT DEFAULT 0 COMMENT '消耗时间（毫秒）',
+    PRIMARY KEY (`id`),
+    KEY `idx_tenant_id` (`tenant_id`),
+    KEY `idx_business_type` (`business_type`),
+    KEY `idx_status` (`status`),
+    KEY `idx_oper_time` (`oper_time`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '操作日志记录';

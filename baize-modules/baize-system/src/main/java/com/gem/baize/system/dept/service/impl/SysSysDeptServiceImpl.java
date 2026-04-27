@@ -20,7 +20,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 部门服务类实现
@@ -63,6 +64,13 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     @Override
     @CacheEvict(value = "sys_dept", key = "#id")  // 删除缓存
     public void removeById(String id) {
+        // 检查是否有子部门
+        LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysDept::getParentId, id);
+        long childCount = count(wrapper);
+        if (childCount > 0) {
+            throw new DuplicateException("存在子部门，无法删除");
+        }
         boolean success = super.removeById(id);
         if (!success) {
             throw new NotFoundException("部门不存在或已删除");
@@ -86,9 +94,71 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
             wrapper.eq(SysDept::getPhone, sysDeptDto.getPhone());
         }
 
+        if (StringUtils.isNotBlank(sysDeptDto.getTenantId())) {
+            wrapper.eq(SysDept::getTenantId, sysDeptDto.getTenantId());
+        }
+
         Page<SysDept> sysDeptPage = Optional.ofNullable(super.page(page, wrapper))
                 .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到租户信息"));
+                .orElseThrow(() -> new NotFoundException("未找到部门信息"));
         return sysDeptConvert.toDtoPage(sysDeptPage);
+    }
+
+    @Override
+    public List<SysDeptDto> tree(SysDeptDto sysDeptDto) {
+        // 构建查询条件
+        LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(SysDept::getSort);
+
+        if (StringUtils.isNotBlank(sysDeptDto.getDeptName())) {
+            wrapper.like(SysDept::getDeptName, sysDeptDto.getDeptName());
+        }
+        if (StringUtils.isNotBlank(sysDeptDto.getTenantId())) {
+            wrapper.eq(SysDept::getTenantId, sysDeptDto.getTenantId());
+        }
+
+        List<SysDept> deptList = list(wrapper);
+        List<SysDeptDto> dtoList = sysDeptConvert.toDtoList(deptList);
+
+        return buildTree(dtoList);
+    }
+
+    @Override
+    public List<SysDeptDto> list(SysDeptDto sysDeptDto) {
+        // 构建查询条件
+        LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(SysDept::getSort);
+
+        if (StringUtils.isNotBlank(sysDeptDto.getDeptName())) {
+            wrapper.like(SysDept::getDeptName, sysDeptDto.getDeptName());
+        }
+        if (StringUtils.isNotBlank(sysDeptDto.getTenantId())) {
+            wrapper.eq(SysDept::getTenantId, sysDeptDto.getTenantId());
+        }
+
+        List<SysDept> deptList = list(wrapper);
+        return sysDeptConvert.toDtoList(deptList);
+    }
+
+    /**
+     * 构建部门树
+     */
+    private List<SysDeptDto> buildTree(List<SysDeptDto> deptList) {
+        if (CollectionUtils.isEmpty(deptList)) {
+            return Collections.emptyList();
+        }
+
+        // 按parentId分组
+        Map<String, List<SysDeptDto>> parentIdMap = deptList.stream()
+                .filter(dept -> StringUtils.isNotBlank(dept.getParentId()))
+                .collect(Collectors.groupingBy(SysDeptDto::getParentId));
+
+        // 设置子部门
+        deptList.forEach(dept -> dept.setChildren(parentIdMap.get(dept.getId())));
+
+        // 返回根节点（parentId为空或"0"的节点）
+        return deptList.stream()
+                .filter(dept -> StringUtils.isBlank(dept.getParentId()) || "0".equals(dept.getParentId()))
+                .collect(Collectors.toList());
     }
 }

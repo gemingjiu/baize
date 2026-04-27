@@ -3,6 +3,7 @@ package com.gem.baize.system.user.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.core.model.vo.PageResult;
@@ -33,6 +34,7 @@ public class SysUserController {
 
     @PostMapping
     @Operation(summary = "创建用户")
+    @Log(title = "用户管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysUserDto dto) {
         sysUserService.create(dto);
         return ApiResult.ok();
@@ -40,6 +42,7 @@ public class SysUserController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新用户")
+    @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysUserDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
@@ -52,6 +55,7 @@ public class SysUserController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除用户")
+    @Log(title = "用户管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysUserService.removeById(id);
         return ApiResult.ok();
@@ -65,5 +69,60 @@ public class SysUserController {
         PageConvert<SysUserDto> pageConvert = new PageConvert<>();
         PageResult<SysUserDto> pageResult = pageConvert.toDto(pages);
         return ApiResult.ok(pageResult);
+    }
+
+    @GetMapping("/getByUsername")
+    @Operation(summary = "根据用户名查询用户", description = "根据用户名查询用户信息")
+    public ApiResult<SysUserDto> getByUsername(@RequestParam("username") String username) {
+        if (StringUtils.isBlank(username)) {
+            throw new ParamException("用户名不能为空");
+        }
+        return ApiResult.ok(sysUserService.getByUsername(username));
+    }
+
+    @GetMapping("/getByUsernameAndTenant")
+    @Operation(summary = "根据用户名和租户ID查询用户", description = "根据用户名和租户ID查询用户信息")
+    public ApiResult<SysUserDto> getByUsernameAndTenant(@RequestParam("username") String username,
+                                                        @RequestParam("tenantId") String tenantId) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(tenantId)) {
+            throw new ParamException("用户名和租户ID不能为空");
+        }
+        return ApiResult.ok(sysUserService.getByUsernameAndTenantId(username, tenantId));
+    }
+
+    @PutMapping("/updateLastLoginTime")
+    @Operation(summary = "更新最后登录时间", description = "更新用户最后登录时间和IP")
+    public ApiResult<Void> updateLastLoginTime(@RequestParam("userId") String userId,
+                                               @RequestParam(value = "loginIp", required = false) String loginIp) {
+        sysUserService.updateLastLoginTime(userId, loginIp);
+        return ApiResult.ok();
+    }
+
+    @PutMapping("/resetPassword")
+    @Operation(summary = "重置密码", description = "管理员重置用户密码")
+    @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
+    public ApiResult<Void> resetPassword(@RequestParam("userId") String userId,
+                                         @RequestParam("newPassword") String newPassword) {
+        sysUserService.resetPassword(userId, newPassword);
+        return ApiResult.ok();
+    }
+
+    @PutMapping("/updatePassword")
+    @Operation(summary = "修改密码", description = "用户修改自己的密码")
+    @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
+    public ApiResult<Void> updatePassword(@RequestParam("userId") String userId,
+                                          @RequestParam("oldPassword") String oldPassword,
+                                          @RequestParam("newPassword") String newPassword) {
+        sysUserService.updatePassword(userId, oldPassword, newPassword);
+        return ApiResult.ok();
+    }
+
+    @PutMapping("/changeStatus")
+    @Operation(summary = "修改用户状态", description = "修改用户启用/禁用状态")
+    @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
+    public ApiResult<Void> changeStatus(@RequestParam("userId") String userId,
+                                        @RequestParam("status") String status) {
+        sysUserService.changeStatus(userId, status);
+        return ApiResult.ok();
     }
 }

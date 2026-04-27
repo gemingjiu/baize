@@ -1,0 +1,40 @@
+# JWT 配置
+jwt:
+  secret: baize-a732659e-45e2-47a8-89ab-6c4b8af98bab
+  expiration: 7200000
+
+logging:
+  level:
+    com.gem: debug
+
+# seata 配置
+seata:
+  enabled: false
+# feign 配置
+feign:
+  sentinel:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
