@@ -84,6 +84,11 @@
 
         <dependency>
             <groupId>com.gem</groupId>
+            <artifactId>baize-common-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gem</groupId>
             <artifactId>baize-api-system</artifactId>
         </dependency>
 

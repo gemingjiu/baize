@@ -1,10 +1,10 @@
 package com.gem.baize.system.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.system.user.entity.SysUserRole;
 import com.gem.baize.system.user.mapper.SysUserRoleMapper;
 import com.gem.baize.system.user.service.SysUserRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +16,16 @@ import java.util.stream.Collectors;
  * 用户角色关联服务实现
  */
 @Service
-public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService {
+public class SysUserRoleServiceImpl implements SysUserRoleService {
+
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
 
     @Override
     public List<String> getRoleIdsByUserId(String userId) {
         LambdaQueryWrapper<SysUserRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUserRole::getUserId, userId);
-        return list(wrapper).stream()
+        return sysUserRoleMapper.selectList(wrapper).stream()
                 .map(SysUserRole::getRoleId)
                 .collect(Collectors.toList());
     }
@@ -31,7 +34,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     public List<String> getUserIdsByRoleId(String roleId) {
         LambdaQueryWrapper<SysUserRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUserRole::getRoleId, roleId);
-        return list(wrapper).stream()
+        return sysUserRoleMapper.selectList(wrapper).stream()
                 .map(SysUserRole::getUserId)
                 .collect(Collectors.toList());
     }
@@ -44,15 +47,12 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
 
         // 批量添加新角色
         if (roleIds != null && !roleIds.isEmpty()) {
-            List<SysUserRole> userRoles = new ArrayList<>();
             for (String roleId : roleIds) {
                 SysUserRole userRole = new SysUserRole();
                 userRole.setUserId(userId);
                 userRole.setRoleId(roleId);
-                userRole.setTenantId(tenantId);
-                userRoles.add(userRole);
+                sysUserRoleMapper.insert(userRole);
             }
-            saveBatch(userRoles);
         }
     }
 
@@ -60,13 +60,13 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     public void removeByUserId(String userId) {
         LambdaQueryWrapper<SysUserRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUserRole::getUserId, userId);
-        remove(wrapper);
+        sysUserRoleMapper.delete(wrapper);
     }
 
     @Override
     public void removeByRoleId(String roleId) {
         LambdaQueryWrapper<SysUserRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUserRole::getRoleId, roleId);
-        remove(wrapper);
+        sysUserRoleMapper.delete(wrapper);
     }
 }

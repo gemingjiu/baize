@@ -58,8 +58,8 @@ public class SysDeptController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询部门")
-    public ApiResult<Page<SysDeptDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysDeptDto dto) {
-        Page<SysDept> page = new Page<>(pageNum, pageSize);
+    public ApiResult<Page<SysDeptDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysDeptDto dto) {
+        Page<SysDept> page = new Page<>(current, size);
         return ApiResult.ok(sysDeptService.page(page, dto));
     }
 
@@ -80,7 +80,7 @@ public class SysDeptController {
         return ApiResult.ok(sysDeptService.tree(dto));
     }
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     @Operation(summary = "获取部门列表")
     public ApiResult<List<SysDeptDto>> list(@RequestBody(required = false) SysDeptDto dto) {
         if (dto == null) {

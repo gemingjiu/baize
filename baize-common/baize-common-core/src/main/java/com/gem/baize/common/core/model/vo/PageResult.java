@@ -13,9 +13,9 @@ public class PageResult<T> {
      */
     private Long total;
     /**
-     * 煤业显示条数
+     * 每页显示条数
      */
-    private Long pageSize;
+    private Long size;
     /**
      * 当前页
      */
@@ -23,7 +23,7 @@ public class PageResult<T> {
     /**
      * 查询数据列表
      */
-    private List<T> list;
+    private List<T> records;
     /**
      * countId
      */

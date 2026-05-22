@@ -14,9 +14,9 @@ public class PageConvert<T> extends BaseConvert<Page<T>, PageResult<T>> {
 
         PageResult<T> result = new PageResult<>();
         result.setTotal(entity.getTotal());
-        result.setPageSize(entity.getSize());
+        result.setSize(entity.getSize());
         result.setCurrent(entity.getCurrent());
-        result.setList(entity.getRecords());
+        result.setRecords(entity.getRecords());
         result.setCountId(entity.countId());
         return result;
     }

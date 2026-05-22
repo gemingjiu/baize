@@ -31,9 +31,9 @@ public class SysOperLogController {
     @Operation(summary = "分页查询操作日志", description = "分页查询操作日志列表")
     public ApiResult<Page<SysOperLogDto>> page(
             @RequestParam(value = "current", defaultValue = "1") int current,
-            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestBody(required = false) SysOperLogDto dto) {
-        Page<SysOperLog> page = new Page<>(current, pageSize);
+        Page<SysOperLog> page = new Page<>(current, size);
         return ApiResult.ok(sysOperLogService.page(page, dto));
     }
 

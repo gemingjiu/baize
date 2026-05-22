@@ -1,7 +1,6 @@
 package com.gem.baize.common.database.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.gem.baize.common.core.id.handle.IdGeneratorProcessor;
 import com.gem.baize.common.database.enums.StatusEnum;
 import com.gem.baize.common.webmvc.context.RequestContextHolder;
 import lombok.extern.slf4j.Slf4j;

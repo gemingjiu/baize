@@ -9,6 +9,7 @@ import com.gem.baize.common.core.enums.ErrorCode;
 import com.gem.baize.common.core.exception.model.BusinessException;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
+import com.gem.baize.common.security.domain.vo.UserVO;
 import com.gem.baize.system.user.entity.SysUser;
 import com.gem.baize.system.user.mapper.SysUserMapper;
 import com.gem.baize.system.user.service.SysUserService;
@@ -20,7 +21,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -98,9 +98,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             wrapper.eq(SysUser::getPhone, sysUserDto.getPhone());
         }
 
-        Page<SysUser> sysUserPage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到用户信息"));
+        Page<SysUser> sysUserPage = super.page(page, wrapper);
         return sysUserConvert.toDtoPage(sysUserPage);
     }
 
@@ -177,5 +175,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         sysUser.setStatus(status);
         super.updateById(sysUser);
+    }
+
+    @Override
+    public UserVO getCurrentUser(String userId) {
+        SysUser sysUser = Optional.ofNullable(super.getById(userId))
+                .orElseThrow(() -> new NotFoundException("用户不存在"));
+        UserVO userVO = new UserVO();
+        userVO.setId(sysUser.getId());
+        userVO.setUsername(sysUser.getUserName());
+        userVO.setNickname(sysUser.getNickName());
+        userVO.setEmail(sysUser.getEmail());
+        userVO.setPhone(sysUser.getPhone());
+        userVO.setAvatar(sysUser.getAvatar());
+        userVO.setTenantId(sysUser.getTenantId());
+        return userVO;
     }
 }

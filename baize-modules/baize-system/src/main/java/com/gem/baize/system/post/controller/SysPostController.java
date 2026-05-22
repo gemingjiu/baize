@@ -55,8 +55,8 @@ public class SysPostController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询部门")
-    public ApiResult<Page<SysPostDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysPostDto dto) {
-        Page<SysPost> page = new Page<>(pageNum, pageSize);
+    public ApiResult<Page<SysPostDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysPostDto dto) {
+        Page<SysPost> page = new Page<>(current, size);
         return ApiResult.ok(sysPostService.page(page, dto));
     }
 }

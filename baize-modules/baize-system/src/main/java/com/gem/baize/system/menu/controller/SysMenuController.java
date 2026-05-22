@@ -61,8 +61,8 @@ public class SysMenuController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询菜单")
-    public ApiResult<Page<SysMenuDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysMenuDto dto) {
-        Page<SysMenu> page = new Page<>(pageNum, pageSize);
+    public ApiResult<Page<SysMenuDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysMenuDto dto) {
+        Page<SysMenu> page = new Page<>(current, size);
         return ApiResult.ok(sysMenuService.page(page, dto));
     }
 

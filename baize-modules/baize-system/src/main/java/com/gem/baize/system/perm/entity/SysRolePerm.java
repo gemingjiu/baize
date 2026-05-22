@@ -2,17 +2,16 @@ package com.gem.baize.system.perm.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.gem.baize.common.database.entity.BaseEntity;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * 角色权限关联
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_role_perm")
-public class SysRolePerm extends BaseEntity {
+public class SysRolePerm implements Serializable {
 
     /**
      * 角色ID
@@ -26,9 +25,4 @@ public class SysRolePerm extends BaseEntity {
     @TableField("perm_id")
     private String permId;
 
-    /**
-     * 租户ID
-     */
-    @TableField("tenant_id")
-    private String tenantId;
 }

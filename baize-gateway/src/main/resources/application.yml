@@ -1,6 +1,6 @@
 # Tomcat
 server:
-  port: 8080
+  port: 8000
 # Spring
 spring:
   application:
@@ -39,9 +39,6 @@ spring:
         enabled: true
         # 配置文件格式
         file-extension: yml
-        # 引入检查
-#        import-check:
-#          enabled: false
         # 共享配置
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
@@ -49,4 +46,4 @@ spring:
     import:
       - optional:nacos:application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
       - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
-debug: off
+debug: false

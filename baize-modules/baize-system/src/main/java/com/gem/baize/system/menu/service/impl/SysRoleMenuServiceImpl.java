@@ -2,7 +2,6 @@ package com.gem.baize.system.menu.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
 import com.gem.baize.system.menu.entity.SysMenu;
 import com.gem.baize.system.menu.entity.SysRoleMenu;
@@ -16,14 +15,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * 角色菜单关联服务实现
  */
 @Service
-public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRoleMenu> implements SysRoleMenuService {
+public class SysRoleMenuServiceImpl implements SysRoleMenuService {
+
+    @Autowired
+    private SysRoleMenuMapper sysRoleMenuMapper;
 
     @Autowired
     private SysMenuMapper sysMenuMapper;
@@ -39,7 +43,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
     public List<String> getMenuIdsByRoleId(String roleId) {
         LambdaQueryWrapper<SysRoleMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysRoleMenu::getRoleId, roleId);
-        return list(wrapper).stream()
+        return sysRoleMenuMapper.selectList(wrapper).stream()
                 .map(SysRoleMenu::getMenuId)
                 .collect(Collectors.toList());
     }
@@ -53,7 +57,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
         // 获取所有关联的菜单ID
         LambdaQueryWrapper<SysRoleMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(SysRoleMenu::getRoleId, roleIds);
-        List<String> menuIds = list(wrapper).stream()
+        List<String> menuIds = sysRoleMenuMapper.selectList(wrapper).stream()
                 .map(SysRoleMenu::getMenuId)
                 .distinct()
                 .collect(Collectors.toList());
@@ -94,15 +98,12 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
 
         // 批量添加新菜单
         if (menuIds != null && !menuIds.isEmpty()) {
-            List<SysRoleMenu> roleMenus = new ArrayList<>();
             for (String menuId : menuIds) {
                 SysRoleMenu roleMenu = new SysRoleMenu();
                 roleMenu.setRoleId(roleId);
                 roleMenu.setMenuId(menuId);
-                roleMenu.setTenantId(tenantId);
-                roleMenus.add(roleMenu);
+                sysRoleMenuMapper.insert(roleMenu);
             }
-            saveBatch(roleMenus);
         }
     }
 
@@ -110,7 +111,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
     public void removeByRoleId(String roleId) {
         LambdaQueryWrapper<SysRoleMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysRoleMenu::getRoleId, roleId);
-        remove(wrapper);
+        sysRoleMenuMapper.delete(wrapper);
     }
 
     /**

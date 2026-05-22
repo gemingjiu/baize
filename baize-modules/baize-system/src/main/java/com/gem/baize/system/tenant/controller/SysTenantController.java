@@ -61,8 +61,8 @@ public class SysTenantController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询租户")
-    public ApiResult<Page<SysTenantDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysTenantDto dto) {
-        Page<SysTenant> page = new Page<>(pageNum, pageSize);
+    public ApiResult<Page<SysTenantDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysTenantDto dto) {
+        Page<SysTenant> page = new Page<>(current, size);
 
         return ApiResult.ok(sysTenantService.page(page, dto));
     }

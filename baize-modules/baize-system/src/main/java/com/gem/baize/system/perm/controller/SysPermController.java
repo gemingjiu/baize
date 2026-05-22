@@ -54,8 +54,8 @@ public class SysPermController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询权限")
-    public ApiResult<Page<SysPermDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysPermDto dto) {
-        Page<SysPerm> page = new Page<>(pageNum, pageSize);
+    public ApiResult<Page<SysPermDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysPermDto dto) {
+        Page<SysPerm> page = new Page<>(current, size);
         return ApiResult.ok(sysPermService.page(page, dto));
     }
 }

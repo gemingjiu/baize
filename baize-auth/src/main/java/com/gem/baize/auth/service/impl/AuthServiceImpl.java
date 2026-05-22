@@ -53,10 +53,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginVO login(LoginDTO dto) {
-        log.info("用户登录请求: username={}", dto.getUsername());
-
-        // 按用户名查询用户
-        ApiResult<SysUserDto> userResult = sysUserFeignClient.getByUsername(dto.getUsername());
+        log.info("用户登录请求: username={}, tenant={}", dto.getUsername(), dto.getTenant());
+        // 按用户名和租户查询用户
+        ApiResult<SysUserDto> userResult;
+        if (StringUtils.isNotBlank(dto.getTenant())) {
+            userResult = sysUserFeignClient.getByUsernameAndTenantId(dto.getUsername(), dto.getTenant());
+        } else {
+            userResult = sysUserFeignClient.getByUsername(dto.getUsername());
+        }
         if (!userResult.isSuccess() || userResult.getData() == null) {
             throw new NotFoundException("用户名或密码错误");
         }
@@ -156,7 +160,9 @@ public class AuthServiceImpl implements AuthService {
         claims.put(CustomHttpHeaders.USER_ID, payload.getUserId());
         claims.put(CustomHttpHeaders.USER_NAME, payload.getUserName());
         claims.put(CustomHttpHeaders.TENANT_ID, payload.getTenantId());
-        claims.put(CustomHttpHeaders.ROLE, payload.getRole());
+        if (StringUtils.isNotBlank(payload.getRole())) {
+            claims.put(CustomHttpHeaders.ROLE, payload.getRole());
+        }
         return claims;
     }
 }

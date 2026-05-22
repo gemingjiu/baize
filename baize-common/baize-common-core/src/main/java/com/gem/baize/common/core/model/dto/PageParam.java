@@ -10,7 +10,7 @@ public class PageParam {
     private Integer current = 1;
 
     @Schema(description = "每页大小", example = "10")
-    private Integer pageSize = 10;
+    private Integer size = 10;
 
     @Schema(description = "排序字段")
     private String sortField;
@@ -20,7 +20,7 @@ public class PageParam {
 
     public PageParam(int current, int size) {
         this.current = current;
-        this.pageSize = size;
+        this.size = size;
         this.sortField = "id";
         this.sortOrder = "desc";
     }

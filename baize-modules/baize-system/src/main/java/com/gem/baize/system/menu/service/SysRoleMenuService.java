@@ -1,6 +1,5 @@
 package com.gem.baize.system.menu.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
 import com.gem.baize.system.menu.entity.SysRoleMenu;
 
@@ -9,7 +8,7 @@ import java.util.List;
 /**
  * 角色菜单关联服务
  */
-public interface SysRoleMenuService extends IService<SysRoleMenu> {
+public interface SysRoleMenuService {
 
     /**
      * 根据角色ID获取菜单ID列表

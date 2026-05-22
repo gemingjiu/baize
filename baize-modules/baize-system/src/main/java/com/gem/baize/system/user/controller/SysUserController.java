@@ -4,10 +4,10 @@ package com.gem.baize.system.user.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
 import com.gem.baize.common.core.annotation.Log;
+import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
-import com.gem.baize.common.core.model.vo.PageResult;
-import com.gem.baize.common.database.convert.PageConvert;
+import com.gem.baize.common.security.domain.vo.UserVO;
 import com.gem.baize.system.user.entity.SysUser;
 import com.gem.baize.system.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,12 +63,16 @@ public class SysUserController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询用户")
-    public ApiResult<PageResult<SysUserDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysUserDto dto) {
-        Page<SysUser> query = new Page<>(current, pageSize);
+    public ApiResult<Page<SysUserDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysUserDto dto) {
+        Page<SysUser> query = new Page<>(current, size);
         Page<SysUserDto> pages = sysUserService.page(query, dto);
-        PageConvert<SysUserDto> pageConvert = new PageConvert<>();
-        PageResult<SysUserDto> pageResult = pageConvert.toDto(pages);
-        return ApiResult.ok(pageResult);
+        return ApiResult.ok(pages);
+    }
+
+    @GetMapping("/current")
+    @Operation(summary = "获取当前登录用户信息")
+    public ApiResult<UserVO> currentUser(@RequestHeader(CustomHttpHeaders.USER_ID) String userId) {
+        return ApiResult.ok(sysUserService.getCurrentUser(userId));
     }
 
     @GetMapping("/getByUsername")

@@ -60,8 +60,8 @@ public class SysRoleController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询角色")
-    public ApiResult<Page<SysRoleDto>> page(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, @Valid @RequestBody SysRoleDto dto) {
-        Page<SysRole> page = new Page<>(pageNum, pageSize);
+    public ApiResult<Page<SysRoleDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysRoleDto dto) {
+        Page<SysRole> page = new Page<>(current, size);
         return ApiResult.ok(sysRoleService.page(page, dto));
     }
 

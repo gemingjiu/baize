@@ -18,8 +18,18 @@ spring:
           enabled: true
           lower-case-service-id: true
       default-filters:
-        - AddRequestHeader=Gateway-Request, From-Gateway      
+        - AddRequestHeader=Gateway-Request, From-Gateway
       routes:
+        # 认证服务API文档路由（更精确的路径放前面）
+        - id: baize-auth-docs
+          uri: lb://baize-auth
+          predicates:
+            - Path=/api/v1/auth/v3/api-docs/**
+          filters:
+            - StripPrefix=2
+          metadata:
+            skipAuth: true
+
         # 认证中心
         - id: baize-auth
           uri: lb://baize-auth
@@ -27,16 +37,40 @@ spring:
             - Path=/api/v1/auth/**
           filters:
             - StripPrefix=2
-          metaData:
+          metadata:
             skipAuth: true
 
-        # 系统模块
-        - id: baize-admin
-          uri: lb://baize-admin
+        # 系统服务API文档路由（更精确的路径放前面）
+        - id: baize-system-docs
+          uri: lb://baize-system
           predicates:
-            - Path=/api/v1/admin/**
+            - Path=/api/v1/system/v3/api-docs/**
           filters:
             - StripPrefix=2
+          metadata:
+            skipAuth: true
+
+        # 系统模块（需要认证）
+        - id: baize-system
+          uri: lb://baize-system
+          predicates:
+            - Path=/api/v1/system/**
+          filters:
+            - StripPrefix=2
+
+# Swagger UI 聚合配置
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: true
+    disable-swagger-default-url: true
+    urls:
+      - name: baize-auth
+        url: /api/v1/auth/v3/api-docs
+      - name: baize-system
+        url: /api/v1/system/v3/api-docs
+
 logging:
   level:
     org.springframework: debug
@@ -53,3 +87,11 @@ baize:
       enabled: true
       excludeUrls:
         - /system/notice
+    # 白名单路径
+    whitelist:
+      - /api/v1/auth/**
+      - /api/v1/system/v3/api-docs/**
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /webjars/**
+      - /v3/api-docs/**

@@ -1,6 +1,5 @@
 package com.gem.baize.system.user.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.gem.baize.system.user.entity.SysUserRole;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 /**
  * 用户角色关联服务
  */
-public interface SysUserRoleService extends IService<SysUserRole> {
+public interface SysUserRoleService {
 
     /**
      * 根据用户ID获取角色ID列表

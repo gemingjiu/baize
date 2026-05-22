@@ -1,5 +1,6 @@
 package com.gem.baize.api.system.user.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
@@ -44,8 +45,6 @@ public class SysUserDto {
      * 用户头像
      */
     private String avatar;
-    /**
-     * 密码（仅内部Feign调用使用）
-     */
+
     private String password;
 }

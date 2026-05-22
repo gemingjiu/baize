@@ -20,6 +20,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,9 +99,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
             wrapper.eq(SysDept::getTenantId, sysDeptDto.getTenantId());
         }
 
-        Page<SysDept> sysDeptPage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到部门信息"));
+        Page<SysDept> sysDeptPage = super.page(page, wrapper);
         return sysDeptConvert.toDtoPage(sysDeptPage);
     }
 

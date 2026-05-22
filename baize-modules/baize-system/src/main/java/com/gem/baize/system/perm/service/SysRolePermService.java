@@ -1,6 +1,5 @@
 package com.gem.baize.system.perm.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.gem.baize.system.perm.entity.SysRolePerm;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 /**
  * 角色权限关联服务
  */
-public interface SysRolePermService extends IService<SysRolePerm> {
+public interface SysRolePermService {
 
     /**
      * 根据角色ID获取权限ID列表

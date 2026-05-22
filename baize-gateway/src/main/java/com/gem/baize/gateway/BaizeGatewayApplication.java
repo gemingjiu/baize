@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration.class})
 public class BaizeGatewayApplication {
     private static final Logger log = LoggerFactory.getLogger(BaizeGatewayApplication.class);
     public static void main(String[] args) {
