@@ -55,6 +55,12 @@
 
             <dependency>
                 <groupId>com.gem</groupId>
+                <artifactId>baize-common-cache</artifactId>
+                <version>${baize.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.gem</groupId>
                 <artifactId>baize-common-database</artifactId>
                 <version>${baize.version}</version>
             </dependency>

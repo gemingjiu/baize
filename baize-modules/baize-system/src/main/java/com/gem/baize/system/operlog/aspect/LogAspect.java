@@ -11,7 +11,8 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,12 +33,16 @@ public class LogAspect {
     @Autowired
     private SysOperLogService sysOperLogService;
 
+    @Autowired
+    @Qualifier("logExecutor")
+    private ThreadPoolTaskExecutor logExecutor;
+
     /**
      * 处理完请求后执行
      */
     @AfterReturning(pointcut = "@annotation(controllerLog)", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, Log controllerLog, Object jsonResult) {
-        handleLog(joinPoint, controllerLog, null, jsonResult);
+        logExecutor.execute(() -> handleLog(joinPoint, controllerLog, null, jsonResult));
     }
 
     /**
@@ -45,10 +50,9 @@ public class LogAspect {
      */
     @AfterThrowing(pointcut = "@annotation(controllerLog)", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Log controllerLog, Exception e) {
-        handleLog(joinPoint, controllerLog, e, null);
+        logExecutor.execute(() -> handleLog(joinPoint, controllerLog, e, null));
     }
 
-    @Async
     protected void handleLog(final JoinPoint joinPoint, final Log controllerLog, final Exception e, Object jsonResult) {
         try {
             // 获取请求信息

@@ -51,4 +51,9 @@ public interface SysUserService extends IService<SysUser> {
      * 获取当前登录用户信息
      */
     UserVO getCurrentUser(String userId);
+
+    /**
+     * 修改个人信息（昵称、邮箱、电话、头像）
+     */
+    void updateProfile(String userId, SysUserDto sysUserDto);
 }

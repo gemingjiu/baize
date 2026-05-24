@@ -1,7 +1,8 @@
 package com.gem.baize.auth.service.impl;
 
+import com.gem.baize.api.system.role.client.SysRoleFeignClient;
+import com.gem.baize.api.system.role.domain.dto.SysRoleDto;
 import com.gem.baize.api.system.tenant.client.SysTenantFeignClient;
-import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.api.system.user.client.SysUserFeignClient;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
 import com.gem.baize.auth.manager.TokenManager;
@@ -9,6 +10,7 @@ import com.gem.baize.auth.service.AuthService;
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.service.OnlineUserService;
 import com.gem.baize.common.security.domain.dto.LoginDTO;
 import com.gem.baize.common.security.domain.dto.Payload;
 import com.gem.baize.common.security.domain.dto.TokenRefreshDTO;
@@ -37,6 +39,9 @@ public class AuthServiceImpl implements AuthService {
     private SysUserFeignClient sysUserFeignClient;
 
     @Autowired
+    private SysRoleFeignClient sysRoleFeignClient;
+
+    @Autowired
     private SysTenantFeignClient sysTenantFeignClient;
 
     @Autowired
@@ -44,6 +49,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private TokenManager tokenManager;
+
+    @Autowired
+    private OnlineUserService onlineUserService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -78,6 +86,18 @@ public class AuthServiceImpl implements AuthService {
         payload.setTenantId(user.getTenantId());
         payload.setSubject(user.getId());
 
+        // 获取用户角色及数据权限
+        try {
+            ApiResult<SysRoleDto> roleResult = sysRoleFeignClient.getRoleByUserId(user.getId());
+            if (roleResult != null && roleResult.isSuccess() && roleResult.getData() != null) {
+                SysRoleDto roleDto = roleResult.getData();
+                payload.setRole(roleDto.getRoleCode());
+                payload.setDataScope(roleDto.getDataScope());
+            }
+        } catch (Exception e) {
+            log.warn("获取用户角色信息失败, userId={}", user.getId(), e);
+        }
+
         // 4. 生成访问令牌
         Map<String, Object> claims = buildClaims(payload);
         String accessToken = jwtUtils.createToken(user.getId(), claims);
@@ -88,6 +108,9 @@ public class AuthServiceImpl implements AuthService {
 
         // 6. 更新用户最后登录时间
         sysUserFeignClient.updateLastLoginTime(user.getId(), null);
+
+        // 记录在线用户
+        onlineUserService.login(user.getId(), user.getTenantId(), user.getUserName());
 
         // 7. 构建返回结果
         LoginVO loginVO = new LoginVO();
@@ -112,6 +135,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(String userId, String tenantId) {
         tokenManager.deleteRefreshToken(tenantId, userId);
+        onlineUserService.logout(userId, tenantId);
         log.info("用户登出: userId={}, tenantId={}", userId, tenantId);
     }
 
@@ -139,6 +163,18 @@ public class AuthServiceImpl implements AuthService {
         payload.setTenantId(user.getTenantId());
         payload.setSubject(user.getId());
 
+        // 获取用户角色及数据权限
+        try {
+            ApiResult<SysRoleDto> roleResult = sysRoleFeignClient.getRoleByUserId(user.getId());
+            if (roleResult != null && roleResult.isSuccess() && roleResult.getData() != null) {
+                SysRoleDto roleDto = roleResult.getData();
+                payload.setRole(roleDto.getRoleCode());
+                payload.setDataScope(roleDto.getDataScope());
+            }
+        } catch (Exception e) {
+            log.warn("获取用户角色信息失败, userId={}", user.getId(), e);
+        }
+
         Map<String, Object> claims = buildClaims(payload);
         String accessToken = jwtUtils.createToken(user.getId(), claims);
 
@@ -162,6 +198,9 @@ public class AuthServiceImpl implements AuthService {
         claims.put(CustomHttpHeaders.TENANT_ID, payload.getTenantId());
         if (StringUtils.isNotBlank(payload.getRole())) {
             claims.put(CustomHttpHeaders.ROLE, payload.getRole());
+        }
+        if (StringUtils.isNotBlank(payload.getDataScope())) {
+            claims.put(CustomHttpHeaders.DATA_SCOPE, payload.getDataScope());
         }
         return claims;
     }

@@ -3,11 +3,13 @@ package com.gem.baize.system.user.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
+import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.security.domain.vo.UserVO;
+import com.gem.baize.system.file.service.FileUploadService;
 import com.gem.baize.system.user.entity.SysUser;
 import com.gem.baize.system.user.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +17,10 @@ import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/system/user")
@@ -23,8 +29,26 @@ public class SysUserController {
     @Autowired
     private SysUserService sysUserService;
 
+    @Autowired
+    private FileUploadService fileUploadService;
+
+    @PostMapping("/uploadAvatar")
+    @Operation(summary = "上传头像", description = "上传用户头像")
+    public ApiResult<java.util.Map<String, String>> uploadAvatar(@RequestHeader(CustomHttpHeaders.USER_ID) String userId,
+                                                                @RequestParam("file") MultipartFile file) throws IOException {
+        String url = fileUploadService.upload(file);
+        // 更新用户头像
+        SysUserDto dto = new SysUserDto();
+        dto.setAvatar(url);
+        sysUserService.updateProfile(userId, dto);
+        java.util.Map<String, String> result = new java.util.HashMap<>();
+        result.put("url", url);
+        return ApiResult.ok(result);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取用户", description = "根据ID查询用户信息")
+    @RequiresPermission("system:user:query")
     public ApiResult<SysUserDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -34,6 +58,7 @@ public class SysUserController {
 
     @PostMapping
     @Operation(summary = "创建用户")
+    @RequiresPermission("system:user:add")
     @Log(title = "用户管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysUserDto dto) {
         sysUserService.create(dto);
@@ -42,6 +67,7 @@ public class SysUserController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新用户")
+    @RequiresPermission("system:user:edit")
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysUserDto dto) {
         // 双重验证
@@ -55,6 +81,7 @@ public class SysUserController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除用户")
+    @RequiresPermission("system:user:remove")
     @Log(title = "用户管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysUserService.removeById(id);
@@ -63,6 +90,7 @@ public class SysUserController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询用户")
+    @RequiresPermission("system:user:list")
     public ApiResult<Page<SysUserDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysUserDto dto) {
         Page<SysUser> query = new Page<>(current, size);
         Page<SysUserDto> pages = sysUserService.page(query, dto);
@@ -104,6 +132,7 @@ public class SysUserController {
 
     @PutMapping("/resetPassword")
     @Operation(summary = "重置密码", description = "管理员重置用户密码")
+    @RequiresPermission("system:user:resetPwd")
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> resetPassword(@RequestParam("userId") String userId,
                                          @RequestParam("newPassword") String newPassword) {
@@ -113,6 +142,7 @@ public class SysUserController {
 
     @PutMapping("/updatePassword")
     @Operation(summary = "修改密码", description = "用户修改自己的密码")
+    @RequiresPermission("system:user:updatePwd")
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> updatePassword(@RequestParam("userId") String userId,
                                           @RequestParam("oldPassword") String oldPassword,
@@ -121,8 +151,17 @@ public class SysUserController {
         return ApiResult.ok();
     }
 
+    @PutMapping("/profile")
+    @Operation(summary = "修改个人信息", description = "用户修改自己的个人资料")
+    public ApiResult<Void> updateProfile(@RequestHeader(CustomHttpHeaders.USER_ID) String userId,
+                                         @Valid @RequestBody SysUserDto dto) {
+        sysUserService.updateProfile(userId, dto);
+        return ApiResult.ok();
+    }
+
     @PutMapping("/changeStatus")
     @Operation(summary = "修改用户状态", description = "修改用户启用/禁用状态")
+    @RequiresPermission("system:user:edit")
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> changeStatus(@RequestParam("userId") String userId,
                                         @RequestParam("status") String status) {

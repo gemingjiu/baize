@@ -4,6 +4,8 @@ import com.gem.baize.common.core.enums.ErrorCode;
 import com.gem.baize.common.core.exception.model.*;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -21,6 +23,26 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * 处理数据库唯一键冲突异常
+     */
+    @ExceptionHandler(DuplicateKeyException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiResult<Void> handleDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
+        log.warn("数据重复: {} - {}", request.getRequestURI(), e.getMessage());
+        return ApiResult.fail(ErrorCode.DATA_ALREADY_EXISTS.code(), "数据已存在，请更换后重试");
+    }
+
+    /**
+     * 处理数据库访问异常
+     */
+    @ExceptionHandler(DataAccessException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResult<Void> handleDataAccessException(DataAccessException e, HttpServletRequest request) {
+        log.error("数据库访问异常: {} - {}", request.getRequestURI(), e.getMessage(), e);
+        return ApiResult.fail(ErrorCode.SYSTEM_ERROR.code(), "数据库操作失败，请稍后重试");
+    }
 
     /**
      * 处理业务异常

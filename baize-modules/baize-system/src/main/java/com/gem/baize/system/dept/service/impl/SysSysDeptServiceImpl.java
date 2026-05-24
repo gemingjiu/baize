@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
+import com.gem.baize.common.core.utils.TreeUtils;
 import com.gem.baize.system.dept.entity.SysDept;
 import com.gem.baize.system.dept.mapper.SysDeptMapper;
 import com.gem.baize.system.dept.service.SysDeptService;
@@ -18,11 +19,10 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 部门服务类实现
@@ -43,6 +43,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(SysDeptDto sysDeptDto) {
         SysDept sysDept = sysDeptConvert.toEntity(sysDeptDto);
         try {
@@ -53,6 +54,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CachePut(cacheNames = "sys_dept", key = "#sysDeptDto.id")
     public void updateById(SysDeptDto sysDeptDto) {
         SysDept sysDept = sysDeptConvert.toEntity(sysDeptDto);
@@ -63,7 +65,8 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     }
 
     @Override
-    @CacheEvict(value = "sys_dept", key = "#id")  // 删除缓存
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "sys_dept", key = "#id")
     public void removeById(String id) {
         // 检查是否有子部门
         LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
@@ -104,6 +107,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     }
 
     @Override
+    @Cacheable(cacheNames = "sys_dept", key = "'tree_' + #sysDeptDto.tenantId")
     public List<SysDeptDto> tree(SysDeptDto sysDeptDto) {
         // 构建查询条件
         LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();
@@ -119,7 +123,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
         List<SysDept> deptList = list(wrapper);
         List<SysDeptDto> dtoList = sysDeptConvert.toDtoList(deptList);
 
-        return buildTree(dtoList);
+        return TreeUtils.buildTree(dtoList, SysDeptDto::getId, SysDeptDto::getParentId, SysDeptDto::setChildren);
     }
 
     @Override
@@ -137,27 +141,5 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
 
         List<SysDept> deptList = list(wrapper);
         return sysDeptConvert.toDtoList(deptList);
-    }
-
-    /**
-     * 构建部门树
-     */
-    private List<SysDeptDto> buildTree(List<SysDeptDto> deptList) {
-        if (CollectionUtils.isEmpty(deptList)) {
-            return Collections.emptyList();
-        }
-
-        // 按parentId分组
-        Map<String, List<SysDeptDto>> parentIdMap = deptList.stream()
-                .filter(dept -> StringUtils.isNotBlank(dept.getParentId()))
-                .collect(Collectors.groupingBy(SysDeptDto::getParentId));
-
-        // 设置子部门
-        deptList.forEach(dept -> dept.setChildren(parentIdMap.get(dept.getId())));
-
-        // 返回根节点（parentId为空或"0"的节点）
-        return deptList.stream()
-                .filter(dept -> StringUtils.isBlank(dept.getParentId()) || "0".equals(dept.getParentId()))
-                .collect(Collectors.toList());
     }
 }

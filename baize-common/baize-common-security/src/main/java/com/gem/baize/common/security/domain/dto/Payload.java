@@ -10,6 +10,7 @@ public class Payload {
     private String subject;
     private String userName;
     private String role;
+    private String dataScope;
 
     public String getTenantId() { return tenantId; }
     public void setTenantId(String tenantId) { this.tenantId = tenantId; }
@@ -23,4 +24,6 @@ public class Payload {
     public void setUserName(String userName) { this.userName = userName; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public String getDataScope() { return dataScope; }
+    public void setDataScope(String dataScope) { this.dataScope = dataScope; }
 }

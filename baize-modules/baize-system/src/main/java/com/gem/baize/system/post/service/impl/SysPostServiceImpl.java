@@ -41,6 +41,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(SysPostDto sysPostDto) {
         SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
         try {
@@ -62,6 +63,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_post", key = "#id")
     public void removeById(String id) {
         boolean success = super.removeById(id);
@@ -90,9 +92,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
             wrapper.eq(SysPost::getTenantId, sysPostDto.getTenantId());
         }
 
-        Page<SysPost> sysPostPage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("岗位不存在"));
+        Page<SysPost> sysPostPage = super.page(page, wrapper);
         return sysPostConvert.toDtoPage(sysPostPage);
     }
 }

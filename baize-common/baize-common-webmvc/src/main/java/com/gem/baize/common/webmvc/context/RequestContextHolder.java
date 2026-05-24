@@ -76,6 +76,10 @@ public class RequestContextHolder {
 
     public static void setRole(String role) { set(CustomHttpHeaders.ROLE, role); }
 
+    public static String getDataScope() { return get(CustomHttpHeaders.DATA_SCOPE); }
+
+    public static void setDataScope(String dataScope) { set(CustomHttpHeaders.DATA_SCOPE, dataScope); }
+
     public static void remove() {
         THREAD_LOCAL.remove();
     }

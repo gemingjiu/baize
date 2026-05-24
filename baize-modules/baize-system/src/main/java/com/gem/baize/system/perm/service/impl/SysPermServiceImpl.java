@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
@@ -39,6 +40,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(SysPermDto sysPermDto) {
         SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
         try {
@@ -49,7 +51,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     }
 
     @Override
-
+    @Transactional(rollbackFor = Exception.class)
     @CachePut(cacheNames = "sys_perm", key = "#sysPermDto.id")
     public void updateById(SysPermDto sysPermDto) {
         SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
@@ -60,6 +62,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_perm", key = "#id")
     public void removeById(String id) {
         boolean success = super.removeById(id);
@@ -88,9 +91,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
             wrapper.eq(SysPerm::getParentId, sysPermDto.getParentId());
         }
 
-        Page<SysPerm> sysPermPage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到授权信息"));
+        Page<SysPerm> sysPermPage = super.page(page, wrapper);
         return sysPermConvert.toDtoPage(sysPermPage);
     }
 }

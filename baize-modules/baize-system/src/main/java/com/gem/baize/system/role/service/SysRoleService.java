@@ -19,4 +19,6 @@ public interface SysRoleService extends IService<SysRole> {
     void removeById(String id);
 
     Page<SysRoleDto> page(Page<SysRole> page, SysRoleDto sysRoleDto);
+
+    SysRoleDto getRoleByUserId(String userId);
 }

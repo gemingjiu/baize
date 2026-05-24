@@ -25,6 +25,11 @@ public interface SysUserRoleService {
     void assignRoles(String userId, List<String> roleIds, String tenantId);
 
     /**
+     * 批量为角色分配用户（优化：使用批量插入）
+     */
+    void batchAssignUsersToRole(String roleId, List<String> userIds, String tenantId);
+
+    /**
      * 删除用户所有角色关联
      */
     void removeByUserId(String userId);

@@ -40,6 +40,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = sysTenantConvert.toEntity(sysTenantDto);
 
@@ -54,6 +55,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CachePut(cacheNames = "sys_tenant", key = "#sysTenantDto.id")
     public void updateById(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = sysTenantConvert.toEntity(sysTenantDto);
@@ -67,6 +69,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_tenant", key = "#id")
     public void removeById(String id) {
         boolean success = super.removeById(id);
@@ -95,9 +98,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             wrapper.eq(SysTenant::getStatus, sysTenantDto.getStatus());
         }
 
-        Page<SysTenant> sysTenantPage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到租户信息"));
+        Page<SysTenant> sysTenantPage = super.page(page, wrapper);
         return sysTenantConvert.toDtoPage(sysTenantPage);
     }
 
@@ -105,7 +106,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public SysTenantDto getByTenantCodeOrDomain(String tenant) {
         LambdaQueryWrapper<SysTenant> wrapper = new LambdaQueryWrapper<>();
         wrapper.and(w -> w.eq(SysTenant::getTenantCode, tenant).or().eq(SysTenant::getDomain, tenant));
-        wrapper.last("LIMIT 1");
         SysTenant sysTenant = super.getOne(wrapper);
         if (sysTenant == null) {
             throw new NotFoundException("租户不存在");

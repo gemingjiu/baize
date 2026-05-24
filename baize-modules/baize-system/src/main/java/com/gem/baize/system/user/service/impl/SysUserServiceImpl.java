@@ -42,6 +42,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(SysUserDto sysUserDto) {
         SysUser sysUser = sysUserConvert.toEntity(sysUserDto);
         // 密码加密
@@ -57,19 +58,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CachePut(cacheNames = "sys_user", key = "#sysUserDto.id")
     public void updateById(SysUserDto sysUserDto) {
         SysUser sysUser = sysUserConvert.toEntity(sysUserDto);
-
         boolean success = super.updateById(sysUser);
-
         if (!success) {
             throw new NotFoundException("用户不存在或已删除");
         }
-
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_user", key = "#id")
     public void removeById(String id) {
         boolean success = super.removeById(id);
@@ -107,7 +107,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public SysUserDto getByUsername(String username) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUser::getUserName, username);
-        wrapper.last("LIMIT 1");
         SysUser sysUser = super.getOne(wrapper);
         if (sysUser == null) {
             throw new NotFoundException("用户不存在");
@@ -121,7 +120,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUser::getUserName, username);
         wrapper.eq(SysUser::getTenantId, tenantId);
-        wrapper.last("LIMIT 1");
         SysUser sysUser = super.getOne(wrapper);
         if (sysUser == null) {
             throw new NotFoundException("用户名或密码错误");
@@ -130,6 +128,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_user", key = "#userId")
     public void updateLastLoginTime(String userId, String loginIp) {
         SysUser sysUser = super.getById(userId);
@@ -142,6 +141,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_user", key = "#userId")
     public void resetPassword(String userId, String newPassword) {
         SysUser sysUser = super.getById(userId);
@@ -153,6 +153,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_user", key = "#userId")
     public void updatePassword(String userId, String oldPassword, String newPassword) {
         SysUser sysUser = super.getById(userId);
@@ -167,6 +168,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_user", key = "#userId")
     public void changeStatus(String userId, String status) {
         SysUser sysUser = super.getById(userId);
@@ -190,5 +192,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         userVO.setAvatar(sysUser.getAvatar());
         userVO.setTenantId(sysUser.getTenantId());
         return userVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = "sys_user", key = "#userId")
+    public void updateProfile(String userId, SysUserDto sysUserDto) {
+        SysUser sysUser = super.getById(userId);
+        if (sysUser == null) {
+            throw new NotFoundException("用户不存在");
+        }
+        // 只允许修改个人资料字段
+        if (StringUtils.isNotBlank(sysUserDto.getNickName())) {
+            sysUser.setNickName(sysUserDto.getNickName());
+        }
+        if (StringUtils.isNotBlank(sysUserDto.getEmail())) {
+            sysUser.setEmail(sysUserDto.getEmail());
+        }
+        if (StringUtils.isNotBlank(sysUserDto.getPhone())) {
+            sysUser.setPhone(sysUserDto.getPhone());
+        }
+        if (StringUtils.isNotBlank(sysUserDto.getAvatar())) {
+            sysUser.setAvatar(sysUserDto.getAvatar());
+        }
+        super.updateById(sysUser);
     }
 }

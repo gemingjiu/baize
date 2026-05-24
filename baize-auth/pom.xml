@@ -82,6 +82,12 @@
 
         <dependency>
             <groupId>com.gem</groupId>
+            <artifactId>baize-common-cache</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gem</groupId>
             <artifactId>baize-common-security</artifactId>
             <scope>compile</scope>
         </dependency>

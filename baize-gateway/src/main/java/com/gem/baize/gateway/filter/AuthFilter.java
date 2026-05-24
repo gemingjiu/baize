@@ -95,7 +95,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
                     .header(CustomHttpHeaders.TENANT_ID, payload.getTenantId())
                     .header(CustomHttpHeaders.USER_ID, payload.getUserId())
                     .header(CustomHttpHeaders.USER_NAME, payload.getUserName())
-                    .header(CustomHttpHeaders.ROLE, payload.getRole());
+                    .header(CustomHttpHeaders.ROLE, payload.getRole())
+                    .header(CustomHttpHeaders.DATA_SCOPE, payload.getDataScope());
         } catch (Exception e) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();

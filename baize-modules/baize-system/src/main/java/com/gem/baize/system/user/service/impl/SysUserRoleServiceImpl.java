@@ -69,4 +69,26 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
         wrapper.eq(SysUserRole::getRoleId, roleId);
         sysUserRoleMapper.delete(wrapper);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchAssignUsersToRole(String roleId, List<String> userIds, String tenantId) {
+        // 删除角色现有用户关联
+        removeByRoleId(roleId);
+
+        // 批量插入新关联
+        if (userIds != null && !userIds.isEmpty()) {
+            List<SysUserRole> userRoleList = new ArrayList<>(userIds.size());
+            for (String userId : userIds) {
+                SysUserRole userRole = new SysUserRole();
+                userRole.setUserId(userId);
+                userRole.setRoleId(roleId);
+                userRoleList.add(userRole);
+            }
+            // 使用MyBatis-Plus批量插入
+            for (SysUserRole userRole : userRoleList) {
+                sysUserRoleMapper.insert(userRole);
+            }
+        }
+    }
 }

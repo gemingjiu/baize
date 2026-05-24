@@ -11,6 +11,7 @@ import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.system.role.entity.SysRole;
 import com.gem.baize.system.role.mapper.SysRoleMapper;
 import com.gem.baize.system.role.service.SysRoleService;
+import com.gem.baize.system.user.service.SysUserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,6 +34,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Autowired
     private SysRoleConvert sysRoleConvert;
 
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
+
     @Override
     @Cacheable(cacheNames = "sys_role", key = "#id")
     public SysRoleDto getById(String id) {
@@ -40,6 +45,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CachePut(cacheNames = "sys_role", key = "#sysRoleDto.id")
     public void create(SysRoleDto sysRoleDto) {
         SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
@@ -67,6 +73,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_role", key = "#id")
     public void removeById(String id) {
         boolean success = super.removeById(id);
@@ -95,9 +102,17 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             wrapper.eq(SysRole::getTenantId, sysRoleDto.getTenantId());
         }
 
-        Page<SysRole> sysRolePage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到角色信息"));
+        Page<SysRole> sysRolePage = super.page(page, wrapper);
         return sysRoleConvert.toDtoPage(sysRolePage);
+    }
+
+    @Override
+    public SysRoleDto getRoleByUserId(String userId) {
+        List<String> roleIds = sysUserRoleService.getRoleIdsByUserId(userId);
+        if (CollectionUtils.isEmpty(roleIds)) {
+            return null;
+        }
+        SysRole sysRole = super.getById(roleIds.get(0));
+        return sysRoleConvert.toDto(sysRole);
     }
 }

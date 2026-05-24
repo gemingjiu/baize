@@ -20,6 +20,7 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
         String userKey = request.getHeader(CustomHttpHeaders.SUBJECT_ID);
         String userName = request.getHeader(CustomHttpHeaders.USER_NAME);
         String role = request.getHeader(CustomHttpHeaders.ROLE);
+        String dataScope = request.getHeader(CustomHttpHeaders.DATA_SCOPE);
 
 
         // 存到上下文里，方便业务层使用
@@ -40,6 +41,9 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
         }
         if (StringUtils.isNotBlank(role)) {
             RequestContextHolder.setRole(role);
+        }
+        if (StringUtils.isNotBlank(dataScope)) {
+            RequestContextHolder.setDataScope(dataScope);
         }
 
         return true;

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
+import com.gem.baize.common.core.utils.TreeUtils;
 import com.gem.baize.system.menu.entity.SysMenu;
 import com.gem.baize.system.menu.mapper.SysMenuMapper;
 import com.gem.baize.system.menu.service.SysMenuService;
@@ -17,10 +18,10 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 菜单服务类实现
@@ -40,6 +41,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
         try {
@@ -50,23 +52,21 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CachePut(cacheNames = "sys_menu", key = "#sysMenuDto.id")
     public void updateById(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
-
         boolean success = super.updateById(sysMenu);
-
         if (!success) {
             throw new NotFoundException("菜单不存在或已删除");
         }
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_menu", key = "#id")
     public void removeById(String id) {
-
         boolean success = super.removeById(id);
-
         if (!success) {
             throw new NotFoundException("菜单不存在或已删除");
         }
@@ -91,13 +91,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             wrapper.eq(SysMenu::getParentId, sysMenuDto.getParentId());
         }
 
-        Page<SysMenu> sysPermPage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到菜单信息"));
-        return sysMenuConvert.toDtoPage(sysPermPage);
+        Page<SysMenu> sysMenuPage = super.page(page, wrapper);
+        return sysMenuConvert.toDtoPage(sysMenuPage);
     }
 
     @Override
+    @Cacheable(cacheNames = "sys_menu", key = "'tree_' + #sysMenuDto.tenantId")
     public List<SysMenuDto> tree(SysMenuDto sysMenuDto) {
         // 构建查询条件
         LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
@@ -113,7 +112,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> menuList = list(wrapper);
         List<SysMenuDto> dtoList = sysMenuConvert.toDtoList(menuList);
 
-        return buildTree(dtoList);
+        return TreeUtils.buildTree(dtoList, SysMenuDto::getId, SysMenuDto::getParentId, SysMenuDto::setChildren);
     }
 
     @Override
@@ -121,27 +120,5 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 由SysRoleMenuService实现，避免循环依赖
         SysMenuDto dto = new SysMenuDto();
         return tree(dto);
-    }
-
-    /**
-     * 构建菜单树
-     */
-    private List<SysMenuDto> buildTree(List<SysMenuDto> menuList) {
-        if (CollectionUtils.isEmpty(menuList)) {
-            return Collections.emptyList();
-        }
-
-        // 按parentId分组
-        Map<String, List<SysMenuDto>> parentIdMap = menuList.stream()
-                .filter(menu -> StringUtils.isNotBlank(menu.getParentId()))
-                .collect(Collectors.groupingBy(SysMenuDto::getParentId));
-
-        // 设置子菜单
-        menuList.forEach(menu -> menu.setChildren(parentIdMap.get(menu.getId())));
-
-        // 返回根节点（parentId为空或"0"的节点）
-        return menuList.stream()
-                .filter(menu -> StringUtils.isBlank(menu.getParentId()) || "0".equals(menu.getParentId()))
-                .collect(Collectors.toList());
     }
 }

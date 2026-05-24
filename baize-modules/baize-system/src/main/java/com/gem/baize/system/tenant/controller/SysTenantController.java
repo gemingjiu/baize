@@ -3,6 +3,7 @@ package com.gem.baize.system.tenant.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
+import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.tenant.entity.SysTenant;
@@ -25,6 +26,7 @@ public class SysTenantController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据业务ID获取租户", description = "根据业务ID查询租户信息")
+    @RequiresPermission("system:tenant:query")
     public ApiResult<SysTenantDto> getById(@PathVariable("id") String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -35,6 +37,7 @@ public class SysTenantController {
 
     @PostMapping
     @Operation(summary = "创建租户")
+    @RequiresPermission("system:tenant:add")
     public ApiResult<Integer> create(@Valid @RequestBody SysTenantDto dto) {
         sysTenantService.create(dto);
         return ApiResult.ok();
@@ -42,6 +45,7 @@ public class SysTenantController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新租户")
+    @RequiresPermission("system:tenant:edit")
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysTenantDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
@@ -54,6 +58,7 @@ public class SysTenantController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除租户")
+    @RequiresPermission("system:tenant:remove")
     public ApiResult<Void> delete(@PathVariable("id") String id) {
         sysTenantService.removeById(id);
         return ApiResult.ok();
@@ -61,6 +66,7 @@ public class SysTenantController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询租户")
+    @RequiresPermission("system:tenant:list")
     public ApiResult<Page<SysTenantDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysTenantDto dto) {
         Page<SysTenant> page = new Page<>(current, size);
 
@@ -69,6 +75,7 @@ public class SysTenantController {
 
     @GetMapping("/getByTenant")
     @Operation(summary = "根据租户编码或域名获取租户", description = "根据租户编码或域名查询租户信息")
+    @RequiresPermission("system:tenant:query")
     public ApiResult<SysTenantDto> getByTenant(@RequestParam("tenant") String tenant) {
         if (StringUtils.isBlank(tenant)) {
             throw new ParamException("租户标识不能为空");

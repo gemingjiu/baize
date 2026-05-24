@@ -9,6 +9,7 @@ public final class CustomHttpHeaders extends HttpHeaders {
     public static final String USER_ID = "X-User-Id";
     public static final String ROLE = "X-Role";
     public static final String USER_NAME = "X-User-Name";
+    public static final String DATA_SCOPE = "X-Data-Scope";
 
     private CustomHttpHeaders() {
         throw new UnsupportedOperationException("常量类禁止实例化");

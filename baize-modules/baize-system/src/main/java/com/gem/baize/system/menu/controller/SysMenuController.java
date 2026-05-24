@@ -2,6 +2,7 @@ package com.gem.baize.system.menu.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
+import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.menu.entity.SysMenu;
@@ -26,6 +27,7 @@ public class SysMenuController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取菜单", description = "根据ID查询菜单信息")
+    @RequiresPermission("system:menu:query")
     public ApiResult<SysMenuDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -35,6 +37,7 @@ public class SysMenuController {
 
     @PostMapping
     @Operation(summary = "创建菜单")
+    @RequiresPermission("system:menu:add")
     public ApiResult<Integer> create(@Valid @RequestBody SysMenuDto dto) {
         sysMenuService.create(dto);
         return ApiResult.ok();
@@ -42,6 +45,7 @@ public class SysMenuController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新菜单")
+    @RequiresPermission("system:menu:edit")
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysMenuDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
@@ -54,6 +58,7 @@ public class SysMenuController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除菜单")
+    @RequiresPermission("system:menu:remove")
     public ApiResult<Void> delete(@PathVariable String id) {
         sysMenuService.removeById(id);
         return ApiResult.ok();
@@ -61,6 +66,7 @@ public class SysMenuController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询菜单")
+    @RequiresPermission("system:menu:list")
     public ApiResult<Page<SysMenuDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysMenuDto dto) {
         Page<SysMenu> page = new Page<>(current, size);
         return ApiResult.ok(sysMenuService.page(page, dto));
@@ -68,6 +74,7 @@ public class SysMenuController {
 
     @PostMapping("/tree")
     @Operation(summary = "查询菜单树")
+    @RequiresPermission("system:menu:list")
     public ApiResult<List<SysMenuDto>> tree(@RequestBody(required = false) SysMenuDto dto) {
         if (dto == null) {
             dto = new SysMenuDto();
@@ -83,6 +90,7 @@ public class SysMenuController {
 
     @GetMapping("/treeselect")
     @Operation(summary = "获取菜单树选择框数据")
+    @RequiresPermission("system:menu:query")
     public ApiResult<List<SysMenuDto>> treeselect(@RequestParam(required = false) String tenantId) {
         SysMenuDto dto = new SysMenuDto();
         dto.setTenantId(tenantId);
@@ -91,6 +99,7 @@ public class SysMenuController {
 
     @GetMapping("/roleMenuTreeselect/{roleId}")
     @Operation(summary = "获取角色菜单树选择框数据")
+    @RequiresPermission("system:menu:query")
     public ApiResult<List<SysMenuDto>> roleMenuTreeselect(@PathVariable String roleId,
                                                           @RequestParam(required = false) String tenantId) {
         // 获取所有菜单树

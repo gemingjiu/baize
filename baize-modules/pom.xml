@@ -16,5 +16,6 @@
     <modules>
         <module>baize-system</module>
         <module>baize-example</module>
+        <module>baize-gen</module>
     </modules>
 </project>
