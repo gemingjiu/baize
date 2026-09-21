@@ -1,0 +1,1449 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Baize 管理系统 API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "用户登录",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseLoginResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "退出登录",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "刷新令牌",
+        "operationId": "refresh",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRefreshParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/userinfo": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "获取当前用户信息",
+        "operationId": "currentUser",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseCurrentUser"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/user/page": {
+      "post": {
+        "tags": ["system-user"],
+        "summary": "分页查询用户",
+        "operationId": "getUserPage",
+        "parameters": [
+          { "name": "current", "in": "query", "schema": { "type": "integer" } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePageResultSysUserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/user": {
+      "post": {
+        "tags": ["system-user"],
+        "summary": "创建用户",
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysUserDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/user/{id}": {
+      "get": {
+        "tags": ["system-user"],
+        "summary": "获取用户详情",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSysUserDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["system-user"],
+        "summary": "更新用户",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysUserDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      },
+      "delete": {
+        "tags": ["system-user"],
+        "summary": "删除用户",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/user/resetPassword": {
+      "put": {
+        "tags": ["system-user"],
+        "summary": "重置用户密码",
+        "operationId": "resetPassword",
+        "parameters": [
+          { "name": "userId", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "newPassword",
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/user/updatePassword": {
+      "put": {
+        "tags": ["system-user"],
+        "summary": "修改密码",
+        "operationId": "updatePassword",
+        "parameters": [
+          { "name": "userId", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "oldPassword",
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "newPassword",
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/user/changeStatus": {
+      "put": {
+        "tags": ["system-user"],
+        "summary": "修改用户状态",
+        "operationId": "changeUserStatus",
+        "parameters": [
+          { "name": "userId", "in": "query", "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/role/page": {
+      "post": {
+        "tags": ["system-role"],
+        "summary": "分页查询角色",
+        "operationId": "getRolePage",
+        "parameters": [
+          { "name": "current", "in": "query", "schema": { "type": "integer" } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePageResultSysRoleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/role": {
+      "post": {
+        "tags": ["system-role"],
+        "summary": "创建角色",
+        "operationId": "createRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysRoleDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/role/{id}": {
+      "get": {
+        "tags": ["system-role"],
+        "summary": "获取角色详情",
+        "operationId": "getRoleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSysRoleDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["system-role"],
+        "summary": "更新角色",
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysRoleDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      },
+      "delete": {
+        "tags": ["system-role"],
+        "summary": "删除角色",
+        "operationId": "deleteRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/role/{roleId}/users": {
+      "get": {
+        "tags": ["system-role"],
+        "summary": "获取角色的用户ID列表",
+        "operationId": "getRoleUsers",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/role/{roleId}/authUser": {
+      "post": {
+        "tags": ["system-role"],
+        "summary": "为角色分配用户",
+        "operationId": "assignUsersToRole",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/menu/tree": {
+      "post": {
+        "tags": ["system-menu"],
+        "summary": "获取菜单树",
+        "operationId": "getMenuTree",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysMenuDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSysMenuDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/menu/treeselect": {
+      "get": {
+        "tags": ["system-menu"],
+        "summary": "获取菜单选择树",
+        "operationId": "getMenuTreeSelect",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSysMenuDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/menu/roleMenuTreeselect/{roleId}": {
+      "get": {
+        "tags": ["system-menu"],
+        "summary": "获取角色菜单树",
+        "operationId": "getRoleMenuTreeSelect",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSysMenuDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/menu": {
+      "post": {
+        "tags": ["system-menu"],
+        "summary": "创建菜单",
+        "operationId": "createMenu",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysMenuDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/menu/{id}": {
+      "get": {
+        "tags": ["system-menu"],
+        "summary": "获取菜单详情",
+        "operationId": "getMenuById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSysMenuDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["system-menu"],
+        "summary": "更新菜单",
+        "operationId": "updateMenu",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysMenuDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      },
+      "delete": {
+        "tags": ["system-menu"],
+        "summary": "删除菜单",
+        "operationId": "deleteMenu",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/menu/user/tree": {
+      "get": {
+        "tags": ["system-menu"],
+        "summary": "获取用户菜单树",
+        "operationId": "getUserMenuTree",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSysMenuDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/dept/tree": {
+      "post": {
+        "tags": ["system-dept"],
+        "summary": "获取部门树",
+        "operationId": "getDeptTree",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysDeptDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSysDeptDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/dept/treeselect": {
+      "get": {
+        "tags": ["system-dept"],
+        "summary": "获取部门选择树",
+        "operationId": "getDeptTreeSelect",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSysDeptDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/dept/list": {
+      "get": {
+        "tags": ["system-dept"],
+        "summary": "获取部门列表",
+        "operationId": "getDeptList",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListSysDeptDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/dept": {
+      "post": {
+        "tags": ["system-dept"],
+        "summary": "创建部门",
+        "operationId": "createDept",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysDeptDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/dept/{id}": {
+      "get": {
+        "tags": ["system-dept"],
+        "summary": "获取部门详情",
+        "operationId": "getDeptById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSysDeptDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["system-dept"],
+        "summary": "更新部门",
+        "operationId": "updateDept",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysDeptDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      },
+      "delete": {
+        "tags": ["system-dept"],
+        "summary": "删除部门",
+        "operationId": "deleteDept",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/tenant/page": {
+      "post": {
+        "tags": ["system-tenant"],
+        "summary": "分页查询租户",
+        "operationId": "getTenantPage",
+        "parameters": [
+          { "name": "current", "in": "query", "schema": { "type": "integer" } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePageResultSysTenantDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/tenant/getByTenant": {
+      "get": {
+        "tags": ["system-tenant"],
+        "summary": "根据租户编码或域名获取租户",
+        "operationId": "getByTenantCodeOrDomain",
+        "parameters": [
+          { "name": "tenant", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSysTenantDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/tenant": {
+      "post": {
+        "tags": ["system-tenant"],
+        "summary": "创建租户",
+        "operationId": "createTenant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysTenantDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/tenant/{id}": {
+      "get": {
+        "tags": ["system-tenant"],
+        "summary": "获取租户详情",
+        "operationId": "getTenantById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSysTenantDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["system-tenant"],
+        "summary": "更新租户",
+        "operationId": "updateTenant",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysTenantDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      },
+      "delete": {
+        "tags": ["system-tenant"],
+        "summary": "删除租户",
+        "operationId": "deleteTenant",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/post/page": {
+      "post": {
+        "tags": ["system-post"],
+        "summary": "分页查询岗位",
+        "operationId": "getPostPage",
+        "parameters": [
+          { "name": "current", "in": "query", "schema": { "type": "integer" } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePageResultSysPostDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/post": {
+      "post": {
+        "tags": ["system-post"],
+        "summary": "创建岗位",
+        "operationId": "createPost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysPostDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/post/{id}": {
+      "put": {
+        "tags": ["system-post"],
+        "summary": "更新岗位",
+        "operationId": "updatePost",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysPostDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      },
+      "delete": {
+        "tags": ["system-post"],
+        "summary": "删除岗位",
+        "operationId": "deletePost",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/operlog/page": {
+      "post": {
+        "tags": ["system-operlog"],
+        "summary": "分页查询操作日志",
+        "operationId": "getOperLogPage",
+        "parameters": [
+          { "name": "current", "in": "query", "schema": { "type": "integer" } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePageResultSysOperLogDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/operlog/clean": {
+      "delete": {
+        "tags": ["system-operlog"],
+        "summary": "清空操作日志",
+        "operationId": "cleanOperLog",
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/perm/page": {
+      "post": {
+        "tags": ["system-perm"],
+        "summary": "分页查询权限",
+        "operationId": "getPermPage",
+        "parameters": [
+          { "name": "current", "in": "query", "schema": { "type": "integer" } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePageResultSysPermDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/system/perm": {
+      "post": {
+        "tags": ["system-perm"],
+        "summary": "创建权限",
+        "operationId": "createPerm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysPermDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/api/v1/system/perm/{id}": {
+      "put": {
+        "tags": ["system-perm"],
+        "summary": "更新权限",
+        "operationId": "updatePerm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SysPermDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Success" } }
+      },
+      "delete": {
+        "tags": ["system-perm"],
+        "summary": "删除权限",
+        "operationId": "deletePerm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer" },
+          "message": { "type": "string" },
+          "data": { "type": "object" }
+        }
+      },
+      "ApiResponseCurrentUser": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/CurrentUser" }
+            }
+          }
+        ]
+      },
+      "ApiResponseLoginResult": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/LoginResult" }
+            }
+          }
+        ]
+      },
+      "ApiResponseSysUserDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/SysUserDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponsePageResultSysUserDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/PageResultSysUserDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponseSysRoleDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/SysRoleDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponsePageResultSysRoleDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/PageResultSysRoleDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponseListString": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        ]
+      },
+      "ApiResponseListSysMenuDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysMenuDto" }
+              }
+            }
+          }
+        ]
+      },
+      "ApiResponseSysMenuDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/SysMenuDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponseListSysDeptDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysDeptDto" }
+              }
+            }
+          }
+        ]
+      },
+      "ApiResponseSysDeptDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/SysDeptDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponseSysTenantDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/SysTenantDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponsePageResultSysTenantDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/PageResultSysTenantDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponsePageResultSysPostDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/PageResultSysPostDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponsePageResultSysOperLogDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/PageResultSysOperLogDto" }
+            }
+          }
+        ]
+      },
+      "ApiResponsePageResultSysPermDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ApiResponse" },
+          {
+            "properties": {
+              "data": { "$ref": "#/components/schemas/PageResultSysPermDto" }
+            }
+          }
+        ]
+      },
+      "LoginParams": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "tenant": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "captcha": { "type": "string" },
+          "deviceType": { "type": "string" }
+        }
+      },
+      "TokenRefreshParams": {
+        "type": "object",
+        "properties": {
+          "refreshToken": { "type": "string" },
+          "userId": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "username": { "type": "string" }
+        }
+      },
+      "LoginResult": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string" },
+          "expiresIn": { "type": "integer" },
+          "user": { "$ref": "#/components/schemas/CurrentUser" }
+        }
+      },
+      "CurrentUser": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "nickname": { "type": "string" },
+          "avatar": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "status": { "type": "string" },
+          "access": { "type": "string" }
+        }
+      },
+      "PageResult": {
+        "type": "object",
+        "properties": {
+          "records": { "type": "array", "items": { "type": "object" } },
+          "total": { "type": "integer" },
+          "size": { "type": "integer" },
+          "current": { "type": "integer" },
+          "pages": { "type": "integer" }
+        }
+      },
+      "PageResultSysUserDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/PageResult" },
+          {
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysUserDto" }
+              }
+            }
+          }
+        ]
+      },
+      "PageResultSysRoleDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/PageResult" },
+          {
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysRoleDto" }
+              }
+            }
+          }
+        ]
+      },
+      "PageResultSysTenantDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/PageResult" },
+          {
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysTenantDto" }
+              }
+            }
+          }
+        ]
+      },
+      "PageResultSysPostDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/PageResult" },
+          {
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysPostDto" }
+              }
+            }
+          }
+        ]
+      },
+      "PageResultSysOperLogDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/PageResult" },
+          {
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysOperLogDto" }
+              }
+            }
+          }
+        ]
+      },
+      "PageResultSysPermDto": {
+        "allOf": [
+          { "$ref": "#/components/schemas/PageResult" },
+          {
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/SysPermDto" }
+              }
+            }
+          }
+        ]
+      },
+      "SysUserDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "deptId": { "type": "string" },
+          "userName": { "type": "string" },
+          "nickName": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "avatar": { "type": "string" },
+          "gender": { "type": "string" },
+          "status": { "type": "string" },
+          "createTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SysRoleDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "roleName": { "type": "string" },
+          "roleKey": { "type": "string" },
+          "roleSort": { "type": "integer" },
+          "dataScope": { "type": "string" },
+          "status": { "type": "string" },
+          "remark": { "type": "string" },
+          "createTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SysMenuDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "menuName": { "type": "string" },
+          "parentId": { "type": "string" },
+          "orderNum": { "type": "integer" },
+          "path": { "type": "string" },
+          "component": { "type": "string" },
+          "query": { "type": "string" },
+          "isFrame": { "type": "integer" },
+          "isCache": { "type": "integer" },
+          "menuType": { "type": "string" },
+          "visible": { "type": "string" },
+          "status": { "type": "string" },
+          "perms": { "type": "string" },
+          "icon": { "type": "string" },
+          "remark": { "type": "string" },
+          "children": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SysMenuDto" }
+          },
+          "createTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SysDeptDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "parentId": { "type": "string" },
+          "deptName": { "type": "string" },
+          "orderNum": { "type": "integer" },
+          "leader": { "type": "string" },
+          "phone": { "type": "string" },
+          "email": { "type": "string" },
+          "status": { "type": "string" },
+          "children": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SysDeptDto" }
+          },
+          "createTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SysTenantDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "tenantName": { "type": "string" },
+          "tenantCode": { "type": "string" },
+          "domain": { "type": "string" },
+          "expireTime": { "type": "string", "format": "date-time" },
+          "userCount": { "type": "integer" },
+          "status": { "type": "string" },
+          "remark": { "type": "string" },
+          "createTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SysPostDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "postCode": { "type": "string" },
+          "postName": { "type": "string" },
+          "postSort": { "type": "integer" },
+          "status": { "type": "string" },
+          "remark": { "type": "string" },
+          "createTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SysOperLogDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "businessType": { "type": "string" },
+          "method": { "type": "string" },
+          "requestMethod": { "type": "string" },
+          "operatorType": { "type": "string" },
+          "operName": { "type": "string" },
+          "deptName": { "type": "string" },
+          "operUrl": { "type": "string" },
+          "operIp": { "type": "string" },
+          "operLocation": { "type": "string" },
+          "operParam": { "type": "string" },
+          "jsonResult": { "type": "string" },
+          "status": { "type": "string" },
+          "errorMsg": { "type": "string" },
+          "operTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SysPermDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "permName": { "type": "string" },
+          "permCode": { "type": "string" },
+          "permType": { "type": "string" },
+          "status": { "type": "string" },
+          "remark": { "type": "string" },
+          "createTime": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

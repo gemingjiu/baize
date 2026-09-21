@@ -1,0 +1,19 @@
+1. Services NodePort Access:
+{{- if .Values.postgresql.enabled }}
+  - PostgreSQL: <NODE_IP>:{{ .Values.postgresql.service.nodePort }}
+{{- end }}
+{{- if .Values.nacos.enabled }}
+  - Nacos Console: <NODE_IP>:{{ (index .Values.nacos.service.ports 0).nodePort }}
+{{- end }}
+{{- if .Values.redis.enabled }}
+  - Redis: <NODE_IP>:{{ .Values.redis.service.nodePort }}
+{{- end }}
+
+2. Get Node IP:
+  kubectl get nodes -o wide
+
+3. Check deployment status:
+  kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }}"
+
+4. View logs:
+  kubectl logs --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }}" -f

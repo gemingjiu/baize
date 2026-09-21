@@ -1,0 +1,55 @@
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nacos.fullname" . }}-config
+  labels:
+    {{- include "nacos.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nacos
+data:
+  application.properties: |
+    #*************** Spring Boot Related Configurations ***************#
+    server.servlet.contextPath=/nacos
+    server.error.include-message=ALWAYS
+    server.port=8848
+
+    #*************** Config Module Related Configurations ***************#
+    spring.datasource.platform=postgresql
+    db.num=1
+    db.url.0=jdbc:postgresql://{{ .Values.datasource.host }}:{{ .Values.datasource.port }}/{{ .Values.datasource.database }}?tcpKeepAlive=true&reWriteBatchedInserts=true&ApplicationName=nacos_java
+    db.user={{ .Values.datasource.username }}
+    db.password={{ .Values.datasource.password }}
+    db.pool.config.driverClassName=org.postgresql.Driver
+
+    ### Connection pool configuration: hikariCP
+    db.pool.config.connectionTimeout=30000
+    db.pool.config.validationTimeout=10000
+    db.pool.config.maximumPoolSize=20
+    db.pool.config.minimumIdle=2
+
+    #*************** Access Log Related Configurations ***************#
+    server.tomcat.accesslog.enabled=true
+    server.tomcat.accesslog.pattern=%h %l %u %t "%r" %s %b %D %{User-Agent}i %{Request-Source}i
+    server.tomcat.basedir=file:.
+
+    #*************** Access Control Related Configurations ***************#
+    nacos.security.ignore.urls=/,/error,/**/*.css,/**/*.js,/**/*.html,/**/*.map,/**/*.svg,/**/*.png,/**/*.ico,/console-ui/public/**,/v1/auth/**,/v1/console/health/**,/actuator/**,/v1/console/server/**
+    nacos.core.auth.system.type=nacos
+    nacos.core.auth.enabled=true
+    nacos.core.auth.caching.enabled=true
+    nacos.core.auth.enable.userAgentAuthWhite=false
+    nacos.core.auth.server.identity.key=test
+    nacos.core.auth.server.identity.value=test
+    nacos.core.auth.plugin.nacos.token.cache.enable=false
+    nacos.core.auth.plugin.nacos.token.expire.seconds=18000
+    nacos.core.auth.plugin.nacos.token.secret.key=SecretKey012345678901234567890123456789012345678901234567890123456789
+
+    #*************** Istio Related Configurations ***************#
+    nacos.istio.mcp.server.enabled=false
+    nacos.config.password=nacos
+    nacos.config.username=nacos
+
+    #*************** Metrics Related Configurations ***************#
+    management.metrics.export.elastic.enabled=false
+    management.metrics.export.influx.enabled=false
+{{- end }}

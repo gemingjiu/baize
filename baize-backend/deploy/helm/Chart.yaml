@@ -1,0 +1,23 @@
+apiVersion: v2
+name: baize
+description: A Helm chart for deploying Baize application stack
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - baize
+  - microservices
+  - java
+maintainers:
+  - name: Baize Team
+    email: team@baize.com
+dependencies:
+  - name: postgresql
+    version: "0.1.0"
+    condition: postgresql.enabled
+  - name: nacos
+    version: "0.1.0"
+    condition: nacos.enabled
+  - name: redis
+    version: "0.1.0"
+    condition: redis.enabled

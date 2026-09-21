@@ -1,0 +1,32 @@
+enabled: true
+image:
+  repository: nacos/nacos-server
+  tag: v2.2.3
+mode: standalone
+preferHostMode: hostname
+serverPort: 8848
+datasource:
+  host: 192.168.5.4
+  port: 5432
+  database: nacos_config
+  username: postgres
+  password: "baize@2023"
+service:
+  ports:
+    - name: http
+      port: 8848
+      targetPort: 8848
+      nodePort: 30848
+    - name: client-rpc
+      port: 9848
+      targetPort: 9848
+      nodePort: 30849
+persistence:
+  enabled: false
+  storageClass: ""
+  logs:
+    size: 1Gi
+  data:
+    size: 2Gi
+  plugins:
+    size: 1Gi

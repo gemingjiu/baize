@@ -1,0 +1,52 @@
+{{- if and .Values.enabled .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "nacos.fullname" . }}-logs
+  labels:
+    {{- include "nacos.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nacos
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.logs.size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "nacos.fullname" . }}-data
+  labels:
+    {{- include "nacos.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nacos
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.data.size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "nacos.fullname" . }}-plugins
+  labels:
+    {{- include "nacos.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nacos
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.plugins.size }}
+{{- end }}

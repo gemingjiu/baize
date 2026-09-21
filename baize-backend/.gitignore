@@ -1,0 +1,10 @@
+# dir
+.idea
+target
+logs
+log
+.back_baize
+.baize
+
+# file
+/deploy/helm/charts/nacos/nacos-postgresql-datasource-plugin-1.0.0.jar

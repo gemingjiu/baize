@@ -1,0 +1,90 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nacos.fullname" . }}
+  labels:
+    {{- include "nacos.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nacos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "nacos.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: nacos
+  template:
+    metadata:
+      labels:
+        {{- include "nacos.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: nacos
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: nacos
+          image: "{{ .Values.global.imageRegistry | default .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MODE
+              value: {{ .Values.mode | quote }}
+            - name: PREFER_HOST_MODE
+              value: {{ .Values.preferHostMode | quote }}
+            - name: NACOS_SERVER_PORT
+              value: {{ .Values.serverPort | quote }}
+          ports:
+            - name: http
+              containerPort: 8848
+              protocol: TCP
+            - name: client-rpc
+              containerPort: 9848
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /nacos/v1/console/health/readiness
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /nacos/v1/console/health/readiness
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          volumeMounts:
+            - name: config
+              mountPath: /home/nacos/conf
+              subPath: application.properties
+            - name: logs
+              mountPath: /home/nacos/logs
+            - name: data
+              mountPath: /home/nacos/data
+            - name: plugins
+              mountPath: /home/nacos/plugins
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "nacos.fullname" . }}-config
+        - name: logs
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "nacos.fullname" . }}-logs
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "nacos.fullname" . }}-data
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: plugins
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "nacos.fullname" . }}-plugins
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+{{- end }}

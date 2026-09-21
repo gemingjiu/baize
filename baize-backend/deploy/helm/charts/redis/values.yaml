@@ -1,0 +1,11 @@
+enabled: true
+image:
+  repository: redis
+  tag: latest
+service:
+  port: 6379
+  nodePort: 30379
+persistence:
+  enabled: false
+  storageClass: ""
+  size: 2Gi
