@@ -11,11 +11,6 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_menu")
 public class SysMenu extends BaseEntity {
     /**
-     * 租户ID
-     */
-    @TableField(value = "tenant_id")
-    private String tenantId;
-    /**
      * 父菜单ID
      */
     @TableField(value = "parent_id")

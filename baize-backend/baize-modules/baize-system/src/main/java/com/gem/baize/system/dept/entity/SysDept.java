@@ -11,11 +11,6 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_dept")
 public class SysDept extends BaseEntity {
     /**
-     * 租户ID
-     */
-    @TableField(value = "tenant_id")
-    private String tenantId;
-    /**
      * 父部门id
      */
     @TableField(value = "parent_id")

@@ -3,6 +3,7 @@ package com.gem.baize.system.dept.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
@@ -55,7 +56,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(cacheNames = "sys_dept", key = "#sysDeptDto.id")
+    @CacheEvict(cacheNames = "sys_dept", key = "#sysDeptDto.id")
     public void updateById(SysDeptDto sysDeptDto) {
         SysDept sysDept = sysDeptConvert.toEntity(sysDeptDto);
         boolean success = super.updateById(sysDept);
@@ -75,7 +76,14 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
         if (childCount > 0) {
             throw new DuplicateException("存在子部门，无法删除");
         }
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysDept> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(SysDept::getId, id);
+        updateWrapper.eq(SysDept::getDeleted, "0");
+        updateWrapper.set(SysDept::getDeleted, "1");
+        updateWrapper.set(SysDept::getStatus, "1");
+        boolean success = this.update(updateWrapper);
         if (!success) {
             throw new NotFoundException("部门不存在或已删除");
         }
@@ -107,7 +115,8 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     }
 
     @Override
-    @Cacheable(cacheNames = "sys_dept", key = "'tree_' + #sysDeptDto.tenantId")
+    // tenantId 为空时兜底 '0'，避免出现 tree_null 这类无意义 key（与菜单树一致）
+    @Cacheable(cacheNames = "sys_dept", key = "'tree_' + (#sysDeptDto.tenantId ?: '0')")
     public List<SysDeptDto> tree(SysDeptDto sysDeptDto) {
         // 构建查询条件
         LambdaQueryWrapper<SysDept> wrapper = new LambdaQueryWrapper<>();

@@ -2,16 +2,17 @@ package com.gem.baize.system.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.gem.baize.common.database.entity.BaseRelationEntity;
 import lombok.Data;
-
-import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 
 /**
  * 用户角色关联
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_user_role")
-public class SysUserRole implements Serializable {
+public class SysUserRole extends BaseRelationEntity {
 
     /**
      * 用户ID

@@ -80,8 +80,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
     /**
      * 根据用户ID获取菜单树
      */
-    public List<SysMenuDto> getMenuTreeByUserId(String userId) {
-        // 根据用户ID查询角色
+    public List<SysMenuDto> getMenuTreeByUserId(String userId) {        // 根据用户ID查询角色
         List<String> roleIds = sysUserRoleService.getRoleIdsByUserId(userId);
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
@@ -91,12 +90,46 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
     }
 
     @Override
+    public List<String> getPermCodesByUserId(String userId) {
+        if (StringUtils.isBlank(userId)) {
+            return Collections.emptyList();
+        }
+        // 用户 → 角色
+        List<String> roleIds = sysUserRoleService.getRoleIdsByUserId(userId);
+        if (CollectionUtils.isEmpty(roleIds)) {
+            return Collections.emptyList();
+        }
+        // 角色 → 菜单
+        LambdaQueryWrapper<SysRoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(SysRoleMenu::getRoleId, roleIds);
+        List<String> menuIds = sysRoleMenuMapper.selectList(wrapper).stream()
+                .map(SysRoleMenu::getMenuId)
+                .distinct()
+                .collect(Collectors.toList());
+        if (menuIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        // 菜单 → 权限码
+        LambdaQueryWrapper<SysMenu> menuWrapper = new LambdaQueryWrapper<>();
+        menuWrapper.select(SysMenu::getPerms);
+        menuWrapper.in(SysMenu::getId, menuIds);
+        menuWrapper.isNotNull(SysMenu::getPerms);
+        menuWrapper.ne(SysMenu::getPerms, "");
+        return sysMenuMapper.selectList(menuWrapper).stream()
+                .map(SysMenu::getPerms)
+                .filter(StringUtils::isNotBlank)
+                .map(String::trim)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void assignMenus(String roleId, List<String> menuIds, String tenantId) {
         // 先删除角色现有菜单
         removeByRoleId(roleId);
 
-        // 批量添加新菜单
+        // 批量添加新菜单（tenant_id 由 BaseEntityObjectHandler 自动填充，无需手工赋值）
         if (menuIds != null && !menuIds.isEmpty()) {
             for (String menuId : menuIds) {
                 SysRoleMenu roleMenu = new SysRoleMenu();

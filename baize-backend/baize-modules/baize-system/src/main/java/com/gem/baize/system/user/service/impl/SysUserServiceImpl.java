@@ -2,6 +2,7 @@ package com.gem.baize.system.user.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
@@ -59,7 +60,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(cacheNames = "sys_user", key = "#sysUserDto.id")
+    @CacheEvict(cacheNames = "sys_user", key = "#sysUserDto.id")
     public void updateById(SysUserDto sysUserDto) {
         SysUser sysUser = sysUserConvert.toEntity(sysUserDto);
         boolean success = super.updateById(sysUser);
@@ -72,7 +73,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_user", key = "#id")
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysUser> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysUser::getId, id);
+        wrapper.eq(SysUser::getDeleted, "0");
+        wrapper.set(SysUser::getDeleted, "1");
+        wrapper.set(SysUser::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("用户不存在或已删除");
         }
@@ -103,7 +111,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    @Cacheable(cacheNames = "sys_user", key = "#username")
+    // 这里故意不加 @Cacheable：SysUserDto.password 带 @JsonProperty(access = WRITE_ONLY)，
+    // 经 Jackson 序列化进 Redis 后密码字段会丢失；一旦命中缓存，AuthServiceImpl.login
+    // 拿到的 DTO 密码为空，会误报「用户名或密码错误」。登录/刷新属低频操作，直接查库更安全。
     public SysUserDto getByUsername(String username) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUser::getUserName, username);
@@ -115,7 +125,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    @Cacheable(cacheNames = "sys_user", key = "#username + '_' + #tenantId")
+    // 同上：不加 @Cacheable，避免缓存里的 DTO 丢掉密码导致刷新令牌时误判。
     public SysUserDto getByUsernameAndTenantId(String username, String tenantId) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUser::getUserName, username);
@@ -125,6 +135,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new NotFoundException("用户名或密码错误");
         }
         return sysUserConvert.toDto(sysUser);
+    }
+
+    @Override
+    public String getPasswordByUsername(String username) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysUser::getUserName, username);
+        SysUser sysUser = super.getOne(wrapper);
+        // 用户不存在时返回 null，由认证服务统一抛出「用户名或密码错误」，避免暴露用户是否存在
+        return sysUser == null ? null : sysUser.getPassword();
     }
 
     @Override

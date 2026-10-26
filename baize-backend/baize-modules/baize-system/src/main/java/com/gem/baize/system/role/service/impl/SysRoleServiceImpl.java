@@ -3,6 +3,7 @@ package com.gem.baize.system.role.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.role.domain.dto.SysRoleDto;
@@ -46,7 +47,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(cacheNames = "sys_role", key = "#sysRoleDto.id")
+    @CacheEvict(cacheNames = "sys_role", allEntries = true)
     public void create(SysRoleDto sysRoleDto) {
         SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
         try {
@@ -58,7 +59,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Override
     @Transactional
-    @CachePut(cacheNames = "sys_role", key = "#sysRoleDto.id")
+    @CacheEvict(cacheNames = "sys_role", key = "#sysRoleDto.id")
     public void updateById(SysRoleDto sysRoleDto) {
 
         SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
@@ -76,7 +77,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_role", key = "#id")
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysRole> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysRole::getId, id);
+        wrapper.eq(SysRole::getDeleted, "0");
+        wrapper.set(SysRole::getDeleted, "1");
+        wrapper.set(SysRole::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("角色不存在或已删除");
         }

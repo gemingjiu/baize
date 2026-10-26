@@ -5,6 +5,8 @@ import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import com.gem.baize.system.menu.entity.SysMenu;
 import com.gem.baize.system.menu.service.SysMenuService;
 import com.gem.baize.system.menu.service.SysRoleMenuService;
@@ -67,9 +69,10 @@ public class SysMenuController {
     @PostMapping("/page")
     @Operation(summary = "分页查询菜单")
     @RequiresPermission("system:menu:list")
-    public ApiResult<Page<SysMenuDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysMenuDto dto) {
+    public ApiResult<PageResult<SysMenuDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysMenuDto dto) {
         Page<SysMenu> page = new Page<>(current, size);
-        return ApiResult.ok(sysMenuService.page(page, dto));
+        PageConvert<SysMenuDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysMenuService.page(page, dto)));
     }
 
     @PostMapping("/tree")

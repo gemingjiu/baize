@@ -3,6 +3,7 @@ package com.gem.baize.system.menu.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
@@ -14,7 +15,6 @@ import com.gem.baize.system.menu.mapper.SysMenuMapper;
 import com.gem.baize.system.menu.service.SysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -42,6 +42,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = "sys_menu", allEntries = true)
     public void create(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
         try {
@@ -53,7 +54,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(cacheNames = "sys_menu", key = "#sysMenuDto.id")
+    // updateById 返回 void，@CachePut 会把 null 写进缓存，导致随后 @Cacheable 的 getById 命中缓存返回 null；
+    // 改为 @CacheEvict：更新后清掉旧缓存，下次读取直接查库。
+    @CacheEvict(cacheNames = "sys_menu", allEntries = true)
     public void updateById(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
         boolean success = super.updateById(sysMenu);
@@ -64,9 +67,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = "sys_menu", key = "#id")
+    @CacheEvict(cacheNames = "sys_menu", allEntries = true)
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'，保留行供审计/外键引用。
+        // 不调用 super.removeById：MyBatis-Plus 的全局 logic-delete 配置对本项目无效——
+        // 因为这里的实体由 DTO 转换而来，且 Service 层的泛型擦除让 MP 的 LogicDeleteField
+        // 解析拿不到 deleted 字段，实际会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysMenu> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysMenu::getId, id);
+        wrapper.eq(SysMenu::getDeleted, "0");
+        wrapper.set(SysMenu::getDeleted, "1");
+        wrapper.set(SysMenu::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("菜单不存在或已删除");
         }
@@ -96,7 +108,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    @Cacheable(cacheNames = "sys_menu", key = "'tree_' + #sysMenuDto.tenantId")
+    // key 里 tenantId 为空时兜底 '0'（与 BaseEntityObjectHandler 租户兜底一致），避免出现 tree_null 这类无意义 key
+    @Cacheable(cacheNames = "sys_menu", key = "'tree_' + (#sysMenuDto.tenantId ?: '0')")
     public List<SysMenuDto> tree(SysMenuDto sysMenuDto) {
         // 构建查询条件
         LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();

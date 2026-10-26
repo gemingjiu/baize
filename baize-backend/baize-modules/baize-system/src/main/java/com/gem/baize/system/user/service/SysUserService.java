@@ -28,6 +28,11 @@ public interface SysUserService extends IService<SysUser> {
     SysUserDto getByUsernameAndTenantId(String username, String tenantId);
 
     /**
+     * 查询用户密码哈希（仅供认证服务校验口令）
+     */
+    String getPasswordByUsername(String username);
+
+    /**
      * 更新用户最后登录时间
      */
     void updateLastLoginTime(String userId, String loginIp);

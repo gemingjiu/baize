@@ -4,6 +4,8 @@ import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import com.gem.baize.system.dept.entity.SysDept;
 import com.gem.baize.system.dept.service.SysDeptService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -64,9 +66,10 @@ public class SysDeptController {
     @PostMapping("/page")
     @Operation(summary = "分页查询部门")
     @RequiresPermission("system:dept:list")
-    public ApiResult<Page<SysDeptDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysDeptDto dto) {
+    public ApiResult<PageResult<SysDeptDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysDeptDto dto) {
         Page<SysDept> page = new Page<>(current, size);
-        return ApiResult.ok(sysDeptService.page(page, dto));
+        PageConvert<SysDeptDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysDeptService.page(page, dto)));
     }
 
     @PostMapping("/tree")

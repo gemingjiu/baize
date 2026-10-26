@@ -11,11 +11,6 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_role")
 public class SysRole extends BaseEntity {
     /**
-     * 租户ID
-     */
-    @TableField(value = "tenant_id")
-    private String tenantId;
-    /**
      * 角色名称
      */
     @TableField(value = "role_name")

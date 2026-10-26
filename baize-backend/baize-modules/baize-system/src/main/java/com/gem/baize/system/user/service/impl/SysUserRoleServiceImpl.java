@@ -45,7 +45,7 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
         // 先删除用户现有角色
         removeByUserId(userId);
 
-        // 批量添加新角色
+        // 批量添加新角色（tenant_id 由 BaseEntityObjectHandler 自动填充，无需手工赋值）
         if (roleIds != null && !roleIds.isEmpty()) {
             for (String roleId : roleIds) {
                 SysUserRole userRole = new SysUserRole();
@@ -76,7 +76,7 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
         // 删除角色现有用户关联
         removeByRoleId(roleId);
 
-        // 批量插入新关联
+        // 批量插入新关联（tenant_id 由 BaseEntityObjectHandler 自动填充，无需手工赋值）
         if (userIds != null && !userIds.isEmpty()) {
             List<SysUserRole> userRoleList = new ArrayList<>(userIds.size());
             for (String userId : userIds) {

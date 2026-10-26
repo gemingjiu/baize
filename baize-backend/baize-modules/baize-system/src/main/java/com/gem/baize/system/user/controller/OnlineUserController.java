@@ -1,5 +1,6 @@
 package com.gem.baize.system.user.controller;
 
+import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.core.service.OnlineUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,18 +18,21 @@ public class OnlineUserController {
 
     @GetMapping("/count")
     @Operation(summary = "获取在线用户数量")
+    @RequiresPermission("monitor:online:query")
     public ApiResult<Long> getOnlineCount(@RequestParam(value = "tenantId", required = false) String tenantId) {
         return ApiResult.ok(onlineUserService.getOnlineCount(tenantId));
     }
 
     @GetMapping("/list")
     @Operation(summary = "获取在线用户列表")
+    @RequiresPermission("monitor:online:query")
     public ApiResult<List<String>> getOnlineUsers(@RequestParam(value = "tenantId", required = false) String tenantId) {
         return ApiResult.ok(onlineUserService.getOnlineUsers(tenantId));
     }
 
     @GetMapping("/isOnline")
     @Operation(summary = "检查用户是否在线")
+    @RequiresPermission("monitor:online:query")
     public ApiResult<Boolean> isOnline(@RequestParam("userId") String userId,
                                        @RequestParam(value = "tenantId", required = false) String tenantId) {
         return ApiResult.ok(onlineUserService.isOnline(userId, tenantId));
@@ -36,6 +40,7 @@ public class OnlineUserController {
 
     @PostMapping("/kickout")
     @Operation(summary = "强制用户下线")
+    @RequiresPermission("monitor:online:forceLogout")
     public ApiResult<Void> kickout(@RequestParam("userId") String userId,
                                    @RequestParam(value = "tenantId", required = false) String tenantId) {
         onlineUserService.kickout(userId, tenantId);

@@ -16,11 +16,6 @@ import java.time.LocalDateTime;
 @TableName("sys_user")
 public class SysUser extends BaseEntity {
     /**
-     * 租户ID
-     */
-    @TableField(value = "tenant_id")
-    private String tenantId;
-    /**
      * 部门ID
      */
     @TableField(value = "dept_id")
