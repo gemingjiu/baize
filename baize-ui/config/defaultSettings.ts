@@ -1,28 +1,17 @@
-import type { ProLayoutProps } from '@ant-design/pro-components';
+import { layoutSettings } from './theme';
 
 /**
- * @name
+ * 全局布局/主题默认值。
+ *
+ * 配色与导航骨架定义在 `config/theme.ts`（极简灰白：白底侧栏 + 无阴影 + 浅分隔线），
+ * 本文件只负责把「标题、Logo、PWA」这类与皮肤无关的固定项拼上去。
  */
-const Settings: ProLayoutProps & {
-  pwa?: boolean;
-  logo?: string;
-} = {
-  navTheme: 'light',
-  // 拂晓蓝
-  colorPrimary: '#1890ff',
-  layout: 'mix',
-  contentWidth: 'Fluid',
-  fixedHeader: false,
-  fixSiderbar: true,
-  colorWeak: false,
+const Settings = {
+  ...layoutSettings,
   title: '白泽微服务框架',
   pwa: true,
   logo: '/logo.svg',
   iconfontUrl: '',
-  token: {
-    // 参见ts声明，demo 见文档，通过token 修改样式
-    //https://procomponents.ant.design/components/layout#%E9%80%9A%E8%BF%87-token-%E4%BF%AE%E6%94%B9%E6%A0%B7%E5%BC%8F
-  },
 };
 
 export default Settings;

@@ -1,10 +1,13 @@
-﻿import type { RequestOptions } from '@@/plugin-request/request';
+import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import { message } from 'antd';
+import { clearAuth, getToken } from '@/utils/auth';
 
 interface ResponseStructure {
-  success: boolean;
+  success?: boolean;
+  /** 后端统一响应码，200 表示成功 */
+  code?: number;
   errorCode: number;
   errorMessage: string;
   data: any;
@@ -15,24 +18,23 @@ interface ResponseStructure {
 
 const loginPath = '/system/login';
 
-const getToken = () => {
-  return localStorage.getItem('accessToken');
-};
-
-const clearAuth = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-  localStorage.removeItem('userInfo');
-  localStorage.removeItem('menuTree');
-  localStorage.removeItem('permissions');
+/** 兼容两种成功标记：success === true 或 code === 200（部分接口只回 code） */
+const isApiSuccess = (body?: ResponseStructure): boolean => {
+  if (!body || typeof body !== 'object') {
+    return false;
+  }
+  if (typeof body.success === 'boolean') {
+    return body.success;
+  }
+  return body.code === 200 || body.code === 0;
 };
 
 export const errorConfig: RequestConfig = {
   errorConfig: {
     errorThrower: (res) => {
-      const { success, errorCode, errorMessage, data } =
-        res as unknown as ResponseStructure;
-      if (!success) {
+      const body = res as unknown as ResponseStructure;
+      const { errorCode, errorMessage, data } = body;
+      if (!isApiSuccess(body)) {
         const error: any = new Error(errorMessage);
         error.name = 'BizError';
         error.info = { errorCode, errorMessage, data };
@@ -84,6 +86,17 @@ export const errorConfig: RequestConfig = {
 
   responseInterceptors: [
     (response) => {
+      // 统一响应体：{ code: 200, data } 与 { success: true, data } 两种形态都归一化出 success，
+      // 避免页面里 `if (res.success)` 在只回 code 的接口上被判为失败。
+      const body = response?.data as ResponseStructure | undefined;
+      if (
+        body &&
+        typeof body === 'object' &&
+        typeof body.success !== 'boolean' &&
+        typeof body.code === 'number'
+      ) {
+        body.success = body.code === 200 || body.code === 0;
+      }
       return response;
     },
   ],

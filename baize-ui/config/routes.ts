@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @name umi 的路由配置
  * @description 只支持 path,component,routes,redirect,wrappers,name,icon 的配置
  * @param path  path 只支持两种占位符配置，第一种是动态参数 :id 的形式，第二种是 * 通配符，通配符只能出现路由字符串的最后。
@@ -12,261 +12,16 @@
  */
 export default [
   {
-    path: '/example',
-    name: 'example',
-    icon: 'experiment',
-    routes: [
-      {
-        path: '/example/user',
-        layout: false,
-        routes: [
-          {
-            path: '/example/user/login',
-            layout: false,
-            name: 'login',
-            component: './example/user/login',
-          },
-          {
-            path: '/example/user',
-            redirect: '/example/user/login',
-          },
-          {
-            name: 'register-result',
-            icon: 'smile',
-            path: '/example/user/register-result',
-            component: './example/user/register-result',
-          },
-          {
-            name: 'register',
-            icon: 'smile',
-            path: '/example/user/register',
-            component: './example/user/register',
-          },
-          {
-            component: '404',
-            path: '/example/user/*',
-          },
-        ],
-      },
-      {
-        path: '/example/dashboard',
-        name: 'dashboard',
-        icon: 'dashboard',
-        routes: [
-          {
-            path: '/example/dashboard',
-            redirect: '/example/dashboard/analysis',
-          },
-          {
-            name: 'analysis',
-            icon: 'smile',
-            path: '/example/dashboard/analysis',
-            component: './example/dashboard/analysis',
-          },
-          {
-            name: 'monitor',
-            icon: 'smile',
-            path: '/example/dashboard/monitor',
-            component: './example/dashboard/monitor',
-          },
-          {
-            name: 'workplace',
-            icon: 'smile',
-            path: '/example/dashboard/workplace',
-            component: './example/dashboard/workplace',
-          },
-        ],
-      },
-      {
-        path: '/example/form',
-        icon: 'form',
-        name: 'form',
-        routes: [
-          {
-            path: '/example/form',
-            redirect: '/example/form/basic-form',
-          },
-          {
-            name: 'basic-form',
-            icon: 'smile',
-            path: '/example/form/basic-form',
-            component: './example/form/basic-form',
-          },
-          {
-            name: 'step-form',
-            icon: 'smile',
-            path: '/example/form/step-form',
-            component: './example/form/step-form',
-          },
-          {
-            name: 'advanced-form',
-            icon: 'smile',
-            path: '/example/form/advanced-form',
-            component: './example/form/advanced-form',
-          },
-        ],
-      },
-      {
-        path: '/example/list',
-        icon: 'table',
-        name: 'list',
-        routes: [
-          {
-            path: '/example/list/search',
-            name: 'search-list',
-            component: './example/list/search',
-            routes: [
-              {
-                path: '/example/list/search',
-                redirect: '/example/list/search/articles',
-              },
-              {
-                name: 'articles',
-                icon: 'smile',
-                path: '/example/list/search/articles',
-                component: './example/list/search/articles',
-              },
-              {
-                name: 'projects',
-                icon: 'smile',
-                path: '/example/list/search/projects',
-                component: './example/list/search/projects',
-              },
-              {
-                name: 'applications',
-                icon: 'smile',
-                path: '/example/list/search/applications',
-                component: './example/list/search/applications',
-              },
-            ],
-          },
-          {
-            path: '/example/list',
-            redirect: '/example/list/table-list',
-          },
-          {
-            name: 'table-list',
-            icon: 'smile',
-            path: '/example/list/table-list',
-            component: './example/list/table-list',
-          },
-          {
-            name: 'basic-list',
-            icon: 'smile',
-            path: '/example/list/basic-list',
-            component: './example/list/basic-list',
-          },
-          {
-            name: 'card-list',
-            icon: 'smile',
-            path: '/example/list/card-list',
-            component: './example/list/card-list',
-          },
-        ],
-      },
-      {
-        path: '/example/profile',
-        name: 'profile',
-        icon: 'profile',
-        routes: [
-          {
-            path: '/example/profile',
-            redirect: '/example/profile/basic',
-          },
-          {
-            name: 'basic',
-            icon: 'smile',
-            path: '/example/profile/basic',
-            component: './example/profile/basic',
-          },
-          {
-            name: 'advanced',
-            icon: 'smile',
-            path: '/example/profile/advanced',
-            component: './example/profile/advanced',
-          },
-        ],
-      },
-      {
-        name: 'result',
-        icon: 'CheckCircleOutlined',
-        path: '/example/result',
-        routes: [
-          {
-            path: '/example/result',
-            redirect: '/example/result/success',
-          },
-          {
-            name: 'success',
-            icon: 'smile',
-            path: '/example/result/success',
-            component: './example/result/success',
-          },
-          {
-            name: 'fail',
-            icon: 'smile',
-            path: '/example/result/fail',
-            component: './example/result/fail',
-          },
-        ],
-      },
-      {
-        name: 'exception',
-        icon: 'warning',
-        path: '/example/exception',
-        routes: [
-          {
-            path: '/example/exception',
-            redirect: '/example/exception/403',
-          },
-          {
-            name: '403',
-            icon: 'smile',
-            path: '/example/exception/403',
-            component: './example/exception/403',
-          },
-          {
-            name: '404',
-            icon: 'smile',
-            path: '/example/exception/404',
-            component: './example/exception/404',
-          },
-          {
-            name: '500',
-            icon: 'smile',
-            path: '/example/exception/500',
-            component: './example/exception/500',
-          },
-        ],
-      },
-      {
-        name: 'account',
-        icon: 'user',
-        path: '/example/account',
-        routes: [
-          {
-            path: '/example/account',
-            redirect: '/example/account/center',
-          },
-          {
-            name: 'center',
-            icon: 'smile',
-            path: '/example/account/center',
-            component: './example/account/center',
-          },
-          {
-            name: 'settings',
-            icon: 'smile',
-            path: '/example/account/settings',
-            component: './example/account/settings',
-          },
-        ],
-      },
-    ],
+    path: '/',
+    redirect: '/welcome',
   },
   {
-    path: '/',
-    redirect: '/system',
+    // 仪表盘首页。菜单项不在后端 sys_menu 里，由 src/app.tsx 的 HOME_MENU 补在导航最前面
+    path: '/welcome',
+    name: 'welcome',
+    icon: 'dashboard',
+    component: './Welcome',
+    wrappers: ['@/wrappers/authGuard'],
   },
   {
     component: '404',
@@ -292,60 +47,171 @@ export default [
         icon: 'user',
         path: '/system/user',
         component: './system/user',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'role',
         icon: 'team',
         path: '/system/role',
         component: './system/role',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'menu',
         icon: 'menu',
         path: '/system/menu',
         component: './system/menu',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'dept',
         icon: 'cluster',
         path: '/system/dept',
         component: './system/dept',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'tenant',
         icon: 'apartment',
         path: '/system/tenant',
         component: './system/tenant',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'post',
         icon: 'idcard',
         path: '/system/post',
         component: './system/post',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'dict',
         icon: 'book',
         path: '/system/dict',
         component: './system/dict',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'config',
         icon: 'setting',
         path: '/system/config',
         component: './system/config',
+        wrappers: ['@/wrappers/authGuard'],
       },
       {
         name: 'perm',
         icon: 'safety',
         path: '/system/perm',
         component: './system/perm',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      // 以下三个为历史路径，菜单已改用 /monitor/** 子树（见文件末尾 /monitor 组）。
+      // 保留为 redirect 而非删除，避免用户收藏/直接输入的旧链接变成 404。
+      // 它们不再需要 component 与 authGuard（重定向本身不渲染页面）。
+      {
+        path: '/system/operlog',
+        redirect: '/monitor/operlog',
+      },
+      {
+        path: '/system/loginlog',
+        redirect: '/monitor/logininfor',
+      },
+      {
+        name: 'job',
+        icon: 'schedule',
+        path: '/system/job',
+        component: './system/job',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      {
+        name: 'notice',
+        icon: 'notification',
+        path: '/system/notice',
+        component: './system/notice',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      // 历史路径，菜单已改用 /monitor/server，保留 redirect 避免旧链接 404
+      {
+        path: '/system/monitor',
+        redirect: '/monitor/server',
+      },
+    ],
+  },
+  {
+    path: '/monitor',
+    name: 'monitor',
+    icon: 'monitor',
+    routes: [
+      {
+        path: '/monitor',
+        redirect: '/monitor/operlog',
       },
       {
         name: 'operlog',
         icon: 'file-text',
-        path: '/system/operlog',
+        path: '/monitor/operlog',
         component: './system/operlog',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      {
+        name: 'logininfor',
+        icon: 'login',
+        path: '/monitor/logininfor',
+        component: './system/loginlog',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      {
+        name: 'online',
+        icon: 'user',
+        path: '/monitor/online',
+        component: './system/monitor/online',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      {
+        name: 'server',
+        icon: 'cloud-server',
+        path: '/monitor/server',
+        component: './system/monitor',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      {
+        name: 'cache',
+        icon: 'database',
+        path: '/monitor/cache',
+        component: './system/monitor/cache',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+    ],
+  },
+  {
+    path: '/tool',
+    name: 'tool',
+    icon: 'tool',
+    routes: [
+      {
+        path: '/tool',
+        redirect: '/tool/build',
+      },
+      {
+        name: 'build',
+        icon: 'form',
+        path: '/tool/build',
+        component: './tool/build',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      {
+        name: 'gen',
+        icon: 'code',
+        path: '/tool/gen',
+        component: './tool/gen',
+        wrappers: ['@/wrappers/authGuard'],
+      },
+      {
+        name: 'swagger',
+        icon: 'api',
+        path: '/tool/swagger',
+        component: './tool/swagger',
+        wrappers: ['@/wrappers/authGuard'],
       },
     ],
   },

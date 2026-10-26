@@ -1,53 +1,14 @@
-@font-face {
-  font-family: "AlibabaSans";
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("//mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*1GSgSYDD_aIAAAAAQsAAAAgAegCCAQ/AlibabaSans-Light.woff2")
-    format("woff2");
-}
-@font-face {
-  font-family: "AlibabaSans";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("//mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*2zEUQqnPNesAAAAAQtAAAAgAegCCAQ/AlibabaSans-Regular.woff2")
-    format("woff2");
-}
-@font-face {
-  font-family: "AlibabaSans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("//mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*E_cxRbMlZqUAAAAAQuAAAAgAegCCAQ/AlibabaSans-Medium.woff2")
-    format("woff2");
-}
-@font-face {
-  font-family: "AlibabaSans";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("//mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*E_cxRbMlZqUAAAAAQuAAAAgAegCCAQ/AlibabaSans-Bold.woff2")
-    format("woff2");
-}
-@font-face {
-  font-family: "AlibabaSans";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("//mdn.alipayobjects.com/huamei_iwk9zp/afts/file/A*E_cxRbMlZqUAAAAAQuAAAAgAegCCAQ/AlibabaSans-Heavy.woff2")
-    format("woff2");
-}
-
 html,
 body,
 #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  /* 系统字体栈：与 config/config.ts 的 antd fontFamily token 保持一致。
+     AlibabaSans 已移除（原字体文件托管在 alipay CDN，且本地无该字体时一直在走兜底）。 */
   font-family:
-    AlibabaSans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'HarmonyOS Sans SC', 'Noto Sans SC',
+    'Microsoft YaHei', sans-serif;
 }
 
 .colorWeak {
@@ -66,6 +27,8 @@ canvas {
 }
 
 body {
+  /* 与 config/theme.ts 的 palette.canvas 保持一致（画布比卡片略深一档） */
+  background: #fafafa;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

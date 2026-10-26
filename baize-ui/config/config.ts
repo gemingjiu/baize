@@ -3,6 +3,7 @@
 import { join } from 'node:path';
 import { defineConfig } from '@umijs/max';
 import defaultSettings from './defaultSettings';
+import { antdTheme } from './theme';
 import proxy from './proxy';
 import routes from './routes';
 
@@ -100,13 +101,16 @@ export default defineConfig({
   /**
    * @name 国际化插件
    * @doc https://umijs.org/docs/max/i18n
+   *
+   * 固定中文，不跟随浏览器语言：
+   * 本项目的业务数据（sys_menu.menu_name、字典、提示文案）全部是中文，
+   * 没有英文数据源。若开启 baseNavigator，英文浏览器的用户会看到
+   * "英文框架 + 中文菜单" 的混排界面，因此这里显式关闭。
    */
   locale: {
-    // default zh-CN
     default: 'zh-CN',
     antd: true,
-    // default true, when it is true, will use `navigator.language` overwrite default
-    baseNavigator: true,
+    baseNavigator: false,
   },
   /**
    * @name antd 插件
@@ -116,12 +120,8 @@ export default defineConfig({
   antd: {
     appConfig: {},
     configProvider: {
-      theme: {
-        cssVar: true,
-        token: {
-          fontFamily: 'AlibabaSans, sans-serif',
-        },
-      },
+      // 主题令牌集中在 config/theme.ts（调色板 + 组件级色板）
+      theme: antdTheme,
     },
   },
   /**
@@ -148,24 +148,24 @@ export default defineConfig({
   presets: ['umi-presets-pro'],
   /**
    * @name openAPI 插件的配置
-   * @description 基于 openapi 的规范生成serve 和mock，能减少很多样板代码
+   * @description 模板自带的 petstore / oneapi 生成物（src/services/swagger、config/oneapi.json）
+   * 已随模板清理删除，这里不再保留指向已删除文件的 schemaPath；
+   * 如需重新生成，请先恢复 schema 文件，再打开下面的配置。
    * @doc https://pro.ant.design/zh-cn/docs/openapi/
    */
-  openAPI: [
-    {
-      requestLibPath: "import { request } from '@umijs/max'",
-      // 或者使用在线的版本
-      // schemaPath: "https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json"
-      schemaPath: join(__dirname, 'oneapi.json'),
-      mock: false,
-    },
-    {
-      requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath:
-        'https://gw.alipayobjects.com/os/antfincdn/CA1dOm%2631B/openapi.json',
-      projectName: 'swagger',
-    },
-  ],
+  // openAPI: [
+  //   {
+  //     requestLibPath: "import { request } from '@umijs/max'",
+  //     schemaPath: join(__dirname, 'oneapi.json'),
+  //     mock: false,
+  //   },
+  // ],
+  /**
+   * @name mock 配置
+   * @description 模板 mock（mock/ 下 8 个文件）已删除，mock/ 目录保留为空；
+   * include 仍指向 mock/，后续往该目录新增 mock 文件即可生效。
+   * 开发时可用 MOCK=none 关闭 mock（见 package.json 的 start:no-mock 脚本）。
+   */
   mock: {
     include: ['mock/**/*', 'src/pages/**/_mock.ts'],
   },
