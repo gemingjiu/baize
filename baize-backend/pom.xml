@@ -6,6 +6,8 @@
         <groupId>com.gem</groupId>
         <artifactId>baize-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <!-- baize-parent 与本工程是同级目录，默认的 ../pom.xml 不存在，必须显式声明 -->
+        <relativePath>../baize-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>baize</artifactId>
@@ -62,6 +64,12 @@
             <dependency>
                 <groupId>com.gem</groupId>
                 <artifactId>baize-common-database</artifactId>
+                <version>${baize.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.gem</groupId>
+                <artifactId>baize-common-excel</artifactId>
                 <version>${baize.version}</version>
             </dependency>
         </dependencies>

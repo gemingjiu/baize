@@ -8,14 +8,18 @@ spring:
       port: ${baize.redis.port}
       password: ${baize.redis.password:}
   datasource:
+    # Druid 监控页开关归属 druid-spring-boot-3-starter 的 spring.datasource.druid.stat-view-servlet.enabled
+    # （见 DruidStatViewServletConfiguration 的 @ConditionalOnProperty）。
+    # dynamic-datasource 的 spring.datasource.dynamic.druid 下没有 statViewServlet 这一项，
+    # 原配置把监控页写在 dynamic 下，只会被当成未知属性丢弃，等于既没开页面、又把数据库口令明文留在配置里。
+    # 与 baize-gen-dev.yml 一致：直接关闭监控页，配置中不保留任何监控台登录凭据。
+    druid:
+      stat-view-servlet:
+        enabled: false
     dynamic:
       primary: master
       strict: true
       druid:
-        stat-view-servlet:
-          enabled: true
-          loginUsername: ${baize.datasource.addr}
-          loginPassword: ${baize.datasource.password}
         initial-size: 5
         min-idle: 5
         maxActive: 20
@@ -33,6 +37,7 @@ spring:
       datasource:
         master:
           driver-class-name: org.postgresql.Driver
+          # baize.datasource.master.schema 是数据库名（baize），currentSchema 是库内 schema（baize-system），两者不是一回事
           url: jdbc:postgresql://${baize.datasource.master.addr}/${baize.datasource.master.schema}?currentSchema=baize-system&stringtype=unspecified
           username: ${baize.datasource.master.username}
           password: ${baize.datasource.master.password}
@@ -68,3 +73,14 @@ swagger:
   title: 代码生成接口文档
   license: Powered By baize
   licenseUrl: https://baize.com
+
+# ============================================================================
+# 服务自身 context-path：把 /api/v1 前缀从网关 StripPrefix 下沉到本服务
+# 网关路由改为 Path=/api/v1/system/** -> lb://baize-system（不再 StripPrefix）
+# 访问形如 http://localhost:8020/api/v1/system/user/current
+# 注意：此改动必须与 8 个 Feign 客户端的 @FeignClient(path="/api/v1/system") 同步，
+#       否则 baize-auth 经 Feign 调 baize-system 会 404。
+# ============================================================================
+server:
+  servlet:
+    context-path: /api/v1

@@ -14,19 +14,28 @@ spring:
       enabled: true
     gateway:
       discovery:
+        # 关闭服务发现自动路由。
+        # 开启后网关会为每个注册到 Nacos 的服务自动创建 /{service-id}/** 路由
+        # （如 /baize-system/user/getPasswordByUsername），可绕过 /api/v1 前缀路由、
+        # StripPrefix 与 denylist 黑名单，直接触达后端内部端点。
+        # 本项目所有前后端交互统一走显式声明的 /api/v1/** 路由，因此这里必须关闭。
         locator:
-          enabled: true
+          enabled: false
           lower-case-service-id: true
       default-filters:
         - AddRequestHeader=Gateway-Request, From-Gateway
+      # 路由说明（重要）：
+      # /api/v1 前缀由各服务自己的 server.servlet.context-path 承载（见
+      # baize-system-dev.yml / baize-auth-dev.yml），网关收到什么路径就原样转发什么路径，
+      # 因此这里**不再需要 StripPrefix**。网关只负责按前缀分流 + 鉴权 + 黑名单。
+      # 改造前：Path=/api/v1/system/** + StripPrefix=2 → 后端看到 /system/**
+      # 改造后：Path=/api/v1/system/**（不剥离）     → 后端看到 /api/v1/system/**
       routes:
         # 认证服务API文档路由（更精确的路径放前面）
         - id: baize-auth-docs
           uri: lb://baize-auth
           predicates:
             - Path=/api/v1/auth/v3/api-docs/**
-          filters:
-            - StripPrefix=2
           metadata:
             skipAuth: true
 
@@ -35,8 +44,6 @@ spring:
           uri: lb://baize-auth
           predicates:
             - Path=/api/v1/auth/**
-          filters:
-            - StripPrefix=2
           metadata:
             skipAuth: true
 
@@ -45,8 +52,6 @@ spring:
           uri: lb://baize-system
           predicates:
             - Path=/api/v1/system/v3/api-docs/**
-          filters:
-            - StripPrefix=2
           metadata:
             skipAuth: true
 
@@ -55,8 +60,12 @@ spring:
           uri: lb://baize-system
           predicates:
             - Path=/api/v1/system/**
-          filters:
-            - StripPrefix=2
+
+        # 代码生成模块（需要认证，tool:gen:* 权限由 baize-gen 侧 @RequiresPermission 校验）
+        - id: baize-gen
+          uri: lb://baize-gen
+          predicates:
+            - Path=/api/v1/gen/**
 
 # Swagger UI 聚合配置
 springdoc:
@@ -87,11 +96,25 @@ baize:
       enabled: true
       excludeUrls:
         - /system/notice
-    # 白名单路径
+    # 白名单路径：无需 JWT 即可访问的入口
     whitelist:
       - /api/v1/auth/**
+      # 登录页租户下拉框：登录前没有令牌，必须匿名放行（接口本身不加 @RequiresPermission）
+      - /api/v1/system/tenant/list
       - /api/v1/system/v3/api-docs/**
       - /swagger-ui.html
       - /swagger-ui/**
       - /webjars/**
       - /v3/api-docs/**
+    # 黑名单：命中即拒绝（优先级高于白名单与路由匹配）
+    # 只封内部端点，不封页面路径；统一加 /api/v1 前缀形态
+    denylist:
+      # 返回密码哈希，仅供 baize-auth 经 Feign 内网调用
+      - /api/v1/system/user/getPasswordByUsername
+      # 内部写日志端点，仅供 baize-auth 经 Feign 调用
+      - /api/v1/system/loginLog/record
+# JWT 验签：baize-auth 用同一密钥签发令牌，网关据此校验；两处必须一致。
+# 修改时同步 baize-auth-dev.yml 的 jwt.secret。
+jwt:
+  secret: baize-a732659e-45e2-47a8-89ab-6c4b8af98bab
+  expiration: 7200000

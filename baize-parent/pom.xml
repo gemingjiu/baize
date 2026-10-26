@@ -25,7 +25,11 @@
         <druid.version>1.2.27</druid.version>
         <alibaba-ttl.version>2.14.5</alibaba-ttl.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <easyexcel.version>3.3.4</easyexcel.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+        <!-- surefire 必须显式指定 3.x：Maven 3.8.x 默认绑定 maven-surefire-plugin 2.12.4，
+             该版本只识别 JUnit4，会让 JUnit5 测试被静默跳过（日志表现为 Tests run: 0） -->
+        <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -174,6 +178,20 @@
                 <artifactId>transmittable-thread-local</artifactId>
                 <version>${alibaba-ttl.version}</version>
             </dependency>
+
+            <!-- EasyExcel：Excel 导入导出（底层 Apache POI） -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+
+            <!-- EasyExcel 4.x 拆分后的核心包，供后续按需升级 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel-core</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -181,7 +199,7 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- Java 21 编译插件 -->
+                <!-- Java 17 编译插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -191,6 +209,13 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <parameters>true</parameters>
                     </configuration>
+                </plugin>
+
+                <!-- 单元测试插件：统一 surefire 版本，保证 JUnit5 测试真正执行 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
                 </plugin>
 
                 <!-- Spring Boot 打包插件 -->

@@ -6,7 +6,7 @@
 
 | 服务名称 | 端口 | 说明 | 依赖 |
 |---------|------|------|------|
-| baize-gateway | 8080 | API 网关 | Nacos, Redis |
+| baize-gateway | 8000 | API 网关 | Nacos, Redis |
 | baize-auth | 8010 | 认证服务 | Nacos, PostgreSQL, Redis |
 | baize-system | 8020 | 系统管理 | Nacos, PostgreSQL, Redis |
 | baize-example | 8030 | 示例服务 | Nacos, PostgreSQL |
@@ -181,7 +181,7 @@ affinity: {}
 | Nacos HTTP | 8848 | 30848 |
 | Nacos gRPC | 9848 | 30849 |
 | Redis | 6379 | 30379 |
-| Gateway | 8080 | 31080 |
+| Gateway | 8000 | 31080 |
 | Auth | 8010 | 31010 |
 | System | 8020 | 31020 |
 | Example | 8030 | 31030 |

@@ -46,8 +46,19 @@ COMMENT ON COLUMN "baize-system".sys_config.remark IS '备注';
 ALTER TABLE "baize-system".sys_config OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_config TO postgres;
 
+-- Indexes
+
+CREATE INDEX idx_sys_config_tenant_id ON "baize-system".sys_config(tenant_id);
+CREATE INDEX idx_sys_config_deleted ON "baize-system".sys_config(deleted);
+CREATE INDEX idx_sys_config_created_time ON "baize-system".sys_config(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_config ADD CONSTRAINT uk_sys_config_tenant_config_key UNIQUE (tenant_id, config_key);
+
 
 -- "baize-system".sys_data_perm 定义
+-- 当前无对应实体，保留待接入（无 Java entity/mapper，接入前请勿删表）
 
 -- Drop table
 
@@ -140,6 +151,12 @@ COMMENT ON COLUMN "baize-system".sys_dept.remark IS '备注';
 ALTER TABLE "baize-system".sys_dept OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_dept TO postgres;
 
+-- Indexes
+
+CREATE INDEX idx_sys_dept_tenant_id ON "baize-system".sys_dept(tenant_id);
+CREATE INDEX idx_sys_dept_deleted ON "baize-system".sys_dept(deleted);
+CREATE INDEX idx_sys_dept_created_time ON "baize-system".sys_dept(created_time);
+
 
 -- "baize-system".sys_dict_data 定义
 
@@ -193,6 +210,16 @@ COMMENT ON COLUMN "baize-system".sys_dict_data.remark IS '备注';
 ALTER TABLE "baize-system".sys_dict_data OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_dict_data TO postgres;
 
+-- Indexes
+
+CREATE INDEX idx_sys_dict_data_tenant_id ON "baize-system".sys_dict_data(tenant_id);
+CREATE INDEX idx_sys_dict_data_deleted ON "baize-system".sys_dict_data(deleted);
+CREATE INDEX idx_sys_dict_data_created_time ON "baize-system".sys_dict_data(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_dict_data ADD CONSTRAINT uk_sys_dict_data_tenant_type_value UNIQUE (tenant_id, dict_type, dict_value);
+
 
 -- "baize-system".sys_dict_type 定义
 
@@ -237,6 +264,16 @@ COMMENT ON COLUMN "baize-system".sys_dict_type.remark IS '备注';
 
 ALTER TABLE "baize-system".sys_dict_type OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_dict_type TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_sys_dict_type_tenant_id ON "baize-system".sys_dict_type(tenant_id);
+CREATE INDEX idx_sys_dict_type_deleted ON "baize-system".sys_dict_type(deleted);
+CREATE INDEX idx_sys_dict_type_created_time ON "baize-system".sys_dict_type(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_dict_type ADD CONSTRAINT uk_sys_dict_type_tenant_dict_type UNIQUE (tenant_id, dict_type);
 
 
 -- "baize-system".sys_menu 定义
@@ -301,6 +338,16 @@ COMMENT ON COLUMN "baize-system".sys_menu.remark IS '备注';
 ALTER TABLE "baize-system".sys_menu OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_menu TO postgres;
 
+-- Indexes
+
+CREATE INDEX idx_sys_menu_tenant_id ON "baize-system".sys_menu(tenant_id);
+CREATE INDEX idx_sys_menu_deleted ON "baize-system".sys_menu(deleted);
+CREATE INDEX idx_sys_menu_created_time ON "baize-system".sys_menu(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_menu ADD CONSTRAINT uk_sys_menu_tenant_name_parent UNIQUE (tenant_id, menu_name, parent_id);
+
 
 -- "baize-system".sys_perm 定义
 
@@ -348,6 +395,16 @@ COMMENT ON COLUMN "baize-system".sys_perm.remark IS '备注';
 ALTER TABLE "baize-system".sys_perm OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_perm TO postgres;
 
+-- Indexes
+
+CREATE INDEX idx_sys_perm_tenant_id ON "baize-system".sys_perm(tenant_id);
+CREATE INDEX idx_sys_perm_deleted ON "baize-system".sys_perm(deleted);
+CREATE INDEX idx_sys_perm_created_time ON "baize-system".sys_perm(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_perm ADD CONSTRAINT uk_sys_perm_tenant_perm_code UNIQUE (tenant_id, perm_code);
+
 
 -- "baize-system".sys_post 定义
 
@@ -392,6 +449,16 @@ COMMENT ON COLUMN "baize-system".sys_post.remark IS '备注';
 
 ALTER TABLE "baize-system".sys_post OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_post TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_sys_post_tenant_id ON "baize-system".sys_post(tenant_id);
+CREATE INDEX idx_sys_post_deleted ON "baize-system".sys_post(deleted);
+CREATE INDEX idx_sys_post_created_time ON "baize-system".sys_post(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_post ADD CONSTRAINT uk_sys_post_tenant_post_code UNIQUE (tenant_id, post_code);
 
 
 -- "baize-system".sys_role 定义
@@ -444,14 +511,26 @@ COMMENT ON COLUMN "baize-system".sys_role.remark IS '备注';
 ALTER TABLE "baize-system".sys_role OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_role TO postgres;
 
+-- Indexes
+
+CREATE INDEX idx_sys_role_tenant_id ON "baize-system".sys_role(tenant_id);
+CREATE INDEX idx_sys_role_deleted ON "baize-system".sys_role(deleted);
+CREATE INDEX idx_sys_role_created_time ON "baize-system".sys_role(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_role ADD CONSTRAINT uk_sys_role_tenant_role_code UNIQUE (tenant_id, role_code);
+
 
 -- "baize-system".sys_role_dept 定义
+-- 当前无对应实体，保留待接入（无 Java entity/mapper，接入前请勿删表）
 
 -- Drop table
 
 -- DROP TABLE "baize-system".sys_role_dept;
 
 CREATE TABLE "baize-system".sys_role_dept (
+                                              tenant_id int8 NOT NULL, -- 租户ID
                                               role_id int8 NOT NULL, -- 角色ID
                                               dept_id int8 NOT NULL -- 部门ID
 );
@@ -459,6 +538,7 @@ COMMENT ON TABLE "baize-system".sys_role_dept IS '角色和部门关联表1-N';
 
 -- Column comments
 
+COMMENT ON COLUMN "baize-system".sys_role_dept.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_role_dept.role_id IS '角色ID';
 COMMENT ON COLUMN "baize-system".sys_role_dept.dept_id IS '部门ID';
 
@@ -466,6 +546,10 @@ COMMENT ON COLUMN "baize-system".sys_role_dept.dept_id IS '部门ID';
 
 ALTER TABLE "baize-system".sys_role_dept OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_role_dept TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_role_dept_tenant_id ON "baize-system".sys_role_dept(tenant_id);
 
 
 -- "baize-system".sys_role_menu 定义
@@ -475,6 +559,7 @@ GRANT ALL ON TABLE "baize-system".sys_role_dept TO postgres;
 -- DROP TABLE "baize-system".sys_role_menu;
 
 CREATE TABLE "baize-system".sys_role_menu (
+                                              tenant_id int8 NOT NULL, -- 租户ID
                                               role_id int8 NOT NULL, -- 角色ID
                                               menu_id int8 NOT NULL -- 菜单ID
 );
@@ -482,6 +567,7 @@ COMMENT ON TABLE "baize-system".sys_role_menu IS '角色和菜单关联表1-N';
 
 -- Column comments
 
+COMMENT ON COLUMN "baize-system".sys_role_menu.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_role_menu.role_id IS '角色ID';
 COMMENT ON COLUMN "baize-system".sys_role_menu.menu_id IS '菜单ID';
 
@@ -489,6 +575,14 @@ COMMENT ON COLUMN "baize-system".sys_role_menu.menu_id IS '菜单ID';
 
 ALTER TABLE "baize-system".sys_role_menu OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_role_menu TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_role_menu_tenant_id ON "baize-system".sys_role_menu(tenant_id);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_role_menu ADD CONSTRAINT uk_sys_role_menu_tenant_role_menu UNIQUE (tenant_id, role_id, menu_id);
 
 
 -- "baize-system".sys_role_perm 定义
@@ -498,6 +592,7 @@ GRANT ALL ON TABLE "baize-system".sys_role_menu TO postgres;
 -- DROP TABLE "baize-system".sys_role_perm;
 
 CREATE TABLE "baize-system".sys_role_perm (
+                                              tenant_id int8 NOT NULL, -- 租户ID
                                               role_id int8 NOT NULL, -- 角色ID
                                               perm_id int8 NOT NULL -- 权限ID
 );
@@ -505,6 +600,7 @@ COMMENT ON TABLE "baize-system".sys_role_perm IS '角色和权限关联表1-N';
 
 -- Column comments
 
+COMMENT ON COLUMN "baize-system".sys_role_perm.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_role_perm.role_id IS '角色ID';
 COMMENT ON COLUMN "baize-system".sys_role_perm.perm_id IS '权限ID';
 
@@ -512,6 +608,14 @@ COMMENT ON COLUMN "baize-system".sys_role_perm.perm_id IS '权限ID';
 
 ALTER TABLE "baize-system".sys_role_perm OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_role_perm TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_role_perm_tenant_id ON "baize-system".sys_role_perm(tenant_id);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_role_perm ADD CONSTRAINT uk_sys_role_perm_tenant_role_perm UNIQUE (tenant_id, role_id, perm_id);
 
 
 -- "baize-system".sys_tenant 定义
@@ -567,6 +671,15 @@ COMMENT ON COLUMN "baize-system".sys_tenant.remark IS '备注';
 
 ALTER TABLE "baize-system".sys_tenant OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_tenant TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_sys_tenant_deleted ON "baize-system".sys_tenant(deleted);
+CREATE INDEX idx_sys_tenant_created_time ON "baize-system".sys_tenant(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_tenant ADD CONSTRAINT uk_sys_tenant_tenant_code UNIQUE (tenant_code);
 
 
 -- "baize-system".sys_user 定义
@@ -631,14 +744,26 @@ COMMENT ON COLUMN "baize-system".sys_user.remark IS '备注';
 ALTER TABLE "baize-system".sys_user OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_user TO postgres;
 
+-- Indexes
+
+CREATE INDEX idx_sys_user_tenant_id ON "baize-system".sys_user(tenant_id);
+CREATE INDEX idx_sys_user_deleted ON "baize-system".sys_user(deleted);
+CREATE INDEX idx_sys_user_created_time ON "baize-system".sys_user(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_user ADD CONSTRAINT uk_sys_user_tenant_user_name UNIQUE (tenant_id, user_name);
+
 
 -- "baize-system".sys_user_post 定义
+-- 当前无对应实体，保留待接入（无 Java entity/mapper，接入前请勿删表）
 
 -- Drop table
 
 -- DROP TABLE "baize-system".sys_user_post;
 
 CREATE TABLE "baize-system".sys_user_post (
+                                              tenant_id int8 NOT NULL, -- 租户ID
                                               user_id int8 NOT NULL, -- 用户ID
                                               post_id int8 NOT NULL -- 岗位ID
 );
@@ -646,6 +771,7 @@ COMMENT ON TABLE "baize-system".sys_user_post IS '用户和岗位关联表1-N';
 
 -- Column comments
 
+COMMENT ON COLUMN "baize-system".sys_user_post.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_user_post.user_id IS '用户ID';
 COMMENT ON COLUMN "baize-system".sys_user_post.post_id IS '岗位ID';
 
@@ -653,6 +779,10 @@ COMMENT ON COLUMN "baize-system".sys_user_post.post_id IS '岗位ID';
 
 ALTER TABLE "baize-system".sys_user_post OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_user_post TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_user_post_tenant_id ON "baize-system".sys_user_post(tenant_id);
 
 
 -- "baize-system".sys_user_role 定义
@@ -662,6 +792,7 @@ GRANT ALL ON TABLE "baize-system".sys_user_post TO postgres;
 -- DROP TABLE "baize-system".sys_user_role;
 
 CREATE TABLE "baize-system".sys_user_role (
+                                              tenant_id int8 NOT NULL, -- 租户ID
                                               user_id int8 NOT NULL, -- 用户ID
                                               role_id int8 NOT NULL -- 角色ID
 );
@@ -669,6 +800,7 @@ COMMENT ON TABLE "baize-system".sys_user_role IS '用户和角色关联表N-1';
 
 -- Column comments
 
+COMMENT ON COLUMN "baize-system".sys_user_role.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_user_role.user_id IS '用户ID';
 COMMENT ON COLUMN "baize-system".sys_user_role.role_id IS '角色ID';
 
@@ -676,6 +808,14 @@ COMMENT ON COLUMN "baize-system".sys_user_role.role_id IS '角色ID';
 
 ALTER TABLE "baize-system".sys_user_role OWNER TO postgres;
 GRANT ALL ON TABLE "baize-system".sys_user_role TO postgres;
+
+-- Indexes
+
+CREATE INDEX idx_user_role_tenant_id ON "baize-system".sys_user_role(tenant_id);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_user_role ADD CONSTRAINT uk_sys_user_role_tenant_user_role UNIQUE (tenant_id, user_id, role_id);
 
 
 -- "baize-system".sys_oper_log 定义
@@ -702,7 +842,8 @@ CREATE TABLE "baize-system".sys_oper_log (
                                               status int4 DEFAULT 0 NULL, -- 操作状态
                                               error_msg text NULL, -- 错误消息
                                               oper_time timestamp NULL, -- 操作时间
-                                              cost_time int8 DEFAULT 0 NULL -- 消耗时间（毫秒）
+                                              cost_time int8 DEFAULT 0 NULL, -- 消耗时间（毫秒）
+                                              CONSTRAINT pk_sys_oper_log PRIMARY KEY (id)
 );
 COMMENT ON TABLE "baize-system".sys_oper_log IS '操作日志记录表';
 
@@ -784,6 +925,7 @@ GRANT ALL ON TABLE "baize-system".sys_login_log TO postgres;
 
 CREATE INDEX idx_sys_login_log_user_id ON "baize-system".sys_login_log(user_id);
 CREATE INDEX idx_sys_login_log_login_time ON "baize-system".sys_login_log(login_time);
+CREATE INDEX idx_sys_login_log_tenant_id ON "baize-system".sys_login_log(tenant_id);
 
 
 -- "baize-system".sys_notice 定义
@@ -798,6 +940,7 @@ CREATE TABLE "baize-system".sys_notice (
                                               notice_title varchar(200) NOT NULL, -- 公告标题
                                               notice_content text NULL, -- 公告内容
                                               notice_type varchar(1) DEFAULT '1'::character varying NOT NULL, -- 公告类型;1:通知,2:公告
+                                              sort int4 NULL, -- 显示顺序（BaseEntity 公共字段，缺少列会导致公告查询报 column "sort" does not exist）
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 状态;0:正常,1:停用
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
@@ -833,6 +976,8 @@ GRANT ALL ON TABLE "baize-system".sys_notice TO postgres;
 -- Indexes
 
 CREATE INDEX idx_sys_notice_tenant_id ON "baize-system".sys_notice(tenant_id);
+CREATE INDEX idx_sys_notice_deleted ON "baize-system".sys_notice(deleted);
+CREATE INDEX idx_sys_notice_created_time ON "baize-system".sys_notice(created_time);
 
 
 -- "baize-system".sys_job 定义
@@ -850,6 +995,7 @@ CREATE TABLE "baize-system".sys_job (
                                               cron_expression varchar(50) NULL, -- cron执行表达式
                                               misfire_policy varchar(1) DEFAULT '0'::character varying NOT NULL, -- 计划执行策略;0:立即执行,1:执行一次
                                               concurrent varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否并发执行;0:允许,1:禁止
+                                              sort int4 NULL, -- 显示顺序（BaseEntity 公共字段：缺少该列会让 sys_job 的所有查询报 column "sort" does not exist）
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 状态;0:正常,1:暂停
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
@@ -889,3 +1035,9 @@ GRANT ALL ON TABLE "baize-system".sys_job TO postgres;
 
 CREATE INDEX idx_sys_job_tenant_id ON "baize-system".sys_job(tenant_id);
 CREATE INDEX idx_sys_job_job_group ON "baize-system".sys_job(job_group);
+CREATE INDEX idx_sys_job_deleted ON "baize-system".sys_job(deleted);
+CREATE INDEX idx_sys_job_created_time ON "baize-system".sys_job(created_time);
+
+-- Unique constraints
+
+ALTER TABLE "baize-system".sys_job ADD CONSTRAINT uk_sys_job_tenant_job_name UNIQUE (tenant_id, job_name);

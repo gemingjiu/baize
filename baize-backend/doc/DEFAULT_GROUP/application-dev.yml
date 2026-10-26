@@ -6,33 +6,14 @@ spring:
       password: ${baize.redis.password}
   cloud:
     sentinel:
+      # 开发集群未部署 Sentinel 控制台，直接关闭，避免启动反复连接 localhost:8858
+      enabled: false
       transport:
         dashboard: localhost:8858
         port: 8719
       eager: true
     loadbalancer:
       enabled: true
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      default-filters:
-        - AddRequestHeader=Gateway-Request, From-Gateway
-      routes:
-        # 认证中心
-        - id: baize-auth
-          uri: lb://baize-auth
-          predicates:
-            - Path=/auth/**
-          metadata:
-            skipAuth: true
-
-        # 系统模块
-        - id: baize-system
-          uri: lb://baize-system
-          predicates:
-            - Path=/system/**
 
 logging:
   level:
@@ -40,6 +21,14 @@ logging:
     com.gem: debug
 # 安全配置
 baize:
+  # 内部调用令牌：@InnerAuth 端点据此校验 Feign 客户端附加的 From-Inner 请求头。
+  # 客户端（InnerAuthFeignConfig，baize-api-system）与服务端（InnerAuthInterceptor，
+  # baize-common-webmvc）读同一个键，两端对称；为空时 @InnerAuth 退化为仅告警放行。
+  # 审计结论见 doc/inner-token-audit.md：全仓库 RestTemplate/WebClient 为 0，
+  # 不存在绕过 Feign 的内部调用，可安全启用。
+  # 注意：令牌为共享密钥，轮换时需一次性改这里并同步重启 system/auth/gateway。
+  inner:
+    token: baize-inner-a1f4c9d2-7e3b-4f18-9c05-8d6e2b7a41f3
   gateway:
     # 验证码
     captcha:
@@ -52,14 +41,16 @@ baize:
         - /system/notice
   datasource:
     druid:
-      username: baize
-      password: baize@2023
+      username: postgres
+      password: Cpn@2026
     master:
-      addr: localhost:5432
+      # k3s NodePort：192.168.5.4:30432
+      addr: 192.168.5.4:30432
       schema: baize
-      username: baize
-      password: baize@2023
+      username: postgres
+      password: Cpn@2026
   redis:
-    host: localhost
-    port: 6379
-    password:
+    # k3s NodePort：192.168.5.4:30379
+    host: 192.168.5.4
+    port: 30379
+    password: Cnos@2026
