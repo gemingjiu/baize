@@ -19,5 +19,6 @@
         <module>baize-common-security</module>
         <module>baize-common-database</module>
         <module>baize-common-cache</module>
+        <module>baize-common-excel</module>
     </modules>
 </project>

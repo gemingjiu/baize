@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gem</groupId>
+        <artifactId>baize-common</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>baize-common-excel</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>baize-common-excel</name>
+    <description>基于 EasyExcel 的通用导入导出能力</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.gem</groupId>
+            <artifactId>baize-common-core</artifactId>
+        </dependency>
+
+        <!-- EasyExcel：底层依赖 Apache POI，由 EasyExcel 传递引入，无需单独声明 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+        </dependency>
+
+        <!-- 导出走 HTTP 响应流，需要 servlet-api；provided 由运行容器提供 -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

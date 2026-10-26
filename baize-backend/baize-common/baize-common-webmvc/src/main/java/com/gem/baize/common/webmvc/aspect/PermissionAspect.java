@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 
 /**
  * 接口权限校验切面
+ * <p>
+ * 约定 JWT 的 role claim 存放逗号分隔的权限码，其中 {@link #SUPER_ADMIN_PERMISSION} 视为超级管理员；
+ * 权限码必须与 @RequiresPermission 的 value 精确匹配，禁止使用角色名或前缀匹配，避免越权。
  */
 @Slf4j
 @Aspect
@@ -22,43 +25,39 @@ import java.util.stream.Collectors;
 public class PermissionAspect {
 
     /**
+     * 超级管理员权限标识：拥有该权限码即拥有全部权限
+     */
+    private static final String SUPER_ADMIN_PERMISSION = "*:*:*";
+
+    /**
      * 拦截带有 @RequiresPermission 注解的方法
      */
     @Before("@annotation(requiresPermission)")
     public void checkPermission(RequiresPermission requiresPermission) {
         String requiredPerm = requiresPermission.value();
+        // 注解未指定权限码时不校验
         if (StringUtils.isBlank(requiredPerm)) {
             return;
         }
-
-        // 获取当前用户的角色信息（简化处理：假设角色即权限）
         String role = RequestContextHolder.getRole();
         if (StringUtils.isBlank(role)) {
             throw new ForbiddenException("无权访问");
         }
 
-        // 超级管理员直接放行
-        if (role.contains("admin") || role.contains("ADMIN")) {
-            return;
-        }
-
-        // 校验权限
         Set<String> permissions = Arrays.stream(role.split(","))
                 .map(String::trim)
+                .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toSet());
 
-        // 如果所需权限为空，则放行
-        if (StringUtils.isBlank(requiredPerm)) {
+        // 超级管理员直接放行
+        if (permissions.contains(SUPER_ADMIN_PERMISSION)) {
             return;
         }
 
-        // 简单匹配：检查用户的角色中是否包含所需权限
-        // 实际项目中应该从缓存或数据库中查询用户的具体权限列表
-        boolean hasPermission = permissions.stream()
-                .anyMatch(p -> p.equals(requiredPerm) || p.startsWith(requiredPerm.split(":")[0]));
-
-        if (!hasPermission) {
-            log.warn("权限校验失败: userRole={}, requiredPerm={}", role, requiredPerm);
+        // 权限码必须精确匹配，不做角色名包含判断，也不做前缀匹配
+        if (!permissions.contains(requiredPerm.trim())) {
+            log.warn("权限校验失败: userId={}, permissions={}, requiredPerm={}",
+                    RequestContextHolder.getUserId(), role, requiredPerm);
             throw new ForbiddenException("无权访问: " + requiredPerm);
         }
     }

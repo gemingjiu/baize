@@ -1,1 +1,3 @@
 com.gem.baize.common.cache.config.RedisCacheConfig
+com.gem.baize.common.cache.service.impl.TokenBlacklistServiceImpl
+com.gem.baize.common.cache.service.impl.OnlineUserServiceImpl
