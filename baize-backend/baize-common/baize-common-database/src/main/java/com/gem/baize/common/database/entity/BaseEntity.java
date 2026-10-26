@@ -1,6 +1,7 @@
 package com.gem.baize.common.database.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -11,6 +12,12 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity implements Serializable {
     @TableId(type = IdType.ASSIGN_ID)
     private String id; // 主键ID
+
+    /**
+     * 租户ID（由拦截器自动填充）
+     */
+    @TableField(value = "tenant_id", fill = FieldFill.INSERT)
+    private String tenantId;
 
     @TableField(value = "sort", fill = FieldFill.INSERT)
     private int sort;
