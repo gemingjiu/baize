@@ -57,13 +57,7 @@
             <artifactId>baize-common-database</artifactId>
         </dependency>
 
-        <!-- MySQL Driver (for metadata) -->
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-
-        <!-- PostgreSQL Driver -->
+        <!-- PostgreSQL Driver（运行时数据源是 PostgreSQL，生成器靠 JDBC 元数据读表结构） -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

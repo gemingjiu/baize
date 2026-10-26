@@ -1,18 +1,52 @@
+# Tomcat
 server:
   port: 9300
-
+# Spring
 spring:
   application:
+    # 应用名称
     name: baize-gen
+  profiles:
+    # 环境配置
+    active: dev
   cloud:
     nacos:
       discovery:
+        # 服务注册地址
         server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
-        namespace: ${NACOS_NAMESPACE:}
+        # 环境分组
+        group: DEFAULT_GROUP
+        # 命名空间必须填 Nacos 上的命名空间 ID（不是显示名）；环境里为 baize
+        namespace: ${NACOS_NAMESPACE:baize}
+        # 用户名（环境变量 NACOS_USERNAME，默认 nacos）
+        username: ${NACOS_USERNAME:nacos}
+        # 密码（环境变量 NACOS_PASSWORD，仓库中禁止提交真实口令）
+        password: ${NACOS_PASSWORD:}
+        # 是否启用
+        enabled: true
       config:
+        # 配置中心地址
         server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
-        namespace: ${NACOS_NAMESPACE:}
+        # 环境分组
+        group: DEFAULT_GROUP
+        # 命名空间必须填 Nacos 上的命名空间 ID（不是显示名）；环境里为 baize
+        namespace: ${NACOS_NAMESPACE:baize}
+        # 用户名（环境变量 NACOS_USERNAME，默认 nacos）
+        username: ${NACOS_USERNAME:nacos}
+        # 密码（环境变量 NACOS_PASSWORD，仓库中禁止提交真实口令）
+        password: ${NACOS_PASSWORD:}
+        # 是否启用
+        enabled: true
+        # 配置文件格式
         file-extension: yml
+        # 共享配置：application-dev.yml 提供数据源、Redis 等公共配置。
+        # 缺了它，baize-gen-dev.yml 里的 ${baize.datasource.*} 无法解析，服务启动即失败。
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  config:
+    import:
+      - optional:nacos:application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
   freemarker:
     template-loader-path: classpath:/templates/
     suffix: .ftl

@@ -90,10 +90,16 @@ public class GenUtils {
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
-    /** 判断字段是否在基类中已经存在 */
+    /**
+     * 判断字段是否在基类 {@code BaseEntity} 中已经存在。
+     * <p>
+     * 命中则不参与生成（Entity / DTO 字段、前端表格列与表单项都不输出），
+     * 否则会与继承来的同名属性重复声明，生成的代码编译不过。
+     * tenant_id 同样在基类里，也在跳过范围内。
+     */
     public static boolean isBaseEntityField(String columnName) {
         Set<String> baseFields = new HashSet<>(Arrays.asList(
-                "id", "sort", "version", "status", "deleted",
+                "id", "tenant_id", "sort", "version", "status", "deleted",
                 "created_by", "created_time", "modified_by", "modified_time", "remark"
         ));
         return baseFields.contains(columnName);

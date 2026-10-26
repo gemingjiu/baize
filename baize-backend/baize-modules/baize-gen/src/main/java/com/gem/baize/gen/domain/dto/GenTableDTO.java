@@ -24,12 +24,16 @@ public class GenTableDTO implements Serializable {
     /** 实体类名称 */
     private String className;
 
-    /** 模块名 */
-    @NotBlank(message = "模块名不能为空")
+    /**
+     * 模块名。
+     * <p>前端「选表即生成」的最小闭环里通常不传，由 GenService 回落默认值 "system"。
+     */
     private String moduleName;
 
-    /** 业务名 */
-    @NotBlank(message = "业务名不能为空")
+    /**
+     * 业务名。
+     * <p>不传时回落到类名的首字母小写形式（如 {@code bizNotice}）。
+     */
     private String businessName;
 
     /** 功能名 */

@@ -53,4 +53,15 @@ public class GenTableColumnVO implements Serializable {
 
     /** 显示类型（input、textarea、select等） */
     private String htmlType;
+
+    /**
+     * 是否为 BaseEntity 基类已声明的公共字段（id / tenant_id / sort / version / status /
+     * deleted / created_* / modified_* / remark）。
+     *
+     * <p>派生属性：模板用它决定是否输出该字段。继承 BaseEntity 的 Entity 若重复声明这些属性
+     * 会编译失败（重复字段），前端表格/表单也不该出现这些审计列。
+     */
+    public boolean isBaseColumn() {
+        return com.gem.baize.gen.util.GenUtils.isBaseEntityField(this.columnName);
+    }
 }
