@@ -21,6 +21,18 @@ import {
   getPermPage,
   updatePerm,
 } from '@/services/system/perm';
+import {
+  FETCH_ALL_PAGE_SIZE,
+  fetchAllPages,
+  toPageQuery,
+} from '@/utils/pagination';
+
+/** 权限树选择项（ProFormTreeSelect 数据） */
+type PermTreeOption = {
+  label: string;
+  value: string;
+  children?: PermTreeOption[];
+};
 
 /**
  * 权限管理页面
@@ -54,22 +66,21 @@ const Perm: React.FC = () => {
     API.SysPermDto | undefined
   >();
   const [parentId, setParentId] = useState<string | undefined>();
-  const [permTree, setPermTree] = useState<any[]>([]);
+  const [permTree, setPermTree] = useState<PermTreeOption[]>([]);
 
-  // 获取权限树选择数据
+  // 获取权限树选择数据（全量：按 total/size 逐页拉取）
   useEffect(() => {
     const fetchPermTree = async () => {
-      const res = await getPermPage({ current: 1, size: 1000 }, {});
-      if (res.success) {
-        const transformTree = (list: any[]): any[] => {
-          return list.map((item) => ({
-            label: `${item.permName} (${item.permCode})`,
-            value: item.id,
-            children: item.children ? transformTree(item.children) : undefined,
-          }));
-        };
-        setPermTree(transformTree(res.data.records));
-      }
+      const records = await fetchAllPages<API.SysPermDto>((page) =>
+        getPermPage(page, {}),
+      );
+      const transformTree = (list: API.SysPermDto[]): PermTreeOption[] =>
+        list.map((item) => ({
+          label: `${item.permName ?? '-'} (${item.permCode ?? '-'})`,
+          value: String(item.id),
+          children: item.children ? transformTree(item.children) : undefined,
+        }));
+      setPermTree(transformTree(records));
     };
     fetchPermTree();
   }, [formModalVisible]);
@@ -168,7 +179,7 @@ const Perm: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:perm:delete">
+          <Authorized permission="system:perm:remove">
             <Button
               type="link"
               size="small"
@@ -208,13 +219,13 @@ const Perm: React.FC = () => {
           </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          // 权限表是按树展示（pagination=false），一次取全量后在前端组树
           const res = await getPermPage(
-            { current: 1, size: 1000 },
-            rest as API.SysPermDto,
+            { current: 1, size: FETCH_ALL_PAGE_SIZE },
+            toPageQuery<API.SysPermDto>(params),
           );
           if (res.success) {
-            const treeData = buildPermTree(res.data.records);
+            const treeData = buildPermTree(res.data.records ?? []);
             return {
               data: treeData,
               success: true,
@@ -239,7 +250,7 @@ const Perm: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormTreeSelect

@@ -1,5 +1,6 @@
 import {
   DeleteOutlined,
+  DownloadOutlined,
   EditOutlined,
   KeyOutlined,
   PlusOutlined,
@@ -15,8 +16,10 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Form, Input, Modal, message, Space, Transfer } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import type { FormInstance } from 'antd';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useExportXlsx } from '@/hooks/useExportXlsx';
 import { getDeptTreeSelect } from '@/services/system/dept';
 import { transformDeptTree } from '@/utils/tree';
 import { getRolePage } from '@/services/system/role';
@@ -25,14 +28,23 @@ import {
   changeUserStatus,
   createUser,
   deleteUser,
+  exportUsers,
   getUserPage,
   getUserRoles,
   resetPassword,
   updateUser,
 } from '@/services/system/user';
+import {
+  DEFAULT_PAGE_SIZE,
+  fetchAllPages,
+  toPageQuery,
+} from '@/utils/pagination';
 
 const User: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  // 表格查询表单实例，导出时直接取当前查询条件
+  const formRef = useRef<FormInstance<API.SysUserDto> | undefined>(undefined);
+  const [exporting, handleExport] = useExportXlsx<API.SysUserDto>(exportUsers);
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [roleModalVisible, setRoleModalVisible] = useState(false);
@@ -46,7 +58,9 @@ const User: React.FC = () => {
     API.SysUserDto | undefined
   >();
   const [deptTree, setDeptTree] = useState<any[]>([]);
-  const [allRoles, setAllRoles] = useState<any[]>([]);
+  const [allRoles, setAllRoles] = useState<
+    { key: string; title: string }[]
+  >([]);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [passwordForm] = Form.useForm();
 
@@ -63,15 +77,18 @@ const User: React.FC = () => {
   useEffect(() => {
     if (roleModalVisible) {
       const fetchRoles = async () => {
-        const res = await getRolePage({ current: 1, size: 1000 }, {});
-        if (res.success) {
-          setAllRoles(
-            res.data.records.map((role: any) => ({
-              key: role.id,
-              title: `${role.roleName} (${role.roleCode || '-'})`,
+        // 全量角色列表：按 total/size 逐页拉取，避免写死 size: 1000 造成静默截断
+        const records = await fetchAllPages<API.SysRoleDto>((page) =>
+          getRolePage(page, {}),
+        );
+        setAllRoles(
+          records
+            .filter((role) => role.id)
+            .map((role) => ({
+              key: String(role.id),
+              title: `${role.roleName ?? '-'} (${role.roleCode || '-'})`,
             })),
-          );
-        }
+        );
       };
       fetchRoles();
 
@@ -87,6 +104,12 @@ const User: React.FC = () => {
       }
     }
   }, [roleModalVisible, assignRoleRecord]);
+
+  /** 按当前查询条件导出用户列表（无查询条件即全量导出） */
+  const handleExportUsers = useCallback(() => {
+    // getFieldsValue() 拿到的是查询表单当前值，空值由 services 层按 {} 处理后传给后端
+    handleExport(formRef.current?.getFieldsValue() ?? {});
+  }, [handleExport]);
 
   const handleEdit = (record: API.SysUserDto) => {
     setEditingRecord(record);
@@ -269,7 +292,7 @@ const User: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:user:reset">
+          <Authorized permission="system:user:resetPwd">
             <Button
               type="link"
               size="small"
@@ -279,7 +302,7 @@ const User: React.FC = () => {
               重置密码
             </Button>
           </Authorized>
-          <Authorized permission="system:user:assign">
+          <Authorized permission="system:user:edit">
             <Button
               type="link"
               size="small"
@@ -289,7 +312,7 @@ const User: React.FC = () => {
               分配角色
             </Button>
           </Authorized>
-          <Authorized permission="system:user:status">
+          <Authorized permission="system:user:edit">
             <Button
               type="link"
               size="small"
@@ -299,7 +322,7 @@ const User: React.FC = () => {
               {record.status === '0' ? '停用' : '启用'}
             </Button>
           </Authorized>
-          <Authorized permission="system:user:delete">
+          <Authorized permission="system:user:remove">
             <Button
               type="link"
               size="small"
@@ -320,6 +343,7 @@ const User: React.FC = () => {
       <ProTable<API.SysUserDto>
         headerTitle="用户管理"
         actionRef={actionRef}
+        formRef={formRef}
         rowKey="id"
         search={{
           labelWidth: 100,
@@ -337,18 +361,27 @@ const User: React.FC = () => {
               新增用户
             </Button>
           </Authorized>,
+          <Authorized permission="system:user:export" key="export">
+            <Button
+              icon={<DownloadOutlined />}
+              loading={exporting}
+              onClick={handleExportUsers}
+            >
+              导出
+            </Button>
+          </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          const { current, pageSize } = params;
           const res = await getUserPage(
-            { current: current || 1, size: pageSize || 10 },
-            rest as Partial<API.SysUserDto>,
+            { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
+            toPageQuery<API.SysUserDto>(params),
           );
           if (res.success) {
             return {
-              data: res.data.records,
+              data: res.data.records ?? [],
               success: true,
-              total: res.data.total,
+              total: res.data.total ?? 0,
             };
           }
           return {
@@ -369,7 +402,7 @@ const User: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormText
@@ -437,7 +470,7 @@ const User: React.FC = () => {
         open={passwordModalVisible}
         onOk={handlePasswordSubmit}
         onCancel={() => setPasswordModalVisible(false)}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form form={passwordForm} layout="vertical">
           <Form.Item
@@ -477,7 +510,7 @@ const User: React.FC = () => {
         onOk={handleAssignSubmit}
         onCancel={() => setRoleModalVisible(false)}
         width={600}
-        destroyOnClose
+        destroyOnHidden
       >
         <Transfer
           titles={['待选角色', '已选角色']}

@@ -1,13 +1,23 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
+import { ApartmentOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  ProFormCheckbox,
+  ProFormSelect,
+  ProFormText,
+} from '@ant-design/pro-components';
 import { Helmet, history, useModel } from '@umijs/max';
 import { Alert, App, Button, Form } from 'antd';
 import { createStyles } from 'antd-style';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { login } from '@/services/ant-design-pro/api';
 import { getUserMenuTree } from '@/services/system/menu';
-import { getAllButtonPermissions, transformMenu } from '@/utils/menu';
+import { getTenantList } from '@/services/system/tenant';
+import {
+  saveAuth,
+  saveMenuTree,
+  savePermissions,
+} from '@/utils/auth';
+import { getAllPermissions, transformMenu } from '@/utils/menu';
 
 const useStyles = createStyles(({ css, token }) => ({
   container: css`
@@ -15,7 +25,7 @@ const useStyles = createStyles(({ css, token }) => ({
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: ${token.colorBgLayout};
   `,
   leftPanel: css`
     flex: 1;
@@ -25,104 +35,100 @@ const useStyles = createStyles(({ css, token }) => ({
     align-items: center;
     padding: 48px;
     position: relative;
-    overflow: hidden;
+    background-image: radial-gradient(${token.colorBorderSecondary} 1px, transparent 0);
+    background-size: 22px 22px;
 
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(24, 144, 255, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+    @media (max-width: 768px) {
+      display: none;
     }
   `,
   brandingArea: css`
     position: relative;
     z-index: 1;
     text-align: center;
-    max-width: 400px;
+    max-width: 420px;
   `,
   logoWrapper: css`
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   `,
   logo: css`
-    width: 64px;
-    height: 64px;
-    filter: drop-shadow(0 0 16px rgba(24, 144, 255, 0.4));
+    width: 56px;
+    height: 56px;
   `,
   brandTitle: css`
-    font-size: 28px;
-    font-weight: 700;
-    color: #f1f5f9;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: ${token.colorTextHeading};
     margin: 0 0 8px 0;
   `,
   brandSubtitle: css`
-    font-size: 13px;
-    color: #64748b;
-    letter-spacing: 2px;
+    font-size: 12px;
+    color: ${token.colorTextTertiary};
+    letter-spacing: 3px;
     margin: 0;
   `,
   features: css`
-    margin-top: 48px;
+    margin-top: 40px;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   `,
   featureItem: css`
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 8px;
-    color: #94a3b8;
+    background: ${token.colorBgContainer};
+    border: 1px solid ${token.colorBorderSecondary};
+    border-radius: ${token.borderRadius}px;
+    color: ${token.colorTextSecondary};
     font-size: 13px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: border-color 0.2s, color 0.2s;
 
     &:hover {
-      background: rgba(24, 144, 255, 0.08);
-      border-color: rgba(24, 144, 255, 0.2);
+      border-color: ${token.colorPrimaryBorder};
+      color: ${token.colorText};
     }
   `,
   rightPanel: css`
-    width: 360px;
+    width: 420px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
   `,
   loginFormWrapper: css`
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 32px 24px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    background: ${token.colorBgContainer};
+    border: 1px solid ${token.colorBorderSecondary};
+    border-radius: ${token.borderRadiusLG}px;
+    padding: 32px 28px;
     width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
   `,
   loginTitle: css`
-    color: #f1f5f9;
-    font-size: 22px;
+    color: ${token.colorTextHeading};
+    font-size: 20px;
     font-weight: 600;
     text-align: center;
     margin: 0 0 6px 0;
   `,
   loginSubtitle: css`
-    color: #64748b;
+    color: ${token.colorTextTertiary};
     font-size: 13px;
     text-align: center;
-    margin: 0 0 28px 0;
+    margin: 0 0 24px 0;
   `,
   errorMessage: css`
     margin-bottom: 16px;
-    border-radius: 8px;
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    background: rgba(239, 68, 68, 0.06);
+    border-radius: ${token.borderRadius}px;
     font-size: 13px;
   `,
   submitBtn: css`
@@ -130,15 +136,7 @@ const useStyles = createStyles(({ css, token }) => ({
     height: 42px;
     font-size: 15px;
     font-weight: 500;
-    border-radius: 8px;
-    background: #1890ff;
-    border: none;
     margin-top: 8px;
-    transition: all 0.3s;
-
-    &:hover {
-      background: #40a9ff;
-    }
   `,
   loginForm: css`
     width: 100%;
@@ -149,53 +147,6 @@ const useStyles = createStyles(({ css, token }) => ({
 
     .ant-pro-field {
       width: 100%;
-    }
-
-    .ant-input-affix-wrapper {
-      background: rgba(255, 255, 255, 0.06) !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
-      border-radius: 8px !important;
-      color: #f1f5f9 !important;
-      transition: all 0.3s !important;
-
-      &:hover {
-        border-color: rgba(255, 255, 255, 0.25) !important;
-      }
-
-      &:focus,
-      &.ant-input-affix-wrapper-focused {
-        border-color: ${token.colorPrimary} !important;
-        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2) !important;
-      }
-
-      .ant-input {
-        background: transparent !important;
-        color: #f1f5f9 !important;
-        font-size: 14px !important;
-
-        &::placeholder {
-          color: #475569 !important;
-        }
-      }
-
-      .anticon {
-        color: #64748b !important;
-      }
-    }
-
-    .ant-checkbox-wrapper {
-      color: #94a3b8 !important;
-      font-size: 13px !important;
-
-      .ant-checkbox-inner {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border-color: rgba(255, 255, 255, 0.2) !important;
-      }
-
-      .ant-checkbox-checked .ant-checkbox-inner {
-        background-color: ${token.colorPrimary} !important;
-        border-color: ${token.colorPrimary} !important;
-      }
     }
   `,
 }));
@@ -212,25 +163,66 @@ const LoginMessage: React.FC<{ content: string }> = ({ content }) => {
   );
 };
 
+/**
+ * 平台（保留）租户ID，与后端 CustomTenantHandler.PLATFORM_TENANT、网关 TenantFilter 的默认租户一致。
+ * 登录页默认选中平台租户。
+ */
+const PLATFORM_TENANT_ID = '0';
+
 const Login: React.FC = () => {
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
   const { message } = App.useApp();
   const [submitting, setSubmitting] = useState(false);
+  const [tenants, setTenants] = useState<API.SysTenantDto[]>([]);
   const [form] = Form.useForm();
+
+  // 租户下拉框数据来自免鉴权接口 GET /system/tenant/list（网关白名单放行），
+  // 因为此时还没有令牌。拉取失败时保留「平台租户」兜底选项，保证登录可用。
+  useEffect(() => {
+    const loadTenants = async () => {
+      try {
+        const res = await getTenantList({ skipErrorHandler: true });
+        if (res?.success && Array.isArray(res.data)) {
+          setTenants(res.data);
+        }
+      } catch (_e) {
+        // 忽略：下面会兜底成只有「平台租户」一项
+      }
+    };
+    loadTenants();
+  }, []);
+
+  const tenantOptions = React.useMemo(() => {
+    const options = tenants
+      .filter((item) => item.id)
+      .map((item) => ({
+        value: item.id as string,
+        // 平台租户（id=0）固定显示为「平台租户」，其余显示租户名
+        label:
+          item.id === PLATFORM_TENANT_ID
+            ? '平台租户'
+            : item.tenantName || `租户 ${item.id}`,
+      }));
+    if (!options.some((option) => option.value === PLATFORM_TENANT_ID)) {
+      options.unshift({ value: PLATFORM_TENANT_ID, label: '平台租户' });
+    }
+    return options;
+  }, [tenants]);
 
   const handleSubmit = useCallback(
     async (values: API.LoginParams) => {
       setSubmitting(true);
       setLoginErrorMessage('');
       try {
+        // values.tenant 会被后端 AuthServiceImpl 当作 tenant_id 用于 getByUsernameAndTenantId，
+        // 所以这里传的是租户 ID（数字字符串），不是租户编码 / 域名。
         const res = await login(values, { skipErrorHandler: true });
         if (res.success) {
           message.success('登录成功！');
-          localStorage.setItem('accessToken', res.data.accessToken);
-          localStorage.setItem('refreshToken', res.data.refreshToken);
-          localStorage.setItem('userInfo', JSON.stringify(res.data.user));
+          // 落地 accessToken / refreshToken / userInfo（userInfo 仅作展示缓存）
+          saveAuth(res.data);
 
           const user = res.data.user;
           const menuRes = await getUserMenuTree(user?.id || '', {
@@ -239,9 +231,10 @@ const Login: React.FC = () => {
           let menuData: any[] = [];
           if (menuRes.success && menuRes.data) {
             menuData = transformMenu(menuRes.data);
-            localStorage.setItem('menuTree', JSON.stringify(menuData));
-            const permissions = getAllButtonPermissions(menuRes.data);
-            localStorage.setItem('permissions', JSON.stringify(permissions));
+            saveMenuTree(menuData);
+            // 权限码来自后端菜单，前端仅用于按钮/菜单显隐（逗号分隔会被拆分）
+            const permissions = getAllPermissions(menuRes.data);
+            savePermissions(permissions);
           }
 
           flushSync(() => {
@@ -308,14 +301,27 @@ const Login: React.FC = () => {
               form={form}
               className={styles.loginForm}
               initialValues={{
-                username: 'admin',
-                password: 'admin123',
+                // 不再预填演示账号密码（模板遗留，且会泄露默认口令）
                 remember: true,
+                // 默认平台租户：与后端默认租户一致，登录页不强制用户先选租户
+                tenant: PLATFORM_TENANT_ID,
               }}
               onFinish={async (values) => {
                 await handleSubmit(values as API.LoginParams);
               }}
             >
+              <ProFormSelect
+                name="tenant"
+                label=""
+                fieldProps={{
+                  size: 'large',
+                  suffixIcon: <ApartmentOutlined />,
+                }}
+                placeholder="请选择租户"
+                options={tenantOptions}
+                rules={[{ required: true, message: '请选择租户!' }]}
+              />
+
               <ProFormText
                 name="username"
                 fieldProps={{

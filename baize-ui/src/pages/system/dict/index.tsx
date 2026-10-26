@@ -23,6 +23,7 @@ import {
   updateDictData,
   updateDictType,
 } from '@/services/system/dict';
+import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
 
 /**
  * 字典管理页面
@@ -174,7 +175,7 @@ const Dict: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:dict:delete">
+          <Authorized permission="system:dict:remove">
             <Button type="link" size="small" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
               删除
             </Button>
@@ -256,7 +257,7 @@ const Dict: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:dict:delete">
+          <Authorized permission="system:dict:remove">
             <Button type="link" size="small" danger icon={<DeleteOutlined />} onClick={() => handleDataDelete(record)}>
               删除
             </Button>
@@ -290,16 +291,16 @@ const Dict: React.FC = () => {
           </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          const { current, pageSize } = params;
           const res = await getDictTypePage(
-            { current: current || 1, size: pageSize || 10 },
-            rest as API.SysDictTypeDto,
+            { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
+            toPageQuery<API.SysDictTypeDto>(params),
           );
           if (res.success) {
             return {
-              data: res.data.records,
+              data: res.data.records ?? [],
               success: true,
-              total: res.data.total,
+              total: res.data.total ?? 0,
             };
           }
           return {
@@ -320,7 +321,7 @@ const Dict: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormText
@@ -354,7 +355,7 @@ const Dict: React.FC = () => {
         width={860}
         open={dataVisible}
         onClose={() => setDataVisible(false)}
-        destroyOnClose
+        destroyOnHidden
       >
         <ProTable<API.SysDictDataDto>
           headerTitle="字典数据列表"
@@ -378,14 +379,14 @@ const Dict: React.FC = () => {
           request={async (params) => {
             const { current, pageSize } = params;
             const res = await getDictDataPage(
-              { current: current || 1, size: pageSize || 10 },
+              { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
               { dictType: currentType?.dictType },
             );
             if (res.success) {
               return {
-                data: res.data.records,
+                data: res.data.records ?? [],
                 success: true,
-                total: res.data.total,
+                total: res.data.total ?? 0,
               };
             }
             return {
@@ -405,7 +406,7 @@ const Dict: React.FC = () => {
           onFinish={handleDataSubmit}
           initialValues={editingData}
           modalProps={{
-            destroyOnClose: true,
+            destroyOnHidden: true,
           }}
         >
           <ProFormText name="dictLabel" label="字典标签" rules={[{ required: true, message: '请输入字典标签' }]} />

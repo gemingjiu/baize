@@ -1,5 +1,7 @@
 import {
+  ApartmentOutlined,
   DeleteOutlined,
+  DownloadOutlined,
   EditOutlined,
   MenuOutlined,
   PlusOutlined,
@@ -13,24 +15,48 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Modal, message, Space, Tag, Transfer, Tree } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Button, Modal, Radio, message, Space, Tag, Transfer, Tree } from 'antd';
+import type { FormInstance } from 'antd';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useExportXlsx } from '@/hooks/useExportXlsx';
+import { getDeptTreeSelect } from '@/services/system/dept';
 import { getMenuTreeSelect } from '@/services/system/menu';
 import { getPermPage } from '@/services/system/perm';
 import {
+  assignRoleDepts,
   assignRoleMenus,
   assignRolePerms,
   createRole,
   deleteRole,
+  exportRoles,
+  getRoleDepts,
   getRoleMenus,
   getRolePage,
   getRolePerms,
+  removeRoleDepts,
   updateRole,
 } from '@/services/system/role';
+import {
+  DEFAULT_PAGE_SIZE,
+  fetchAllPages,
+  toPageQuery,
+} from '@/utils/pagination';
+
+/** 数据权限取值范围（与后端 DataScopeConstant 保持一致） */
+const DATA_SCOPE_OPTIONS = [
+  { label: '全部数据权限', value: '1' },
+  { label: '自定义数据权限', value: '2' },
+  { label: '本部门数据权限', value: '3' },
+  { label: '本部门及以下数据权限', value: '4' },
+  { label: '仅本人数据权限', value: '5' },
+];
 
 const Role: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  // 表格查询表单实例，导出时直接取当前查询条件
+  const formRef = useRef<FormInstance<API.SysRoleDto> | undefined>(undefined);
+  const [exporting, handleExport] = useExportXlsx<API.SysRoleDto>(exportRoles);
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [menuModalVisible, setMenuModalVisible] = useState(false);
   const [permModalVisible, setPermModalVisible] = useState(false);
@@ -45,8 +71,18 @@ const Role: React.FC = () => {
   >();
   const [menuTree, setMenuTree] = useState<any[]>([]);
   const [checkedMenuKeys, setCheckedMenuKeys] = useState<string[]>([]);
-  const [allPerms, setAllPerms] = useState<any[]>([]);
+  const [allPerms, setAllPerms] = useState<
+    { key: string; title: string }[]
+  >([]);
   const [selectedPermKeys, setSelectedPermKeys] = useState<string[]>([]);
+  const [dataScopeModalVisible, setDataScopeModalVisible] = useState(false);
+  const [assignDataScopeRecord, setAssignDataScopeRecord] = useState<
+    API.SysRoleDto | undefined
+  >();
+  const [deptTree, setDeptTree] = useState<any[]>([]);
+  const [dataScopeValue, setDataScopeValue] = useState<string>('1');
+  const [checkedDeptKeys, setCheckedDeptKeys] = useState<string[]>([]);
+  const [dataScopeSubmitting, setDataScopeSubmitting] = useState(false);
 
   useEffect(() => {
     if (menuModalVisible && assignMenuRecord) {
@@ -76,15 +112,18 @@ const Role: React.FC = () => {
   useEffect(() => {
     if (permModalVisible) {
       const fetchPerms = async () => {
-        const res = await getPermPage({ current: 1, size: 1000 }, {});
-        if (res.success) {
-          setAllPerms(
-            res.data.records.map((perm: any) => ({
-              key: perm.id,
-              title: `${perm.permName} (${perm.permCode})`,
+        // 全量权限列表：按 total/size 逐页拉取，避免写死 size: 1000 造成静默截断
+        const records = await fetchAllPages<API.SysPermDto>((page) =>
+          getPermPage(page, {}),
+        );
+        setAllPerms(
+          records
+            .filter((perm) => perm.id)
+            .map((perm) => ({
+              key: String(perm.id),
+              title: `${perm.permName ?? '-'} (${perm.permCode ?? '-'})`,
             })),
-          );
-        }
+        );
       };
       fetchPerms();
 
@@ -99,6 +138,39 @@ const Role: React.FC = () => {
       }
     }
   }, [permModalVisible, assignPermRecord]);
+
+  useEffect(() => {
+    if (dataScopeModalVisible && assignDataScopeRecord) {
+      const fetchDeptScope = async () => {
+        const roleId = assignDataScopeRecord?.id || '';
+        // 角色当前的数据权限 + 已授权部门并行拉取
+        const [treeRes, deptRes] = await Promise.all([
+          getDeptTreeSelect(),
+          getRoleDepts(roleId),
+        ]);
+        if (treeRes.success) {
+          const transformDeptTree = (list: any[]): any[] =>
+            (list ?? []).map((item) => ({
+              key: String(item.id),
+              title: item.deptName,
+              children: item.children
+                ? transformDeptTree(item.children)
+                : undefined,
+            }));
+          setDeptTree(transformDeptTree(treeRes.data));
+        }
+        if (deptRes.success) {
+          setCheckedDeptKeys(deptRes.data || []);
+        }
+      };
+      fetchDeptScope();
+    }
+  }, [dataScopeModalVisible, assignDataScopeRecord]);
+
+  /** 按当前查询条件导出角色列表（无查询条件即全量导出） */
+  const handleExportRoles = useCallback(() => {
+    handleExport(formRef.current?.getFieldsValue() ?? {});
+  }, [handleExport]);
 
   const handleEdit = (record: API.SysRoleDto) => {
     setEditingRecord(record);
@@ -130,6 +202,14 @@ const Role: React.FC = () => {
   const handleAssignPerms = (record: API.SysRoleDto) => {
     setAssignPermRecord(record);
     setPermModalVisible(true);
+  };
+
+  const handleAssignDataScope = (record: API.SysRoleDto) => {
+    setAssignDataScopeRecord(record);
+    // 已存值优先，缺省按「仅本人」以外的最宽松值 1（全部）兜底
+    setDataScopeValue(record?.dataScope || '1');
+    setCheckedDeptKeys([]);
+    setDataScopeModalVisible(true);
   };
 
   const handleMenuSubmit = async () => {
@@ -165,6 +245,36 @@ const Role: React.FC = () => {
     } catch {
       message.error('分配失败');
       return false;
+    }
+  };
+
+  /** 保存数据权限：先更新角色 dataScope，再按 scope 处理 sys_role_dept 授权 */
+  const handleDataScopeSubmit = async () => {
+    const roleId = assignDataScopeRecord?.id || '';
+    setDataScopeSubmitting(true);
+    try {
+      const res = await updateRole(roleId, { dataScope: dataScopeValue });
+      if (!res.success) {
+        message.error('数据权限保存失败');
+        return;
+      }
+      // 仅「自定义」需要落 sys_role_dept；其余 scope 清空关联，避免脏数据
+      if (dataScopeValue === '2') {
+        const deptRes = await assignRoleDepts(roleId, checkedDeptKeys);
+        if (!deptRes.success) {
+          message.error('部门授权失败');
+          return;
+        }
+      } else {
+        await removeRoleDepts(roleId);
+      }
+      message.success('数据权限保存成功');
+      setDataScopeModalVisible(false);
+      actionRef.current?.reload();
+    } catch {
+      message.error('数据权限保存失败');
+    } finally {
+      setDataScopeSubmitting(false);
     }
   };
 
@@ -227,7 +337,7 @@ const Role: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 240,
+      width: 340,
       fixed: 'right',
       render: (_, record) => (
         <Space size="small">
@@ -241,7 +351,7 @@ const Role: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:role:assign">
+          <Authorized permission="system:role:edit">
             <Button
               type="link"
               size="small"
@@ -251,7 +361,7 @@ const Role: React.FC = () => {
               分配菜单
             </Button>
           </Authorized>
-          <Authorized permission="system:role:assign">
+          <Authorized permission="system:role:edit">
             <Button
               type="link"
               size="small"
@@ -261,7 +371,17 @@ const Role: React.FC = () => {
               分配权限
             </Button>
           </Authorized>
-          <Authorized permission="system:role:delete">
+          <Authorized permission="system:role:edit">
+            <Button
+              type="link"
+              size="small"
+              icon={<ApartmentOutlined />}
+              onClick={() => handleAssignDataScope(record)}
+            >
+              数据权限
+            </Button>
+          </Authorized>
+          <Authorized permission="system:role:remove">
             <Button
               type="link"
               size="small"
@@ -282,6 +402,7 @@ const Role: React.FC = () => {
       <ProTable<API.SysRoleDto>
         headerTitle="角色管理"
         actionRef={actionRef}
+        formRef={formRef}
         rowKey="id"
         search={{
           labelWidth: 100,
@@ -299,18 +420,27 @@ const Role: React.FC = () => {
               新增角色
             </Button>
           </Authorized>,
+          <Authorized permission="system:role:export" key="export">
+            <Button
+              icon={<DownloadOutlined />}
+              loading={exporting}
+              onClick={handleExportRoles}
+            >
+              导出
+            </Button>
+          </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          const { current, pageSize } = params;
           const res = await getRolePage(
-            { current: current || 1, size: pageSize || 10 },
-            rest as Partial<API.SysRoleDto>,
+            { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
+            toPageQuery<API.SysRoleDto>(params),
           );
           if (res.success) {
             return {
-              data: res.data.records,
+              data: res.data.records ?? [],
               success: true,
-              total: res.data.total,
+              total: res.data.total ?? 0,
             };
           }
           return {
@@ -331,7 +461,7 @@ const Role: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormText
@@ -369,7 +499,7 @@ const Role: React.FC = () => {
         onOk={handleMenuSubmit}
         onCancel={() => setMenuModalVisible(false)}
         width={500}
-        destroyOnClose
+        destroyOnHidden
       >
         <Tree
           checkable
@@ -381,12 +511,48 @@ const Role: React.FC = () => {
       </Modal>
 
       <Modal
+        title={`数据权限 - ${assignDataScopeRecord?.roleName}`}
+        open={dataScopeModalVisible}
+        onOk={handleDataScopeSubmit}
+        onCancel={() => setDataScopeModalVisible(false)}
+        confirmLoading={dataScopeSubmitting}
+        width={520}
+        destroyOnHidden
+      >
+        <div style={{ marginBottom: 16 }}>数据范围</div>
+        <Radio.Group
+          value={dataScopeValue}
+          onChange={(e) => setDataScopeValue(e.target.value)}
+        >
+          <Space direction="vertical">
+            {DATA_SCOPE_OPTIONS.map((item) => (
+              <Radio key={item.value} value={item.value}>
+                {item.label}
+              </Radio>
+            ))}
+          </Space>
+        </Radio.Group>
+        {dataScopeValue === '2' && (
+          <div style={{ marginTop: 16 }}>
+            <div style={{ marginBottom: 8 }}>选择部门</div>
+            <Tree
+              checkable
+              checkedKeys={checkedDeptKeys}
+              onCheck={(keys) => setCheckedDeptKeys(keys as string[])}
+              treeData={deptTree}
+              defaultExpandAll
+            />
+          </div>
+        )}
+      </Modal>
+
+      <Modal
         title={`分配权限 - ${assignPermRecord?.roleName}`}
         open={permModalVisible}
         onOk={handlePermSubmit}
         onCancel={() => setPermModalVisible(false)}
         width={600}
-        destroyOnClose
+        destroyOnHidden
       >
         <Transfer
           titles={['待选权限', '已选权限']}

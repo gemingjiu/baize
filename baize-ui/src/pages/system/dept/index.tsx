@@ -8,10 +8,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
   ModalForm,
   PageContainer,
-  ProFormDigit,
-  ProFormSelect,
   ProFormText,
-  ProFormTextArea,
   ProFormTreeSelect,
   ProTable,
 } from '@ant-design/pro-components';
@@ -131,12 +128,6 @@ const Dept: React.FC = () => {
       width: 250,
     },
     {
-      title: '排序',
-      dataIndex: 'orderNum',
-      width: 100,
-      search: false,
-    },
-    {
       title: '负责人',
       dataIndex: 'leader',
       width: 120,
@@ -182,7 +173,7 @@ const Dept: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:dept:delete">
+          <Authorized permission="system:dept:remove">
             <Button
               type="link"
               size="small"
@@ -251,7 +242,7 @@ const Dept: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormTreeSelect
@@ -277,22 +268,6 @@ const Dept: React.FC = () => {
           placeholder="请输入联系电话"
         />
         <ProFormText name="email" label="邮箱" placeholder="请输入邮箱" />
-        <ProFormSelect
-          name="status"
-          label="状态"
-          valueEnum={{
-            '0': '正常',
-            '1': '停用',
-          }}
-          initialValue="0"
-          placeholder="请选择状态"
-        />
-        <ProFormTextArea
-          name="remark"
-          label="备注"
-          rows={3}
-          placeholder="请输入备注"
-        />
       </ModalForm>
     </PageContainer>
   );

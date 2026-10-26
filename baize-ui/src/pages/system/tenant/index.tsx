@@ -18,6 +18,7 @@ import {
   getTenantPage,
   updateTenant,
 } from '@/services/system/tenant';
+import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
 
 /**
  * 租户管理页面
@@ -181,7 +182,7 @@ const Tenant: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:tenant:status">
+          <Authorized permission="system:tenant:edit">
             <Button
               type="link"
               size="small"
@@ -191,7 +192,7 @@ const Tenant: React.FC = () => {
               {record.status === '0' ? '停用' : '启用'}
             </Button>
           </Authorized>
-          <Authorized permission="system:tenant:delete">
+          <Authorized permission="system:tenant:remove">
             <Button
               type="link"
               size="small"
@@ -231,16 +232,16 @@ const Tenant: React.FC = () => {
           </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          const { current, pageSize } = params;
           const res = await getTenantPage(
-            { current: current || 1, size: pageSize || 10 },
-            rest as API.SysTenantDto,
+            { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
+            toPageQuery<API.SysTenantDto>(params),
           );
           if (res.success) {
             return {
-              data: res.data.records,
+              data: res.data.records ?? [],
               success: true,
-              total: res.data.total,
+              total: res.data.total ?? 0,
             };
           }
           return {
@@ -261,7 +262,7 @@ const Tenant: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormText

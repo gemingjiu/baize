@@ -235,7 +235,7 @@ const Menu: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:menu:delete">
+          <Authorized permission="system:menu:remove">
             <Button
               type="link"
               size="small"
@@ -311,7 +311,7 @@ const Menu: React.FC = () => {
             : undefined
         }
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
         layout="horizontal"
         labelCol={{ span: 6 }}

@@ -15,6 +15,7 @@ import {
   getPostPage,
   updatePost,
 } from '@/services/system/post';
+import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
 
 /**
  * 岗位管理页面
@@ -99,7 +100,7 @@ const Post: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:post:delete">
+          <Authorized permission="system:post:remove">
             <Button
               type="link"
               size="small"
@@ -139,16 +140,16 @@ const Post: React.FC = () => {
           </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          const { current, pageSize } = params;
           const res = await getPostPage(
-            { current: current || 1, size: pageSize || 10 },
-            rest as API.SysPostDto,
+            { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
+            toPageQuery<API.SysPostDto>(params),
           );
           if (res.success) {
             return {
-              data: res.data.records,
+              data: res.data.records ?? [],
               success: true,
-              total: res.data.total,
+              total: res.data.total ?? 0,
             };
           }
           return {
@@ -169,7 +170,7 @@ const Post: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormText

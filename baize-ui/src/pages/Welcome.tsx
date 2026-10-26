@@ -1,70 +1,75 @@
 import {
-  AreaChartOutlined,
+  ApiOutlined,
+  IdcardOutlined,
   MenuOutlined,
   SafetyOutlined,
-  TeamOutlined,
 } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import { Card, Col, Row, Statistic, theme } from 'antd';
-import React from 'react';
+import { Card, Col, Row, theme } from 'antd';
+import React, { useMemo } from 'react';
+import { getPermissions } from '@/utils/auth';
 
-const StatisticCard: React.FC<{
+/** 递归统计菜单树节点数（父节点 + 子节点） */
+const countMenuNodes = (menus: any[] = []): number =>
+  menus.reduce(
+    (sum, item) => sum + 1 + countMenuNodes(item?.children ?? item?.routes ?? []),
+    0,
+  );
+
+const StatCard: React.FC<{
   title: string;
-  value: number | string;
+  value: React.ReactNode;
   icon: React.ReactNode;
-  color: string;
-}> = ({ title, value, icon, color }) => {
+  hint?: string;
+}> = ({ title, value, icon, hint }) => {
   const { token } = theme.useToken();
   return (
     <Card
-      bordered={false}
-      style={{
-        borderRadius: 8,
-      }}
-      styles={{
-        body: {
-          padding: '20px 24px',
-        },
-      }}
+      variant="outlined"
+      style={{ borderColor: token.colorBorderSecondary }}
+      styles={{ body: { padding: '20px 24px' } }}
     >
-      <Row align="middle" gutter={16}>
-        <Col>
+      <Row align="middle" gutter={16} wrap={false}>
+        <Col flex="none">
           <div
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 8,
-              backgroundColor: color,
+              width: 44,
+              height: 44,
+              borderRadius: token.borderRadius,
+              background: token.colorFillTertiary,
+              color: token.colorPrimary,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 24,
-              color: '#fff',
+              fontSize: 20,
             }}
           >
             {icon}
           </div>
         </Col>
-        <Col flex="auto">
-          <div
-            style={{
-              fontSize: 14,
-              color: token.colorTextSecondary,
-              marginBottom: 4,
-            }}
-          >
+        <Col flex="auto" style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 13, color: token.colorTextTertiary, marginBottom: 2 }}>
             {title}
           </div>
           <div
             style={{
-              fontSize: 28,
+              fontSize: 24,
               fontWeight: 600,
               color: token.colorTextHeading,
+              lineHeight: 1.3,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           >
             {value}
           </div>
+          {hint && (
+            <div style={{ fontSize: 12, color: token.colorTextTertiary, marginTop: 2 }}>
+              {hint}
+            </div>
+          )}
         </Col>
       </Row>
     </Card>
@@ -74,151 +79,84 @@ const StatisticCard: React.FC<{
 const Welcome: React.FC = () => {
   const { token } = theme.useToken();
   const { initialState } = useModel('@@initialState');
+  const currentUser = initialState?.currentUser;
+
+  const menuCount = useMemo(
+    () => countMenuNodes((initialState?.menuData ?? []) as any[]),
+    [initialState?.menuData],
+  );
+  const permissionCount = useMemo(() => getPermissions().length, []);
 
   return (
     <PageContainer>
       <div
         style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          borderRadius: 12,
-          padding: '32px 24px',
-          marginBottom: 24,
-          color: '#fff',
+          background: token.colorBgContainer,
+          border: `1px solid ${token.colorBorderSecondary}`,
+          borderRadius: token.borderRadiusLG,
+          padding: '28px 24px',
+          marginBottom: 20,
         }}
       >
         <h1
           style={{
-            fontSize: 28,
+            fontSize: 24,
             fontWeight: 600,
             margin: 0,
-            color: '#fff',
+            color: token.colorTextHeading,
+            letterSpacing: '-0.01em',
           }}
         >
-          欢迎回来，{initialState?.currentUser?.username || '管理员'}
+          欢迎回来，{currentUser?.nickname || currentUser?.username || '管理员'}
         </h1>
         <p
           style={{
             margin: '8px 0 0 0',
             fontSize: 14,
-            opacity: 0.9,
+            color: token.colorTextSecondary,
           }}
         >
-          今天天气不错，让我们开始工作吧！
+          白泽微服务框架 · 后端服务已就绪，可从左侧菜单进入各业务模块。
         </p>
       </div>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
-          <StatisticCard
-            title="用户总数"
-            value="1,234"
-            icon={<TeamOutlined />}
-            color="#1890ff"
-          />
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <StatisticCard
-            title="菜单数量"
-            value="56"
+          <StatCard
+            title="可访问菜单"
+            value={menuCount}
             icon={<MenuOutlined />}
-            color="#52c41a"
+            hint="按当前账号权限"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <StatisticCard
-            title="角色数量"
-            value="8"
+          <StatCard
+            title="权限码"
+            value={permissionCount}
             icon={<SafetyOutlined />}
-            color="#faad14"
+            hint="用于按钮级控权"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <StatisticCard
-            title="今日访问"
-            value="3,567"
-            icon={<AreaChartOutlined />}
-            color="#f5222d"
+          <StatCard
+            title="当前账号"
+            value={currentUser?.username || '-'}
+            icon={<IdcardOutlined />}
+            hint={currentUser?.email || '未绑定邮箱'}
           />
         </Col>
-      </Row>
-
-      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
-        <Col xs={24} lg={16}>
-          <Card
-            title="快捷入口"
-            bordered={false}
-            style={{ borderRadius: 8, height: '100%' }}
-            styles={{
-              body: {
-                padding: '16px 24px',
-              },
-            }}
-          >
-            <Row gutter={[16, 16]}>
-              {[
-                { name: '用户管理', path: '/system/user' },
-                { name: '角色管理', path: '/system/role' },
-                { name: '菜单管理', path: '/system/menu' },
-                { name: '部门管理', path: '/system/dept' },
-              ].map((item) => (
-                <Col xs={12} sm={6} key={item.path}>
-                  <a href={item.path}>
-                    <div
-                      style={{
-                        padding: '16px',
-                        textAlign: 'center',
-                        borderRadius: 8,
-                        backgroundColor: token.colorBgContainer,
-                        border: `1px solid ${token.colorBorderSecondary}`,
-                        transition: 'all 0.3s',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = token.colorPrimary;
-                        e.currentTarget.style.color = token.colorPrimary;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor =
-                          token.colorBorderSecondary;
-                        e.currentTarget.style.color = token.colorText;
-                      }}
-                    >
-                      {item.name}
-                    </div>
-                  </a>
-                </Col>
-              ))}
-            </Row>
-          </Card>
-        </Col>
-        <Col xs={24} lg={8}>
-          <Card
-            title="系统信息"
-            bordered={false}
-            style={{ borderRadius: 8, height: '100%' }}
-            styles={{
-              body: {
-                padding: '16px 24px',
-              },
-            }}
-          >
-            <div
-              style={{
-                fontSize: 14,
-                color: token.colorTextSecondary,
-                lineHeight: 2,
-              }}
-            >
-              <div>
-                <span style={{ fontWeight: 500 }}>系统版本：</span>v1.0.0
-              </div>
-              <div>
-                <span style={{ fontWeight: 500 }}>数据库状态：</span>正常
-              </div>
-              <div>
-                <span style={{ fontWeight: 500 }}>运行环境：</span>生产环境
-              </div>
-            </div>
-          </Card>
+        <Col xs={24} sm={12} lg={6}>
+          <StatCard
+            title="租户"
+            // 后端默认租户 id 是字符串 '0'，直接显示成 0 会让人以为是空值
+            value={
+              !currentUser?.tenantId || currentUser.tenantId === '0'
+                ? '默认租户'
+                : currentUser.tenantId
+            }
+            icon={<ApiOutlined />}
+            hint="请求会带上该租户上下文"
+          />
         </Col>
       </Row>
     </PageContainer>

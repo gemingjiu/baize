@@ -18,6 +18,7 @@ import {
   getConfigPage,
   updateConfig,
 } from '@/services/system/config';
+import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
 
 /**
  * 参数配置页面
@@ -121,7 +122,7 @@ const Config: React.FC = () => {
               编辑
             </Button>
           </Authorized>
-          <Authorized permission="system:config:delete">
+          <Authorized permission="system:config:remove">
             <Button type="link" size="small" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
               删除
             </Button>
@@ -155,16 +156,16 @@ const Config: React.FC = () => {
           </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          const { current, pageSize } = params;
           const res = await getConfigPage(
-            { current: current || 1, size: pageSize || 10 },
-            rest as API.SysConfigDto,
+            { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
+            toPageQuery<API.SysConfigDto>(params),
           );
           if (res.success) {
             return {
-              data: res.data.records,
+              data: res.data.records ?? [],
               success: true,
-              total: res.data.total,
+              total: res.data.total ?? 0,
             };
           }
           return {
@@ -185,7 +186,7 @@ const Config: React.FC = () => {
         onFinish={handleSubmit}
         initialValues={editingRecord}
         modalProps={{
-          destroyOnClose: true,
+          destroyOnHidden: true,
         }}
       >
         <ProFormText

@@ -1,22 +1,40 @@
-import { ClearOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  ClearOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+  EyeOutlined,
+} from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, Descriptions, Drawer, Modal, message, Space, Tag } from 'antd';
-import React, { useRef, useState } from 'react';
+import type { FormInstance } from 'antd';
+import React, { useCallback, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useExportXlsx } from '@/hooks/useExportXlsx';
 import {
   cleanOperLog,
   deleteOperLog,
+  exportOperLogs,
   getOperLogPage,
 } from '@/services/system/operlog';
+import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
 
 /**
  * 操作日志管理页面
  */
 const OperLog: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  // 表格查询表单实例，导出时直接取当前查询条件
+  const formRef = useRef<FormInstance<API.SysOperLogDto> | undefined>(undefined);
+  const [exporting, handleExport] =
+    useExportXlsx<API.SysOperLogDto>(exportOperLogs);
   const [detailVisible, setDetailVisible] = useState(false);
   const [detailRecord, setDetailRecord] = useState<API.SysOperLogDto | undefined>();
+
+  /** 按当前查询条件导出操作日志（无查询条件即全量导出） */
+  const handleExportOperLogs = useCallback(() => {
+    handleExport(formRef.current?.getFieldsValue() ?? {});
+  }, [handleExport]);
 
   const handleDelete = (record: API.SysOperLogDto) => {
     Modal.confirm({
@@ -175,7 +193,7 @@ const OperLog: React.FC = () => {
           >
             查看
           </Button>
-          <Authorized permission="system:operlog:delete">
+          <Authorized permission="monitor:operlog:remove">
             <Button
               type="link"
               size="small"
@@ -196,33 +214,47 @@ const OperLog: React.FC = () => {
       <ProTable<API.SysOperLogDto>
         headerTitle="操作日志"
         actionRef={actionRef}
+        formRef={formRef}
         rowKey="id"
         search={{
           labelWidth: 100,
         }}
         toolBarRender={() => [
-          <Authorized permission="system:operlog:clean" key="clean">
+          <Authorized permission="monitor:operlog:remove" key="clean">
             <Button danger icon={<ClearOutlined />} onClick={handleClean}>
               清空日志
             </Button>
           </Authorized>,
+          <Authorized permission="monitor:operlog:export" key="export">
+            <Button
+              icon={<DownloadOutlined />}
+              loading={exporting}
+              onClick={handleExportOperLogs}
+            >
+              导出
+            </Button>
+          </Authorized>,
         ]}
         request={async (params) => {
-          const { current, pageSize, ...rest } = params;
+          const { current, pageSize } = params;
           const res = await getOperLogPage(
-            { current: current || 1, size: pageSize || 10 },
-            rest as API.SysOperLogDto,
+            { current: current || 1, size: pageSize || DEFAULT_PAGE_SIZE },
+            toPageQuery<API.SysOperLogDto>(params),
           );
+          // 后端 SysOperLogServiceImpl.page() 在结果集为空时抛 NotFoundException
+          // （"未找到操作日志信息"），响应体 success=false。此时按"空表格"渲染，
+          // 而不是让 ProTable 进入错误态，避免 0 行数据时整页报错。
           if (res.success) {
             return {
-              data: res.data.records,
+              data: res.data.records ?? [],
               success: true,
-              total: res.data.total,
+              total: res.data.total ?? 0,
             };
           }
           return {
             data: [],
-            success: false,
+            success: true,
+            total: 0,
           };
         }}
         columns={columns}
