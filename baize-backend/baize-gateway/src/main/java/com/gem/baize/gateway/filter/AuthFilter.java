@@ -4,10 +4,12 @@ package com.gem.baize.gateway.filter;
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.common.security.domain.dto.Payload;
 import com.gem.baize.common.security.util.JwtUtils;
+import com.gem.baize.gateway.config.GatewayWhitelist;
 import com.gem.baize.gateway.enums.FilterOrder;
+import com.gem.baize.gateway.filter.support.ReactiveTokenBlacklistChecker;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -19,21 +21,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 /**
  * 认证过滤器
  */
+@Slf4j
 @Component
 public class AuthFilter implements GlobalFilter, Ordered {
     public static final String BEARER = "Bearer ";
     private static final String SKIP_AUTH_METADATA_KEY = "skipAuth";
 
     @Autowired
-    private  JwtUtils jwtUtils;
+    private JwtUtils jwtUtils;
 
-    @Value("${baize.gateway.whitelist:}")
-    private List<String> whitelist;
+    @Autowired
+    private ReactiveTokenBlacklistChecker tokenBlacklistChecker;
+
+    @Autowired
+    private GatewayWhitelist gatewayWhitelist;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -46,7 +50,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
 
         // 配置文件白名单跳过认证
-        if (isWhitelist(path)) {
+        if (gatewayWhitelist.matches(path)) {
             return chain.filter(exchange);
         }
 
@@ -59,50 +63,81 @@ public class AuthFilter implements GlobalFilter, Ordered {
         return authenticate(exchange, chain);
     }
 
-    private boolean isWhitelist(String path) {
-        if (whitelist == null || whitelist.isEmpty()) {
-            return false;
-        }
-        for (String whitePath : whitelist) {
-            if (whitePath.endsWith("/**")) {
-                String prefix = whitePath.substring(0, whitePath.length() - 3);
-                if (path.startsWith(prefix)) {
-                    return true;
-                }
-            } else if (path.equals(whitePath)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private Mono<Void> authenticate(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String auth = request.getHeaders().getFirst(CustomHttpHeaders.AUTHORIZATION);
-        if (StringUtils.isBlank(auth)) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+        // 缺少令牌或不是 Bearer 格式直接拒绝
+        if (StringUtils.isBlank(auth) || !auth.startsWith(BEARER)) {
+            return unauthorized(exchange);
         }
-        // 验证token
-        if (StringUtils.isNotBlank(auth) && !auth.startsWith(BEARER)) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+        String token = auth.substring(BEARER.length()).trim();
+        if (StringUtils.isBlank(token)) {
+            return unauthorized(exchange);
         }
+
+        // 验证token签名与有效期
+        Payload payload;
         try {
-            Payload payload = jwtUtils.parsePayload(auth.replace(BEARER, ""));
-            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                    .header(CustomHttpHeaders.SUBJECT_ID, payload.getSubject())
-                    .header(CustomHttpHeaders.TENANT_ID, payload.getTenantId())
-                    .header(CustomHttpHeaders.USER_ID, payload.getUserId())
-                    .header(CustomHttpHeaders.USER_NAME, payload.getUserName())
-                    .header(CustomHttpHeaders.ROLE, payload.getRole())
-                    .header(CustomHttpHeaders.DATA_SCOPE, payload.getDataScope())
-                    .build();
-            return chain.filter(exchange.mutate().request(mutatedRequest).build());
+            payload = jwtUtils.parsePayload(token);
         } catch (Exception e) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            log.debug("JWT 校验失败: {}", e.getMessage());
+            return unauthorized(exchange);
         }
+
+        // 构造透传给下游服务的用户上下文请求头（声明缺失时不写入，避免 NPE）
+        ServerHttpRequest mutatedRequest = buildUserContextRequest(request, payload);
+
+        // 验签通过后再查黑名单：登出后令牌立即失效。
+        // 查询失败时 fail-closed：宁可拒绝请求，也不能让已登出的令牌在存储故障期间继续通行。
+        return tokenBlacklistChecker.isBlacklisted(token)
+                .flatMap(blacklisted -> {
+                    if (Boolean.TRUE.equals(blacklisted)) {
+                        log.info("令牌已失效（命中黑名单）: path={}", request.getURI().getPath());
+                        return unauthorized(exchange);
+                    }
+                    return chain.filter(exchange.mutate().request(mutatedRequest).build());
+                })
+                .onErrorResume(e -> {
+                    log.error("访问令牌黑名单查询失败，按 fail-closed 拒绝请求: path={}, error={}",
+                            request.getURI().getPath(), e.getMessage());
+                    return serviceUnavailable(exchange);
+                });
+    }
+
+    /**
+     * 把解析出的用户上下文写入下游请求头
+     */
+    private ServerHttpRequest buildUserContextRequest(ServerHttpRequest request, Payload payload) {
+        ServerHttpRequest.Builder builder = request.mutate();
+        addHeaderIfPresent(builder, CustomHttpHeaders.SUBJECT_ID, payload.getSubject());
+        addHeaderIfPresent(builder, CustomHttpHeaders.TENANT_ID, payload.getTenantId());
+        addHeaderIfPresent(builder, CustomHttpHeaders.USER_ID, payload.getUserId());
+        addHeaderIfPresent(builder, CustomHttpHeaders.USER_NAME, payload.getUserName());
+        addHeaderIfPresent(builder, CustomHttpHeaders.ROLE, payload.getRole());
+        addHeaderIfPresent(builder, CustomHttpHeaders.DATA_SCOPE, payload.getDataScope());
+        return builder.build();
+    }
+
+    private void addHeaderIfPresent(ServerHttpRequest.Builder builder, String name, String value) {
+        if (StringUtils.isNotBlank(value)) {
+            builder.header(name, value);
+        }
+    }
+
+    private Mono<Void> unauthorized(ServerWebExchange exchange) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        return exchange.getResponse().setComplete();
+    }
+
+    /**
+     * 依赖的鉴权存储不可用时的响应。
+     * <p>
+     * 返回 503 而不是放行：让调用方明确知道「无法判定令牌状态」，
+     * 而不是把已登出的令牌当作有效令牌继续转发。
+     */
+    private Mono<Void> serviceUnavailable(ServerWebExchange exchange) {
+        exchange.getResponse().setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
+        return exchange.getResponse().setComplete();
     }
 
     private boolean isSkipAuth(Route route) {

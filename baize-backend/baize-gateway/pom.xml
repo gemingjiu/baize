@@ -98,6 +98,12 @@
             <artifactId>baize-common-security</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <!-- Spring Boot Data Redis Reactive：网关（WebFlux）查询访问令牌黑名单，必须使用响应式客户端避免阻塞事件循环 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

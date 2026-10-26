@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public enum FilterOrder {
 
+    DENYLIST_FILTER(-1100, "路径黑名单过滤器"),
     TRACE_ID_FILTER(-1000, "traceId 生成过滤器"),
     AUTH_FILTER(-900, "JWT 认证过滤器"),
     TENANT_FILTER(-800, "租户校验过滤器"),
