@@ -98,6 +98,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- 提供 GlobalExceptionHandler 等 WebMvc 通用能力：
+             缺少它时业务异常无处理器，会转发 /error 并被安全链拦成 403 空响应体 -->
+        <dependency>
+            <groupId>com.gem</groupId>
+            <artifactId>baize-common-webmvc</artifactId>
+        </dependency>
+
         <!-- Spring Cloud OpenFeign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

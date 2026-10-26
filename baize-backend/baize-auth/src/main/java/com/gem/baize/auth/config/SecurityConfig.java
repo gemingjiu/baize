@@ -36,8 +36,12 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 // 配置请求授权
                 .authorizeHttpRequests(auth -> auth
-                        // 登录、登出、刷新令牌接口允许匿名访问
-                        .requestMatchers("/auth/login", "/auth/logout", "/auth/refresh").permitAll()
+                        // 登录、登出、刷新令牌、切换租户接口允许匿名访问。
+                        // 这些接口都在网关 skipAuth 路由下，到达本服务时没有网关注入的用户上下文，
+                        // 身份只能由请求体 / Authorization 头自己携带（切换租户在 Service 层校验归属）。
+                        .requestMatchers("/auth/login", "/auth/logout", "/auth/refresh", "/auth/switchTenant").permitAll()
+                        // 错误页必须放行，否则异常转发到 /error 时会再次被拦截，最终返回 403 空响应体
+                        .requestMatchers("/error").permitAll()
                         // Swagger API文档相关路径允许匿名访问
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // 其他所有请求需要认证
