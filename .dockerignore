@@ -1,0 +1,11 @@
+# Docker 构建上下文忽略文件（后端镜像构建上下文为仓库根目录）
+.git
+.github
+.idea
+.env*
+**/target
+**/logs
+*.log
+*.md
+# 前端工程不参与后端镜像构建，避免 node_modules 进入构建上下文
+baize-ui

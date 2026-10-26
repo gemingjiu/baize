@@ -1,0 +1,26 @@
+# 本地环境变量（含密钥，禁止提交）
+.env
+.env.*
+!.env.example
+
+# 构建产物
+target/
+dist/
+node_modules/
+
+# 日志与 IDE
+logs/
+*.log
+nohup.out
+.idea/
+# IDEA 运行配置（各人本地生成，不入库）
+.run/
+*.iml
+out/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 本地调试脚本（CDP 探针/抓包日志等）
+.debug/
