@@ -5,6 +5,8 @@ import com.gem.baize.api.system.config.domain.dto.SysConfigDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import com.gem.baize.system.config.entity.SysConfig;
 import com.gem.baize.system.config.service.SysConfigService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,11 +62,12 @@ public class SysConfigController {
     @PostMapping("/page")
     @Operation(summary = "分页查询参数配置")
     @RequiresPermission("system:config:list")
-    public ApiResult<Page<SysConfigDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
+    public ApiResult<PageResult<SysConfigDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                @RequestParam(value = "size", defaultValue = "10") int size,
                                                @Valid @RequestBody SysConfigDto dto) {
         Page<SysConfig> page = new Page<>(current, size);
-        return ApiResult.ok(sysConfigService.page(page, dto));
+        PageConvert<SysConfigDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysConfigService.page(page, dto)));
     }
 
     @GetMapping("/key/{configKey}")

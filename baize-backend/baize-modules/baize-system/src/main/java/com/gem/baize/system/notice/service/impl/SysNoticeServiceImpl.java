@@ -2,6 +2,7 @@ package com.gem.baize.system.notice.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.notice.domain.dto.SysNoticeDto;
@@ -47,7 +48,14 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysNotice> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysNotice::getId, id);
+        wrapper.eq(SysNotice::getDeleted, "0");
+        wrapper.set(SysNotice::getDeleted, "1");
+        wrapper.set(SysNotice::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("公告不存在或已删除");
         }

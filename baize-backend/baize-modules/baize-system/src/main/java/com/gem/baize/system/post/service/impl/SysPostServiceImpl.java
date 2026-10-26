@@ -3,6 +3,7 @@ package com.gem.baize.system.post.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.post.domain.dto.SysPostDto;
@@ -53,7 +54,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     @Override
     @Transactional
-    @CachePut(cacheNames = "sys_post", key = "#sysPostDto.id")
+    @CacheEvict(cacheNames = "sys_post", key = "#sysPostDto.id")
     public void updateById(SysPostDto sysPostDto) {
         SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
         boolean success = super.updateById(sysPost);
@@ -66,7 +67,14 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_post", key = "#id")
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysPost> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysPost::getId, id);
+        wrapper.eq(SysPost::getDeleted, "0");
+        wrapper.set(SysPost::getDeleted, "1");
+        wrapper.set(SysPost::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("岗位不存在或已删除");
         }

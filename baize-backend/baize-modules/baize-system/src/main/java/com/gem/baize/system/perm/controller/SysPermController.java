@@ -5,6 +5,8 @@ import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import com.gem.baize.system.perm.entity.SysPerm;
 import com.gem.baize.system.perm.service.SysPermService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +14,8 @@ import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/system/perm")
@@ -60,8 +64,24 @@ public class SysPermController {
     @PostMapping("/page")
     @Operation(summary = "分页查询权限")
     @RequiresPermission("system:perm:list")
-    public ApiResult<Page<SysPermDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysPermDto dto) {
+    public ApiResult<PageResult<SysPermDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysPermDto dto) {
         Page<SysPerm> page = new Page<>(current, size);
-        return ApiResult.ok(sysPermService.page(page, dto));
+        PageConvert<SysPermDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysPermService.page(page, dto)));
+    }
+
+    /**
+     * 查询权限树。
+     * <p>
+     * 注意：必须显式声明本端点。若缺少它，GET /system/perm/tree 会被
+     * {@code @GetMapping("/{id}")} 捕获，路径变量 id 拿到字符串 "tree"，
+     * 最终以 "invalid input syntax for type bigint" 的形式在数据库层报错，
+     * 表现为接口 500 且错误信息与真实原因无关。
+     */
+    @GetMapping("/tree")
+    @Operation(summary = "查询权限树")
+    @RequiresPermission("system:perm:list")
+    public ApiResult<List<SysPermDto>> tree() {
+        return ApiResult.ok(sysPermService.tree());
     }
 }

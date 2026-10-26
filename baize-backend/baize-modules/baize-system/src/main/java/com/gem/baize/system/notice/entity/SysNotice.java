@@ -11,9 +11,6 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_notice")
 public class SysNotice extends BaseEntity {
 
-    @TableField(value = "tenant_id")
-    private String tenantId;
-
     @TableField(value = "notice_title")
     private String noticeTitle;
 

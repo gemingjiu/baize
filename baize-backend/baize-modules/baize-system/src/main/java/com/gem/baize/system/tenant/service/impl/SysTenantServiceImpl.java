@@ -2,6 +2,7 @@ package com.gem.baize.system.tenant.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -56,7 +58,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(cacheNames = "sys_tenant", key = "#sysTenantDto.id")
+    @CacheEvict(cacheNames = "sys_tenant", key = "#sysTenantDto.id")
     public void updateById(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = sysTenantConvert.toEntity(sysTenantDto);
 
@@ -72,7 +74,14 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_tenant", key = "#id")
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysTenant> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysTenant::getId, id);
+        wrapper.eq(SysTenant::getDeleted, "0");
+        wrapper.set(SysTenant::getDeleted, "1");
+        wrapper.set(SysTenant::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("租户不存在或已删除");
         }
@@ -100,6 +109,30 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         Page<SysTenant> sysTenantPage = super.page(page, wrapper);
         return sysTenantConvert.toDtoPage(sysTenantPage);
+    }
+
+    @Override
+    public List<SysTenantDto> listAvailable() {
+        LambdaQueryWrapper<SysTenant> wrapper = new LambdaQueryWrapper<>();
+        // 只暴露正常租户：删除的、停用的都不出现在登录页下拉框
+        wrapper.eq(SysTenant::getDeleted, "0");
+        wrapper.eq(SysTenant::getStatus, "0");
+        wrapper.orderByAsc(SysTenant::getSort);
+        wrapper.orderByAsc(SysTenant::getId);
+        return sysTenantConvert.toDtoList(super.list(wrapper));
+    }
+
+    @Override
+    public boolean existsById(String id) {
+        // 租户ID必须是数字：它会进入 SQL 条件，同时也会被写入令牌的 X-Tenant-Id
+        if (StringUtils.isBlank(id) || !id.matches("\\d+")) {
+            return false;
+        }
+        LambdaQueryWrapper<SysTenant> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysTenant::getId, id);
+        wrapper.eq(SysTenant::getDeleted, "0");
+        wrapper.eq(SysTenant::getStatus, "0");
+        return super.count(wrapper) > 0;
     }
 
     @Override

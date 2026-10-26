@@ -11,9 +11,6 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_dict_data")
 public class SysDictData extends BaseEntity {
 
-    @TableField(value = "tenant_id")
-    private String tenantId;
-
     @TableField(value = "dict_type")
     private String dictType;
 

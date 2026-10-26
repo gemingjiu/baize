@@ -1,5 +1,6 @@
 package com.gem.baize.system.tenant.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.gem.baize.common.database.entity.BaseEntity;
@@ -9,12 +10,18 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 
 /**
- * 租户信息
+ * 租户信息（租户表自身无 tenant_id 列，需屏蔽 BaseEntity 中的 tenantId）
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("sys_tenant")
 public class SysTenant extends BaseEntity {
+    /**
+     * 屏蔽 BaseEntity 中的 tenant_id（sys_tenant 表无此列）
+     */
+    @TableField(exist = false)
+    private String tenantId;
+
     /**
      * 租户名称
      */

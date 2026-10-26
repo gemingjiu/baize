@@ -68,7 +68,7 @@ public class SysRolePermServiceImpl implements SysRolePermService {
         // 先删除角色现有权限
         removeByRoleId(roleId);
 
-        // 批量添加新权限
+        // 批量添加新权限（tenant_id 由 BaseEntityObjectHandler 自动填充，无需手工赋值）
         if (permIds != null && !permIds.isEmpty()) {
             for (String permId : permIds) {
                 SysRolePerm rolePerm = new SysRolePerm();

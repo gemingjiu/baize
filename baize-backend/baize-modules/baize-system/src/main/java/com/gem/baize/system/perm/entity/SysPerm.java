@@ -10,11 +10,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @TableName("sys_perm")
 public class SysPerm extends BaseEntity {
-    /**
-     * 租户ID
-     */
-    @TableField(value = "tenant_id")
-    private String tenantId;
 
     /**
      * 父级ID

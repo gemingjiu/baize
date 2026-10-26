@@ -111,6 +111,19 @@
             <artifactId>baize-common-security</artifactId>
         </dependency>
 
+        <!-- 在线用户/令牌黑名单等 Redis 能力：OnlineUserController 依赖 common-cache 里的
+             OnlineUserServiceImpl，缺少本依赖会导致启动时找不到 OnlineUserService 实现 bean -->
+        <dependency>
+            <groupId>com.gem</groupId>
+            <artifactId>baize-common-cache</artifactId>
+        </dependency>
+
+        <!-- Excel 导入导出：用户/角色/日志等列表导出 -->
+        <dependency>
+            <groupId>com.gem</groupId>
+            <artifactId>baize-common-excel</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.gem</groupId>
             <artifactId>baize-api-system</artifactId>

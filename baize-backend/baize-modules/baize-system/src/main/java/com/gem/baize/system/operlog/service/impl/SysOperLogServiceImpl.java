@@ -45,9 +45,13 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
             wrapper.eq(SysOperLog::getTenantId, sysOperLogDto.getTenantId());
         }
 
-        Page<SysOperLog> resultPage = Optional.ofNullable(super.page(page, wrapper))
-                .filter(p -> !CollectionUtils.isEmpty(p.getRecords()))
-                .orElseThrow(() -> new NotFoundException("未找到操作日志信息"));
+        // 分页查询：空结果集是正常业务状态（表里暂无数据或筛选无命中），
+        // 应当返回空分页而不是抛异常。历史上这里用 orElseThrow 把"查不到"
+        // 当成错误，导致 sys_oper_log 为空表时接口 500、前端整页进入错误态。
+        Page<SysOperLog> resultPage = super.page(page, wrapper);
+        if (resultPage == null) {
+            resultPage = new Page<>(page.getCurrent(), page.getSize());
+        }
 
         return SysOperLogConvert.INSTANCE.toDtoPage(resultPage);
     }

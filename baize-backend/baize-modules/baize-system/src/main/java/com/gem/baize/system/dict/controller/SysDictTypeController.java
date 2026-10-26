@@ -5,6 +5,8 @@ import com.gem.baize.api.system.dict.domain.dto.SysDictTypeDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import com.gem.baize.system.dict.entity.SysDictType;
 import com.gem.baize.system.dict.service.SysDictTypeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,10 +62,11 @@ public class SysDictTypeController {
     @PostMapping("/page")
     @Operation(summary = "分页查询字典类型")
     @RequiresPermission("system:dict:list")
-    public ApiResult<Page<SysDictTypeDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
+    public ApiResult<PageResult<SysDictTypeDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                 @RequestParam(value = "size", defaultValue = "10") int size,
                                                 @Valid @RequestBody SysDictTypeDto dto) {
         Page<SysDictType> page = new Page<>(current, size);
-        return ApiResult.ok(sysDictTypeService.page(page, dto));
+        PageConvert<SysDictTypeDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysDictTypeService.page(page, dto)));
     }
 }

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.notice.domain.dto.SysNoticeDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import com.gem.baize.system.notice.entity.SysNotice;
 import com.gem.baize.system.notice.service.SysNoticeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,10 +58,11 @@ public class SysNoticeController {
     @PostMapping("/page")
     @Operation(summary = "分页查询公告")
     @RequiresPermission("system:notice:list")
-    public ApiResult<Page<SysNoticeDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
+    public ApiResult<PageResult<SysNoticeDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                @RequestParam(value = "size", defaultValue = "10") int size,
                                                @RequestBody SysNoticeDto dto) {
         Page<SysNotice> page = new Page<>(current, size);
-        return ApiResult.ok(sysNoticeService.page(page, dto));
+        PageConvert<SysNoticeDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysNoticeService.page(page, dto)));
     }
 }

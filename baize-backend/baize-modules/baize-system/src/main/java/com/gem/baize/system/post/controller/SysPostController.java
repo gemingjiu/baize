@@ -7,6 +7,8 @@ import com.gem.baize.api.system.post.domain.dto.SysPostDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
@@ -61,8 +63,9 @@ public class SysPostController {
     @PostMapping("/page")
     @Operation(summary = "分页查询部门")
     @RequiresPermission("system:post:list")
-    public ApiResult<Page<SysPostDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysPostDto dto) {
+    public ApiResult<PageResult<SysPostDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysPostDto dto) {
         Page<SysPost> page = new Page<>(current, size);
-        return ApiResult.ok(sysPostService.page(page, dto));
+        PageConvert<SysPostDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysPostService.page(page, dto)));
     }
 }

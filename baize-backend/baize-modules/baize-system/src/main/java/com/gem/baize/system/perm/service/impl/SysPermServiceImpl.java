@@ -3,11 +3,13 @@ package com.gem.baize.system.perm.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
+import com.gem.baize.common.core.utils.TreeUtils;
 import com.gem.baize.system.perm.entity.SysPerm;
 import com.gem.baize.system.perm.mapper.SysPermMapper;
 import com.gem.baize.system.perm.service.SysPermService;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -52,7 +55,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(cacheNames = "sys_perm", key = "#sysPermDto.id")
+    @CacheEvict(cacheNames = "sys_perm", key = "#sysPermDto.id")
     public void updateById(SysPermDto sysPermDto) {
         SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
         boolean success = super.updateById(sysPerm);
@@ -65,7 +68,14 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_perm", key = "#id")
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysPerm> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysPerm::getId, id);
+        wrapper.eq(SysPerm::getDeleted, "0");
+        wrapper.set(SysPerm::getDeleted, "1");
+        wrapper.set(SysPerm::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("权限不存在或已删除");
         }
@@ -93,5 +103,16 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
 
         Page<SysPerm> sysPermPage = super.page(page, wrapper);
         return sysPermConvert.toDtoPage(sysPermPage);
+    }
+
+    @Override
+    public List<SysPermDto> tree() {
+        LambdaQueryWrapper<SysPerm> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(SysPerm::getSort);
+
+        List<SysPerm> permList = list(wrapper);
+        List<SysPermDto> dtoList = sysPermConvert.toDtoList(permList);
+
+        return TreeUtils.buildTree(dtoList, SysPermDto::getId, SysPermDto::getParentId, SysPermDto::setChildren);
     }
 }

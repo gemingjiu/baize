@@ -2,6 +2,7 @@ package com.gem.baize.system.config.service.impl;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.config.domain.dto.SysConfigDto;
@@ -46,7 +47,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CachePut(cacheNames = "sys_config", key = "#dto.id")
+    @CacheEvict(cacheNames = "sys_config", key = "#dto.id")
     public void updateById(SysConfigDto dto) {
         SysConfig sysConfig = sysConfigConvert.toEntity(dto);
         boolean success = super.updateById(sysConfig);
@@ -59,7 +60,15 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_config", key = "#id")
     public void removeById(String id) {
-        boolean success = super.removeById(id);
+        // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1' 表示停用），保留行供审计/外键引用。
+        // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，
+        // 会退化成物理 DELETE。
+        LambdaUpdateWrapper<SysConfig> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(SysConfig::getId, id);
+        wrapper.eq(SysConfig::getDeleted, "0");
+        wrapper.set(SysConfig::getDeleted, "1");
+        wrapper.set(SysConfig::getStatus, "1");
+        boolean success = this.update(wrapper);
         if (!success) {
             throw new NotFoundException("配置不存在或已删除");
         }

@@ -11,11 +11,6 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_post")
 public class SysPost extends BaseEntity {
     /**
-     * 租户ID
-     */
-    @TableField(value = "tenant_id")
-    private String tenantId;
-    /**
      * 岗位编码
      */
     @TableField(value = "post_code")

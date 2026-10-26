@@ -1,5 +1,6 @@
 package com.gem.baize.system.perm.controller;
 
+import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.perm.service.SysRolePermService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,18 +21,25 @@ public class SysRolePermController {
 
     @GetMapping("/{roleId}/perms")
     @Operation(summary = "获取角色权限ID列表")
+    @RequiresPermission("system:role:query")
     public ApiResult<List<String>> getPermIdsByRoleId(@PathVariable String roleId) {
         return ApiResult.ok(sysRolePermService.getPermIdsByRoleId(roleId));
     }
 
     @GetMapping("/roles/codes")
     @Operation(summary = "根据角色ID列表获取权限编码列表")
+    @RequiresPermission("system:role:query")
     public ApiResult<List<String>> getPermCodesByRoleIds(@RequestParam List<String> roleIds) {
         return ApiResult.ok(sysRolePermService.getPermCodesByRoleIds(roleIds));
     }
 
+    /**
+     * 为角色分配权限。
+     * 历史缺失 @RequiresPermission，任何登录用户都能给自己角色挂权限码。
+     */
     @PostMapping("/{roleId}/assign")
     @Operation(summary = "为角色分配权限")
+    @RequiresPermission("system:role:edit")
     public ApiResult<Void> assignPerms(@PathVariable String roleId,
                                        @RequestBody List<String> permIds,
                                        @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {
@@ -41,6 +49,7 @@ public class SysRolePermController {
 
     @DeleteMapping("/{roleId}")
     @Operation(summary = "删除角色所有权限关联")
+    @RequiresPermission("system:role:edit")
     public ApiResult<Void> removeByRoleId(@PathVariable String roleId) {
         sysRolePermService.removeByRoleId(roleId);
         return ApiResult.ok();

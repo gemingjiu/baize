@@ -5,6 +5,8 @@ import com.gem.baize.api.system.dict.domain.dto.SysDictDataDto;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
+import com.gem.baize.common.database.convert.PageConvert;
 import com.gem.baize.system.dict.entity.SysDictData;
 import com.gem.baize.system.dict.service.SysDictDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,11 +64,12 @@ public class SysDictDataController {
     @PostMapping("/page")
     @Operation(summary = "分页查询字典数据")
     @RequiresPermission("system:dict:list")
-    public ApiResult<Page<SysDictDataDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
+    public ApiResult<PageResult<SysDictDataDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                 @RequestParam(value = "size", defaultValue = "10") int size,
                                                 @Valid @RequestBody SysDictDataDto dto) {
         Page<SysDictData> page = new Page<>(current, size);
-        return ApiResult.ok(sysDictDataService.page(page, dto));
+        PageConvert<SysDictDataDto> pageConvert = new PageConvert<>();
+        return ApiResult.ok(pageConvert.toDto(sysDictDataService.page(page, dto)));
     }
 
     @GetMapping("/type/{dictType}")

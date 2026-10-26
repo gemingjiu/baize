@@ -11,9 +11,6 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_config")
 public class SysConfig extends BaseEntity {
 
-    @TableField(value = "tenant_id")
-    private String tenantId;
-
     @TableField(value = "config_name")
     private String configName;
 

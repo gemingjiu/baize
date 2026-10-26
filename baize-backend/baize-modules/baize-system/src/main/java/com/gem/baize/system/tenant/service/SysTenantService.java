@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.system.tenant.entity.SysTenant;
 
+import java.util.List;
+
 /**
  * 租户服务类接口
  */
@@ -26,4 +28,21 @@ public interface SysTenantService extends IService<SysTenant> {
      * @return 租户信息
      */
     SysTenantDto getByTenantCodeOrDomain(String tenant);
+
+    /**
+     * 查询可用租户列表（登录页租户下拉框数据源）。
+     * <p>
+     * 只返回未删除且状态正常的租户，按 sort、id 升序；不分页，租户量级很小。
+     *
+     * @return 可用租户列表
+     */
+    List<SysTenantDto> listAvailable();
+
+    /**
+     * 判断租户ID是否存在（未删除且状态正常）
+     *
+     * @param id 租户ID
+     * @return 存在返回 true
+     */
+    boolean existsById(String id);
 }

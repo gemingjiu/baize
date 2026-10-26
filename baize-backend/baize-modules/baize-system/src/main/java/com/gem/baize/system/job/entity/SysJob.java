@@ -16,10 +16,6 @@ public class SysJob extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    /** 租户ID */
-    @TableField(value = "tenant_id")
-    private String tenantId;
-
     /** 任务名称 */
     @TableField(value = "job_name")
     private String jobName;
