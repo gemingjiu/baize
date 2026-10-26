@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(path = "/system",name = "baize-system", url = "${baize.system.url:http://localhost:8020}",contextId = "SysRoleFeignClient")
+@FeignClient(path = "/api/v1/system",name = "baize-system", url = "${baize.system.url:http://localhost:8020}",contextId = "SysRoleFeignClient")
 public interface SysRoleFeignClient {
 
     @GetMapping("/role/user/{userId}")

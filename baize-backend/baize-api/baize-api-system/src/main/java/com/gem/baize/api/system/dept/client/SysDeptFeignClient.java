@@ -1,22 +1,22 @@
 package com.gem.baize.api.system.dept.client;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
 import com.gem.baize.api.system.dept.factory.SysDeptFeignClientFallbackFactory;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "baize-system", path = "/system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysDeptFeignClient", fallbackFactory = SysDeptFeignClientFallbackFactory.class)
+@FeignClient(name = "baize-system", path = "/api/v1/system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysDeptFeignClient", fallbackFactory = SysDeptFeignClientFallbackFactory.class)
 public interface SysDeptFeignClient {
 
     @PostMapping("/dept")
     ApiResult<Integer> create(@RequestBody SysDeptDto sysDeptDTO);
 
     @PostMapping("/dept/page")
-    ApiResult<Page<SysDeptDto>> page(@RequestParam("current") int current, @RequestParam("size") int size, @RequestBody SysDeptDto dto);
+    ApiResult<PageResult<SysDeptDto>> page(@RequestParam("current") int current, @RequestParam("size") int size, @RequestBody SysDeptDto dto);
 
     @GetMapping("/dept/{id}")
     ApiResult<SysDeptDto> getById(@PathVariable("id") String id);

@@ -2,10 +2,11 @@ package com.gem.baize.api.system.perm.client;
 
 import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(path = "/system", name = "baize-system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysPermFeignClient")
+@FeignClient(path = "/api/v1/system", name = "baize-system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysPermFeignClient")
 public interface SysPermFeignClient {
 
     /**
@@ -36,7 +37,7 @@ public interface SysPermFeignClient {
      * 分页查询权限
      */
     @PostMapping("/perm/page")
-    ApiResult<com.baomidou.mybatisplus.extension.plugins.pagination.Page<SysPermDto>> page(@RequestParam("current") int current,
-                                                                                           @RequestParam("size") int size,
-                                                                                           @RequestBody SysPermDto dto);
+    ApiResult<PageResult<SysPermDto>> page(@RequestParam("current") int current,
+                                           @RequestParam("size") int size,
+                                           @RequestBody SysPermDto dto);
 }

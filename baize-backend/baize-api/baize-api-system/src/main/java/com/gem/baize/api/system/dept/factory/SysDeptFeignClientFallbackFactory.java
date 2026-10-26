@@ -1,10 +1,10 @@
 package com.gem.baize.api.system.dept.factory;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.dept.client.SysDeptFeignClient;
 import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
 import com.gem.baize.common.core.enums.ErrorCode;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -26,7 +26,7 @@ public class SysDeptFeignClientFallbackFactory implements FallbackFactory<SysDep
             }
 
             @Override
-            public ApiResult<Page<SysDeptDto>> page(int current, int size, SysDeptDto dto) {
+            public ApiResult<PageResult<SysDeptDto>> page(int current, int size, SysDeptDto dto) {
                 return ApiResult.fail(ErrorCode.DEPENDENCY_ERROR.code(), ErrorCode.DEPENDENCY_ERROR.message());
             }
 

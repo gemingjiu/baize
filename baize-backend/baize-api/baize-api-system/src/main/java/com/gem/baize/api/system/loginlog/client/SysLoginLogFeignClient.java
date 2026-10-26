@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(path = "/system", name = "baize-system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysLoginLogFeignClient")
+@FeignClient(path = "/api/v1/system", name = "baize-system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysLoginLogFeignClient")
 public interface SysLoginLogFeignClient {
 
     /**

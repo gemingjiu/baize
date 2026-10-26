@@ -1,1 +1,2 @@
 com.gem.baize.api.system.dept.factory.SysDeptFeignClientFallbackFactory
+com.gem.baize.api.system.config.InnerAuthFeignConfig

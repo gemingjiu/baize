@@ -1,6 +1,6 @@
 package com.gem.baize.api.system.user.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -46,5 +46,16 @@ public class SysUserDto {
      */
     private String avatar;
 
+    /**
+     * 状态（0=正常，1=停用），来自 BaseEntity。
+     * 注意：DTO 必须显式声明该字段，否则 BeanUtils.copyProperties 不会拷贝，
+     * 导致前端「状态」列永远为空，且 changeUserStatus 修改后列表看不到变化。
+     */
+    private String status;
+
+    /**
+     * 密码（仅允许反序列化写入，序列化响应时忽略，避免接口泄露密码哈希）
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }

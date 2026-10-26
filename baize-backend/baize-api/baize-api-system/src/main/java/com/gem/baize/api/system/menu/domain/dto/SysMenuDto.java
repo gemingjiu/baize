@@ -59,6 +59,10 @@ public class SysMenuDto {
      */
     private String perms;
     /**
+     * 显示排序
+     */
+    private int sort;
+    /**
      * 子菜单
      */
     private List<SysMenuDto> children;

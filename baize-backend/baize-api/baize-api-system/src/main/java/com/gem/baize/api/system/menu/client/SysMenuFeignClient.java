@@ -2,12 +2,13 @@ package com.gem.baize.api.system.menu.client;
 
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
 import com.gem.baize.common.core.model.vo.ApiResult;
+import com.gem.baize.common.core.model.vo.PageResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(path = "/system", name = "baize-system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysMenuFeignClient")
+@FeignClient(path = "/api/v1/system", name = "baize-system", url = "${baize.system.url:http://localhost:8020}", contextId = "SysMenuFeignClient")
 public interface SysMenuFeignClient {
 
     /**
@@ -38,9 +39,9 @@ public interface SysMenuFeignClient {
      * 分页查询菜单
      */
     @PostMapping("/menu/page")
-    ApiResult<com.baomidou.mybatisplus.extension.plugins.pagination.Page<SysMenuDto>> page(@RequestParam("current") int current,
-                                                                                           @RequestParam("size") int size,
-                                                                                           @RequestBody SysMenuDto dto);
+    ApiResult<PageResult<SysMenuDto>> page(@RequestParam("current") int current,
+                                           @RequestParam("size") int size,
+                                           @RequestBody SysMenuDto dto);
 
     /**
      * 查询菜单树
@@ -66,4 +67,13 @@ public interface SysMenuFeignClient {
     @GetMapping("/menu/roleMenuTreeselect/{roleId}")
     ApiResult<List<SysMenuDto>> roleMenuTreeselect(@PathVariable("roleId") String roleId,
                                                    @RequestParam(value = "tenantId", required = false) String tenantId);
+
+    /**
+     * 根据用户ID查询权限码列表（用户 → 角色 → 角色菜单 → 菜单 perms）。
+     * <p>
+     * 认证服务签发票据时用它填充 JWT 的 role claim。接口位于
+     * {@code SysRoleMenuController}，加 {@code @InnerAuth} 只允许服务间调用。
+     */
+    @GetMapping("/role/menu/user/{userId}/perms")
+    ApiResult<List<String>> getPermCodesByUserId(@PathVariable("userId") String userId);
 }
