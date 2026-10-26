@@ -1,10 +1,11 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@umijs/max';
+import { API_VERSION } from '@/constants/api';
 
 /** 查询部门树 POST /system/dept/tree */
 export async function getDeptTree(body?: Partial<API.SysDeptDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysDeptDto[]>>('/system/dept/tree', {
+  return request<API.ApiResult<API.SysDeptDto[]>>(`${API_VERSION}/system/dept/tree`, {
     method: 'POST',
     data: body,
     ...(options || {}),
@@ -13,7 +14,7 @@ export async function getDeptTree(body?: Partial<API.SysDeptDto>, options?: { [k
 
 /** 获取部门树选择框数据 GET /system/dept/treeselect */
 export async function getDeptTreeSelect(tenantId?: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysDeptDto[]>>('/system/dept/treeselect', {
+  return request<API.ApiResult<API.SysDeptDto[]>>(`${API_VERSION}/system/dept/treeselect`, {
     method: 'GET',
     params: { tenantId },
     ...(options || {}),
@@ -22,7 +23,7 @@ export async function getDeptTreeSelect(tenantId?: string, options?: { [key: str
 
 /** 获取部门列表 GET /system/dept/list */
 export async function getDeptList(dto: Partial<API.SysDeptDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysDeptDto[]>>('/system/dept/list', {
+  return request<API.ApiResult<API.SysDeptDto[]>>(`${API_VERSION}/system/dept/list`, {
     method: 'GET',
     params: { dto },
     ...(options || {}),
@@ -38,7 +39,7 @@ export async function getDeptPage(
   body: Partial<API.SysDeptDto>,
   options?: { [key: string]: any },
 ) {
-  return request<API.ApiResult<API.MybatisPage<API.SysDeptDto>>>('/system/dept/page', {
+  return request<API.ApiResult<API.PageResult<API.SysDeptDto>>>(`${API_VERSION}/system/dept/page`, {
     method: 'POST',
     params: {
       current: params.current,
@@ -51,7 +52,7 @@ export async function getDeptPage(
 
 /** 根据ID获取部门 GET /system/dept/{id} */
 export async function getDeptById(id: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysDeptDto>>(`/system/dept/${id}`, {
+  return request<API.ApiResult<API.SysDeptDto>>(`${API_VERSION}/system/dept/${id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -59,7 +60,7 @@ export async function getDeptById(id: string, options?: { [key: string]: any }) 
 
 /** 创建部门 POST /system/dept */
 export async function createDept(data: Partial<API.SysDeptDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult<number>>('/system/dept', {
+  return request<API.ApiResult<number>>(`${API_VERSION}/system/dept`, {
     method: 'POST',
     data,
     ...(options || {}),
@@ -68,16 +69,16 @@ export async function createDept(data: Partial<API.SysDeptDto>, options?: { [key
 
 /** 更新部门 PUT /system/dept/{id} */
 export async function updateDept(id: string, data: Partial<API.SysDeptDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult>(`/system/dept/${id}`, {
+  return request<API.ApiResult>(`${API_VERSION}/system/dept/${id}`, {
     method: 'PUT',
-    data,
+    data: { ...data, id },
     ...(options || {}),
   });
 }
 
 /** 删除部门 DELETE /system/dept/{id} */
 export async function deleteDept(id: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult>(`/system/dept/${id}`, {
+  return request<API.ApiResult>(`${API_VERSION}/system/dept/${id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

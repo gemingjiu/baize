@@ -10,6 +10,7 @@ import { createStyles } from 'antd-style';
 import React from 'react';
 import { flushSync } from 'react-dom';
 import { logout } from '@/services/ant-design-pro/api';
+import { clearAuth, getUserInfo } from '@/utils/auth';
 import HeaderDropdown from '../HeaderDropdown';
 
 export type GlobalHeaderRightProps = {
@@ -54,15 +55,10 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
    */
   const loginOut = async () => {
     try {
-      // 获取用户信息用于登出请求头
-      const userInfo = localStorage.getItem('userInfo');
-      let tenantId = '';
-      let userId = '';
-      if (userInfo) {
-        const user = JSON.parse(userInfo);
-        tenantId = user.tenantId || '';
-        userId = user.id || '';
-      }
+      // 获取用户信息用于登出请求头（缓存仅用于展示 / 请求参数，不是可信身份来源）
+      const user = getUserInfo();
+      const tenantId = user?.tenantId || '';
+      const userId = user?.id || '';
       await logout({
         headers: {
           'X-Tenant-Id': tenantId,
@@ -72,10 +68,8 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
     } catch (_e) {
       // 忽略登出请求错误，继续清理本地状态
     }
-    // 清理本地存储
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userInfo');
+    // 清理本地存储（token / userInfo / menuTree / permissions）
+    clearAuth();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
     const searchParams = new URLSearchParams({

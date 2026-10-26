@@ -1,6 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@umijs/max';
+import { API_VERSION } from '@/constants/api';
 
 /** 分页查询参数配置 POST /system/config/page */
 export async function getConfigPage(
@@ -11,7 +12,7 @@ export async function getConfigPage(
   body: Partial<API.SysConfigDto>,
   options?: { [key: string]: any },
 ) {
-  return request<API.ApiResult<API.MybatisPage<API.SysConfigDto>>>('/system/config/page', {
+  return request<API.ApiResult<API.PageResult<API.SysConfigDto>>>(`${API_VERSION}/system/config/page`, {
     method: 'POST',
     params: {
       current: params.current,
@@ -24,7 +25,7 @@ export async function getConfigPage(
 
 /** 根据ID获取参数配置 GET /system/config/{id} */
 export async function getConfigById(id: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysConfigDto>>(`/system/config/${id}`, {
+  return request<API.ApiResult<API.SysConfigDto>>(`${API_VERSION}/system/config/${id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -32,7 +33,7 @@ export async function getConfigById(id: string, options?: { [key: string]: any }
 
 /** 根据Key获取参数配置 GET /system/config/key/{configKey} */
 export async function getConfigByKey(configKey: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysConfigDto>>(`/system/config/key/${configKey}`, {
+  return request<API.ApiResult<API.SysConfigDto>>(`${API_VERSION}/system/config/key/${configKey}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -40,7 +41,7 @@ export async function getConfigByKey(configKey: string, options?: { [key: string
 
 /** 创建参数配置 POST /system/config */
 export async function createConfig(data: Partial<API.SysConfigDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult<number>>('/system/config', {
+  return request<API.ApiResult<number>>(`${API_VERSION}/system/config`, {
     method: 'POST',
     data,
     ...(options || {}),
@@ -49,16 +50,16 @@ export async function createConfig(data: Partial<API.SysConfigDto>, options?: { 
 
 /** 更新参数配置 PUT /system/config/{id} */
 export async function updateConfig(id: string, data: Partial<API.SysConfigDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult>(`/system/config/${id}`, {
+  return request<API.ApiResult>(`${API_VERSION}/system/config/${id}`, {
     method: 'PUT',
-    data,
+    data: { ...data, id },
     ...(options || {}),
   });
 }
 
 /** 删除参数配置 DELETE /system/config/{id} */
 export async function deleteConfig(id: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult>(`/system/config/${id}`, {
+  return request<API.ApiResult>(`${API_VERSION}/system/config/${id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

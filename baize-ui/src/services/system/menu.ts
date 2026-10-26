@@ -1,10 +1,11 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@umijs/max';
+import { API_VERSION } from '@/constants/api';
 
 /** 查询菜单树 POST /system/menu/tree */
 export async function getMenuTree(body?: Partial<API.SysMenuDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysMenuDto[]>>('/system/menu/tree', {
+  return request<API.ApiResult<API.SysMenuDto[]>>(`${API_VERSION}/system/menu/tree`, {
     method: 'POST',
     data: body,
     ...(options || {}),
@@ -13,7 +14,7 @@ export async function getMenuTree(body?: Partial<API.SysMenuDto>, options?: { [k
 
 /** 获取菜单树选择框数据 GET /system/menu/treeselect */
 export async function getMenuTreeSelect(tenantId?: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysMenuDto[]>>('/system/menu/treeselect', {
+  return request<API.ApiResult<API.SysMenuDto[]>>(`${API_VERSION}/system/menu/treeselect`, {
     method: 'GET',
     params: { tenantId },
     ...(options || {}),
@@ -22,7 +23,7 @@ export async function getMenuTreeSelect(tenantId?: string, options?: { [key: str
 
 /** 获取角色菜单树选择框数据 GET /system/menu/roleMenuTreeselect/{roleId} */
 export async function getRoleMenuTreeSelect(roleId: string, tenantId?: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysMenuDto[]>>(`/system/menu/roleMenuTreeselect/${roleId}`, {
+  return request<API.ApiResult<API.SysMenuDto[]>>(`${API_VERSION}/system/menu/roleMenuTreeselect/${roleId}`, {
     method: 'GET',
     params: { tenantId },
     ...(options || {}),
@@ -34,7 +35,7 @@ export async function getUserMenuTree(userId: string, options?: { [key: string]:
 export async function getUserMenuTree(options?: { [key: string]: any }): Promise<API.ApiResult<API.SysMenuDto[]>>;
 export async function getUserMenuTree(userIdOrOptions?: string | { [key: string]: any }, options?: { [key: string]: any }): Promise<API.ApiResult<API.SysMenuDto[]>> {
   if (typeof userIdOrOptions === 'string') {
-    return request<API.ApiResult<API.SysMenuDto[]>>('/system/menu/user/tree', {
+    return request<API.ApiResult<API.SysMenuDto[]>>(`${API_VERSION}/system/menu/user/tree`, {
       method: 'GET',
       headers: {
         'X-User-Id': userIdOrOptions,
@@ -42,7 +43,7 @@ export async function getUserMenuTree(userIdOrOptions?: string | { [key: string]
       ...(options || {}),
     });
   }
-  return request<API.ApiResult<API.SysMenuDto[]>>('/system/menu/user/tree', {
+  return request<API.ApiResult<API.SysMenuDto[]>>(`${API_VERSION}/system/menu/user/tree`, {
     method: 'GET',
     ...(userIdOrOptions || {}),
   });
@@ -57,7 +58,7 @@ export async function getMenuPage(
   body: Partial<API.SysMenuDto>,
   options?: { [key: string]: any },
 ) {
-  return request<API.ApiResult<API.MybatisPage<API.SysMenuDto>>>('/system/menu/page', {
+  return request<API.ApiResult<API.PageResult<API.SysMenuDto>>>(`${API_VERSION}/system/menu/page`, {
     method: 'POST',
     params: {
       current: params.current,
@@ -70,7 +71,7 @@ export async function getMenuPage(
 
 /** 根据ID获取菜单 GET /system/menu/{id} */
 export async function getMenuById(id: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysMenuDto>>(`/system/menu/${id}`, {
+  return request<API.ApiResult<API.SysMenuDto>>(`${API_VERSION}/system/menu/${id}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -78,7 +79,7 @@ export async function getMenuById(id: string, options?: { [key: string]: any }) 
 
 /** 创建菜单 POST /system/menu */
 export async function createMenu(data: Partial<API.SysMenuDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult<number>>('/system/menu', {
+  return request<API.ApiResult<number>>(`${API_VERSION}/system/menu`, {
     method: 'POST',
     data,
     ...(options || {}),
@@ -87,16 +88,16 @@ export async function createMenu(data: Partial<API.SysMenuDto>, options?: { [key
 
 /** 更新菜单 PUT /system/menu/{id} */
 export async function updateMenu(id: string, data: Partial<API.SysMenuDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult>(`/system/menu/${id}`, {
+  return request<API.ApiResult>(`${API_VERSION}/system/menu/${id}`, {
     method: 'PUT',
-    data,
+    data: { ...data, id },
     ...(options || {}),
   });
 }
 
 /** 删除菜单 DELETE /system/menu/{id} */
 export async function deleteMenu(id: string, options?: { [key: string]: any }) {
-  return request<API.ApiResult>(`/system/menu/${id}`, {
+  return request<API.ApiResult>(`${API_VERSION}/system/menu/${id}`, {
     method: 'DELETE',
     ...(options || {}),
   });

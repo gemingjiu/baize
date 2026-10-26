@@ -10,3 +10,8 @@ export * from './perm';
 export * from './operlog';
 export * from './dict';
 export * from './config';
+export * from './job';
+export * from './notice';
+export * from './loginlog';
+export * from './monitor';
+export * from './online';
