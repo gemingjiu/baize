@@ -91,7 +91,7 @@
 
 1. **提交已完成的 P0-E 迁移修复**（防丢失）
 2. ~~P0-C（密码改 PUT body）~~、~~P0-D（补 redis.conf）~~、~~P0-E（DDL IF NOT EXISTS / schema 限定）~~ ✅ 已修；~~P0-A~~ ✅ 已修并闭环验证（网关签名头）；P0-B 经核查已正确实现（switchTenant 验签+查黑名单）；剩余无
-3. ~~P1-H（.env.example）~~、~~P1-I/J（凭据改 Secret）~~、~~P1-K（CI 阻塞）~~、~~P1-L（核实不成立）~~ ✅；剩余 P1-F（MapStruct 替代 BeanUtils）、P1-G（job 缓存失效）、P1-M（权限码字面量）
+3. ~~P1-H（.env.example）~~、~~P1-I/J（凭据改 Secret）~~、~~P1-K（CI 阻塞）~~、~~P1-L（核实不成立）~~、~~P1-F（MapStruct 替代 BeanUtils，12 Convert + 注入 INSTANCE 化，commit 2283642）~~、~~P1-M（权限码常量化 PermCodes，115 处替换，commit 2283642）~~ ✅；剩余 P1-G（job 缓存失效，经核查不成立——调度器 60s 轮询 DB 无缓存）
 4. ~~**P1 安全加固**~~：~~P1-A（ThreadLocal 清理）~~、~~P1-C（CORS 白名单）~~、~~P1-E（强制 inner token）~~ ✅ 已修并闭环验证；剩余 P1-D（限流改真实 IP，需评估部署拓扑是否经 LB）
 5. **P2/P3** 批量处理
 
