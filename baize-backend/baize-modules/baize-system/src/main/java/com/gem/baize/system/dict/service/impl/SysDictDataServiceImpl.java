@@ -26,20 +26,18 @@ import java.util.stream.Collectors;
 @Service
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements SysDictDataService {
 
-    @Autowired
-    private SysDictDataConvert sysDictDataConvert;
 
     @Override
     @Cacheable(cacheNames = "sys_dict_data", key = "#id")
     public SysDictDataDto getById(String id) {
         SysDictData sysDictData = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("字典数据不存在"));
-        return sysDictDataConvert.toDto(sysDictData);
+        return SysDictDataConvert.INSTANCE.toDto(sysDictData);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysDictDataDto sysDictDataDto) {
-        SysDictData sysDictData = sysDictDataConvert.toEntity(sysDictDataDto);
+        SysDictData sysDictData = SysDictDataConvert.INSTANCE.toEntity(sysDictDataDto);
         try {
             super.save(sysDictData);
         } catch (DuplicateKeyException e) {
@@ -51,7 +49,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_dict_data", key = "#sysDictDataDto.id")
     public void updateById(SysDictDataDto sysDictDataDto) {
-        SysDictData sysDictData = sysDictDataConvert.toEntity(sysDictDataDto);
+        SysDictData sysDictData = SysDictDataConvert.INSTANCE.toEntity(sysDictDataDto);
         boolean success = super.updateById(sysDictData);
         if (!success) {
             throw new NotFoundException("字典数据不存在或已删除");
@@ -89,7 +87,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
             wrapper.eq(SysDictData::getTenantId, sysDictDataDto.getTenantId());
         }
         Page<SysDictData> sysDictDataPage = super.page(page, wrapper);
-        return sysDictDataConvert.toDtoPage(sysDictDataPage);
+        return SysDictDataConvert.INSTANCE.toDtoPage(sysDictDataPage);
     }
 
     @Override
@@ -99,6 +97,6 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
         wrapper.eq(SysDictData::getDictType, dictType);
         wrapper.orderByAsc(SysDictData::getSort);
         List<SysDictData> list = list(wrapper);
-        return list.stream().map(sysDictDataConvert::toDto).collect(Collectors.toList());
+        return list.stream().map(SysDictDataConvert.INSTANCE::toDto).collect(Collectors.toList());
     }
 }

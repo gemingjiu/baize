@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 角色部门关联控制器（自定义数据权限配置）
  * <p>
@@ -24,7 +25,7 @@ public class SysRoleDeptController {
 
     @GetMapping("/{roleId}/depts")
     @Operation(summary = "获取角色已配置的部门ID列表")
-    @RequiresPermission("system:role:query")
+    @RequiresPermission(PermCodes.ROLE_QUERY)
     public ApiResult<List<String>> getDeptIdsByRoleId(@PathVariable String roleId) {
         return ApiResult.ok(sysRoleDeptService.getDeptIdsByRoleId(roleId));
     }
@@ -35,7 +36,7 @@ public class SysRoleDeptController {
      */
     @PostMapping("/{roleId}/assign")
     @Operation(summary = "为角色分配部门")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> assignDepts(@PathVariable String roleId,
                                        @RequestBody List<String> deptIds) {
         sysRoleDeptService.assignDepts(roleId, deptIds);
@@ -44,7 +45,7 @@ public class SysRoleDeptController {
 
     @DeleteMapping("/{roleId}")
     @Operation(summary = "删除角色所有部门关联")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> removeByRoleId(@PathVariable String roleId) {
         sysRoleDeptService.removeByRoleId(roleId);
         return ApiResult.ok();

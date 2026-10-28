@@ -29,22 +29,20 @@ import java.util.Optional;
 @Service
 public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements SysTenantService {
 
-    @Autowired
-    private SysTenantConvert sysTenantConvert;
 
 
     @Override
     @Cacheable(cacheNames = "sys_tenant", key = "#id")
     public SysTenantDto getById(String id) {
         SysTenant sysTenant = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("租户不存在"));
-        return sysTenantConvert.toDto(sysTenant);
+        return SysTenantConvert.INSTANCE.toDto(sysTenant);
     }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysTenantDto sysTenantDto) {
-        SysTenant sysTenant = sysTenantConvert.toEntity(sysTenantDto);
+        SysTenant sysTenant = SysTenantConvert.INSTANCE.toEntity(sysTenantDto);
 
         try {
             super.save(sysTenant);
@@ -60,7 +58,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_tenant", key = "#sysTenantDto.id")
     public void updateById(SysTenantDto sysTenantDto) {
-        SysTenant sysTenant = sysTenantConvert.toEntity(sysTenantDto);
+        SysTenant sysTenant = SysTenantConvert.INSTANCE.toEntity(sysTenantDto);
 
 
         boolean success = super.updateById(sysTenant);
@@ -108,7 +106,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         Page<SysTenant> sysTenantPage = super.page(page, wrapper);
-        return sysTenantConvert.toDtoPage(sysTenantPage);
+        return SysTenantConvert.INSTANCE.toDtoPage(sysTenantPage);
     }
 
     @Override
@@ -119,7 +117,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         wrapper.eq(SysTenant::getStatus, "0");
         wrapper.orderByAsc(SysTenant::getSort);
         wrapper.orderByAsc(SysTenant::getId);
-        return sysTenantConvert.toDtoList(super.list(wrapper));
+        return SysTenantConvert.INSTANCE.toDtoList(super.list(wrapper));
     }
 
     @Override
@@ -143,6 +141,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         if (sysTenant == null) {
             throw new NotFoundException("租户不存在");
         }
-        return sysTenantConvert.toDto(sysTenant);
+        return SysTenantConvert.INSTANCE.toDto(sysTenant);
     }
 }

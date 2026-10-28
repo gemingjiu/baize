@@ -24,20 +24,18 @@ import java.util.Optional;
 @Service
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDictType> implements SysDictTypeService {
 
-    @Autowired
-    private SysDictTypeConvert sysDictTypeConvert;
 
     @Override
     @Cacheable(cacheNames = "sys_dict_type", key = "#id")
     public SysDictTypeDto getById(String id) {
         SysDictType sysDictType = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("字典类型不存在"));
-        return sysDictTypeConvert.toDto(sysDictType);
+        return SysDictTypeConvert.INSTANCE.toDto(sysDictType);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysDictTypeDto sysDictTypeDto) {
-        SysDictType sysDictType = sysDictTypeConvert.toEntity(sysDictTypeDto);
+        SysDictType sysDictType = SysDictTypeConvert.INSTANCE.toEntity(sysDictTypeDto);
         try {
             super.save(sysDictType);
         } catch (DuplicateKeyException e) {
@@ -49,7 +47,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_dict_type", key = "#sysDictTypeDto.id")
     public void updateById(SysDictTypeDto sysDictTypeDto) {
-        SysDictType sysDictType = sysDictTypeConvert.toEntity(sysDictTypeDto);
+        SysDictType sysDictType = SysDictTypeConvert.INSTANCE.toEntity(sysDictTypeDto);
         boolean success = super.updateById(sysDictType);
         if (!success) {
             throw new NotFoundException("字典类型不存在或已删除");
@@ -87,6 +85,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
             wrapper.eq(SysDictType::getTenantId, sysDictTypeDto.getTenantId());
         }
         Page<SysDictType> sysDictTypePage = super.page(page, wrapper);
-        return sysDictTypeConvert.toDtoPage(sysDictTypePage);
+        return SysDictTypeConvert.INSTANCE.toDtoPage(sysDictTypePage);
     }
 }

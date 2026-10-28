@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 角色菜单关联控制器
  */
@@ -23,14 +24,14 @@ public class SysRoleMenuController {
 
     @GetMapping("/{roleId}/menus")
     @Operation(summary = "获取角色菜单ID列表")
-    @RequiresPermission("system:role:query")
+    @RequiresPermission(PermCodes.ROLE_QUERY)
     public ApiResult<List<String>> getMenuIdsByRoleId(@PathVariable String roleId) {
         return ApiResult.ok(sysRoleMenuService.getMenuIdsByRoleId(roleId));
     }
 
     @GetMapping("/roles/tree")
     @Operation(summary = "根据角色ID列表获取菜单树")
-    @RequiresPermission("system:menu:list")
+    @RequiresPermission(PermCodes.MENU_LIST)
     public ApiResult<List<SysMenuDto>> getMenuTreeByRoleIds(@RequestParam List<String> roleIds) {
         return ApiResult.ok(sysRoleMenuService.getMenuTreeByRoleIds(roleIds));
     }
@@ -53,7 +54,7 @@ public class SysRoleMenuController {
      */
     @PostMapping("/{roleId}/assign")
     @Operation(summary = "为角色分配菜单")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> assignMenus(@PathVariable String roleId,
                                        @RequestBody List<String> menuIds,
                                        @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {
@@ -63,7 +64,7 @@ public class SysRoleMenuController {
 
     @DeleteMapping("/{roleId}")
     @Operation(summary = "删除角色所有菜单关联")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> removeByRoleId(@PathVariable String roleId) {
         sysRoleMenuService.removeByRoleId(roleId);
         return ApiResult.ok();

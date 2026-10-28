@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/dict/type")
 public class SysDictTypeController {
@@ -24,7 +25,7 @@ public class SysDictTypeController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取字典类型")
-    @RequiresPermission("system:dict:query")
+    @RequiresPermission(PermCodes.DICT_QUERY)
     public ApiResult<SysDictTypeDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -34,7 +35,7 @@ public class SysDictTypeController {
 
     @PostMapping
     @Operation(summary = "创建字典类型")
-    @RequiresPermission("system:dict:add")
+    @RequiresPermission(PermCodes.DICT_ADD)
     public ApiResult<Integer> create(@Valid @RequestBody SysDictTypeDto dto) {
         sysDictTypeService.create(dto);
         return ApiResult.ok();
@@ -42,7 +43,7 @@ public class SysDictTypeController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新字典类型")
-    @RequiresPermission("system:dict:edit")
+    @RequiresPermission(PermCodes.DICT_EDIT)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysDictTypeDto dto) {
         if (!id.equals(dto.getId())) {
             throw new ParamException("请求参数id不一致");
@@ -53,7 +54,7 @@ public class SysDictTypeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除字典类型")
-    @RequiresPermission("system:dict:remove")
+    @RequiresPermission(PermCodes.DICT_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysDictTypeService.removeById(id);
         return ApiResult.ok();
@@ -61,7 +62,7 @@ public class SysDictTypeController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询字典类型")
-    @RequiresPermission("system:dict:list")
+    @RequiresPermission(PermCodes.DICT_LIST)
     public ApiResult<PageResult<SysDictTypeDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                 @RequestParam(value = "size", defaultValue = "10") int size,
                                                 @Valid @RequestBody SysDictTypeDto dto) {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 定时任务Controller
  */
@@ -29,12 +30,10 @@ public class SysJobController {
     @Autowired
     private SysJobService sysJobService;
 
-    @Autowired
-    private SysJobConvert sysJobConvert;
 
     @GetMapping("/list")
     @Operation(summary = "获取定时任务列表")
-    @RequiresPermission("system:job:list")
+    @RequiresPermission(PermCodes.JOB_LIST)
     public ApiResult<List<SysJobDto>> list(@RequestParam(value = "status", required = false) String status,
                                          @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
@@ -44,7 +43,7 @@ public class SysJobController {
             wrapper.eq(SysJob::getStatus, status);
         }
         wrapper.orderByAsc(SysJob::getCreatedTime);
-        return ApiResult.ok(sysJobConvert.toDtoList(sysJobService.page(page, wrapper).getRecords()));
+        return ApiResult.ok(SysJobConvert.INSTANCE.toDtoList(sysJobService.page(page, wrapper).getRecords()));
     }
 
     /**
@@ -56,7 +55,7 @@ public class SysJobController {
      */
     @PostMapping("/page")
     @Operation(summary = "分页查询定时任务")
-    @RequiresPermission("system:job:list")
+    @RequiresPermission(PermCodes.JOB_LIST)
     public ApiResult<PageResult<SysJobDto>> page(
             @RequestParam(value = "current", defaultValue = "1") int current,
             @RequestParam(value = "size", defaultValue = "10") int size,
@@ -72,7 +71,7 @@ public class SysJobController {
         wrapper.orderByAsc(SysJob::getCreatedTime);
 
         Page<SysJob> entityPage = sysJobService.page(page, wrapper);
-        Page<SysJobDto> dtoPage = sysJobConvert.toDtoPage(entityPage);
+        Page<SysJobDto> dtoPage = SysJobConvert.INSTANCE.toDtoPage(entityPage);
 
         PageConvert<SysJobDto> pageConvert = new PageConvert<>();
         return ApiResult.ok(pageConvert.toDto(dtoPage));
@@ -80,30 +79,30 @@ public class SysJobController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取定时任务")
-    @RequiresPermission("system:job:query")
+    @RequiresPermission(PermCodes.JOB_QUERY)
     public ApiResult<SysJobDto> getById(@PathVariable String id) {
-        return ApiResult.ok(sysJobConvert.toDto(sysJobService.getById(id)));
+        return ApiResult.ok(SysJobConvert.INSTANCE.toDto(sysJobService.getById(id)));
     }
 
     @PostMapping
     @Operation(summary = "新增定时任务")
-    @RequiresPermission("system:job:add")
+    @RequiresPermission(PermCodes.JOB_ADD)
     public ApiResult<Void> create(@Valid @RequestBody SysJobDto dto) {
-        sysJobService.save(sysJobConvert.toEntity(dto));
+        sysJobService.save(SysJobConvert.INSTANCE.toEntity(dto));
         return ApiResult.ok();
     }
 
     @PutMapping
     @Operation(summary = "修改定时任务")
-    @RequiresPermission("system:job:edit")
+    @RequiresPermission(PermCodes.JOB_EDIT)
     public ApiResult<Void> update(@Valid @RequestBody SysJobDto dto) {
-        sysJobService.updateById(sysJobConvert.toEntity(dto));
+        sysJobService.updateById(SysJobConvert.INSTANCE.toEntity(dto));
         return ApiResult.ok();
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除定时任务")
-    @RequiresPermission("system:job:remove")
+    @RequiresPermission(PermCodes.JOB_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysJobService.removeById(id);
         return ApiResult.ok();
@@ -111,7 +110,7 @@ public class SysJobController {
 
     @PutMapping("/run/{id}")
     @Operation(summary = "立即执行任务")
-    @RequiresPermission("system:job:edit")
+    @RequiresPermission(PermCodes.JOB_EDIT)
     public ApiResult<Void> run(@PathVariable String id) throws Exception {
         SysJob job = sysJobService.getById(id);
         if (job != null) {
@@ -122,7 +121,7 @@ public class SysJobController {
 
     @PutMapping("/pause/{id}")
     @Operation(summary = "暂停任务")
-    @RequiresPermission("system:job:edit")
+    @RequiresPermission(PermCodes.JOB_EDIT)
     public ApiResult<Void> pause(@PathVariable String id) {
         sysJobService.pauseJob(id);
         return ApiResult.ok();
@@ -130,7 +129,7 @@ public class SysJobController {
 
     @PutMapping("/resume/{id}")
     @Operation(summary = "恢复任务")
-    @RequiresPermission("system:job:edit")
+    @RequiresPermission(PermCodes.JOB_EDIT)
     public ApiResult<Void> resume(@PathVariable String id) {
         sysJobService.resumeJob(id);
         return ApiResult.ok();

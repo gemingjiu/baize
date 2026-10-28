@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/loginLog")
 public class SysLoginLogController {
@@ -50,7 +51,7 @@ public class SysLoginLogController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询登录日志")
-    @RequiresPermission("monitor:logininfor:list")
+    @RequiresPermission(PermCodes.LOGINLOG_LIST)
     public ApiResult<PageResult<SysLoginLogDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                  @RequestParam(value = "size", defaultValue = "10") int size,
                                                  @Valid @RequestBody SysLoginLogDto dto) {
@@ -64,7 +65,7 @@ public class SysLoginLogController {
      */
     @PostMapping("/export")
     @Operation(summary = "导出登录日志", description = "按查询条件导出登录日志为 Excel")
-    @RequiresPermission("monitor:logininfor:export")
+    @RequiresPermission(PermCodes.LOGINLOG_EXPORT)
     public void export(@RequestBody(required = false) SysLoginLogDto dto, HttpServletResponse response) {
         Page<SysLoginLog> page = new Page<>(1, EXPORT_MAX_ROWS);
         page.setSearchCount(false);
@@ -88,7 +89,7 @@ public class SysLoginLogController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除登录日志")
-    @RequiresPermission("monitor:logininfor:remove")
+    @RequiresPermission(PermCodes.LOGINLOG_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysLoginLogService.removeById(id);
         return ApiResult.ok();
@@ -96,7 +97,7 @@ public class SysLoginLogController {
 
     @DeleteMapping("/clean")
     @Operation(summary = "清空登录日志")
-    @RequiresPermission("monitor:logininfor:remove")
+    @RequiresPermission(PermCodes.LOGINLOG_REMOVE)
     public ApiResult<Void> clean() {
         sysLoginLogService.cleanLoginLog();
         return ApiResult.ok();

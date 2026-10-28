@@ -1,34 +1,31 @@
 package com.gem.baize.system.perm.service.impl;
 
-import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
-import com.gem.baize.common.core.convert.BaseConvert;
-import com.gem.baize.system.menu.entity.SysMenu;
 import com.gem.baize.system.perm.entity.SysPerm;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class SysPermConvert extends BaseConvert<SysPerm, SysPermDto> {
-    @Override
-    public SysPermDto toDto(SysPerm entity) {
-        if (entity == null) {
-            return null;
-        }
-        SysPermDto dto = new SysPermDto();
-        BeanUtils.copyProperties(entity, dto);
-        // 特殊字段处理
-        return dto;
-    }
+import java.util.List;
 
-    @Override
-    public SysPerm toEntity(SysPermDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        SysPerm entity = new SysPerm();
-        BeanUtils.copyProperties(dto, entity);
-        // 初始化Entity特殊字段
-        return entity;
+/**
+ * SysPerm ↔ SysPermDto 转换（MapStruct 编译期生成，替代 BeanUtils 反射拷贝：
+ * 新增实体字段漏加 DTO 时编译期告警/显式映射，不再静默丢字段）。
+ */
+@Mapper
+public interface SysPermConvert {
+
+    SysPermConvert INSTANCE = Mappers.getMapper(SysPermConvert.class);
+
+    SysPermDto toDto(SysPerm entity);
+
+    SysPerm toEntity(SysPermDto dto);
+
+    List<SysPermDto> toDtoList(List<SysPerm> list);
+
+    default Page<SysPermDto> toDtoPage(Page<SysPerm> page) {
+        Page<SysPermDto> result = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        result.setRecords(toDtoList(page.getRecords()));
+        return result;
     }
 }

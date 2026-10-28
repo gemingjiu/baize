@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/role")
 public class SysRoleController {
@@ -50,7 +51,7 @@ public class SysRoleController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取角色", description = "根据ID查询角色信息")
-    @RequiresPermission("system:role:query")
+    @RequiresPermission(PermCodes.ROLE_QUERY)
     public ApiResult<SysRoleDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -60,7 +61,7 @@ public class SysRoleController {
 
     @PostMapping
     @Operation(summary = "创建角色")
-    @RequiresPermission("system:role:add")
+    @RequiresPermission(PermCodes.ROLE_ADD)
     public ApiResult<Integer> create(@Valid @RequestBody SysRoleDto dto) {
         sysRoleService.create(dto);
         return ApiResult.ok();
@@ -68,7 +69,7 @@ public class SysRoleController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新角色")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysRoleDto dto) {
         // 双重验证
         if(!id.equals(dto.getId())) {
@@ -80,7 +81,7 @@ public class SysRoleController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除角色")
-    @RequiresPermission("system:role:remove")
+    @RequiresPermission(PermCodes.ROLE_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysRoleService.removeById(id);
         return ApiResult.ok();
@@ -88,7 +89,7 @@ public class SysRoleController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询角色")
-    @RequiresPermission("system:role:list")
+    @RequiresPermission(PermCodes.ROLE_LIST)
     public ApiResult<PageResult<SysRoleDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysRoleDto dto) {
         Page<SysRole> page = new Page<>(current, size);
         PageConvert<SysRoleDto> pageConvert = new PageConvert<>();
@@ -100,7 +101,7 @@ public class SysRoleController {
      */
     @PostMapping("/export")
     @Operation(summary = "导出角色", description = "按查询条件导出角色列表为 Excel")
-    @RequiresPermission("system:role:export")
+    @RequiresPermission(PermCodes.ROLE_EXPORT)
     public void export(@RequestBody(required = false) SysRoleDto dto, HttpServletResponse response) {
         Page<SysRole> query = new Page<>(1, EXPORT_MAX_ROWS);
         query.setSearchCount(false);
@@ -119,14 +120,14 @@ public class SysRoleController {
 
     @GetMapping("/{roleId}/users")
     @Operation(summary = "获取角色的用户ID列表")
-    @RequiresPermission("system:role:query")
+    @RequiresPermission(PermCodes.ROLE_QUERY)
     public ApiResult<List<String>> getUserIdsByRoleId(@PathVariable String roleId) {
         return ApiResult.ok(sysUserRoleService.getUserIdsByRoleId(roleId));
     }
 
     @PostMapping("/{roleId}/authUser")
     @Operation(summary = "为角色分配用户")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> assignUsersToRole(@PathVariable String roleId,
                                              @RequestBody List<String> userIds,
                                              @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {

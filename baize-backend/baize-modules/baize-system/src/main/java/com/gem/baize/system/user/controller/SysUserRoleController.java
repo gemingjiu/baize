@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 用户角色关联控制器
  */
@@ -21,7 +22,7 @@ public class SysUserRoleController {
 
     @GetMapping("/{userId}/roles")
     @Operation(summary = "获取用户角色ID列表")
-    @RequiresPermission("system:user:query")
+    @RequiresPermission(PermCodes.USER_QUERY)
     public ApiResult<List<String>> getRoleIdsByUserId(@PathVariable String userId) {
         return ApiResult.ok(sysUserRoleService.getRoleIdsByUserId(userId));
     }
@@ -33,7 +34,7 @@ public class SysUserRoleController {
      */
     @PostMapping("/{userId}/assign")
     @Operation(summary = "为用户分配角色")
-    @RequiresPermission("system:user:edit")
+    @RequiresPermission(PermCodes.USER_EDIT)
     public ApiResult<Void> assignRoles(@PathVariable String userId,
                                        @RequestBody List<String> roleIds,
                                        @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {
@@ -43,7 +44,7 @@ public class SysUserRoleController {
 
     @DeleteMapping("/{userId}")
     @Operation(summary = "删除用户所有角色关联")
-    @RequiresPermission("system:user:edit")
+    @RequiresPermission(PermCodes.USER_EDIT)
     public ApiResult<Void> removeByUserId(@PathVariable String userId) {
         sysUserRoleService.removeByUserId(userId);
         return ApiResult.ok();

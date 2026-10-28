@@ -15,13 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLoginLog> implements SysLoginLogService {
 
-    @Autowired
-    private SysLoginLogConvert sysLoginLogConvert;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void recordLoginLog(SysLoginLogDto dto) {
-        SysLoginLog entity = sysLoginLogConvert.toEntity(dto);
+        SysLoginLog entity = SysLoginLogConvert.INSTANCE.toEntity(dto);
         super.save(entity);
     }
 
@@ -43,7 +41,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         }
 
         Page<SysLoginLog> resultPage = super.page(page, wrapper);
-        return sysLoginLogConvert.toDtoPage(resultPage);
+        return SysLoginLogConvert.INSTANCE.toDtoPage(resultPage);
     }
 
     @Override

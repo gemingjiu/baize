@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/online")
 public class OnlineUserController {
@@ -18,21 +19,21 @@ public class OnlineUserController {
 
     @GetMapping("/count")
     @Operation(summary = "获取在线用户数量")
-    @RequiresPermission("monitor:online:query")
+    @RequiresPermission(PermCodes.ONLINE_QUERY)
     public ApiResult<Long> getOnlineCount(@RequestParam(value = "tenantId", required = false) String tenantId) {
         return ApiResult.ok(onlineUserService.getOnlineCount(tenantId));
     }
 
     @GetMapping("/list")
     @Operation(summary = "获取在线用户列表")
-    @RequiresPermission("monitor:online:query")
+    @RequiresPermission(PermCodes.ONLINE_QUERY)
     public ApiResult<List<String>> getOnlineUsers(@RequestParam(value = "tenantId", required = false) String tenantId) {
         return ApiResult.ok(onlineUserService.getOnlineUsers(tenantId));
     }
 
     @GetMapping("/isOnline")
     @Operation(summary = "检查用户是否在线")
-    @RequiresPermission("monitor:online:query")
+    @RequiresPermission(PermCodes.ONLINE_QUERY)
     public ApiResult<Boolean> isOnline(@RequestParam("userId") String userId,
                                        @RequestParam(value = "tenantId", required = false) String tenantId) {
         return ApiResult.ok(onlineUserService.isOnline(userId, tenantId));
@@ -40,7 +41,7 @@ public class OnlineUserController {
 
     @PostMapping("/kickout")
     @Operation(summary = "强制用户下线")
-    @RequiresPermission("monitor:online:forceLogout")
+    @RequiresPermission(PermCodes.ONLINE_FORCE_LOGOUT)
     public ApiResult<Void> kickout(@RequestParam("userId") String userId,
                                    @RequestParam(value = "tenantId", required = false) String tenantId) {
         onlineUserService.kickout(userId, tenantId);

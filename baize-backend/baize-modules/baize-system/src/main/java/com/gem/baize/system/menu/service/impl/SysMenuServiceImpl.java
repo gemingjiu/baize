@@ -30,21 +30,19 @@ import java.util.*;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
 
-    @Autowired
-    private SysMenuConvert sysMenuConvert;
 
     @Override
     @Cacheable(cacheNames = "sys_menu", key = "#id")
     public SysMenuDto getById(String id) {
         SysMenu sysMenu = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("菜单不存在"));
-        return sysMenuConvert.toDto(sysMenu);
+        return SysMenuConvert.INSTANCE.toDto(sysMenu);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_menu", allEntries = true)
     public void create(SysMenuDto sysMenuDto) {
-        SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
+        SysMenu sysMenu = SysMenuConvert.INSTANCE.toEntity(sysMenuDto);
         try {
             super.save(sysMenu);
         } catch (DuplicateKeyException e) {
@@ -58,7 +56,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     // 改为 @CacheEvict：更新后清掉旧缓存，下次读取直接查库。
     @CacheEvict(cacheNames = "sys_menu", allEntries = true)
     public void updateById(SysMenuDto sysMenuDto) {
-        SysMenu sysMenu = sysMenuConvert.toEntity(sysMenuDto);
+        SysMenu sysMenu = SysMenuConvert.INSTANCE.toEntity(sysMenuDto);
         boolean success = super.updateById(sysMenu);
         if (!success) {
             throw new NotFoundException("菜单不存在或已删除");
@@ -104,7 +102,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
 
         Page<SysMenu> sysMenuPage = super.page(page, wrapper);
-        return sysMenuConvert.toDtoPage(sysMenuPage);
+        return SysMenuConvert.INSTANCE.toDtoPage(sysMenuPage);
     }
 
     @Override
@@ -123,7 +121,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
 
         List<SysMenu> menuList = list(wrapper);
-        List<SysMenuDto> dtoList = sysMenuConvert.toDtoList(menuList);
+        List<SysMenuDto> dtoList = SysMenuConvert.INSTANCE.toDtoList(menuList);
 
         return TreeUtils.buildTree(dtoList, SysMenuDto::getId, SysMenuDto::getParentId, SysMenuDto::setChildren);
     }

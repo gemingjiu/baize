@@ -30,21 +30,19 @@ import java.util.Optional;
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements SysPostService {
 
 
-    @Autowired
-    private SysPostConvert sysPostConvert;
 
     @Override
     @Cacheable(cacheNames = "sys_post", key = "#id")
     public SysPostDto getById(String id) {
         SysPost sysPost = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("岗位不存在"));
-        return sysPostConvert.toDto(sysPost);
+        return SysPostConvert.INSTANCE.toDto(sysPost);
 
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysPostDto sysPostDto) {
-        SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
+        SysPost sysPost = SysPostConvert.INSTANCE.toEntity(sysPostDto);
         try {
             super.save(sysPost);
         } catch (DuplicateKeyException e) {
@@ -56,7 +54,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Transactional
     @CacheEvict(cacheNames = "sys_post", key = "#sysPostDto.id")
     public void updateById(SysPostDto sysPostDto) {
-        SysPost sysPost = sysPostConvert.toEntity(sysPostDto);
+        SysPost sysPost = SysPostConvert.INSTANCE.toEntity(sysPostDto);
         boolean success = super.updateById(sysPost);
         if (!success) {
             throw new NotFoundException("岗位不存在或已删除");
@@ -101,6 +99,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         }
 
         Page<SysPost> sysPostPage = super.page(page, wrapper);
-        return sysPostConvert.toDtoPage(sysPostPage);
+        return SysPostConvert.INSTANCE.toDtoPage(sysPostPage);
     }
 }

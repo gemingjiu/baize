@@ -32,8 +32,6 @@ import java.util.Optional;
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
 
 
-    @Autowired
-    private SysRoleConvert sysRoleConvert;
 
     @Autowired
     private SysUserRoleService sysUserRoleService;
@@ -42,14 +40,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Cacheable(cacheNames = "sys_role", key = "#id")
     public SysRoleDto getById(String id) {
         SysRole sysRole = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("角色不存在"));
-        return sysRoleConvert.toDto(sysRole);
+        return SysRoleConvert.INSTANCE.toDto(sysRole);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_role", allEntries = true)
     public void create(SysRoleDto sysRoleDto) {
-        SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
+        SysRole sysRole = SysRoleConvert.INSTANCE.toEntity(sysRoleDto);
         try {
             super.save(sysRole);
         } catch (DuplicateKeyException e) {
@@ -62,7 +60,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @CacheEvict(cacheNames = "sys_role", key = "#sysRoleDto.id")
     public void updateById(SysRoleDto sysRoleDto) {
 
-        SysRole sysRole = sysRoleConvert.toEntity(sysRoleDto);
+        SysRole sysRole = SysRoleConvert.INSTANCE.toEntity(sysRoleDto);
 
         boolean success = super.updateById(sysRole);
 
@@ -111,7 +109,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
 
         Page<SysRole> sysRolePage = super.page(page, wrapper);
-        return sysRoleConvert.toDtoPage(sysRolePage);
+        return SysRoleConvert.INSTANCE.toDtoPage(sysRolePage);
     }
 
     @Override
@@ -121,6 +119,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             return null;
         }
         SysRole sysRole = super.getById(roleIds.get(0));
-        return sysRoleConvert.toDto(sysRole);
+        return SysRoleConvert.INSTANCE.toDto(sysRole);
     }
 }

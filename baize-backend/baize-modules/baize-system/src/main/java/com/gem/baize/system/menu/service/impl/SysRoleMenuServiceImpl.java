@@ -32,8 +32,6 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
     @Autowired
     private SysMenuMapper sysMenuMapper;
 
-    @Autowired
-    private SysMenuConvert sysMenuConvert;
 
     @Lazy
     @Autowired
@@ -71,7 +69,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
         menuWrapper.in(SysMenu::getId, menuIds);
         menuWrapper.orderByAsc(SysMenu::getSort);
         List<SysMenu> menus = sysMenuMapper.selectList(menuWrapper);
-        List<SysMenuDto> menuDtos = sysMenuConvert.toDtoList(menus);
+        List<SysMenuDto> menuDtos = SysMenuConvert.INSTANCE.toDtoList(menus);
 
         // 构建菜单树
         return buildTree(menuDtos);

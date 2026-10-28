@@ -29,8 +29,6 @@ import java.util.Optional;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
-    @Autowired
-    private SysUserConvert sysUserConvert;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,13 +37,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Cacheable(cacheNames = "sys_user", key = "#id")
     public SysUserDto getById(String id) {
         SysUser sysUser = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("用户不存在"));
-        return sysUserConvert.toDto(sysUser);
+        return SysUserConvert.INSTANCE.toDto(sysUser);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysUserDto sysUserDto) {
-        SysUser sysUser = sysUserConvert.toEntity(sysUserDto);
+        SysUser sysUser = SysUserConvert.INSTANCE.toEntity(sysUserDto);
         // 密码加密
         if (StringUtils.isNotBlank(sysUser.getPassword())) {
             sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
@@ -62,7 +60,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_user", key = "#sysUserDto.id")
     public void updateById(SysUserDto sysUserDto) {
-        SysUser sysUser = sysUserConvert.toEntity(sysUserDto);
+        SysUser sysUser = SysUserConvert.INSTANCE.toEntity(sysUserDto);
         boolean success = super.updateById(sysUser);
         if (!success) {
             throw new NotFoundException("用户不存在或已删除");
@@ -107,7 +105,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         Page<SysUser> sysUserPage = super.page(page, wrapper);
-        return sysUserConvert.toDtoPage(sysUserPage);
+        return SysUserConvert.INSTANCE.toDtoPage(sysUserPage);
     }
 
     @Override
@@ -121,7 +119,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (sysUser == null) {
             throw new NotFoundException("用户不存在");
         }
-        return sysUserConvert.toDto(sysUser);
+        return SysUserConvert.INSTANCE.toDto(sysUser);
     }
 
     @Override
@@ -134,7 +132,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (sysUser == null) {
             throw new NotFoundException("用户名或密码错误");
         }
-        return sysUserConvert.toDto(sysUser);
+        return SysUserConvert.INSTANCE.toDto(sysUser);
     }
 
     @Override

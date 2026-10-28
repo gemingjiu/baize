@@ -1,39 +1,48 @@
 package com.gem.baize.system.user.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
-import com.gem.baize.common.core.convert.BaseConvert;
 import com.gem.baize.system.user.entity.SysUser;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class SysUserConvert extends BaseConvert<SysUser, SysUserDto> {
-    @Override
-    public SysUserDto toDto(SysUser entity) {
-        if (entity == null) {
-            return null;
-        }
-        SysUserDto dto = new SysUserDto();
-        BeanUtils.copyProperties(entity, dto);
-        // 特殊字段处理：deptId 在实体里是 Long、在 DTO 里是 String，BeanUtils 因类型不匹配会静默跳过，
-        // 必须显式转换，否则查询结果里的部门 ID 永远为空（前端「部门」列与编辑回显都会丢失）。
-        if (entity.getDeptId() != null) {
-            dto.setDeptId(String.valueOf(entity.getDeptId()));
-        }
-        return dto;
+import java.util.List;
+
+/**
+ * SysUser ↔ SysUserDto 转换（MapStruct 编译期生成，替代 BeanUtils 反射拷贝）。
+ *
+ * <p>deptId 特殊处理：实体是 Long、DTO 是 String（雪花 ID 超出 JS Number 安全整数范围，
+ * DTO 用 String 承载）。MapStruct 对 Long↔String 自动生成 String.valueOf / Long.parseLong
+ * 等价转换，这里仍显式声明 @Mapping 以固定语义并留档。</p>
+ */
+@Mapper
+public interface SysUserConvert {
+
+    SysUserConvert INSTANCE = Mappers.getMapper(SysUserConvert.class);
+
+    @Mapping(target = "deptId", expression = "java(entity.getDeptId() == null ? null : String.valueOf(entity.getDeptId()))")
+    SysUserDto toDto(SysUser entity);
+
+    List<SysUserDto> toDtoList(List<SysUser> list);
+
+    default Page<SysUserDto> toDtoPage(Page<SysUser> page) {
+        Page<SysUserDto> result = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        result.setRecords(toDtoList(page.getRecords()));
+        return result;
     }
 
-    @Override
-    public SysUser toEntity(SysUserDto dto) {
+    /**
+     * DTO → 实体：deptId 为空白或非法值时按「未指定部门」置 null（NOT NULL 约束由上层
+     * 校验兜底报业务错误，而不是 500），非法格式抛 IllegalArgumentException。
+     */
+    default SysUser toEntity(SysUserDto dto) {
         if (dto == null) {
             return null;
         }
         SysUser entity = new SysUser();
-        BeanUtils.copyProperties(dto, entity);
-        // 初始化Entity特殊字段：同理，DTO 的 deptId 是 String，不显式转换的话新增/编辑用户时
-        // dept_id 永远写不进去，而 sys_user.dept_id 是 NOT NULL，新增会直接违反约束报 500。
-        // 前端传的是雪花 ID 字符串（超出 JS Number 安全整数范围，所以 DTO 用 String 承载），
-        // 这里按 long 解析；空白或非法值按「未指定部门」处理，由上层校验兜底。
+        entity.setId(dto.getId());
+        entity.setTenantId(dto.getTenantId());
         if (dto.getDeptId() != null && !dto.getDeptId().isBlank()) {
             try {
                 entity.setDeptId(Long.parseLong(dto.getDeptId().trim()));
@@ -41,6 +50,15 @@ public class SysUserConvert extends BaseConvert<SysUser, SysUserDto> {
                 throw new IllegalArgumentException("部门ID格式非法: " + dto.getDeptId(), e);
             }
         }
+        entity.setUserName(dto.getUserName());
+        entity.setNickName(dto.getNickName());
+        entity.setUserType(dto.getUserType());
+        entity.setEmail(dto.getEmail());
+        entity.setPhone(dto.getPhone());
+        entity.setGender(dto.getGender());
+        entity.setAvatar(dto.getAvatar());
+        entity.setPassword(dto.getPassword());
+        entity.setStatus(dto.getStatus());
         return entity;
     }
 }

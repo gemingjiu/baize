@@ -24,20 +24,18 @@ import java.util.Optional;
 @Service
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
 
-    @Autowired
-    private SysConfigConvert sysConfigConvert;
 
     @Override
     @Cacheable(cacheNames = "sys_config", key = "#id")
     public SysConfigDto getById(String id) {
         SysConfig sysConfig = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("配置不存在"));
-        return sysConfigConvert.toDto(sysConfig);
+        return SysConfigConvert.INSTANCE.toDto(sysConfig);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysConfigDto dto) {
-        SysConfig sysConfig = sysConfigConvert.toEntity(dto);
+        SysConfig sysConfig = SysConfigConvert.INSTANCE.toEntity(dto);
         try {
             super.save(sysConfig);
         } catch (DuplicateKeyException e) {
@@ -49,7 +47,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_config", key = "#dto.id")
     public void updateById(SysConfigDto dto) {
-        SysConfig sysConfig = sysConfigConvert.toEntity(dto);
+        SysConfig sysConfig = SysConfigConvert.INSTANCE.toEntity(dto);
         boolean success = super.updateById(sysConfig);
         if (!success) {
             throw new NotFoundException("配置不存在或已删除");
@@ -93,7 +91,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         }
 
         Page<SysConfig> sysConfigPage = super.page(page, wrapper);
-        return sysConfigConvert.toDtoPage(sysConfigPage);
+        return SysConfigConvert.INSTANCE.toDtoPage(sysConfigPage);
     }
 
     @Override
@@ -102,6 +100,6 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         LambdaQueryWrapper<SysConfig> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysConfig::getConfigKey, configKey);
         SysConfig sysConfig = getOne(wrapper);
-        return sysConfigConvert.toDto(sysConfig);
+        return SysConfigConvert.INSTANCE.toDto(sysConfig);
     }
 }

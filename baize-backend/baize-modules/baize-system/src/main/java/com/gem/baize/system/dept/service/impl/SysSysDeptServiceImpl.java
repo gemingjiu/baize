@@ -33,20 +33,18 @@ import java.util.*;
 public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
 
-    @Autowired
-    private SysDeptConvert sysDeptConvert;
 
     @Override
     @Cacheable(cacheNames = "sys_dept", key = "#id")
     public SysDeptDto getById(String id) {
         SysDept sysDept = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("部门不存在"));
-        return sysDeptConvert.toDto(sysDept);
+        return SysDeptConvert.INSTANCE.toDto(sysDept);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysDeptDto sysDeptDto) {
-        SysDept sysDept = sysDeptConvert.toEntity(sysDeptDto);
+        SysDept sysDept = SysDeptConvert.INSTANCE.toEntity(sysDeptDto);
         try {
             super.save(sysDept);
         } catch (DuplicateKeyException e) {
@@ -58,7 +56,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_dept", key = "#sysDeptDto.id")
     public void updateById(SysDeptDto sysDeptDto) {
-        SysDept sysDept = sysDeptConvert.toEntity(sysDeptDto);
+        SysDept sysDept = SysDeptConvert.INSTANCE.toEntity(sysDeptDto);
         boolean success = super.updateById(sysDept);
         if (!success) {
             throw new NotFoundException("部门不存在或已删除");
@@ -111,7 +109,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
         }
 
         Page<SysDept> sysDeptPage = super.page(page, wrapper);
-        return sysDeptConvert.toDtoPage(sysDeptPage);
+        return SysDeptConvert.INSTANCE.toDtoPage(sysDeptPage);
     }
 
     @Override
@@ -130,7 +128,7 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
         }
 
         List<SysDept> deptList = list(wrapper);
-        List<SysDeptDto> dtoList = sysDeptConvert.toDtoList(deptList);
+        List<SysDeptDto> dtoList = SysDeptConvert.INSTANCE.toDtoList(deptList);
 
         return TreeUtils.buildTree(dtoList, SysDeptDto::getId, SysDeptDto::getParentId, SysDeptDto::setChildren);
     }
@@ -149,6 +147,6 @@ public class SysSysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> i
         }
 
         List<SysDept> deptList = list(wrapper);
-        return sysDeptConvert.toDtoList(deptList);
+        return SysDeptConvert.INSTANCE.toDtoList(deptList);
     }
 }

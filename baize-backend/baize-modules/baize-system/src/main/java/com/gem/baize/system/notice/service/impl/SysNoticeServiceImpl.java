@@ -19,26 +19,24 @@ import java.util.Optional;
 @Service
 public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice> implements SysNoticeService {
 
-    @Autowired
-    private SysNoticeConvert sysNoticeConvert;
 
     @Override
     public SysNoticeDto getById(String id) {
         SysNotice sysNotice = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("公告不存在"));
-        return sysNoticeConvert.toDto(sysNotice);
+        return SysNoticeConvert.INSTANCE.toDto(sysNotice);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysNoticeDto dto) {
-        SysNotice sysNotice = sysNoticeConvert.toEntity(dto);
+        SysNotice sysNotice = SysNoticeConvert.INSTANCE.toEntity(dto);
         super.save(sysNotice);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateById(SysNoticeDto dto) {
-        SysNotice sysNotice = sysNoticeConvert.toEntity(dto);
+        SysNotice sysNotice = SysNoticeConvert.INSTANCE.toEntity(dto);
         boolean success = super.updateById(sysNotice);
         if (!success) {
             throw new NotFoundException("公告不存在或已删除");
@@ -77,6 +75,6 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
         }
 
         Page<SysNotice> sysNoticePage = super.page(page, wrapper);
-        return sysNoticeConvert.toDtoPage(sysNoticePage);
+        return SysNoticeConvert.INSTANCE.toDtoPage(sysNoticePage);
     }
 }

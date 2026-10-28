@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/dict/data")
 public class SysDictDataController {
@@ -26,7 +27,7 @@ public class SysDictDataController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取字典数据")
-    @RequiresPermission("system:dict:query")
+    @RequiresPermission(PermCodes.DICT_QUERY)
     public ApiResult<SysDictDataDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -36,7 +37,7 @@ public class SysDictDataController {
 
     @PostMapping
     @Operation(summary = "创建字典数据")
-    @RequiresPermission("system:dict:add")
+    @RequiresPermission(PermCodes.DICT_ADD)
     public ApiResult<Integer> create(@Valid @RequestBody SysDictDataDto dto) {
         sysDictDataService.create(dto);
         return ApiResult.ok();
@@ -44,7 +45,7 @@ public class SysDictDataController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新字典数据")
-    @RequiresPermission("system:dict:edit")
+    @RequiresPermission(PermCodes.DICT_EDIT)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysDictDataDto dto) {
         if (!id.equals(dto.getId())) {
             throw new ParamException("请求参数id不一致");
@@ -55,7 +56,7 @@ public class SysDictDataController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除字典数据")
-    @RequiresPermission("system:dict:remove")
+    @RequiresPermission(PermCodes.DICT_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysDictDataService.removeById(id);
         return ApiResult.ok();
@@ -63,7 +64,7 @@ public class SysDictDataController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询字典数据")
-    @RequiresPermission("system:dict:list")
+    @RequiresPermission(PermCodes.DICT_LIST)
     public ApiResult<PageResult<SysDictDataDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                 @RequestParam(value = "size", defaultValue = "10") int size,
                                                 @Valid @RequestBody SysDictDataDto dto) {
@@ -74,7 +75,7 @@ public class SysDictDataController {
 
     @GetMapping("/type/{dictType}")
     @Operation(summary = "根据字典类型获取字典数据列表")
-    @RequiresPermission("system:dict:query")
+    @RequiresPermission(PermCodes.DICT_QUERY)
     public ApiResult<List<SysDictDataDto>> listByDictType(@PathVariable String dictType) {
         if (StringUtils.isBlank(dictType)) {
             throw new ParamException("字典类型不能为空");

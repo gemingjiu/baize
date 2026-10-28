@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/config")
 public class SysConfigController {
@@ -24,7 +25,7 @@ public class SysConfigController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取参数配置")
-    @RequiresPermission("system:config:query")
+    @RequiresPermission(PermCodes.CONFIG_QUERY)
     public ApiResult<SysConfigDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -34,7 +35,7 @@ public class SysConfigController {
 
     @PostMapping
     @Operation(summary = "创建参数配置")
-    @RequiresPermission("system:config:add")
+    @RequiresPermission(PermCodes.CONFIG_ADD)
     public ApiResult<Integer> create(@Valid @RequestBody SysConfigDto dto) {
         sysConfigService.create(dto);
         return ApiResult.ok();
@@ -42,7 +43,7 @@ public class SysConfigController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新参数配置")
-    @RequiresPermission("system:config:edit")
+    @RequiresPermission(PermCodes.CONFIG_EDIT)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysConfigDto dto) {
         if (!id.equals(dto.getId())) {
             throw new ParamException("请求参数id不一致");
@@ -53,7 +54,7 @@ public class SysConfigController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除参数配置")
-    @RequiresPermission("system:config:remove")
+    @RequiresPermission(PermCodes.CONFIG_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysConfigService.removeById(id);
         return ApiResult.ok();
@@ -61,7 +62,7 @@ public class SysConfigController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询参数配置")
-    @RequiresPermission("system:config:list")
+    @RequiresPermission(PermCodes.CONFIG_LIST)
     public ApiResult<PageResult<SysConfigDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                @RequestParam(value = "size", defaultValue = "10") int size,
                                                @Valid @RequestBody SysConfigDto dto) {
@@ -72,7 +73,7 @@ public class SysConfigController {
 
     @GetMapping("/key/{configKey}")
     @Operation(summary = "根据Key获取参数配置")
-    @RequiresPermission("system:config:query")
+    @RequiresPermission(PermCodes.CONFIG_QUERY)
     public ApiResult<SysConfigDto> getByConfigKey(@PathVariable String configKey) {
         if (StringUtils.isBlank(configKey)) {
             throw new ParamException("请求参数configKey不能为空");

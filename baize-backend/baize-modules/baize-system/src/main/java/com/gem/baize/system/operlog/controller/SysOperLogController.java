@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 操作日志控制器
  */
@@ -40,14 +41,14 @@ public class SysOperLogController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取操作日志详情", description = "根据ID查询操作日志信息")
-    @RequiresPermission("monitor:operlog:query")
+    @RequiresPermission(PermCodes.OPERLOG_QUERY)
     public ApiResult<SysOperLogDto> getById(@PathVariable String id) {
         return ApiResult.ok(sysOperLogService.getById(id));
     }
 
     @PostMapping("/page")
     @Operation(summary = "分页查询操作日志", description = "分页查询操作日志列表")
-    @RequiresPermission("monitor:operlog:list")
+    @RequiresPermission(PermCodes.OPERLOG_LIST)
     public ApiResult<PageResult<SysOperLogDto>> page(
             @RequestParam(value = "current", defaultValue = "1") int current,
             @RequestParam(value = "size", defaultValue = "10") int size,
@@ -62,7 +63,7 @@ public class SysOperLogController {
      */
     @PostMapping("/export")
     @Operation(summary = "导出操作日志", description = "按查询条件导出操作日志为 Excel")
-    @RequiresPermission("monitor:operlog:export")
+    @RequiresPermission(PermCodes.OPERLOG_EXPORT)
     public void export(@RequestBody(required = false) SysOperLogDto dto, HttpServletResponse response) {
         Page<SysOperLog> page = new Page<>(1, EXPORT_MAX_ROWS);
         page.setSearchCount(false);
@@ -88,7 +89,7 @@ public class SysOperLogController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除操作日志", description = "根据ID删除操作日志")
-    @RequiresPermission("monitor:operlog:remove")
+    @RequiresPermission(PermCodes.OPERLOG_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysOperLogService.removeById(id);
         return ApiResult.ok();
@@ -96,7 +97,7 @@ public class SysOperLogController {
 
     @DeleteMapping("/clean")
     @Operation(summary = "清空操作日志", description = "清空所有操作日志")
-    @RequiresPermission("monitor:operlog:remove")
+    @RequiresPermission(PermCodes.OPERLOG_REMOVE)
     public ApiResult<Void> clean() {
         sysOperLogService.cleanOperLog();
         return ApiResult.ok();

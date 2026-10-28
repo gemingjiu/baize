@@ -1,32 +1,31 @@
 package com.gem.baize.system.tenant.service.impl;
 
-import com.gem.baize.system.tenant.entity.SysTenant;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
-import com.gem.baize.common.core.convert.BaseConvert;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import com.gem.baize.system.tenant.entity.SysTenant;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class SysTenantConvert extends BaseConvert<SysTenant, SysTenantDto> {
-    @Override
-    public SysTenantDto toDto(SysTenant entity) {
-        if (entity == null) {
-            return null;
-        }
-        SysTenantDto dto = new SysTenantDto();
-        BeanUtils.copyProperties(entity, dto);
-        // 特殊字段处理
-        return dto;
-    }
+import java.util.List;
 
-    @Override
-    public SysTenant toEntity(SysTenantDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        SysTenant entity = new SysTenant();
-        BeanUtils.copyProperties(dto, entity);
-        // 初始化Entity特殊字段
-        return entity;
+/**
+ * SysTenant ↔ SysTenantDto 转换（MapStruct 编译期生成，替代 BeanUtils 反射拷贝：
+ * 新增实体字段漏加 DTO 时编译期告警/显式映射，不再静默丢字段）。
+ */
+@Mapper
+public interface SysTenantConvert {
+
+    SysTenantConvert INSTANCE = Mappers.getMapper(SysTenantConvert.class);
+
+    SysTenantDto toDto(SysTenant entity);
+
+    SysTenant toEntity(SysTenantDto dto);
+
+    List<SysTenantDto> toDtoList(List<SysTenant> list);
+
+    default Page<SysTenantDto> toDtoPage(Page<SysTenant> page) {
+        Page<SysTenantDto> result = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        result.setRecords(toDtoList(page.getRecords()));
+        return result;
     }
 }

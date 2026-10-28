@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 服务器监控Controller
  */
@@ -36,7 +37,7 @@ public class ServerInfoController {
      */
     @GetMapping("/server")
     @Operation(summary = "获取服务器信息", description = "获取CPU、内存、磁盘、JVM等服务器信息")
-    @RequiresPermission("monitor:server:query")
+    @RequiresPermission(PermCodes.SERVER_QUERY)
     public ApiResult<ServerInfoVO> getServerInfo() {
         ServerInfoVO info = new ServerInfoVO();
 

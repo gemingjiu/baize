@@ -1,41 +1,31 @@
 package com.gem.baize.system.job.service.impl;
 
-import com.gem.baize.common.core.convert.BaseConvert;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.system.job.domain.dto.SysJobDto;
 import com.gem.baize.system.job.entity.SysJob;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 /**
- * 定时任务对象转换
+ * SysJob ↔ SysJobDto 转换（MapStruct 编译期生成，替代 BeanUtils 反射拷贝：
+ * 新增实体字段漏加 DTO 时编译期告警/显式映射，不再静默丢字段）。
  */
-@Component
-public class SysJobConvert extends BaseConvert<SysJob, SysJobDto> {
-    @Override
-    public SysJobDto toDto(SysJob entity) {
-        if (entity == null) {
-            return null;
-        }
-        SysJobDto dto = new SysJobDto();
-        BeanUtils.copyProperties(entity, dto);
-        return dto;
-    }
+@Mapper
+public interface SysJobConvert {
 
-    @Override
-    public SysJob toEntity(SysJobDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        SysJob entity = new SysJob();
-        BeanUtils.copyProperties(dto, entity);
-        // 租户、删除标记、乐观锁与审计字段一律由框架/拦截器填充，禁止来自请求体
-        entity.setTenantId(null);
-        entity.setDeleted(null);
-        entity.setVersion(null);
-        entity.setCreatedBy(null);
-        entity.setCreatedTime(null);
-        entity.setModifiedBy(null);
-        entity.setModifiedTime(null);
-        return entity;
+    SysJobConvert INSTANCE = Mappers.getMapper(SysJobConvert.class);
+
+    SysJobDto toDto(SysJob entity);
+
+    SysJob toEntity(SysJobDto dto);
+
+    List<SysJobDto> toDtoList(List<SysJob> list);
+
+    default Page<SysJobDto> toDtoPage(Page<SysJob> page) {
+        Page<SysJobDto> result = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        result.setRecords(toDtoList(page.getRecords()));
+        return result;
     }
 }

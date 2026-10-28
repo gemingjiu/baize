@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/user")
 public class SysUserController {
@@ -69,7 +70,7 @@ public class SysUserController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取用户", description = "根据ID查询用户信息")
-    @RequiresPermission("system:user:query")
+    @RequiresPermission(PermCodes.USER_QUERY)
     public ApiResult<SysUserDto> getById(@PathVariable String id) {
         if (StringUtils.isBlank(id)) {
             throw new ParamException("请求参数id不能为空");
@@ -79,7 +80,7 @@ public class SysUserController {
 
     @PostMapping
     @Operation(summary = "创建用户")
-    @RequiresPermission("system:user:add")
+    @RequiresPermission(PermCodes.USER_ADD)
     @Log(title = "用户管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysUserDto dto) {
         sysUserService.create(dto);
@@ -88,7 +89,7 @@ public class SysUserController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新用户")
-    @RequiresPermission("system:user:edit")
+    @RequiresPermission(PermCodes.USER_EDIT)
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysUserDto dto) {
         // 双重验证
@@ -102,7 +103,7 @@ public class SysUserController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除用户")
-    @RequiresPermission("system:user:remove")
+    @RequiresPermission(PermCodes.USER_REMOVE)
     @Log(title = "用户管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysUserService.removeById(id);
@@ -111,7 +112,7 @@ public class SysUserController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询用户")
-    @RequiresPermission("system:user:list")
+    @RequiresPermission(PermCodes.USER_LIST)
     public ApiResult<PageResult<SysUserDto>> page(@RequestParam(value = "current", defaultValue = "1") int current, @RequestParam(value = "size", defaultValue = "10") int size, @Valid @RequestBody SysUserDto dto) {
         Page<SysUser> query = new Page<>(current, size);
         Page<SysUserDto> pages = sysUserService.page(query, dto);
@@ -126,7 +127,7 @@ public class SysUserController {
      */
     @PostMapping("/export")
     @Operation(summary = "导出用户", description = "按查询条件导出用户列表为 Excel")
-    @RequiresPermission("system:user:export")
+    @RequiresPermission(PermCodes.USER_EXPORT)
     public void export(@RequestBody(required = false) SysUserDto dto, HttpServletResponse response) {
         Page<SysUser> query = new Page<>(1, EXPORT_MAX_ROWS);
         query.setSearchCount(false);
@@ -199,7 +200,7 @@ public class SysUserController {
 
     @PutMapping("/resetPassword")
     @Operation(summary = "重置密码", description = "管理员重置用户密码")
-    @RequiresPermission("system:user:resetPwd")
+    @RequiresPermission(PermCodes.USER_RESET_PWD)
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> resetPassword(@Valid @RequestBody ResetPasswordDto dto) {
         sysUserService.resetPassword(dto.getUserId(), dto.getNewPassword());
@@ -208,7 +209,7 @@ public class SysUserController {
 
     @PutMapping("/updatePassword")
     @Operation(summary = "修改密码", description = "用户修改自己的密码")
-    @RequiresPermission("system:user:updatePwd")
+    @RequiresPermission(PermCodes.USER_UPDATE_PWD)
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> updatePassword(@Valid @RequestBody UpdatePasswordDto dto) {
         sysUserService.updatePassword(dto.getUserId(), dto.getOldPassword(), dto.getNewPassword());
@@ -225,7 +226,7 @@ public class SysUserController {
 
     @PutMapping("/changeStatus")
     @Operation(summary = "修改用户状态", description = "修改用户启用/禁用状态")
-    @RequiresPermission("system:user:edit")
+    @RequiresPermission(PermCodes.USER_EDIT)
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> changeStatus(@RequestParam("userId") String userId,
                                         @RequestParam("status") String status) {

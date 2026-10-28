@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 角色权限关联控制器
  */
@@ -21,14 +22,14 @@ public class SysRolePermController {
 
     @GetMapping("/{roleId}/perms")
     @Operation(summary = "获取角色权限ID列表")
-    @RequiresPermission("system:role:query")
+    @RequiresPermission(PermCodes.ROLE_QUERY)
     public ApiResult<List<String>> getPermIdsByRoleId(@PathVariable String roleId) {
         return ApiResult.ok(sysRolePermService.getPermIdsByRoleId(roleId));
     }
 
     @GetMapping("/roles/codes")
     @Operation(summary = "根据角色ID列表获取权限编码列表")
-    @RequiresPermission("system:role:query")
+    @RequiresPermission(PermCodes.ROLE_QUERY)
     public ApiResult<List<String>> getPermCodesByRoleIds(@RequestParam List<String> roleIds) {
         return ApiResult.ok(sysRolePermService.getPermCodesByRoleIds(roleIds));
     }
@@ -39,7 +40,7 @@ public class SysRolePermController {
      */
     @PostMapping("/{roleId}/assign")
     @Operation(summary = "为角色分配权限")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> assignPerms(@PathVariable String roleId,
                                        @RequestBody List<String> permIds,
                                        @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {
@@ -49,7 +50,7 @@ public class SysRolePermController {
 
     @DeleteMapping("/{roleId}")
     @Operation(summary = "删除角色所有权限关联")
-    @RequiresPermission("system:role:edit")
+    @RequiresPermission(PermCodes.ROLE_EDIT)
     public ApiResult<Void> removeByRoleId(@PathVariable String roleId) {
         sysRolePermService.removeByRoleId(roleId);
         return ApiResult.ok();

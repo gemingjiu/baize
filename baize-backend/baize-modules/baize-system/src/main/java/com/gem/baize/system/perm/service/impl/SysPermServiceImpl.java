@@ -32,20 +32,18 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
 
 
 
-    @Autowired
-    private SysPermConvert sysPermConvert;
 
     @Override
     @Cacheable(cacheNames = "sys_perm", key = "#id")
     public SysPermDto getById(String id) {
         SysPerm sysPerm = Optional.ofNullable(super.getById(id)).orElseThrow(() -> new NotFoundException("权限不存在"));
-        return sysPermConvert.toDto(sysPerm);
+        return SysPermConvert.INSTANCE.toDto(sysPerm);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(SysPermDto sysPermDto) {
-        SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
+        SysPerm sysPerm = SysPermConvert.INSTANCE.toEntity(sysPermDto);
         try {
             super.save(sysPerm);
         } catch (DuplicateException e) {
@@ -57,7 +55,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_perm", key = "#sysPermDto.id")
     public void updateById(SysPermDto sysPermDto) {
-        SysPerm sysPerm = sysPermConvert.toEntity(sysPermDto);
+        SysPerm sysPerm = SysPermConvert.INSTANCE.toEntity(sysPermDto);
         boolean success = super.updateById(sysPerm);
         if (!success) {
             throw new NotFoundException("权限不存在或已删除");
@@ -102,7 +100,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
         }
 
         Page<SysPerm> sysPermPage = super.page(page, wrapper);
-        return sysPermConvert.toDtoPage(sysPermPage);
+        return SysPermConvert.INSTANCE.toDtoPage(sysPermPage);
     }
 
     @Override
@@ -111,7 +109,7 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
         wrapper.orderByAsc(SysPerm::getSort);
 
         List<SysPerm> permList = list(wrapper);
-        List<SysPermDto> dtoList = sysPermConvert.toDtoList(permList);
+        List<SysPermDto> dtoList = SysPermConvert.INSTANCE.toDtoList(permList);
 
         return TreeUtils.buildTree(dtoList, SysPermDto::getId, SysPermDto::getParentId, SysPermDto::setChildren);
     }

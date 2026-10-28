@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.gem.baize.common.core.constant.PermCodes;
 @RestController
 @RequestMapping("/system/notice")
 public class SysNoticeController {
@@ -23,14 +24,14 @@ public class SysNoticeController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取公告")
-    @RequiresPermission("system:notice:query")
+    @RequiresPermission(PermCodes.NOTICE_QUERY)
     public ApiResult<SysNoticeDto> getById(@PathVariable String id) {
         return ApiResult.ok(sysNoticeService.getById(id));
     }
 
     @PostMapping
     @Operation(summary = "创建公告")
-    @RequiresPermission("system:notice:add")
+    @RequiresPermission(PermCodes.NOTICE_ADD)
     public ApiResult<Integer> create(@Valid @RequestBody SysNoticeDto dto) {
         sysNoticeService.create(dto);
         return ApiResult.ok();
@@ -38,7 +39,7 @@ public class SysNoticeController {
 
     @PutMapping("/{id}")
     @Operation(summary = "更新公告")
-    @RequiresPermission("system:notice:edit")
+    @RequiresPermission(PermCodes.NOTICE_EDIT)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysNoticeDto dto) {
         if (!id.equals(dto.getId())) {
             throw new com.gem.baize.common.core.exception.model.ParamException("请求参数id不一致");
@@ -49,7 +50,7 @@ public class SysNoticeController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除公告")
-    @RequiresPermission("system:notice:remove")
+    @RequiresPermission(PermCodes.NOTICE_REMOVE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysNoticeService.removeById(id);
         return ApiResult.ok();
@@ -57,7 +58,7 @@ public class SysNoticeController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询公告")
-    @RequiresPermission("system:notice:list")
+    @RequiresPermission(PermCodes.NOTICE_LIST)
     public ApiResult<PageResult<SysNoticeDto>> page(@RequestParam(value = "current", defaultValue = "1") int current,
                                                @RequestParam(value = "size", defaultValue = "10") int size,
                                                @RequestBody SysNoticeDto dto) {

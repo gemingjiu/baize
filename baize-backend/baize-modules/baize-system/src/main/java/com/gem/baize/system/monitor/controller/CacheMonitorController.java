@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * Redis 缓存监控Controller
  *
@@ -82,7 +83,7 @@ public class CacheMonitorController {
      */
     @GetMapping
     @Operation(summary = "获取缓存监控信息", description = "Redis 版本、客户端数、内存、命中率、运行时长及按前缀分组的 key 数量")
-    @RequiresPermission("monitor:cache:query")
+    @RequiresPermission(PermCodes.CACHE_QUERY)
     public ApiResult<CacheInfoVO> getCacheInfo() {
         CacheInfoVO vo = new CacheInfoVO();
         Properties info = null;
@@ -160,7 +161,7 @@ public class CacheMonitorController {
      */
     @GetMapping("/keys")
     @Operation(summary = "查询缓存key列表", description = "按 pattern 用 SCAN 扫描 key，返回 key/类型/TTL，最多 200 个")
-    @RequiresPermission("monitor:cache:query")
+    @RequiresPermission(PermCodes.CACHE_QUERY)
     public ApiResult<CacheKeyVO> getCacheKeys(@RequestParam(value = "pattern", defaultValue = "*") String pattern,
                                              @RequestParam(value = "limit", defaultValue = "0") int limit) {
         String safePattern = (pattern == null || pattern.trim().isEmpty()) ? "*" : pattern.trim();

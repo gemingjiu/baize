@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+import com.gem.baize.common.core.constant.PermCodes;
 /**
  * 代码生成Controller。
  *
@@ -36,14 +37,14 @@ public class GenController {
 
     @GetMapping("/tables")
     @Operation(summary = "获取数据库表列表")
-    @RequiresPermission("tool:gen:query")
+    @RequiresPermission(PermCodes.GEN_QUERY)
     public ApiResult<List<Map<String, Object>>> tables() {
         return ApiResult.ok(genService.getTableList());
     }
 
     @GetMapping("/table/{tableName}")
     @Operation(summary = "获取表字段信息")
-    @RequiresPermission("tool:gen:query")
+    @RequiresPermission(PermCodes.GEN_QUERY)
     public ApiResult<GenTableVO> tableInfo(@PathVariable String tableName) {
         GenTableVO tableInfo = genService.getTableInfo(tableName);
         // 自动推断类名
@@ -64,7 +65,7 @@ public class GenController {
      */
     @PostMapping("/generate")
     @Operation(summary = "生成代码（返回文件内容）")
-    @RequiresPermission("tool:gen:code")
+    @RequiresPermission(PermCodes.GEN_CODE)
     public ApiResult<Map<String, String>> generate(@RequestBody GenTableDTO dto) {
         return ApiResult.ok(genService.generateCode(dto));
     }
@@ -74,7 +75,7 @@ public class GenController {
      */
     @PostMapping("/download")
     @Operation(summary = "生成代码并下载 zip")
-    @RequiresPermission("tool:gen:code")
+    @RequiresPermission(PermCodes.GEN_CODE)
     public void download(@RequestBody GenTableDTO dto, HttpServletResponse response) throws IOException {
         byte[] zip = genService.generateZip(dto);
         if (zip.length == 0) {
