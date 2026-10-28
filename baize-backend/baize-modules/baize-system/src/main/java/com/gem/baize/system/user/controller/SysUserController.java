@@ -2,7 +2,9 @@ package com.gem.baize.system.user.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gem.baize.api.system.user.domain.dto.ResetPasswordDto;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
+import com.gem.baize.api.system.user.domain.dto.UpdatePasswordDto;
 import com.gem.baize.common.core.annotation.InnerAuth;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.annotation.Log;
@@ -199,9 +201,8 @@ public class SysUserController {
     @Operation(summary = "重置密码", description = "管理员重置用户密码")
     @RequiresPermission("system:user:resetPwd")
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
-    public ApiResult<Void> resetPassword(@RequestParam("userId") String userId,
-                                         @RequestParam("newPassword") String newPassword) {
-        sysUserService.resetPassword(userId, newPassword);
+    public ApiResult<Void> resetPassword(@Valid @RequestBody ResetPasswordDto dto) {
+        sysUserService.resetPassword(dto.getUserId(), dto.getNewPassword());
         return ApiResult.ok();
     }
 
@@ -209,10 +210,8 @@ public class SysUserController {
     @Operation(summary = "修改密码", description = "用户修改自己的密码")
     @RequiresPermission("system:user:updatePwd")
     @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
-    public ApiResult<Void> updatePassword(@RequestParam("userId") String userId,
-                                          @RequestParam("oldPassword") String oldPassword,
-                                          @RequestParam("newPassword") String newPassword) {
-        sysUserService.updatePassword(userId, oldPassword, newPassword);
+    public ApiResult<Void> updatePassword(@Valid @RequestBody UpdatePasswordDto dto) {
+        sysUserService.updatePassword(dto.getUserId(), dto.getOldPassword(), dto.getNewPassword());
         return ApiResult.ok();
     }
 

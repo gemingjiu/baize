@@ -68,7 +68,7 @@ export async function deleteUser(id: string, options?: { [key: string]: any }) {
   });
 }
 
-/** 修改密码 PUT /system/user/updatePassword */
+/** 修改密码 PUT /system/user/updatePassword（密码走 body，避免出现在 URL/access log） */
 export async function updatePassword(
   userId: string,
   oldPassword: string,
@@ -77,16 +77,16 @@ export async function updatePassword(
 ) {
   return request<API.ApiResult>(`${API_VERSION}/system/user/updatePassword`, {
     method: 'PUT',
-    params: { userId, oldPassword, newPassword },
+    data: { userId, oldPassword, newPassword },
     ...(options || {}),
   });
 }
 
-/** 重置密码 PUT /system/user/resetPassword */
+/** 重置密码 PUT /system/user/resetPassword（密码走 body，避免出现在 URL/access log） */
 export async function resetPassword(userId: string, newPassword: string, options?: { [key: string]: any }) {
   return request<API.ApiResult>(`${API_VERSION}/system/user/resetPassword`, {
     method: 'PUT',
-    params: { userId, newPassword },
+    data: { userId, newPassword },
     ...(options || {}),
   });
 }

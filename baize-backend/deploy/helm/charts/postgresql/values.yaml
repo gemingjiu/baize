@@ -4,7 +4,7 @@ image:
   tag: latest
 auth:
   username: postgres
-  password: "baize@2023"
+  password: "CHANGE_ME_POSTGRES_PASSWORD"  # 部署时用 --set 或自定义 values 覆盖，禁止提交真实口令
 service:
   port: 5432
   nodePort: 30432

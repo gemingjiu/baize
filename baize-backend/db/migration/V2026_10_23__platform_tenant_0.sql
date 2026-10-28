@@ -18,9 +18,14 @@
 --     平台保留行的其余 NOT NULL 列（sort/status/deleted/version/created_by/created_time）
 --     也全部给值，保证插入不违约。
 --
--- 幂等：用 NOT EXISTS 守卫，可重复执行。
+-- 幂等：
+--   - 显式限定 "baize-system" schema 并自行 CREATE SCHEMA，不依赖调用方 search_path；
+--   - 用 ON CONFLICT (id) DO NOTHING 兜底，可重复执行、并发安全。
 -- =============================================================================
 
-INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+CREATE SCHEMA IF NOT EXISTS "baize-system";
+
+INSERT INTO "baize-system".sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
 SELECT 0, 'PLATFORM', '平台租户(保留)', NULL, NULL, NULL, NULL, NULL, 10, 0, '0', '0', 0, 1, now(), NULL, NULL, '平台级保留租户，tenant_id=0 的数据归属平台态'
-WHERE NOT EXISTS (SELECT 1 FROM sys_tenant WHERE id = 0);
+WHERE NOT EXISTS (SELECT 1 FROM "baize-system".sys_tenant WHERE id = 0)
+ON CONFLICT (id) DO NOTHING;

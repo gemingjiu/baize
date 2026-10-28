@@ -1041,3 +1041,55 @@ CREATE INDEX idx_sys_job_created_time ON "baize-system".sys_job(created_time);
 -- Unique constraints
 
 ALTER TABLE "baize-system".sys_job ADD CONSTRAINT uk_sys_job_tenant_job_name UNIQUE (tenant_id, job_name);
+
+-- =============================================================================
+-- 补主键（幂等）
+--   init 脚本（baize-system-init.sql）对多张种子表使用 `ON CONFLICT (id) DO NOTHING`，
+--   这要求目标表已存在以 id 为列的**唯一/主键约束**作为仲裁索引。
+--   早期版本本文件只对 sys_oper_log 建了主键，其余 15 张种子表仅靠迁移脚本
+--   V2026_10_22__constraints_and_align（S6）补主键，导致「仅按 README 执行 ddl→init」
+--   （不跑 migration）的全新库 init 首跑即报
+--   "there is no unique or exclusion constraint matching the ON CONFLICT specification"。
+--   此处把主键下沉到 DDL，使 DDL 自身即可支撑 init 幂等，无需依赖迁移脚本。
+--   用 DO 块逐表判重后补，避免对已含重复/空 id 的历史数据直接失败。
+-- =============================================================================
+
+DO $$
+DECLARE
+    v_table text;
+    v_reg   regclass;
+    v_dups  bigint;
+    v_nulls bigint;
+BEGIN
+    FOREACH v_table IN ARRAY ARRAY[
+        'sys_config', 'sys_data_perm', 'sys_dept', 'sys_dict_data', 'sys_dict_type',
+        'sys_job', 'sys_login_log', 'sys_menu', 'sys_notice', 'sys_perm', 'sys_post',
+        'sys_role', 'sys_tenant', 'sys_user', 'sys_oper_log'
+    ] LOOP
+        v_reg := to_regclass(format('%I.%I', 'baize-system', v_table));
+        IF v_reg IS NULL THEN
+            RAISE NOTICE 'DDL 补主键跳过（表不存在）：%', v_table;
+            CONTINUE;
+        END IF;
+        IF EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid = v_reg AND contype = 'p') THEN
+            RAISE NOTICE 'DDL 补主键跳过（已有主键）：%', v_table;
+            CONTINUE;
+        END IF;
+
+        EXECUTE format('SELECT count(*) - count(DISTINCT id),
+                               count(*) FILTER (WHERE id IS NULL)
+                          FROM %I.%I', 'baize-system', v_table) INTO v_dups, v_nulls;
+        IF v_nulls > 0 OR v_dups > 0 THEN
+            RAISE NOTICE 'DDL 补主键跳过：%.id 存在 % 行 NULL、% 行重复，请先清洗', v_table, v_nulls, v_dups;
+            CONTINUE;
+        END IF;
+
+        BEGIN
+            EXECUTE format('ALTER TABLE %I.%I ADD CONSTRAINT %I PRIMARY KEY (id)',
+                           'baize-system', v_table, 'pk_' || v_table);
+            RAISE NOTICE 'DDL 已补主键：pk_%(id)', v_table;
+        EXCEPTION WHEN others THEN
+            RAISE NOTICE 'DDL 补主键失败（已跳过）：% -> %', v_table, SQLERRM;
+        END;
+    END LOOP;
+END $$;

@@ -19,6 +19,18 @@ fi
 # 获取脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# ---------------------------------------------------------------------------
+# 凭据占位符校验：01-postgres.yaml / 03-nacos.yaml 中的 Secret 均为占位符，
+# 部署前必须替换为真实值（或改用 kubectl create secret 注入）。
+# ---------------------------------------------------------------------------
+if grep -q "CHANGE_ME_" "$SCRIPT_DIR/01-postgres.yaml" "$SCRIPT_DIR/03-nacos.yaml"; then
+    echo "❌ 错误: 检测到未替换的凭据占位符（CHANGE_ME_*）"
+    echo "   请先编辑 01-postgres.yaml（POSTGRES_PASSWORD）与 03-nacos.yaml"
+    echo "   （NACOS_AUTH_TOKEN / NACOS_AUTH_IDENTITY_KEY / NACOS_AUTH_IDENTITY_VALUE），"
+    echo "   或改用 kubectl create secret 自行注入后删除清单中的 Secret 段。"
+    exit 1
+fi
+
 echo "📁 部署配置文件目录: $SCRIPT_DIR"
 echo ""
 
@@ -62,8 +74,8 @@ echo "  Redis: localhost:30379"
 echo "  Nacos: http://localhost:30848/nacos"
 echo ""
 echo "🔐 连接信息："
-echo "  PostgreSQL 用户: postgres, 密码: baize@2023"
-echo "  Nacos 默认账号: nacos/nacos"
+echo "  PostgreSQL 用户: postgres, 密码: 见 01-postgres.yaml Secret（部署前替换）"
+echo "  Nacos 默认账号: nacos/nacos（建议部署后立即改密）"
 echo ""
 echo "📝 查看日志示例："
 echo "  kubectl logs -f deployment/postgres -n baize"

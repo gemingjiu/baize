@@ -15,7 +15,9 @@ metadata:
   namespace: baize
 type: Opaque
 stringData:
-  POSTGRES_PASSWORD: "baize@2023"
+  # 生产部署必须替换：建议由外部 Secret 管理工具（kubectl create secret / sealed-secrets）注入，
+  # 不要把真实口令提交进仓库。占位符未替换时 deploy.sh 会拒绝部署。
+  POSTGRES_PASSWORD: "CHANGE_ME_POSTGRES_PASSWORD"
 
 ---
 apiVersion: v1

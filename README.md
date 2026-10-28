@@ -98,7 +98,7 @@ psql -U postgres -h localhost -d baize -v ON_ERROR_STOP=1 `
 
 | 目录 | 内容 | 幂等 |
 | --- | --- | --- |
-| `db/ddl/` | 建表 DDL（表名自带 `"baize-system"` schema 前缀） | 是 |
+| `db/ddl/` | 建表 DDL（表名自带 `"baize-system"` schema 前缀；**仅首次建表用，非幂等**——重跑会报 `already exists`，增量变更请走 `db/migration`） | 否（增量用 migration） |
 | `db/init/` | 种子数据（租户/部门/菜单/角色/用户/授权关系） | 是（`ON CONFLICT DO NOTHING`） |
 | `db/migration/` | 增量迁移（约束对齐、关系表主键、首页菜单、平台租户 0 等），每个脚本可重复执行 | 是 |
 > CI 会对 `db/init` 连跑两次验证幂等，并逐个执行 `db/migration/*.sql` 与 `baize-system-operlog.sql`。
