@@ -23,7 +23,7 @@ logging:
 baize:
   # 内部调用令牌：@InnerAuth 端点据此校验 Feign 客户端附加的 From-Inner 请求头。
   # 客户端（InnerAuthFeignConfig，baize-api-system）与服务端（InnerAuthInterceptor，
-  # baize-common-webmvc）读同一个键，两端对称；为空时 @InnerAuth 退化为仅告警放行。
+  # baize-common-webmvc）读同一个键，两端对称；为空时 @InnerAuth 端点全部拒绝（fail-closed，P1-E）。
   # 审计结论见 doc/inner-token-audit.md：全仓库 RestTemplate/WebClient 为 0，
   # 不存在绕过 Feign 的内部调用，可安全启用。
   # 注意：令牌为共享密钥，轮换时需一次性改这里并同步重启 system/auth/gateway。

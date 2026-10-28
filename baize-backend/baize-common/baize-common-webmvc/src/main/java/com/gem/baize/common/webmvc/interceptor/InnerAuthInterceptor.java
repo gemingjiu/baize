@@ -10,11 +10,16 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * 内部接口鉴权拦截器
+ * 内部接口鉴权拦截器（P1-E fail-closed）
  * <p>
  * 只拦截标注了 {@link InnerAuth} 的 Controller 方法（方法或类级别），校验请求头
  * {@link InnerAuth#HEADER_NAME} 与配置项 {@link InnerAuth#TOKEN_PROPERTY} 是否一致。
- * 配置项为空表示不校验（仅告警），用于兼容未开启内部鉴权的开发环境。
+ * <p>
+ * 安全策略：未配置令牌时对 @InnerAuth 端点<b>一律拒绝</b>（fail-closed），
+ * 而不是放行——空令牌放行等于内部接口裸奔，攻击者直连后端即可调用
+ * getPasswordByUsername 等敏感端点。各服务的共享配置 application-dev.yml
+ * 已统一配置 baize.inner.token，Feign 侧 InnerAuthFeignConfig 自动附加令牌，
+ * 正常内部调用不受影响。
  */
 @Slf4j
 public class InnerAuthInterceptor implements HandlerInterceptor {
@@ -24,8 +29,9 @@ public class InnerAuthInterceptor implements HandlerInterceptor {
     public InnerAuthInterceptor(String innerToken) {
         this.innerToken = innerToken;
         if (!StringUtils.hasText(innerToken)) {
-            log.warn("未配置 {}，标注 @InnerAuth 的内部接口将不校验 {}，请仅在开发环境使用",
-                    InnerAuth.TOKEN_PROPERTY, InnerAuth.HEADER_NAME);
+            log.error("未配置 {}，标注 @InnerAuth 的内部接口将全部拒绝访问（fail-closed）；"
+                            + "请为每个服务配置该令牌，且与 Feign 调用方保持一致",
+                    InnerAuth.TOKEN_PROPERTY);
         }
     }
 
@@ -39,9 +45,11 @@ public class InnerAuthInterceptor implements HandlerInterceptor {
                 && !handlerMethod.getBeanType().isAnnotationPresent(InnerAuth.class)) {
             return true;
         }
-        // 未配置内部令牌时不校验，避免破坏本地开发联调
+        // P1-E fail-closed：未配置内部令牌时拒绝访问 @InnerAuth 端点，而非放行
         if (!StringUtils.hasText(innerToken)) {
-            return true;
+            log.error("拒绝内部接口调用: uri={}，原因：服务端未配置 {}",
+                    request.getRequestURI(), InnerAuth.TOKEN_PROPERTY);
+            throw new ForbiddenException("内部接口未启用（服务端缺少内部令牌配置）");
         }
         String token = request.getHeader(InnerAuth.HEADER_NAME);
         if (!innerToken.equals(token)) {

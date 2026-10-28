@@ -55,4 +55,10 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
         // 一般可以做清理上下文、日志等操作
         RequestContextHolder.remove();
     }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        // P1-A：同步请求结束后清理 ThreadLocal，避免线程复用把上一请求的租户/角色泄漏给下一请求
+        RequestContextHolder.remove();
+    }
 }

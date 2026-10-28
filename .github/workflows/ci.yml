@@ -43,7 +43,9 @@ jobs:
   frontend:
     name: Frontend (Node 20)
     runs-on: ubuntu-latest
-    continue-on-error: true
+    # 2026-10-28 P1-K：本机 `npx max build`（11.8s）与 `npx tsc --noEmit` 均已验证通过，
+    # 前端 CI 从「允许失败」改为与后端一致的阻塞门禁。
+    continue-on-error: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4

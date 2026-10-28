@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * <p>
  * 标注在仅允许服务间内部调用的接口上，由 InnerAuthInterceptor 校验请求头
  * {@link #HEADER_NAME} 与配置项 {@link #TOKEN_PROPERTY} 是否一致。
- * 配置项为空表示不校验（仅打印告警），用于兼容未开启内部鉴权的开发环境。
+ * 配置项为空时服务端对标注该注解的端点一律拒绝（fail-closed，P1-E）。
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

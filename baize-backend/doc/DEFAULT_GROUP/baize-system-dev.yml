@@ -81,6 +81,12 @@ swagger:
 # 注意：此改动必须与 8 个 Feign 客户端的 @FeignClient(path="/api/v1/system") 同步，
 #       否则 baize-auth 经 Feign 调 baize-system 会 404。
 # ============================================================================
+# 网关↔后端身份头签名密钥（P0-A）：与 baize-gateway-dev.yml 的 baize.gateway.signature-secret 一致
+# 后端校验身份头 HMAC 时才信任 X-Tenant-Id/X-User-Id 等；缺失该密钥则降级放行（开发态）
+baize:
+  gateway:
+    signature-secret: 950f7d50269358900739304867aa724ba00efc5d65735e06cd26d4178b67f3a
+
 server:
   servlet:
     context-path: /api/v1

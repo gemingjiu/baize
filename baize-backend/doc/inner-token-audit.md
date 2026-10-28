@@ -1,6 +1,7 @@
 # 内部令牌（baize.inner.token）启用风险审计
 
-> 审计日期：2026-10-22
+> 审计日期：2026-10-22；2026-10-28 更新：P1-E 落地后空令牌行为由「放行」改为「拒绝」（fail-closed），
+> 令牌已在 Nacos `application-dev.yml` 正式启用（见第 1 节更新说明）。
 > 结论先行：**可以安全启用**。全部 5 个 `@InnerAuth` 端点的调用方都是走 `baize-api-system`
 > 的 Feign 客户端，且该模块已注册 `InnerAuthFeignConfig`，会自动附加令牌请求头；
 > 全仓库不存在 `RestTemplate` / `WebClient`（grep 0 命中），因此没有"绕过 Feign 的内部调用"。
@@ -8,17 +9,20 @@
 
 ---
 
-## 1. 现状（未配置令牌时）
+## 1. 现状（2026-10-28 更新：令牌已启用，fail-closed）
 
-`baize.inner.token` 当前为空串，行为链如下：
+`baize.inner.token` 已在 Nacos `application-dev.yml` 配置为非空 UUID，
+且 P1-E 已把 `InnerAuthInterceptor` 改为 **fail-closed**：
+未配置令牌时，@InnerAuth 端点一律拒绝（抛 ForbiddenException / 403），
+不再有"空令牌放行"的宽松模式。行为链：
 
-| 组件 | 空令牌时的行为 |
+| 组件 | 空令牌时的行为（现行为） |
 |---|---|
-| `InnerAuthInterceptor` | 打印 warn 日志后**直接放行**（`preHandle` 第 43-45 行） |
-| `InnerAuthFeignConfig` | 不附加 `From-Inner` 请求头（warn 一次） |
+| `InnerAuthInterceptor` | 打印 error 日志后**拒绝**（fail-closed） |
+| `InnerAuthFeignConfig` | 不附加 `From-Inner` 请求头（error 日志） |
 | `GatewayDenylist` | 与令牌无关，只按路径黑名单拦截 |
 
-即：**目前 `@InnerAuth` 只起到了"文档说明"的作用，没有实际鉴权能力。**
+即：**@InnerAuth 现在具备真实鉴权能力；令牌未配置属于故障态而非降级态。**
 
 ---
 
@@ -84,8 +88,9 @@ baize:
 | 文件 | 评估 |
 |---|---|
 | `InnerAuth.java` | `TOKEN_PROPERTY = "baize.inner.token"`，常量定义清晰 |
-| `InnerAuthInterceptor.java` | 空令牌 warn + 放行；非空时 `equals` 精确比较；失败抛 `ForbiddenException`（走统一异常处理返回 403） |
+| `InnerAuthInterceptor.java` | 空令牌 **fail-closed 拒绝**（P1-E，2026-10-28）；非空时 `equals` 精确比较；失败抛 `ForbiddenException`（走统一异常处理返回 403） |
 | `WebMvcConfig.java` | `order(-9)`，在 `HeaderInterceptor` 之后注册；`@InnerAuth` 方法之外的路径直接 `return true`，无性能损耗 |
 | `InnerAuthFeignConfig.java` | 空令牌 warn 且不带头；非空时对所有 Feign 请求统一附加，作用域正确 |
 
-结论：**代码实现本身没有缺陷，空令牌的行为是"显式声明的开发期宽松模式"，不是疏漏。**
+结论：~~代码实现本身没有缺陷，空令牌的行为是"显式声明的开发期宽松模式"，不是疏漏。~~
+（2026-10-28 修订：宽松模式已被 P1-E 移除，空令牌现在是硬拒绝。）

@@ -13,6 +13,28 @@ spring:
     loadbalancer:
       enabled: true
     gateway:
+      # CORS 白名单（P1-C）：预检在 RoutePredicateHandlerMapping 层处理，早于任何 GlobalFilter。
+      # 只允许白名单内来源携带凭据跨域；生产环境把 dev 前缀替换为真实域名。
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns:
+              - http://localhost:3000
+              - http://localhost:8000
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders:
+              - Authorization
+              - Content-Type
+              - X-Requested-With
+              - X-Tenant-Id
+            allowCredentials: true
+            maxAge: 3600
       discovery:
         # 关闭服务发现自动路由。
         # 开启后网关会为每个注册到 Nacos 的服务自动创建 /{service-id}/** 路由
@@ -87,6 +109,7 @@ logging:
 # 安全配置
 baize:
   gateway:
+    signature-secret: 950f7d50269358900739304867aa724ba00efc5d65735e06cd26d4178b67ca70
     # 验证码
     captcha:
       enabled: true
@@ -115,6 +138,7 @@ baize:
       - /api/v1/system/loginLog/record
 # JWT 验签：baize-auth 用同一密钥签发令牌，网关据此校验；两处必须一致。
 # 修改时同步 baize-auth-dev.yml 的 jwt.secret。
+
 jwt:
   secret: baize-a732659e-45e2-47a8-89ab-6c4b8af98bab
   expiration: 7200000

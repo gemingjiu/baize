@@ -1,6 +1,8 @@
 package com.gem.baize.common.webmvc.config;
 
 import com.gem.baize.common.core.annotation.InnerAuth;
+import com.gem.baize.common.core.util.GatewaySignatureUtil;
+import com.gem.baize.common.webmvc.interceptor.GatewaySignatureInterceptor;
 import com.gem.baize.common.webmvc.interceptor.HeaderInterceptor;
 import com.gem.baize.common.webmvc.interceptor.InnerAuthInterceptor;
 import org.springframework.context.EnvironmentAware;
@@ -29,6 +31,11 @@ public class WebMvcConfig implements WebMvcConfigurer, EnvironmentAware {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        // 顺序：签名校验(-11) → 身份头读取(-10) → 内部接口鉴权(-9)
+        registry.addInterceptor(getGatewaySignatureInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns(excludeUrls)
+                .order(-11);
         registry.addInterceptor(getHeaderInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(excludeUrls)
@@ -44,6 +51,15 @@ public class WebMvcConfig implements WebMvcConfigurer, EnvironmentAware {
      */
     public HeaderInterceptor getHeaderInterceptor() {
         return new HeaderInterceptor();
+    }
+
+    /**
+     * 网关签名校验拦截器（P0-A）：校验身份头是否由网关签发，防直连后端伪造。
+     * 密钥从 baize.gateway.signature-secret 读取，未配置时不校验（降级放行）。
+     */
+    public GatewaySignatureInterceptor getGatewaySignatureInterceptor() {
+        String secret = environment == null ? "" : environment.getProperty(GatewaySignatureUtil.SECRET_PROPERTY, "");
+        return new GatewaySignatureInterceptor(secret);
     }
 
     /**
