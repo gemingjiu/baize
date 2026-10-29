@@ -4,8 +4,10 @@ import com.gem.baize.common.core.constant.DataScopeConstant;
 import com.gem.baize.common.database.handler.DataScopeDeptProvider;
 import com.gem.baize.system.dept.entity.SysDept;
 import com.gem.baize.system.dept.mapper.SysDeptMapper;
+import com.gem.baize.system.role.entity.SysRole;
 import com.gem.baize.system.role.entity.SysRoleDept;
 import com.gem.baize.system.role.mapper.SysRoleDeptMapper;
+import com.gem.baize.system.role.mapper.SysRoleMapper;
 import com.gem.baize.system.user.entity.SysUser;
 import com.gem.baize.system.user.mapper.SysUserMapper;
 import com.gem.baize.system.user.service.SysUserRoleService;
@@ -31,7 +33,7 @@ import java.util.Set;
  *
  * <p><b>四种需要下推部门的场景：</b>
  * <ul>
- *   <li>{@code 2 自定义}：取用户所有角色在 sys_role_dept 中配置的部门并集。</li>
+ *   <li>{@code 2 自定义}：按用户全部角色逐角色解析（各角色按自身档位）后取并集。</li>
  *   <li>{@code 3 本部门}：取用户所属 dept_id。</li>
  *   <li>{@code 4 本部门及以下}：以用户 dept_id 为根，递归取整棵子树。</li>
  *   <li>{@code 1 全部 / 5 仅本人}：不需要部门集合，分别由拦截器放行 / 下推 create_by。</li>
@@ -49,6 +51,9 @@ public class SysDataScopeDeptProvider implements DataScopeDeptProvider {
 
     @Autowired
     private SysRoleDeptMapper sysRoleDeptMapper;
+
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
 
     @Autowired
     private SysDeptMapper sysDeptMapper;
@@ -91,8 +96,12 @@ public class SysDataScopeDeptProvider implements DataScopeDeptProvider {
     }
 
     /**
-     * 自定义数据权限：用户在 sys_role_dept 中所有角色配置的部门并集。
+     * 自定义数据权限：按用户全部角色逐角色解析部门并取并集。
+     * <p>
      * 多角色时取并集——数据权限是"可见范围"，取交集会让"多角色"反而看得更少，与直觉相悖。
+     * 各角色按自身 data_scope 解析：2 自定义取 sys_role_dept 配置；3 本部门取用户部门；
+     * 4 本部门及以下取部门子树。聚合签发后 2/3/4 会被归一为 2 下发，这里按角色真实档位
+     * 还原可见范围，避免"本部门"角色在聚合档下被错误当作"未配置自定义部门"丢弃。
      */
     private List<String> resolveCustomDeptIds(String userId) {
         List<String> roleIds = sysUserRoleService.getRoleIdsByUserId(userId);
@@ -101,10 +110,39 @@ public class SysDataScopeDeptProvider implements DataScopeDeptProvider {
         }
         Set<String> deptIds = new LinkedHashSet<>();
         for (String roleId : roleIds) {
-            List<String> ids = getDeptIdsByRoleId(roleId);
-            deptIds.addAll(ids);
+            deptIds.addAll(resolveRoleDeptIds(userId, roleId));
         }
         return new ArrayList<>(deptIds);
+    }
+
+    /**
+     * 解析单个角色在数据权限下的部门集合：
+     * 自定义档取 sys_role_dept 配置，本部门/本部门及以下档取用户部门（及子树），
+     * 全部/仅本人档对部门维度无贡献。
+     */
+    private List<String> resolveRoleDeptIds(String userId, String roleId) {
+        com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<SysRole> roleWrapper =
+                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<>();
+        roleWrapper.select(SysRole::getDataScope);
+        roleWrapper.eq(SysRole::getId, roleId);
+        SysRole role = sysRoleMapper.selectOne(roleWrapper);
+        String scope = role == null ? null : role.getDataScope();
+        if (DataScopeConstant.DATA_SCOPE_CUSTOM.equals(scope)) {
+            return getDeptIdsByRoleId(roleId);
+        }
+        if (DataScopeConstant.DATA_SCOPE_DEPT.equals(scope)) {
+            String deptId = resolveDeptId(userId);
+            return deptId == null ? Collections.emptyList() : List.of(deptId);
+        }
+        if (DataScopeConstant.DATA_SCOPE_DEPT_AND_CHILD.equals(scope)) {
+            String deptId = resolveDeptId(userId);
+            if (deptId == null) {
+                return Collections.emptyList();
+            }
+            return resolveDeptTree(deptId);
+        }
+        // 1 全部 / 5 仅本人 / 未知值：部门维度无贡献
+        return Collections.emptyList();
     }
 
     private List<String> getDeptIdsByRoleId(String roleId) {

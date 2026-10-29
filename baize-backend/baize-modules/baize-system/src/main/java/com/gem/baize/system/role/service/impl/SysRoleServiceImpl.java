@@ -137,4 +137,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         SysRole sysRole = super.getById(roleIds.get(0));
         return SysRoleConvert.INSTANCE.toDto(sysRole);
     }
+
+    @Override
+    public List<SysRoleDto> getRolesByUserId(String userId) {
+        List<String> roleIds = sysUserRoleService.getRoleIdsByUserId(userId);
+        if (CollectionUtils.isEmpty(roleIds)) {
+            return List.of();
+        }
+        List<SysRole> roles = super.listByIds(roleIds);
+        // 排除已逻辑删除的角色：listByIds 不带 deleted 条件，此处显式过滤保持逻辑删语义。
+        // 绑定行的 roleId 在角色删除守卫下本不应存在，但历史数据/并发删除可能出现，容忍而不放行。
+        return roles.stream()
+                .filter(role -> !"1".equals(role.getDeleted()))
+                .map(SysRoleConvert.INSTANCE::toDto)
+                .toList();
+    }
 }

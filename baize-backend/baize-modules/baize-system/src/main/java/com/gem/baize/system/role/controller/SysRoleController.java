@@ -49,6 +49,12 @@ public class SysRoleController {
         return ApiResult.ok(roleDto);
     }
 
+    @GetMapping("/user/{userId}/list")
+    @Operation(summary = "获取用户全部角色", description = "供认证服务签发令牌时做多角色聚合（内部 Feign 接口）")
+    public ApiResult<List<SysRoleDto>> getRolesByUserId(@PathVariable String userId) {
+        return ApiResult.ok(sysRoleService.getRolesByUserId(userId));
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "根据ID获取角色", description = "根据ID查询角色信息")
     @RequiresPermission(PermCodes.ROLE_QUERY)

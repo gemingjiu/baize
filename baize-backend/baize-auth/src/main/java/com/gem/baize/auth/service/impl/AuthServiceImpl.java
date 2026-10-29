@@ -10,6 +10,7 @@ import com.gem.baize.auth.manager.TokenManager;
 import com.gem.baize.auth.service.AuthService;
 import com.gem.baize.common.cache.service.TokenBlacklistService;
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
+import com.gem.baize.common.core.constant.DataScopeConstant;
 import com.gem.baize.common.core.exception.model.ForbiddenException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.common.core.exception.model.ParamException;
@@ -28,7 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,13 +226,13 @@ public class AuthServiceImpl implements AuthService {
 
         // 获取用户角色及数据权限
         try {
-            ApiResult<SysRoleDto> roleResult = sysRoleFeignClient.getRoleByUserId(user.getId());
-            if (roleResult != null && roleResult.isSuccess() && roleResult.getData() != null) {
-                SysRoleDto roleDto = roleResult.getData();
-                // PermissionAspect 约定 role claim 存放逗号分隔的权限码（*:*:* 为超管），
-                // 这里用「用户 → 角色 → 角色菜单 → 菜单 perms」聚合实际权限码。
-                payload.setRole(resolvePermissionClaim(roleDto.getRoleCode(), user.getId()));
-                payload.setDataScope(roleDto.getDataScope());
+            ApiResult<List<SysRoleDto>> rolesResult = sysRoleFeignClient.getRolesByUserId(user.getId());
+            if (rolesResult != null && rolesResult.isSuccess() && rolesResult.getData() != null) {
+                List<SysRoleDto> roles = rolesResult.getData();
+                // 多角色聚合签发：超管判定扫全部角色码，避免「绑定了超管角色但排第一的不是超管」被截断
+                payload.setRole(resolvePermissionClaim(roles, user.getId()));
+                // 数据范围聚合：任一角色“1 全部”→ 全部；否则含部门类（2/3/4）→ 按自定义档下推全部角色部门并集；否则“5 仅本人”
+                payload.setDataScope(resolveAggregatedDataScope(roles));
             }
         } catch (Exception e) {
             log.warn("获取用户角色信息失败, userId={}", user.getId(), e);
@@ -329,12 +332,12 @@ public class AuthServiceImpl implements AuthService {
 
         // 获取用户角色及数据权限
         try {
-            ApiResult<SysRoleDto> roleResult = sysRoleFeignClient.getRoleByUserId(user.getId());
-            if (roleResult != null && roleResult.isSuccess() && roleResult.getData() != null) {
-                SysRoleDto roleDto = roleResult.getData();
-                // 同 login()：刷新令牌时重新聚合权限码，保证权限变更能在换令牌后生效
-                payload.setRole(resolvePermissionClaim(roleDto.getRoleCode(), user.getId()));
-                payload.setDataScope(roleDto.getDataScope());
+            ApiResult<List<SysRoleDto>> rolesResult = sysRoleFeignClient.getRolesByUserId(user.getId());
+            if (rolesResult != null && rolesResult.isSuccess() && rolesResult.getData() != null) {
+                List<SysRoleDto> roles = rolesResult.getData();
+                // 同 login()：多角色聚合签发，刷新令牌时重新聚合权限码，保证权限变更能在换令牌后生效
+                payload.setRole(resolvePermissionClaim(roles, user.getId()));
+                payload.setDataScope(resolveAggregatedDataScope(roles));
             }
         } catch (Exception e) {
             log.warn("获取用户角色信息失败, userId={}", user.getId(), e);
@@ -357,18 +360,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 构建令牌中的 role claim。
+     * 构建令牌中的 role claim（多角色聚合）。
      * <p>
-     * 超管角色签发通配权限码 {@code *:*:*}；其余角色取实际权限码集合（逗号分隔）。
+     * 任一角色命中超管白名单即签发通配权限码 {@code *:*:*}；其余角色取实际权限码集合（逗号分隔）。
      * 权限码由 baize-system 的 {@code /system/role/menu/user/{userId}/perms} 聚合
-     * 「用户 → 角色 → 角色菜单 → 菜单 perms」，查询失败时回退为角色编码，保证登录不中断。
+     * 「用户 → 全部角色 → 角色菜单 → 菜单 perms」，查询失败时回退为全部角色编码，保证登录不中断。
      *
-     * @param roleCode 角色编码（如 admin）
-     * @param userId   用户ID
+     * @param roles   用户绑定的全部角色（可能为空列表）
+     * @param userId  用户ID
      * @return 写入令牌的 role claim
      */
-    private String resolvePermissionClaim(String roleCode, String userId) {
-        String roleClaim = resolveRoleClaim(roleCode);
+    private String resolvePermissionClaim(List<SysRoleDto> roles, String userId) {
+        String roleClaim = resolveRoleClaim(roles);
         // 超管已是通配权限码，无需再查
         if (SUPER_ADMIN_PERMISSION.equals(roleClaim)) {
             return roleClaim;
@@ -381,7 +384,7 @@ public class AuthServiceImpl implements AuthService {
                 log.info("已加载用户权限码: userId={}, count={}", userId, permResult.getData().size());
                 return permissions;
             }
-            log.warn("用户未分配任何权限码，回退为角色编码: userId={}, roleCode={}", userId, roleCode);
+            log.warn("用户未分配任何权限码，回退为角色编码: userId={}, roleCodes={}", userId, roleClaim);
         } catch (Exception e) {
             log.warn("查询用户权限码失败，回退为角色编码: userId={}", userId, e);
         }
@@ -389,27 +392,64 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 把角色编码转换为令牌中的 role claim（权限码）。
+     * 把全部角色编码合并为令牌中的 role claim 兜底值。
      * <p>
-     * 命中 super-admin-role-codes 的角色签发通配权限码 {@code *:*:*}，其余返回角色编码本身，
-     * 由 {@link #resolvePermissionClaim(String, String)} 在其基础上补充实际权限码。
+     * 任一角色命中 super-admin-role-codes 即返回通配权限码 {@code *:*:*}；
+     * 否则返回全部角色编码的逗号串（去空去重，保持绑定顺序），
+     * 由 {@link #resolvePermissionClaim(List, String)} 在其基础上补充实际权限码。
      *
-     * @param roleCode 角色编码（如 admin）
-     * @return 写入令牌的 role claim
+     * @param roles 用户绑定的全部角色
+     * @return 写入令牌的 role claim 兜底值
      */
-    private String resolveRoleClaim(String roleCode) {
-        if (StringUtils.isBlank(roleCode)) {
-            return roleCode;
+    private String resolveRoleClaim(List<SysRoleDto> roles) {
+        if (CollectionUtils.isEmpty(roles)) {
+            return "";
         }
-        if (StringUtils.isBlank(superAdminRoleCodes)) {
-            return roleCode;
-        }
-        for (String superAdminRoleCode : superAdminRoleCodes.split(",")) {
-            if (roleCode.equals(superAdminRoleCode.trim())) {
-                return SUPER_ADMIN_PERMISSION;
+        List<String> roleCodes = new ArrayList<>(roles.size());
+        for (SysRoleDto role : roles) {
+            String roleCode = role.getRoleCode();
+            if (StringUtils.isNotBlank(roleCode) && !roleCodes.contains(roleCode)) {
+                roleCodes.add(roleCode);
             }
         }
-        return roleCode;
+        // 任一角色是超管角色即放行通配，避免多角色时超管角色被其他角色截断
+        if (StringUtils.isNotBlank(superAdminRoleCodes)) {
+            for (String superAdminRoleCode : superAdminRoleCodes.split(",")) {
+                String trimmed = superAdminRoleCode.trim();
+                if (!trimmed.isEmpty() && roleCodes.contains(trimmed)) {
+                    return SUPER_ADMIN_PERMISSION;
+                }
+            }
+        }
+        return String.join(",", roleCodes);
+    }
+
+    /**
+     * 聚合全部角色的数据范围（取"最大可见范围"，与数据权限"可见范围取并集"的直觉一致）。
+     * <ul>
+     *   <li>任一角色为 {@code 1 全部} → {@code 1}（拦截器直接放行）；</li>
+     *   <li>否则含部门类 {@code 2 自定义 / 3 本部门 / 4 本部门及以下} → {@code 2}，
+     *       由 SysDataScopeDeptProvider 按全部角色逐角色解析部门并集（含本部门/子树档）；</li>
+     *   <li>全部角色均为 {@code 5 仅本人}（或无角色）→ {@code 5}。</li>
+     * </ul>
+     */
+    private String resolveAggregatedDataScope(List<SysRoleDto> roles) {
+        if (CollectionUtils.isEmpty(roles)) {
+            return null;
+        }
+        boolean hasDeptScope = false;
+        for (SysRoleDto role : roles) {
+            String scope = role.getDataScope();
+            if (DataScopeConstant.DATA_SCOPE_ALL.equals(scope)) {
+                return DataScopeConstant.DATA_SCOPE_ALL;
+            }
+            if (DataScopeConstant.DATA_SCOPE_CUSTOM.equals(scope)
+                    || DataScopeConstant.DATA_SCOPE_DEPT.equals(scope)
+                    || DataScopeConstant.DATA_SCOPE_DEPT_AND_CHILD.equals(scope)) {
+                hasDeptScope = true;
+            }
+        }
+        return hasDeptScope ? DataScopeConstant.DATA_SCOPE_CUSTOM : DataScopeConstant.DATA_SCOPE_SELF;
     }
 
     private Map<String, Object> buildClaims(Payload payload) {
