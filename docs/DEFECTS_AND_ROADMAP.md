@@ -107,11 +107,13 @@
 - **前端** `role/index.tsx`：新增「角色类型」列（平台 geekblue / 租户 cyan Tag + 内置金色 Tag，支持筛选）；内置角色删除按钮置灰并提示
 - **不改**：tenant_id NOT NULL+0（租户过滤由 CustomTenantHandler 无条件下推）、data_scope 值域 1-5 是超集、status varchar(1) 全库约定、超管白名单判定不动
 
-### 🔴 待修：角色签发只取单角色（唯一真缺陷，必修）
+### ✅ 已完成：多角色聚合签发（commit e5f673c）
 
-- `SysRoleServiceImpl.java:116-123` `getRoleByUserId` 取 `getRoleIdsByUserId(userId).get(0)` **只取第一个角色**——多角色用户权限静默丢失
-- 口径不一致：签发按单角色聚合菜单 perms 写 `role` claim（`AuthServiceImpl.resolvePermissionClaim:370-389`），而数据权限 `SysDataScopeDeptProvider.java:97-108` 自定义档按**全部角色并集**
-- 修法：签发改按 userId 聚合全部启用角色（去重合并 perms），数据权限口径自然对齐
+- **问题**：`SysRoleServiceImpl.getRoleByUserId` 只取第一个角色，导致三处缺陷——①超管判定只看第一个角色码（绑定超管角色但排第一的不是超管时权限被截断）；②`dataScope` 只签第一个角色的；③权限查询失败回退 role claim 时只写第一个角色码
+- **system 侧**：新增 `GET /system/role/user/{userId}/list` 返回用户全部角色（排除已逻辑删除），`SysRoleFeignClient` 同步新增 `getRolesByUserId`
+- **auth 签发**（login/refreshToken 共用）：任一角色命中 `super-admin-role-codes` 即签 `*:*:*`；回退 role claim 写全部角色码去重逗号串；`dataScope` 聚合取最大可见范围——任一角色 `1 全部` → `1`；否则含部门类 `2/3/4` → `2`（自定义档）；否则 `5 仅本人`
+- **数据权限对齐**：`SysDataScopeDeptProvider` 自定义档按全部角色**逐角色解析部门并集**（各角色按自身档位：2 取 sys_role_dept 配置、3 取本部门、4 取子树），修复聚合档下"本部门/子树"角色被当作"未配置自定义部门"丢弃的问题
+- **兼容**：role claim 格式不变（逗号分隔权限码，PermissionAspect 无需改动）；旧端点 `getRoleByUserId` 保留（前端未消费）
 
 ### 🟡 表模型评审发现（全 14 表核对，低风险动作 + 待决策）
 
@@ -140,4 +142,4 @@
 - ~~**⑫ 表单构建器 / Sentinel 取舍**~~ ✅ 已忽略（用户决策 2026-10-28：不做，roadmap 不新增功能线）
 - **三组僵尸表删/留**（2026-10-29 评审新增）：`sys_data_perm` / `sys_user_post` / `sys_perm`+`sys_role_perm` 详见上方「表模型评审发现」——删除需迁移脚本 DROP + 清理实体/服务/控制器/白名单引用；保留建议在 DDL 注释标明用途
 - **软删除×唯一键**（2026-10-29 评审新增）：是否引入 PG partial unique index（`WHERE deleted='0'`）解除逻辑删后编码永久占用——需联动 init ON CONFLICT 仲裁评估
-- **角色签发多角色聚合**（2026-10-29 评审新增）：必修项，见上方「🔴 待修」——建议下次迭代第一项
+- ~~**角色签发多角色聚合**~~ ✅ 已完成（2026-10-29，commit e5f673c，见上方「增量评审」章节）
