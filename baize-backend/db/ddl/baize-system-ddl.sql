@@ -487,7 +487,7 @@ CREATE TABLE "baize-system".sys_role (
                                          modified_time timestamp NULL, -- 更新时间
                                          remark varchar(255) NULL -- 备注
 );
-COMMENT ON TABLE "baize-system".sys_role IS '角色信息表';
+COMMENT ON TABLE "baize-system".sys_role IS '角色信息表（预置角色：1 admin 平台超管、2 ops 运维、3 auditor 审计为平台角色；4 tenant_admin 租户管理[内置]、5 hr 人事、6 dept_manager 部门主管[数据权限4]、7 employee 员工[数据权限5]为租户模板角色）';
 
 -- Column comments
 
