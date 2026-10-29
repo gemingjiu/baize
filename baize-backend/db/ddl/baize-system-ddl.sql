@@ -553,7 +553,7 @@ GRANT ALL ON TABLE "baize-system".sys_role_dept TO postgres;
 
 -- Indexes
 
-CREATE INDEX idx_role_dept_tenant_id ON "baize-system".sys_role_dept(tenant_id);
+-- idx_role_dept_tenant_id 已删：单列 tenant_id 与 PK(tenant_id, role_id, dept_id) 最左前缀重复（V2026_10_31__index_optimize.sql）
 
 
 -- "baize-system".sys_role_menu 定义
@@ -582,7 +582,7 @@ GRANT ALL ON TABLE "baize-system".sys_role_menu TO postgres;
 
 -- Indexes
 
-CREATE INDEX idx_role_menu_tenant_id ON "baize-system".sys_role_menu(tenant_id);
+-- idx_role_menu_tenant_id 已删：单列 tenant_id 与 PK(tenant_id, role_id, menu_id) 最左前缀重复（V2026_10_31__index_optimize.sql）
 
 -- Unique constraints
 
@@ -615,7 +615,7 @@ GRANT ALL ON TABLE "baize-system".sys_role_perm TO postgres;
 
 -- Indexes
 
-CREATE INDEX idx_role_perm_tenant_id ON "baize-system".sys_role_perm(tenant_id);
+-- idx_role_perm_tenant_id 已删：单列 tenant_id 与 PK(tenant_id, role_id, perm_id) 最左前缀重复（V2026_10_31__index_optimize.sql）
 
 -- Unique constraints
 
@@ -684,6 +684,7 @@ CREATE INDEX idx_sys_tenant_created_time ON "baize-system".sys_tenant(created_ti
 -- Unique constraints
 
 ALTER TABLE "baize-system".sys_tenant ADD CONSTRAINT uk_sys_tenant_tenant_code UNIQUE (tenant_code);
+CREATE UNIQUE INDEX uk_sys_tenant_domain ON "baize-system".sys_tenant("domain"); -- 对齐列注释「唯一域名」（V2026_10_31__index_optimize.sql）
 
 
 -- "baize-system".sys_user 定义
@@ -753,6 +754,7 @@ GRANT ALL ON TABLE "baize-system".sys_user TO postgres;
 CREATE INDEX idx_sys_user_tenant_id ON "baize-system".sys_user(tenant_id);
 CREATE INDEX idx_sys_user_deleted ON "baize-system".sys_user(deleted);
 CREATE INDEX idx_sys_user_created_time ON "baize-system".sys_user(created_time);
+CREATE INDEX idx_sys_user_dept_id ON "baize-system".sys_user(dept_id); -- 补缺：数据权限部门档过滤（V2026_10_31__index_optimize.sql）
 
 -- Unique constraints
 
@@ -815,7 +817,7 @@ GRANT ALL ON TABLE "baize-system".sys_user_role TO postgres;
 
 -- Indexes
 
-CREATE INDEX idx_user_role_tenant_id ON "baize-system".sys_user_role(tenant_id);
+CREATE INDEX idx_user_role_role_id ON "baize-system".sys_user_role(role_id); -- 补缺：PK(tenant,user,role) 不覆盖按 role_id 查询
 
 -- Unique constraints
 
