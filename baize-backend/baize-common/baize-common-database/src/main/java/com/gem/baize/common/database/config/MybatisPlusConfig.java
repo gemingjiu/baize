@@ -1,6 +1,7 @@
 package com.gem.baize.common.database.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
@@ -10,6 +11,7 @@ import com.gem.baize.common.database.handler.BaseEntityObjectHandler;
 import com.gem.baize.common.database.handler.CustomDataScopeHandler;
 import com.gem.baize.common.database.handler.CustomTenantHandler;
 import com.gem.baize.common.database.handler.DataScopeDeptProvider;
+import com.gem.baize.common.database.generator.Uuidv7IdentifierGenerator;
 import com.gem.baize.common.database.interceptor.DataScopeInnerInterceptor;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +59,16 @@ public class MybatisPlusConfig {
     @Bean
     public MetaObjectHandler metaObjectHandler() {
         return new BaseEntityObjectHandler();
+    }
+
+    /**
+     * 全局主键生成器：UUIDv7（带连字符 36 位）。
+     * MybatisPlusAutoConfiguration#getBeanThen 优先取容器中的该 Bean，
+     * 覆盖 MP 自带的 DefaultIdentifierGenerator（雪花 Long）。
+     */
+    @Bean
+    public IdentifierGenerator identifierGenerator() {
+        return new Uuidv7IdentifierGenerator();
     }
 
     @PostConstruct

@@ -147,7 +147,16 @@
 
 ---
 
-## 待决策（需用户确认）
+## 2026-10-29 增量：主键全链路迁移 UUIDv7（✅ 完成，commit 823654c）
+
+- **需求定案**：主键由雪花 bigint 迁移到 **UUIDv7**（用户决策；种子重刷为 UUID、删死代码 id 包、列型 `varchar(36)` 三问已确认）；`parent_id` 树根哨兵 `'0'` 保留原语义（TreeUtils/SysRoleMenuServiceImpl 判断不动）
+- **后端生成器**：新建 `baize-common-database/.../generator/Uuidv7IdentifierGenerator.java`（implements `IdentifierGenerator`：高 52bit 毫秒 + 低 12bit 序列 + 62bit 随机，CAS 自旋/回拨沿用），`MybatisPlusConfig` 注册 `@Bean` 覆盖 MP 默认 `IdWorker.get32UUID()`（无连字符）；`nextId()` 抛 `UnsupportedOperationException` 防 `ASSIGN_ID` 回退
+- **注解切换**：`BaseEntity` / `SysLoginLog` / `SysOperLog` 的 `@TableId` `ASSIGN_ID → ASSIGN_UUID`（全库清零）；代码生成模板 `GenUtils` 同步；`sys_user.dept_id Long → String`（全库唯一 Long 实体字段，Convert 桥接/parseLong 删除，数据权限直取）
+- **租户哨兵 '0' → nil UUID**：`CustomTenantHandler`（StringValue，删 isNumeric 兜底——UUID 含连字符会永远误判）/ `BaseEntityObjectHandler` / `TenantFilter` / `AuthServiceImpl` / `AuthController` + 前端 `PLATFORM_TENANT_ID`（`constants/tenant.ts`，`tenantId==='0'` 三处 0 命中）；`status/deleted` 的 `'0'` 状态标志不动；yml `id-type: assign_uuid`
+- **SQL 层**：新迁移 `db/migration/V2026_10_21__uuid_v7_id.sql`（置首；存量库 `int8 → varchar(36)`，通用 hex 映射 `N → 00000000-0000-7000-<hex4>-<hex12>` 覆盖雪花大数，tenant 0→nil、parent_id 0→'0'，幂等 DO 块）；`ddl/init/constraints/7 个数据迁移` 全部数字 id 字面量改写为同一映射（旧迁移才能与新装库两头跑）
+- **验证闭环**：`mvn -T 1C compile` + `tsc --noEmit` 双绿；四轮 SQL 验证 `VALIDATE_EXIT=0`（M1×11 迁移 → init 双跑 → M2×11 重跑 → remaining bigint id 列 = 0），数据断言 `role_menu=199 / digit=0 / u0role=0`（各角色 89/23/8/51/19/5/4 与种子逐一对账）
+- **过程发现并修复 2 个一次性转换脚本 bug**：①`_uuid_rewrite.py` 三元组规则丢尾组 → `seed_roles` 六段 role_menu 错转成 `(nil, u0, role)` 落 6 坏行；②`_uuid_init.py` 元组循环仅跳空白不跳 `--` 注释 → 种子段 110 元组静默漏转成裸数字；均修复重跑，DB 清除 116 坏行后重验全绿；三个一次性脚本（两转换器 + 验证器）已删除
+
 
 - **P0-A/P0-B 涉及"直连后端"威胁模型**：当前架构以网关为唯一可信边界。是否接受"网关是 sole ingress"的设计前提，还是要做后端侧的网关签名头校验？（P0-A 已做网关签名校验，此项指是否进一步收紧）
 - **P1-B fail-safe 到 "0"**：是否改为"缺租户即拒绝（1=0）"？这会破坏平台态默认行为，需评估。

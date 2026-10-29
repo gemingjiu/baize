@@ -5,8 +5,8 @@
 -- DROP TABLE "baize-system".sys_config;
 
 CREATE TABLE "baize-system".sys_config (
-                                           id int8 NOT NULL, -- 参数主键
-                                           tenant_id int8 NOT NULL, -- 租户ID
+                                           id varchar(36) NOT NULL, -- 参数主键
+                                           tenant_id varchar(36) NOT NULL, -- 租户ID
                                            config_name varchar(50) NULL, -- 参数名称
                                            config_key varchar(64) NULL, -- 参数键名
                                            config_value varchar(200) NULL, -- 参数键值
@@ -15,9 +15,9 @@ CREATE TABLE "baize-system".sys_config (
                                            status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:记录有效,1:记录无效
                                            deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                            "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                           created_by int8 NOT NULL, -- 创建人
+                                           created_by varchar(36) NOT NULL, -- 创建人
                                            created_time timestamp NOT NULL, -- 创建时间
-                                           modified_by int8 NULL, -- 更新人
+                                           modified_by varchar(36) NULL, -- 更新人
                                            modified_time timestamp NULL, -- 更新时间
                                            remark varchar(255) NULL -- 备注
 );
@@ -65,16 +65,16 @@ ALTER TABLE "baize-system".sys_config ADD CONSTRAINT uk_sys_config_tenant_config
 -- DROP TABLE "baize-system".sys_data_perm;
 
 CREATE TABLE "baize-system".sys_data_perm (
-                                              id int8 NOT NULL, -- 主键ID
-                                              tenant_id int8 NOT NULL, -- 租户ID
+                                              id varchar(36) NOT NULL, -- 主键ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
                                               rule_name varchar(50) NULL, -- 规则名称
                                               sort int4 DEFAULT 0 NULL, -- 排序
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:启用,1:关闭
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                              created_by int8 NOT NULL, -- 创建人
+                                              created_by varchar(36) NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
-                                              modified_by int8 NULL, -- 更新人
+                                              modified_by varchar(36) NULL, -- 更新人
                                               modified_time timestamp NULL, -- 更新时间
                                               remark varchar(255) NULL -- 备注
 );
@@ -108,9 +108,9 @@ GRANT ALL ON TABLE "baize-system".sys_data_perm TO postgres;
 -- DROP TABLE "baize-system".sys_dept;
 
 CREATE TABLE "baize-system".sys_dept (
-                                         id int8 NOT NULL, -- 主键ID
-                                         tenant_id int8 NOT NULL, -- 租户ID
-                                         parent_id int8 NOT NULL, -- 父部门id
+                                         id varchar(36) NOT NULL, -- 主键ID
+                                         tenant_id varchar(36) NOT NULL, -- 租户ID
+                                         parent_id varchar(36) NOT NULL, -- 父部门id
                                          dept_name varchar(50) NOT NULL, -- 部门名称
                                          leader varchar(50) NOT NULL, -- 负责人
                                          phone varchar(32) NULL, -- 电话
@@ -119,9 +119,9 @@ CREATE TABLE "baize-system".sys_dept (
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                         created_by int8 NOT NULL, -- 创建人
+                                         created_by varchar(36) NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
-                                         modified_by int8 NULL, -- 更新人
+                                         modified_by varchar(36) NULL, -- 更新人
                                          modified_time timestamp NULL, -- 更新时间
                                          remark varchar(255) NULL -- 备注
 );
@@ -165,8 +165,8 @@ CREATE INDEX idx_sys_dept_created_time ON "baize-system".sys_dept(created_time);
 -- DROP TABLE "baize-system".sys_dict_data;
 
 CREATE TABLE "baize-system".sys_dict_data (
-                                              id int8 NOT NULL, -- 主键ID
-                                              tenant_id int8 NOT NULL, -- 租户ID
+                                              id varchar(36) NOT NULL, -- 主键ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
                                               dict_type varchar(32) NULL, -- 字典类型
                                               dict_label varchar(50) DEFAULT ''::character varying NOT NULL, -- 字典标签
                                               dict_value varchar(100) DEFAULT ''::character varying NULL, -- 字典键值
@@ -177,9 +177,9 @@ CREATE TABLE "baize-system".sys_dict_data (
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:记录有效,1:记录无效
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                              created_by int8 NOT NULL, -- 创建人
+                                              created_by varchar(36) NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
-                                              modified_by int8 NULL, -- 更新人
+                                              modified_by varchar(36) NULL, -- 更新人
                                               modified_time timestamp NULL, -- 更新时间
                                               remark varchar(255) NULL -- 备注
 );
@@ -228,17 +228,17 @@ ALTER TABLE "baize-system".sys_dict_data ADD CONSTRAINT uk_sys_dict_data_tenant_
 -- DROP TABLE "baize-system".sys_dict_type;
 
 CREATE TABLE "baize-system".sys_dict_type (
-                                              id int8 NOT NULL, -- 主键ID
-                                              tenant_id int8 NOT NULL, -- 租户ID
+                                              id varchar(36) NOT NULL, -- 主键ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
                                               dict_name varchar(50) NULL, -- 字典名称
                                               dict_type varchar(32) NULL, -- 字典类型
                                               sort int4 DEFAULT 0 NULL, -- 记录排序
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                              created_by int8 NOT NULL, -- 创建人
+                                              created_by varchar(36) NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
-                                              modified_by int8 NULL, -- 更新人
+                                              modified_by varchar(36) NULL, -- 更新人
                                               modified_time timestamp NULL, -- 更新时间
                                               remark varchar(255) NULL -- 备注
 );
@@ -283,9 +283,9 @@ ALTER TABLE "baize-system".sys_dict_type ADD CONSTRAINT uk_sys_dict_type_tenant_
 -- DROP TABLE "baize-system".sys_menu;
 
 CREATE TABLE "baize-system".sys_menu (
-                                         id int8 NOT NULL, -- 主键ID
-                                         tenant_id int8 NOT NULL, -- 租户ID
-                                         parent_id int8 NOT NULL, -- 父菜单ID
+                                         id varchar(36) NOT NULL, -- 主键ID
+                                         tenant_id varchar(36) NOT NULL, -- 租户ID
+                                         parent_id varchar(36) NOT NULL, -- 父菜单ID
                                          menu_name varchar(50) NOT NULL, -- 菜单名称
                                          "path" varchar(255) DEFAULT ''::character varying NULL, -- 路由地址
                                          component varchar(255) NULL, -- 组件路径
@@ -300,9 +300,9 @@ CREATE TABLE "baize-system".sys_menu (
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                         created_by int8 NOT NULL, -- 创建人
+                                         created_by varchar(36) NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
-                                         modified_by int8 NULL, -- 更新人
+                                         modified_by varchar(36) NULL, -- 更新人
                                          modified_time timestamp NULL, -- 更新时间
                                          remark varchar(255) NULL -- 备注
 );
@@ -356,18 +356,18 @@ ALTER TABLE "baize-system".sys_menu ADD CONSTRAINT uk_sys_menu_tenant_name_paren
 -- DROP TABLE "baize-system".sys_perm;
 
 CREATE TABLE "baize-system".sys_perm (
-                                         id int8 NOT NULL, -- 主键ID
-                                         tenant_id int8 NOT NULL, -- 租户ID
-                                         parent_id int8 NOT NULL, -- 父级ID
+                                         id varchar(36) NOT NULL, -- 主键ID
+                                         tenant_id varchar(36) NOT NULL, -- 租户ID
+                                         parent_id varchar(36) NOT NULL, -- 父级ID
                                          perm_code varchar(70) NOT NULL, -- 权限编码
                                          perm_name varchar(90) NOT NULL, -- 权限名称
                                          sort int4 DEFAULT 0 NULL, -- 排序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:启用,1:关闭
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                         created_by int8 NOT NULL, -- 创建人
+                                         created_by varchar(36) NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
-                                         modified_by int8 NULL, -- 更新人
+                                         modified_by varchar(36) NULL, -- 更新人
                                          modified_time timestamp NULL, -- 更新时间
                                          remark varchar(255) NULL -- 备注
 );
@@ -413,17 +413,17 @@ ALTER TABLE "baize-system".sys_perm ADD CONSTRAINT uk_sys_perm_tenant_perm_code 
 -- DROP TABLE "baize-system".sys_post;
 
 CREATE TABLE "baize-system".sys_post (
-                                         id int8 NOT NULL, -- 岗位ID
-                                         tenant_id int8 NOT NULL, -- 租户ID
+                                         id varchar(36) NOT NULL, -- 岗位ID
+                                         tenant_id varchar(36) NOT NULL, -- 租户ID
                                          post_code varchar(70) NOT NULL, -- 岗位编码
                                          post_name varchar(90) NOT NULL, -- 岗位名称
                                          sort int4 DEFAULT 0 NULL, -- 岗位顺序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                         created_by int8 NOT NULL, -- 创建人
+                                         created_by varchar(36) NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
-                                         modified_by int8 NULL, -- 更新人
+                                         modified_by varchar(36) NULL, -- 更新人
                                          modified_time timestamp NULL, -- 更新时间
                                          remark varchar(255) NULL -- 备注
 );
@@ -468,8 +468,8 @@ ALTER TABLE "baize-system".sys_post ADD CONSTRAINT uk_sys_post_tenant_post_code 
 -- DROP TABLE "baize-system".sys_role;
 
 CREATE TABLE "baize-system".sys_role (
-                                         id int8 NOT NULL, -- 主键ID
-                                         tenant_id int8 NOT NULL, -- 租户ID
+                                         id varchar(36) NOT NULL, -- 主键ID
+                                         tenant_id varchar(36) NOT NULL, -- 租户ID
                                          role_name varchar(50) NOT NULL, -- 角色名称
                                          role_code varchar(64) NULL, -- 角色权限字符串
                                          data_scope varchar(1) DEFAULT '1'::character varying NOT NULL, -- 数据范围;1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限
@@ -481,9 +481,9 @@ CREATE TABLE "baize-system".sys_role (
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                         created_by int8 NOT NULL, -- 创建人
+                                         created_by varchar(36) NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
-                                         modified_by int8 NULL, -- 更新人
+                                         modified_by varchar(36) NULL, -- 更新人
                                          modified_time timestamp NULL, -- 更新时间
                                          remark varchar(255) NULL -- 备注
 );
@@ -534,9 +534,9 @@ ALTER TABLE "baize-system".sys_role ADD CONSTRAINT uk_sys_role_tenant_role_code 
 -- DROP TABLE "baize-system".sys_role_dept;
 
 CREATE TABLE "baize-system".sys_role_dept (
-                                              tenant_id int8 NOT NULL, -- 租户ID
-                                              role_id int8 NOT NULL, -- 角色ID
-                                              dept_id int8 NOT NULL -- 部门ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
+                                              role_id varchar(36) NOT NULL, -- 角色ID
+                                              dept_id varchar(36) NOT NULL -- 部门ID
 );
 COMMENT ON TABLE "baize-system".sys_role_dept IS '角色和部门关联表1-N';
 
@@ -563,9 +563,9 @@ GRANT ALL ON TABLE "baize-system".sys_role_dept TO postgres;
 -- DROP TABLE "baize-system".sys_role_menu;
 
 CREATE TABLE "baize-system".sys_role_menu (
-                                              tenant_id int8 NOT NULL, -- 租户ID
-                                              role_id int8 NOT NULL, -- 角色ID
-                                              menu_id int8 NOT NULL -- 菜单ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
+                                              role_id varchar(36) NOT NULL, -- 角色ID
+                                              menu_id varchar(36) NOT NULL -- 菜单ID
 );
 COMMENT ON TABLE "baize-system".sys_role_menu IS '角色和菜单关联表1-N';
 
@@ -596,9 +596,9 @@ ALTER TABLE "baize-system".sys_role_menu ADD CONSTRAINT uk_sys_role_menu_tenant_
 -- DROP TABLE "baize-system".sys_role_perm;
 
 CREATE TABLE "baize-system".sys_role_perm (
-                                              tenant_id int8 NOT NULL, -- 租户ID
-                                              role_id int8 NOT NULL, -- 角色ID
-                                              perm_id int8 NOT NULL -- 权限ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
+                                              role_id varchar(36) NOT NULL, -- 角色ID
+                                              perm_id varchar(36) NOT NULL -- 权限ID
 );
 COMMENT ON TABLE "baize-system".sys_role_perm IS '角色和权限关联表1-N';
 
@@ -629,7 +629,7 @@ ALTER TABLE "baize-system".sys_role_perm ADD CONSTRAINT uk_sys_role_perm_tenant_
 -- DROP TABLE "baize-system".sys_tenant;
 
 CREATE TABLE "baize-system".sys_tenant (
-                                           id int8 NOT NULL, -- 主键ID
+                                           id varchar(36) NOT NULL, -- 主键ID
                                            tenant_code varchar(64) NULL, -- 租户编码
                                            tenant_name varchar(90) NULL, -- 租户名称
                                            expire_time timestamp NULL, -- 过期时间
@@ -642,9 +642,9 @@ CREATE TABLE "baize-system".sys_tenant (
                                            status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                            deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                            "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                           created_by int8 NOT NULL, -- 创建人
+                                           created_by varchar(36) NOT NULL, -- 创建人
                                            created_time timestamp NOT NULL, -- 创建时间
-                                           modified_by int8 NULL, -- 更新人
+                                           modified_by varchar(36) NULL, -- 更新人
                                            modified_time timestamp NULL, -- 更新时间
                                            remark varchar(255) NULL -- 备注
 );
@@ -694,9 +694,9 @@ CREATE UNIQUE INDEX uk_sys_tenant_domain ON "baize-system".sys_tenant("domain");
 -- DROP TABLE "baize-system".sys_user;
 
 CREATE TABLE "baize-system".sys_user (
-                                         id int8 NOT NULL, -- 主键ID
-                                         tenant_id int8 NOT NULL, -- 租户ID
-                                         dept_id int8 NOT NULL, -- 部门ID
+                                         id varchar(36) NOT NULL, -- 主键ID
+                                         tenant_id varchar(36) NOT NULL, -- 租户ID
+                                         dept_id varchar(36) NOT NULL, -- 部门ID
                                          user_name varchar(90) NULL, -- 用户账号
                                          nick_name varchar(90) NULL, -- 用户昵称
                                          user_type varchar(32) NULL, -- 用户类型
@@ -711,9 +711,9 @@ CREATE TABLE "baize-system".sys_user (
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                         created_by int8 NOT NULL, -- 创建人
+                                         created_by varchar(36) NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
-                                         modified_by int8 NULL, -- 更新人
+                                         modified_by varchar(36) NULL, -- 更新人
                                          modified_time timestamp NULL, -- 更新时间
                                          remark varchar(255) NULL -- 备注
 );
@@ -769,9 +769,9 @@ ALTER TABLE "baize-system".sys_user ADD CONSTRAINT uk_sys_user_tenant_user_name 
 -- DROP TABLE "baize-system".sys_user_post;
 
 CREATE TABLE "baize-system".sys_user_post (
-                                              tenant_id int8 NOT NULL, -- 租户ID
-                                              user_id int8 NOT NULL, -- 用户ID
-                                              post_id int8 NOT NULL -- 岗位ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
+                                              user_id varchar(36) NOT NULL, -- 用户ID
+                                              post_id varchar(36) NOT NULL -- 岗位ID
 );
 COMMENT ON TABLE "baize-system".sys_user_post IS '用户和岗位关联表1-N';
 
@@ -798,9 +798,9 @@ CREATE INDEX idx_user_post_tenant_id ON "baize-system".sys_user_post(tenant_id);
 -- DROP TABLE "baize-system".sys_user_role;
 
 CREATE TABLE "baize-system".sys_user_role (
-                                              tenant_id int8 NOT NULL, -- 租户ID
-                                              user_id int8 NOT NULL, -- 用户ID
-                                              role_id int8 NOT NULL -- 角色ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
+                                              user_id varchar(36) NOT NULL, -- 用户ID
+                                              role_id varchar(36) NOT NULL -- 角色ID
 );
 COMMENT ON TABLE "baize-system".sys_user_role IS '用户和角色关联表N-1';
 
@@ -831,8 +831,8 @@ ALTER TABLE "baize-system".sys_user_role ADD CONSTRAINT uk_sys_user_role_tenant_
 -- DROP TABLE "baize-system".sys_oper_log;
 
 CREATE TABLE "baize-system".sys_oper_log (
-                                              id int8 NOT NULL, -- 日志主键
-                                              tenant_id int8 NOT NULL, -- 租户ID
+                                              id varchar(36) NOT NULL, -- 日志主键
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
                                               title varchar(50) NULL, -- 模块标题
                                               business_type int4 DEFAULT 0 NULL, -- 业务类型
                                               method varchar(100) NULL, -- 方法名称
@@ -894,9 +894,9 @@ CREATE INDEX idx_sys_oper_log_oper_time ON "baize-system".sys_oper_log(oper_time
 -- DROP TABLE "baize-system".sys_login_log;
 
 CREATE TABLE "baize-system".sys_login_log (
-                                              id int8 NOT NULL, -- 主键ID
-                                              tenant_id int8 NOT NULL, -- 租户ID
-                                              user_id int8 NULL, -- 用户ID
+                                              id varchar(36) NOT NULL, -- 主键ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
+                                              user_id varchar(36) NULL, -- 用户ID
                                               user_name varchar(50) NULL, -- 用户名
                                               ipaddr varchar(128) NULL, -- IP地址
                                               login_location varchar(255) NULL, -- 登录地点
@@ -941,8 +941,8 @@ CREATE INDEX idx_sys_login_log_tenant_id ON "baize-system".sys_login_log(tenant_
 -- DROP TABLE "baize-system".sys_notice;
 
 CREATE TABLE "baize-system".sys_notice (
-                                              id int8 NOT NULL, -- 主键ID
-                                              tenant_id int8 NOT NULL, -- 租户ID
+                                              id varchar(36) NOT NULL, -- 主键ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
                                               notice_title varchar(200) NOT NULL, -- 公告标题
                                               notice_content text NULL, -- 公告内容
                                               notice_type varchar(1) DEFAULT '1'::character varying NOT NULL, -- 公告类型;1:通知,2:公告
@@ -950,9 +950,9 @@ CREATE TABLE "baize-system".sys_notice (
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 状态;0:正常,1:停用
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                              created_by int8 NOT NULL, -- 创建人
+                                              created_by varchar(36) NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
-                                              modified_by int8 NULL, -- 更新人
+                                              modified_by varchar(36) NULL, -- 更新人
                                               modified_time timestamp NULL, -- 更新时间
                                               remark varchar(255) NULL -- 备注
 );
@@ -993,8 +993,8 @@ CREATE INDEX idx_sys_notice_created_time ON "baize-system".sys_notice(created_ti
 -- DROP TABLE "baize-system".sys_job;
 
 CREATE TABLE "baize-system".sys_job (
-                                              id int8 NOT NULL, -- 主键ID
-                                              tenant_id int8 NOT NULL, -- 租户ID
+                                              id varchar(36) NOT NULL, -- 主键ID
+                                              tenant_id varchar(36) NOT NULL, -- 租户ID
                                               job_name varchar(100) NOT NULL, -- 任务名称
                                               job_group varchar(50) NOT NULL, -- 任务组名
                                               invoke_target varchar(255) NULL, -- 调用目标字符串
@@ -1005,9 +1005,9 @@ CREATE TABLE "baize-system".sys_job (
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 状态;0:正常,1:暂停
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
-                                              created_by int8 NOT NULL, -- 创建人
+                                              created_by varchar(36) NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
-                                              modified_by int8 NULL, -- 更新人
+                                              modified_by varchar(36) NULL, -- 更新人
                                               modified_time timestamp NULL, -- 更新时间
                                               remark varchar(255) NULL -- 备注
 );

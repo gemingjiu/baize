@@ -8,6 +8,7 @@ import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Card, Col, Row, theme } from 'antd';
 import React, { useMemo } from 'react';
+import { PLATFORM_TENANT_ID } from '@/constants/tenant';
 import { getPermissions } from '@/utils/auth';
 
 /** 递归统计菜单树节点数（父节点 + 子节点） */
@@ -148,9 +149,10 @@ const Welcome: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <StatCard
             title="租户"
-            // 后端默认租户 id 是字符串 '0'，直接显示成 0 会让人以为是空值
+            // 后端默认租户是平台租户（nil UUID），直接显示成 UUID 也会刷屏，统一显示文案
             value={
-              !currentUser?.tenantId || currentUser.tenantId === '0'
+              !currentUser?.tenantId ||
+              currentUser.tenantId === PLATFORM_TENANT_ID
                 ? '默认租户'
                 : currentUser.tenantId
             }

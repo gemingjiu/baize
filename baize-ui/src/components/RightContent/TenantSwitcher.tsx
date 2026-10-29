@@ -6,9 +6,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { switchTenant } from '@/services/auth';
 import { getTenantList } from '@/services/system/tenant';
 import { getUserInfo, saveAuth } from '@/utils/auth';
-
-/** 平台（保留）租户ID，与后端 CustomTenantHandler / TenantFilter 的默认租户一致 */
-const PLATFORM_TENANT_ID = '0';
+import { PLATFORM_TENANT_ID } from '@/constants/tenant';
 
 type TenantOption = {
   value: string;

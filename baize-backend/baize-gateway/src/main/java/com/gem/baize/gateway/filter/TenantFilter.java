@@ -15,13 +15,13 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * 租户校验过滤器：校验租户头，缺失时注入默认租户（0=master），白名单路径不强制校验
+ * 租户校验过滤器：校验租户头，缺失时注入默认租户（nil UUID=平台租户），白名单路径不强制校验
  */
 @Component
 public class TenantFilter implements GlobalFilter, Ordered {
 
-    /** 默认 master 租户 ID */
-    private static final String DEFAULT_TENANT_ID = "0";
+    /** 默认平台租户 ID（nil UUID） */
+    private static final String DEFAULT_TENANT_ID = "00000000-0000-0000-0000-000000000000";
 
     @Autowired
     private GatewayWhitelist gatewayWhitelist;

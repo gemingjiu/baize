@@ -88,11 +88,11 @@ public class SysDataScopeDeptProvider implements DataScopeDeptProvider {
             return null;
         }
         SysUser user = sysUserMapper.selectById(userId);
-        if (user == null || user.getDeptId() == null) {
+        if (user == null || user.getDeptId() == null || user.getDeptId().isBlank()) {
             log.warn("用户[{}]不存在或未设置部门，无法解析本部门数据权限", userId);
             return null;
         }
-        return String.valueOf(user.getDeptId());
+        return user.getDeptId();
     }
 
     /**

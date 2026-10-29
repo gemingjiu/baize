@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 
 @Data
 public abstract class BaseEntity implements Serializable {
-    @TableId(type = IdType.ASSIGN_ID)
-    private String id; // 主键ID
+    @TableId(type = IdType.ASSIGN_UUID)
+    private String id; // 主键ID（UUIDv7）
 
     /**
      * 租户ID（由拦截器自动填充）

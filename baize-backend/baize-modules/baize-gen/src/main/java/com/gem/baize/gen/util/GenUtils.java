@@ -108,7 +108,8 @@ public class GenUtils {
     /** 获取字段的@TableField注解 */
     public static String getTableFieldAnnotation(String columnName) {
         if ("id".equals(columnName)) {
-            return "@TableId(type = IdType.ASSIGN_ID)";
+            // 主键统一 UUIDv7：varchar(36) 列 + Uuidv7IdentifierGenerator（MybatisPlusConfig 注册）
+            return "@TableId(type = IdType.ASSIGN_UUID)";
         }
         return "@TableField(value = \"" + columnName + "\")";
     }

@@ -18,7 +18,7 @@
 --      （0:平台角色 1:租户角色；跟随全库 varchar(1) 标志位约定，不用 tinyint）
 --   2. sys_role 新增 is_builtin varchar(1) NOT NULL DEFAULT '0'
 --      （1:内置角色，内置不可删除）
---   3. 存量内置角色标记：id=1 admin → role_type='0', is_builtin='1'
+--   3. 存量内置角色标记：id = '00000000-0000-7000-0000-000000000001' admin → role_type='0', is_builtin='1'
 --   4. data_scope 列注释补「5：仅本人数据权限」
 --
 -- 【安全性论证】
@@ -35,7 +35,7 @@
 --   SELECT column_name, column_default, is_nullable FROM information_schema.columns
 --    WHERE table_schema='baize-system' AND table_name='sys_role'
 --      AND column_name IN ('role_type','is_builtin');          -- 预期 2 行
---   SELECT id, role_code, role_type, is_builtin FROM "baize-system".sys_role WHERE id = 1;
+--   SELECT id, role_code, role_type, is_builtin FROM "baize-system".sys_role WHERE id = '00000000-0000-7000-0000-000000000001';
 --   -- 预期：1 | admin | 0 | 1
 -- =============================================================================
 
@@ -58,13 +58,13 @@ ALTER TABLE "baize-system".sys_role
 COMMENT ON COLUMN "baize-system".sys_role.is_builtin IS '是否内置角色;0:非内置,1:内置（内置不可删除）';
 
 -- -----------------------------------------------------------------------------
--- 3. 存量内置角色标记（admin，id=1，tenant_id=0 平台共享角色）
+-- 3. 存量内置角色标记（admin，id = '00000000-0000-7000-0000-000000000001'，tenant_id=0 平台共享角色）
 --    WHERE 守卫保证幂等：已标记时 0 行变更
 -- -----------------------------------------------------------------------------
 UPDATE "baize-system".sys_role
    SET role_type  = '0',
        is_builtin = '1'
- WHERE id = 1
+ WHERE id = '00000000-0000-7000-0000-000000000001'
    AND (role_type <> '0' OR is_builtin <> '1');
 
 -- -----------------------------------------------------------------------------

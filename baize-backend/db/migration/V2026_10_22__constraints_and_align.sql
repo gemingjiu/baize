@@ -38,146 +38,146 @@ CREATE SCHEMA IF NOT EXISTS "baize-system";
 -- =============================================================================
 
 ALTER TABLE "baize-system".sys_config
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_data_perm
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_dept
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_dict_data
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_dict_type
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_job
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_menu
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_notice
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_perm
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_post
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_role
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 ALTER TABLE "baize-system".sys_user
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS sort          int4         NULL,
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
@@ -188,22 +188,22 @@ ALTER TABLE "baize-system".sys_tenant
     ADD COLUMN IF NOT EXISTS version       int4         NOT NULL DEFAULT 0,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0',
     ADD COLUMN IF NOT EXISTS deleted       varchar(1)   NOT NULL DEFAULT '0',
-    ADD COLUMN IF NOT EXISTS created_by    int8         NULL,
+    ADD COLUMN IF NOT EXISTS created_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS created_time  timestamp    NULL,
-    ADD COLUMN IF NOT EXISTS modified_by   int8         NULL,
+    ADD COLUMN IF NOT EXISTS modified_by varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS modified_time timestamp    NULL,
     ADD COLUMN IF NOT EXISTS remark        varchar(255) NULL;
 
 -- 日志表（实体不继承 BaseEntity，只有 id/tenant_id 是公共列；其余为日志自有列）
 ALTER TABLE "baize-system".sys_oper_log
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS business_type int4         DEFAULT 0 NULL,
     ADD COLUMN IF NOT EXISTS operator_type int4         DEFAULT 0 NULL,
     ADD COLUMN IF NOT EXISTS status        int4         DEFAULT 0 NULL,
     ADD COLUMN IF NOT EXISTS cost_time     int8         DEFAULT 0 NULL;
 
 ALTER TABLE "baize-system".sys_login_log
-    ADD COLUMN IF NOT EXISTS tenant_id     int8         NULL,
+    ADD COLUMN IF NOT EXISTS tenant_id varchar(36)         NULL,
     ADD COLUMN IF NOT EXISTS status        varchar(1)   NOT NULL DEFAULT '0';
 
 -- =============================================================================
@@ -284,7 +284,7 @@ BEGIN
                         WHERE attrelid = v_reg AND attname = 'tenant_id' AND NOT attisdropped) THEN
             CONTINUE;
         END IF;
-        EXECUTE format('UPDATE %I.%I SET tenant_id = 0 WHERE tenant_id IS NULL',
+        EXECUTE format('UPDATE %I.%I SET tenant_id = ''00000000-0000-0000-0000-000000000000'' WHERE tenant_id IS NULL',
                        'baize-system', v_table);
         IF NOT EXISTS (SELECT 1 FROM pg_attribute
                         WHERE attrelid = v_reg AND attname = 'tenant_id' AND attnotnull) THEN

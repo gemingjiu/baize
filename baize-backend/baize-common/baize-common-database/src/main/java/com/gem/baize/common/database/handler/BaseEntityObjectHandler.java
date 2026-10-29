@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 
 @Slf4j
 public class BaseEntityObjectHandler implements MetaObjectHandler {
-    /** 平台级租户ID：租户上下文缺失时的兜底值，避免 tenant_id NOT NULL 违约 */
-    private static final String PLATFORM_TENANT = "0";
+    /** 平台级租户ID（nil UUID）：租户上下文缺失时的兜底值，避免 tenant_id NOT NULL 违约 */
+    private static final String PLATFORM_TENANT = "00000000-0000-0000-0000-000000000000";
 
     @Override
     public void insertFill(MetaObject metaObject) {

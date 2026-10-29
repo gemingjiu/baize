@@ -38,6 +38,7 @@ spring:
         master:
           driver-class-name: org.postgresql.Driver
           # baize.datasource.master.schema 是数据库名（baize），currentSchema 是库内 schema（baize-system），两者不是一回事
+          # id 类列已迁移为 varchar(36)（UUIDv7），stringtype=unspecified 保留无害
           url: jdbc:postgresql://${baize.datasource.master.addr}/${baize.datasource.master.schema}?currentSchema=baize-system&stringtype=unspecified
           username: ${baize.datasource.master.username}
           password: ${baize.datasource.master.password}
@@ -63,7 +64,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      id-type: assign_id
+      id-type: assign_uuid
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0

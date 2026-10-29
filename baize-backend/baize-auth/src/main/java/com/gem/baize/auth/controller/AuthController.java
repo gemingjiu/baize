@@ -127,8 +127,8 @@ public class AuthController {
     private void recordLoginLog(LoginDTO dto, HttpServletRequest request, String status, String msg, LoginVO loginVO) {
         try {
             SysLoginLogDto logDto = new SysLoginLogDto();
-            // 保护 tenant_id 不为空，默认平台租户(0)
-            String tenantId = StringUtils.isNotBlank(dto.getTenant()) ? dto.getTenant() : "0";
+            // 保护 tenant_id 不为空，默认平台租户（nil UUID）
+            String tenantId = StringUtils.isNotBlank(dto.getTenant()) ? dto.getTenant() : "00000000-0000-0000-0000-000000000000";
             logDto.setTenantId(tenantId);
             logDto.setUserName(dto.getUsername());
             if (loginVO != null && loginVO.getUser() != null) {

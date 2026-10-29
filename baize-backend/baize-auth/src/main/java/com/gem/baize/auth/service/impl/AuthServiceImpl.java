@@ -92,9 +92,9 @@ public class AuthServiceImpl implements AuthService {
     private static final String SUPER_ADMIN_PERMISSION = "*:*:*";
 
     /**
-     * 平台（保留）租户ID，与 CustomTenantHandler.PLATFORM_TENANT_ID、网关 TenantFilter.DEFAULT_TENANT_ID 一致。
+     * 平台（保留）租户ID（nil UUID），与 CustomTenantHandler.PLATFORM_TENANT、网关 TenantFilter.DEFAULT_TENANT_ID 一致。
      */
-    private static final String PLATFORM_TENANT_ID = "0";
+    private static final String PLATFORM_TENANT_ID = "00000000-0000-0000-0000-000000000000";
 
     @Override
     public LoginVO login(LoginDTO dto) {

@@ -15,7 +15,7 @@
 --   岗位管理按钮（4 个）：                  id 1071-1074
 --   参数设置按钮（4 个）：                  id 1081-1084
 --   通知公告按钮（4 个）：                  id 1091-1094
---   对应 sys_role_menu 授权（超级管理员 role_id=1）共 17 条
+--   对应 sys_role_menu 授权（超级管理员 role_id = '00000000-0000-7000-0000-000000000001'）共 17 条
 --
 -- 【安全性论证】
 --   1. 幂等：全部使用 INSERT ... SELECT ... WHERE NOT EXISTS，
@@ -31,7 +31,7 @@
 -- 【执行前必做的只读核查】（在 psql / JDBC 客户端执行，确认后再跑本脚本）
 --   -- a. 确认 17 个 id 均未被占用（应全部返回 0）
 --   SELECT count(*) FROM "baize-system".sys_menu
---    WHERE id IN (110,1071,1072,1073,1074,1081,1082,1083,1084,1091,1092,1093,1094,1101,1102,1103,1104);
+--    WHERE id IN ('00000000-0000-7000-0000-00000000006e', '00000000-0000-7000-0000-00000000042f', '00000000-0000-7000-0000-000000000430', '00000000-0000-7000-0000-000000000431', '00000000-0000-7000-0000-000000000432', '00000000-0000-7000-0000-000000000439', '00000000-0000-7000-0000-00000000043a', '00000000-0000-7000-0000-00000000043b', '00000000-0000-7000-0000-00000000043c', '00000000-0000-7000-0000-000000000443', '00000000-0000-7000-0000-000000000444', '00000000-0000-7000-0000-000000000445', '00000000-0000-7000-0000-000000000446', '00000000-0000-7000-0000-00000000044d', '00000000-0000-7000-0000-00000000044e', '00000000-0000-7000-0000-00000000044f', '00000000-0000-7000-0000-000000000450');
 --   -- b. 确认 17 个 perms 均未被占用（应全部返回 0）
 --   SELECT count(*) FROM "baize-system".sys_menu
 --    WHERE perms IN ('system:job:list','system:job:query','system:job:add','system:job:edit','system:job:remove',
@@ -39,24 +39,24 @@
 --                    'system:config:query','system:config:add','system:config:edit','system:config:remove',
 --                    'system:notice:query','system:notice:add','system:notice:edit','system:notice:remove');
 --   -- c. 确认父菜单存在（应全部返回 1）
---   SELECT count(*) FROM "baize-system".sys_menu WHERE id IN (1,107,108,109);
+--   SELECT count(*) FROM "baize-system".sys_menu WHERE id IN ('00000000-0000-7000-0000-000000000001', '00000000-0000-7000-0000-00000000006b', '00000000-0000-7000-0000-00000000006c', '00000000-0000-7000-0000-00000000006d');
 --   -- d. 确认目标授权关系不存在（应返回 0）
 --   SELECT count(*) FROM "baize-system".sys_role_menu
---    WHERE role_id = 1 AND menu_id IN (110,1071,1072,1073,1074,1081,1082,1083,1084,1091,1092,1093,1094,1101,1102,1103,1104);
+--    WHERE role_id = '00000000-0000-7000-0000-000000000001' AND menu_id IN ('00000000-0000-7000-0000-00000000006e', '00000000-0000-7000-0000-00000000042f', '00000000-0000-7000-0000-000000000430', '00000000-0000-7000-0000-000000000431', '00000000-0000-7000-0000-000000000432', '00000000-0000-7000-0000-000000000439', '00000000-0000-7000-0000-00000000043a', '00000000-0000-7000-0000-00000000043b', '00000000-0000-7000-0000-00000000043c', '00000000-0000-7000-0000-000000000443', '00000000-0000-7000-0000-000000000444', '00000000-0000-7000-0000-000000000445', '00000000-0000-7000-0000-000000000446', '00000000-0000-7000-0000-00000000044d', '00000000-0000-7000-0000-00000000044e', '00000000-0000-7000-0000-00000000044f', '00000000-0000-7000-0000-000000000450');
 --
 -- 【执行方式】
 --   psql 或任意 JDBC 客户端整文件执行；本仓库无 psql 时用单文件 Java + 42.3.5 驱动。
 --   建议先在事务中执行并核对影响行数，再 COMMIT：
 --     BEGIN;
 --     \i V2026_10_22_02__menu_buttons_incremental.sql
---     SELECT count(*) FROM "baize-system".sys_menu WHERE id IN (110,1071,1101);  -- 预期 3
+--     SELECT count(*) FROM "baize-system".sys_menu WHERE id IN ('00000000-0000-7000-0000-00000000006e', '00000000-0000-7000-0000-00000000042f', '00000000-0000-7000-0000-00000000044d');  -- 预期 3
 --     COMMIT;
 -- =============================================================================
 
 CREATE SCHEMA IF NOT EXISTS "baize-system";
 
 -- -----------------------------------------------------------------------------
--- 1. 定时任务菜单（id=110，父级 1=系统管理）
+-- 1. 定时任务菜单（id = '00000000-0000-7000-0000-00000000006e'，父级 1=系统管理）
 --    列顺序与 sys_menu 表结构一致：
 --    id, tenant_id, parent_id, menu_name, path, component, parameters, external,
 --    cacheable, menu_type, visible, icon, perms, sort, status, deleted, "version",
@@ -66,10 +66,10 @@ INSERT INTO "baize-system".sys_menu
     (id, tenant_id, parent_id, menu_name, path, component, parameters, external,
      cacheable, menu_type, visible, icon, perms, sort, status, deleted, "version",
      created_by, created_time, modified_by, modified_time, remark)
-SELECT 110, 0, 1, '定时任务', 'job', 'system/job/index', NULL, '0',
+SELECT '00000000-0000-7000-0000-00000000006e', '00000000-0000-0000-0000-000000000000', '00000000-0000-7000-0000-000000000001', '定时任务', 'job', 'system/job/index', NULL, '0',
        '1', '1', '0', 'job', 'system:job:list', 11, '0', '0', 1,
-       1, '2025-08-11 17:33:07.797', NULL, NULL, '定时任务菜单'
-WHERE NOT EXISTS (SELECT 1 FROM "baize-system".sys_menu WHERE id = 110);
+       '00000000-0000-7000-0000-000000000001', '2025-08-11 17:33:07.797', NULL, NULL, '定时任务菜单'
+WHERE NOT EXISTS (SELECT 1 FROM "baize-system".sys_menu WHERE id = '00000000-0000-7000-0000-00000000006e');
 
 -- -----------------------------------------------------------------------------
 -- 2. 定时任务按钮（id=1101-1104，父级 110）
@@ -78,14 +78,14 @@ INSERT INTO "baize-system".sys_menu
     (id, tenant_id, parent_id, menu_name, path, component, parameters, external,
      cacheable, menu_type, visible, icon, perms, sort, status, deleted, "version",
      created_by, created_time, modified_by, modified_time, remark)
-SELECT v.id, 0, 110, v.menu_name, '', NULL, NULL, '0',
+SELECT v.id, '00000000-0000-0000-0000-000000000000', '00000000-0000-7000-0000-00000000006e', v.menu_name, '', NULL, NULL, '0',
        '0', '2', '0', '#', v.perms, v.sort, '0', '0', 1,
-       1, '2025-08-11 17:33:07.797', NULL, NULL, NULL
+       '00000000-0000-7000-0000-000000000001', '2025-08-11 17:33:07.797', NULL, NULL, NULL
 FROM (VALUES
-    (1101, '任务查询', 'system:job:query',  1),
-    (1102, '任务新增', 'system:job:add',    2),
-    (1103, '任务修改', 'system:job:edit',   3),
-    (1104, '任务删除', 'system:job:remove', 4)
+    ('00000000-0000-7000-0000-00000000044d', '任务查询', 'system:job:query',  1),
+    ('00000000-0000-7000-0000-00000000044e', '任务新增', 'system:job:add',    2),
+    ('00000000-0000-7000-0000-00000000044f', '任务修改', 'system:job:edit',   3),
+    ('00000000-0000-7000-0000-000000000450', '任务删除', 'system:job:remove', 4)
 ) AS v(id, menu_name, perms, sort)
 WHERE NOT EXISTS (SELECT 1 FROM "baize-system".sys_menu WHERE id = v.id);
 
@@ -96,14 +96,14 @@ INSERT INTO "baize-system".sys_menu
     (id, tenant_id, parent_id, menu_name, path, component, parameters, external,
      cacheable, menu_type, visible, icon, perms, sort, status, deleted, "version",
      created_by, created_time, modified_by, modified_time, remark)
-SELECT v.id, 0, 107, v.menu_name, '', NULL, NULL, '0',
+SELECT v.id, '00000000-0000-0000-0000-000000000000', '00000000-0000-7000-0000-00000000006b', v.menu_name, '', NULL, NULL, '0',
        '0', '2', '0', '#', v.perms, v.sort, '0', '0', 1,
-       1, '2025-08-11 17:33:07.797', NULL, NULL, NULL
+       '00000000-0000-7000-0000-000000000001', '2025-08-11 17:33:07.797', NULL, NULL, NULL
 FROM (VALUES
-    (1071, '岗位查询', 'system:post:query',  1),
-    (1072, '岗位新增', 'system:post:add',    2),
-    (1073, '岗位修改', 'system:post:edit',   3),
-    (1074, '岗位删除', 'system:post:remove', 4)
+    ('00000000-0000-7000-0000-00000000042f', '岗位查询', 'system:post:query',  1),
+    ('00000000-0000-7000-0000-000000000430', '岗位新增', 'system:post:add',    2),
+    ('00000000-0000-7000-0000-000000000431', '岗位修改', 'system:post:edit',   3),
+    ('00000000-0000-7000-0000-000000000432', '岗位删除', 'system:post:remove', 4)
 ) AS v(id, menu_name, perms, sort)
 WHERE NOT EXISTS (SELECT 1 FROM "baize-system".sys_menu WHERE id = v.id);
 
@@ -114,14 +114,14 @@ INSERT INTO "baize-system".sys_menu
     (id, tenant_id, parent_id, menu_name, path, component, parameters, external,
      cacheable, menu_type, visible, icon, perms, sort, status, deleted, "version",
      created_by, created_time, modified_by, modified_time, remark)
-SELECT v.id, 0, 108, v.menu_name, '', NULL, NULL, '0',
+SELECT v.id, '00000000-0000-0000-0000-000000000000', '00000000-0000-7000-0000-00000000006c', v.menu_name, '', NULL, NULL, '0',
        '0', '2', '0', '#', v.perms, v.sort, '0', '0', 1,
-       1, '2025-08-11 17:33:07.797', NULL, NULL, NULL
+       '00000000-0000-7000-0000-000000000001', '2025-08-11 17:33:07.797', NULL, NULL, NULL
 FROM (VALUES
-    (1081, '参数查询', 'system:config:query',  1),
-    (1082, '参数新增', 'system:config:add',    2),
-    (1083, '参数修改', 'system:config:edit',   3),
-    (1084, '参数删除', 'system:config:remove', 4)
+    ('00000000-0000-7000-0000-000000000439', '参数查询', 'system:config:query',  1),
+    ('00000000-0000-7000-0000-00000000043a', '参数新增', 'system:config:add',    2),
+    ('00000000-0000-7000-0000-00000000043b', '参数修改', 'system:config:edit',   3),
+    ('00000000-0000-7000-0000-00000000043c', '参数删除', 'system:config:remove', 4)
 ) AS v(id, menu_name, perms, sort)
 WHERE NOT EXISTS (SELECT 1 FROM "baize-system".sys_menu WHERE id = v.id);
 
@@ -132,41 +132,41 @@ INSERT INTO "baize-system".sys_menu
     (id, tenant_id, parent_id, menu_name, path, component, parameters, external,
      cacheable, menu_type, visible, icon, perms, sort, status, deleted, "version",
      created_by, created_time, modified_by, modified_time, remark)
-SELECT v.id, 0, 109, v.menu_name, '', NULL, NULL, '0',
+SELECT v.id, '00000000-0000-0000-0000-000000000000', '00000000-0000-7000-0000-00000000006d', v.menu_name, '', NULL, NULL, '0',
        '0', '2', '0', '#', v.perms, v.sort, '0', '0', 1,
-       1, '2025-08-11 17:33:07.797', NULL, NULL, NULL
+       '00000000-0000-7000-0000-000000000001', '2025-08-11 17:33:07.797', NULL, NULL, NULL
 FROM (VALUES
-    (1091, '公告查询', 'system:notice:query',  1),
-    (1092, '公告新增', 'system:notice:add',    2),
-    (1093, '公告修改', 'system:notice:edit',   3),
-    (1094, '公告删除', 'system:notice:remove', 4)
+    ('00000000-0000-7000-0000-000000000443', '公告查询', 'system:notice:query',  1),
+    ('00000000-0000-7000-0000-000000000444', '公告新增', 'system:notice:add',    2),
+    ('00000000-0000-7000-0000-000000000445', '公告修改', 'system:notice:edit',   3),
+    ('00000000-0000-7000-0000-000000000446', '公告删除', 'system:notice:remove', 4)
 ) AS v(id, menu_name, perms, sort)
 WHERE NOT EXISTS (SELECT 1 FROM "baize-system".sys_menu WHERE id = v.id);
 
 -- -----------------------------------------------------------------------------
--- 6. 授权给超级管理员（role_id=1），共 17 条
+-- 6. 授权给超级管理员（role_id = '00000000-0000-7000-0000-000000000001'），共 17 条
 --    与 sys_role_menu 的 (tenant_id, role_id, menu_id) 列顺序一致
 -- -----------------------------------------------------------------------------
 INSERT INTO "baize-system".sys_role_menu (tenant_id, role_id, menu_id)
-SELECT 0, 1, v.menu_id
+SELECT '00000000-0000-0000-0000-000000000000', '00000000-0000-7000-0000-000000000001', v.menu_id
 FROM (VALUES
-    (110),
-    (1101), (1102), (1103), (1104),
-    (1071), (1072), (1073), (1074),
-    (1081), (1082), (1083), (1084),
-    (1091), (1092), (1093), (1094)
+    ('00000000-0000-7000-0000-00000000006e'),
+    ('00000000-0000-7000-0000-00000000044d'), ('00000000-0000-7000-0000-00000000044e'), ('00000000-0000-7000-0000-00000000044f'), ('00000000-0000-7000-0000-000000000450'),
+    ('00000000-0000-7000-0000-00000000042f'), ('00000000-0000-7000-0000-000000000430'), ('00000000-0000-7000-0000-000000000431'), ('00000000-0000-7000-0000-000000000432'),
+    ('00000000-0000-7000-0000-000000000439'), ('00000000-0000-7000-0000-00000000043a'), ('00000000-0000-7000-0000-00000000043b'), ('00000000-0000-7000-0000-00000000043c'),
+    ('00000000-0000-7000-0000-000000000443'), ('00000000-0000-7000-0000-000000000444'), ('00000000-0000-7000-0000-000000000445'), ('00000000-0000-7000-0000-000000000446')
 ) AS v(menu_id)
 WHERE NOT EXISTS (
     SELECT 1 FROM "baize-system".sys_role_menu
-     WHERE tenant_id = 0 AND role_id = 1 AND menu_id = v.menu_id
+     WHERE tenant_id = '00000000-0000-0000-0000-000000000000' AND role_id = '00000000-0000-7000-0000-000000000001' AND menu_id = v.menu_id
 );
 
 -- -----------------------------------------------------------------------------
 -- 7. 收尾自检（只读，按需执行）
 -- -----------------------------------------------------------------------------
 -- SELECT id, menu_name, perms FROM "baize-system".sys_menu
---  WHERE id IN (110,1071,1072,1073,1074,1081,1082,1083,1084,1091,1092,1093,1094,1101,1102,1103,1104)
+--  WHERE id IN ('00000000-0000-7000-0000-00000000006e', '00000000-0000-7000-0000-00000000042f', '00000000-0000-7000-0000-000000000430', '00000000-0000-7000-0000-000000000431', '00000000-0000-7000-0000-000000000432', '00000000-0000-7000-0000-000000000439', '00000000-0000-7000-0000-00000000043a', '00000000-0000-7000-0000-00000000043b', '00000000-0000-7000-0000-00000000043c', '00000000-0000-7000-0000-000000000443', '00000000-0000-7000-0000-000000000444', '00000000-0000-7000-0000-000000000445', '00000000-0000-7000-0000-000000000446', '00000000-0000-7000-0000-00000000044d', '00000000-0000-7000-0000-00000000044e', '00000000-0000-7000-0000-00000000044f', '00000000-0000-7000-0000-000000000450')
 --  ORDER BY id;
 -- -- 预期 17 行
--- SELECT count(*) FROM "baize-system".sys_role_menu WHERE role_id = 1;
+-- SELECT count(*) FROM "baize-system".sys_role_menu WHERE role_id = '00000000-0000-7000-0000-000000000001';
 -- -- 预期：既有授权数 + 17

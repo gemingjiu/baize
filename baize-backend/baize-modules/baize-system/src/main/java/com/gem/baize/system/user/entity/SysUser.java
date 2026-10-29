@@ -16,10 +16,10 @@ import java.time.LocalDateTime;
 @TableName("sys_user")
 public class SysUser extends BaseEntity {
     /**
-     * 部门ID
+     * 部门ID（UUID 字符串）
      */
     @TableField(value = "dept_id")
-    private Long deptId;
+    private String deptId;
     /**
      * 用户账号
      */

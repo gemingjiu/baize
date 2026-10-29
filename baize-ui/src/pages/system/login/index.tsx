@@ -18,6 +18,7 @@ import {
   savePermissions,
 } from '@/utils/auth';
 import { getAllPermissions, transformMenu } from '@/utils/menu';
+import { PLATFORM_TENANT_ID } from '@/constants/tenant';
 
 const useStyles = createStyles(({ css, token }) => ({
   container: css`
@@ -164,10 +165,10 @@ const LoginMessage: React.FC<{ content: string }> = ({ content }) => {
 };
 
 /**
- * 平台（保留）租户ID，与后端 CustomTenantHandler.PLATFORM_TENANT、网关 TenantFilter 的默认租户一致。
+ * 平台（保留）租户ID 见 @/constants/tenant（nil UUID，与后端
+ * CustomTenantHandler.PLATFORM_TENANT、网关 TenantFilter 的默认租户一致）。
  * 登录页默认选中平台租户。
  */
-const PLATFORM_TENANT_ID = '0';
 
 const Login: React.FC = () => {
   const [loginErrorMessage, setLoginErrorMessage] = useState<string>('');
