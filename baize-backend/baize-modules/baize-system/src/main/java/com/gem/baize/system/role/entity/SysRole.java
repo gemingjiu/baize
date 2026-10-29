@@ -21,10 +21,20 @@ public class SysRole extends BaseEntity {
     @TableField(value = "role_code")
     private String roleCode;
     /**
-     * 数据范围,1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限
+     * 数据范围,1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限
      */
     @TableField(value = "data_scope")
     private String dataScope;
+    /**
+     * 角色类型,0：平台角色 1：租户角色
+     */
+    @TableField(value = "role_type")
+    private String roleType;
+    /**
+     * 是否内置角色,0：非内置 1：内置（内置不可删除）
+     */
+    @TableField(value = "is_builtin")
+    private String isBuiltin;
     /**
      * 菜单树选择项是否关联显示
      */

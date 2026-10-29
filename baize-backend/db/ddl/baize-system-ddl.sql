@@ -472,7 +472,9 @@ CREATE TABLE "baize-system".sys_role (
                                          tenant_id int8 NOT NULL, -- 租户ID
                                          role_name varchar(50) NOT NULL, -- 角色名称
                                          role_code varchar(64) NULL, -- 角色权限字符串
-                                         data_scope varchar(1) DEFAULT '1'::character varying NOT NULL, -- 数据范围;1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限
+                                         data_scope varchar(1) DEFAULT '1'::character varying NOT NULL, -- 数据范围;1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限
+                                         role_type varchar(1) DEFAULT '1'::character varying NOT NULL, -- 角色类型;0:平台角色,1:租户角色
+                                         is_builtin varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否内置角色;0:非内置,1:内置（内置不可删除）
                                          menu_check_strictly varchar(1) DEFAULT '1'::character varying NOT NULL, -- 菜单树选择项是否关联显示
                                          dept_check_strictly varchar(1) DEFAULT '1'::character varying NOT NULL, -- 部门树选择项是否关联显示
                                          sort int4 DEFAULT 0 NULL, -- 显示顺序
@@ -493,7 +495,9 @@ COMMENT ON COLUMN "baize-system".sys_role.id IS '主键ID';
 COMMENT ON COLUMN "baize-system".sys_role.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_role.role_name IS '角色名称';
 COMMENT ON COLUMN "baize-system".sys_role.role_code IS '角色权限字符串';
-COMMENT ON COLUMN "baize-system".sys_role.data_scope IS '数据范围;1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限';
+COMMENT ON COLUMN "baize-system".sys_role.data_scope IS '数据范围;1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限';
+COMMENT ON COLUMN "baize-system".sys_role.role_type IS '角色类型;0:平台角色,1:租户角色';
+COMMENT ON COLUMN "baize-system".sys_role.is_builtin IS '是否内置角色;0:非内置,1:内置（内置不可删除）';
 COMMENT ON COLUMN "baize-system".sys_role.menu_check_strictly IS '菜单树选择项是否关联显示';
 COMMENT ON COLUMN "baize-system".sys_role.dept_check_strictly IS '部门树选择项是否关联显示';
 COMMENT ON COLUMN "baize-system".sys_role.sort IS '显示顺序';

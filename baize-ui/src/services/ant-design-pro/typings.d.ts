@@ -90,6 +90,10 @@ declare namespace API {
     roleName?: string;
     roleCode?: string;
     dataScope?: string;
+    /** 角色类型：0 平台角色 / 1 租户角色 */
+    roleType?: string;
+    /** 是否内置角色：0 非内置 / 1 内置（内置不可删除） */
+    isBuiltin?: string;
     menuCheckStrictly?: string;
     deptCheckStrictly?: string;
     sort?: number;

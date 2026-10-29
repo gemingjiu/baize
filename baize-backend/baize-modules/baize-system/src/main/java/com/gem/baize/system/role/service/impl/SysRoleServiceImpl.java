@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.role.domain.dto.SysRoleDto;
+import com.gem.baize.common.core.enums.ErrorCode;
+import com.gem.baize.common.core.exception.model.BusinessException;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.system.role.entity.SysRole;
@@ -75,6 +77,20 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_role", key = "#id")
     public void removeById(String id) {
+        // 守卫一：内置角色（admin 等）不允许删除——删除后用户绑定行成死引用，权限静默丢失。
+        // 注意：this.getById(id) 被重载为返回 DTO，这里直接查实体（绕过 DTO 缓存口径）。
+        SysRole role = super.getById(id);
+        if (role == null || "1".equals(role.getDeleted())) {
+            throw new NotFoundException("角色不存在或已删除");
+        }
+        if ("1".equals(role.getIsBuiltin())) {
+            throw new BusinessException(ErrorCode.BUSINESS_CONFLICT, "内置角色不允许删除");
+        }
+        // 守卫二：仍有用户绑定该角色时拒绝删除，需先解除绑定（逻辑删场景下引用一致性保护）。
+        List<String> boundUserIds = sysUserRoleService.getUserIdsByRoleId(id);
+        if (!CollectionUtils.isEmpty(boundUserIds)) {
+            throw new BusinessException(ErrorCode.BUSINESS_CONFLICT, "角色已分配给 " + boundUserIds.size() + " 个用户，请先解除绑定后再删除");
+        }
         // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
         // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
         LambdaUpdateWrapper<SysRole> wrapper = new LambdaUpdateWrapper<>();

@@ -52,6 +52,12 @@ const DATA_SCOPE_OPTIONS = [
   { label: '仅本人数据权限', value: '5' },
 ];
 
+/** 角色类型（与后端 sys_role.role_type 保持一致：0 平台角色 / 1 租户角色） */
+const ROLE_TYPE_OPTIONS = [
+  { label: '平台角色', value: '0', color: 'geekblue' },
+  { label: '租户角色', value: '1', color: 'cyan' },
+];
+
 const Role: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   // 表格查询表单实例，导出时直接取当前查询条件
@@ -312,6 +318,29 @@ const Role: React.FC = () => {
       width: 150,
     },
     {
+      title: '角色类型',
+      dataIndex: 'roleType',
+      width: 110,
+      valueType: 'select',
+      fieldProps: {
+        options: ROLE_TYPE_OPTIONS.map(({ label, value }) => ({
+          label,
+          value,
+        })),
+      },
+      render: (_, record) => {
+        const option =
+          ROLE_TYPE_OPTIONS.find((item) => item.value === record.roleType) ??
+          ROLE_TYPE_OPTIONS[1];
+        return (
+          <>
+            <Tag color={option.color}>{option.label}</Tag>
+            {record.isBuiltin === '1' && <Tag color="gold">内置</Tag>}
+          </>
+        );
+      },
+    },
+    {
       title: '菜单严格模式',
       dataIndex: 'menuCheckStrictly',
       width: 120,
@@ -387,6 +416,10 @@ const Role: React.FC = () => {
               size="small"
               danger
               icon={<DeleteOutlined />}
+              disabled={record.isBuiltin === '1'}
+              title={
+                record.isBuiltin === '1' ? '内置角色不允许删除' : undefined
+              }
               onClick={() => handleDelete(record)}
             >
               删除

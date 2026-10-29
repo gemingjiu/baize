@@ -196,8 +196,8 @@ ON CONFLICT (tenant_id, menu_name, parent_id) DO NOTHING;
 -- ============================================================================
 -- 角色数据：超级管理员（tenant_id=0 共享角色）
 -- ============================================================================
-INSERT INTO sys_role (id, tenant_id, role_name, role_code, data_scope, menu_check_strictly, dept_check_strictly, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
-VALUES (1, 0, '超级管理员', 'admin', '1', '1', '1', 1, '0', '0', 1, 1, '2025-08-11 17:33:07.797', NULL, NULL, '内置超级管理员，拥有全部菜单权限')
+INSERT INTO sys_role (id, tenant_id, role_name, role_code, data_scope, role_type, is_builtin, menu_check_strictly, dept_check_strictly, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+VALUES (1, 0, '超级管理员', 'admin', '1', '0', '1', '1', '1', 1, '0', '0', 1, 1, '2025-08-11 17:33:07.797', NULL, NULL, '内置超级管理员，拥有全部菜单权限')
 ON CONFLICT (id) DO NOTHING;
 
 
