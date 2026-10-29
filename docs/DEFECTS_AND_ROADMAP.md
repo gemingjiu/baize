@@ -97,8 +97,47 @@
 
 ---
 
+## 2026-10-29 增量评审：数据模型 / 角色模型
+
+### ✅ 已完成：角色表 role_type / is_builtin（commit 7d24747）
+
+- **迁移** `db/migration/V2026_10_29__role_type_builtin.sql`：`sys_role` 加 `role_type varchar(1) DEFAULT '1'`（0 平台角色 / 1 租户角色）、`is_builtin varchar(1) DEFAULT '0'`（1 内置不可删）；id=1 admin 标记 `role_type='0', is_builtin='1'`（幂等守卫）；`data_scope` 注释补「5 仅本人」修正文档漂移
+- **DDL/init 同步**：`baize-system-ddl.sql` 列定义 + COMMENT；`baize-system-init.sql:199-201` admin 种子补两列
+- **后端双守卫** `SysRoleServiceImpl.removeById`：内置角色拒绝删除（`ErrorCode.BUSINESS_CONFLICT`）+ 被用户占用拒绝删除（`getUserIdsByRoleId` 非空即拒，提示解绑数量）
+- **前端** `role/index.tsx`：新增「角色类型」列（平台 geekblue / 租户 cyan Tag + 内置金色 Tag，支持筛选）；内置角色删除按钮置灰并提示
+- **不改**：tenant_id NOT NULL+0（租户过滤由 CustomTenantHandler 无条件下推）、data_scope 值域 1-5 是超集、status varchar(1) 全库约定、超管白名单判定不动
+
+### 🔴 待修：角色签发只取单角色（唯一真缺陷，必修）
+
+- `SysRoleServiceImpl.java:116-123` `getRoleByUserId` 取 `getRoleIdsByUserId(userId).get(0)` **只取第一个角色**——多角色用户权限静默丢失
+- 口径不一致：签发按单角色聚合菜单 perms 写 `role` claim（`AuthServiceImpl.resolvePermissionClaim:370-389`），而数据权限 `SysDataScopeDeptProvider.java:97-108` 自定义档按**全部角色并集**
+- 修法：签发改按 userId 聚合全部启用角色（去重合并 perms），数据权限口径自然对齐
+
+### 🟡 表模型评审发现（全 14 表核对，低风险动作 + 待决策）
+
+**低风险动作（未做，可顺手修）**：
+- 索引缺口：`sys_user.dept_id` 无索引（DataScopeInnerInterceptor 部门过滤全表扫）；`sys_user_role.role_id` 不被 uk(tenant,user,role) 覆盖（按角色查绑定全表扫）
+- 冗余索引：4 个关系表（role_menu/role_perm/user_role/role_dept）单列 tenant_id 索引与 uk 前缀重复，可删
+- `sys_tenant.domain` 声明唯一但无 uk（ddl:635 vs :682）——加 uk 或改注释
+- 软删除×唯一键冲突：逻辑删后编码永久占用（如 `uk_sys_user_tenant_user_name` ddl:755）——PG partial unique index `WHERE deleted='0'` 可解，但 init 的 ON CONFLICT 仲裁依赖现有 uk，需联动评估
+
+**僵尸表（需用户决策删/留）**：
+- `sys_data_perm`（ddl:67-101）：无 Java 实体引用，仅 `DataScopeInnerInterceptor.java:56` 白名单出现
+- `sys_user_post`（ddl:765-785）：无实体、无 Mapper、无调用
+- `sys_perm` + `sys_role_perm`：实体/服务/控制器全有，但**登录签发不消费**（`AuthServiceImpl.java:78` 注释确认走菜单 perms）——前端权限 UI 双轨冗余
+
+### 🟢 架构分析结论（备案，无需改动）
+
+- **用户↔租户 = 1:N 账号制，关系自洽**：`sys_user.tenant_id NOT NULL` + uk(tenant,user_name)；同一人两租户 = 两行两个 userId 同名。无 sys_user_tenant 中间表；switchTenant 归属判定 = 目标租户存在同名账号（`AuthServiceImpl.java:170`），超管例外跨租户签发（:179-194）。**当前模型不算缺陷**；若将来要"邀请加入租户 / 一账号多租户"才需 M:N 改造（成员表 + switchTenant 改查 + 存量合并），属新功能需用户决策
+- 角色 model：`sys_role` UNIQUE(tenant_id, role_code)；数据权限五档 1-5；`sys_role_dept` 供自定义档使用——结构健康
+
+---
+
 ## 待决策（需用户确认）
 
-- **P0-A/P0-B 涉及"直连后端"威胁模型**：当前架构以网关为唯一可信边界。是否接受"网关是 sole ingress"的设计前提，还是要做后端侧的网关签名头校验？
+- **P0-A/P0-B 涉及"直连后端"威胁模型**：当前架构以网关为唯一可信边界。是否接受"网关是 sole ingress"的设计前提，还是要做后端侧的网关签名头校验？（P0-A 已做网关签名校验，此项指是否进一步收紧）
 - **P1-B fail-safe 到 "0"**：是否改为"缺租户即拒绝（1=0）"？这会破坏平台态默认行为，需评估。
 - ~~**⑫ 表单构建器 / Sentinel 取舍**~~ ✅ 已忽略（用户决策 2026-10-28：不做，roadmap 不新增功能线）
+- **三组僵尸表删/留**（2026-10-29 评审新增）：`sys_data_perm` / `sys_user_post` / `sys_perm`+`sys_role_perm` 详见上方「表模型评审发现」——删除需迁移脚本 DROP + 清理实体/服务/控制器/白名单引用；保留建议在 DDL 注释标明用途
+- **软删除×唯一键**（2026-10-29 评审新增）：是否引入 PG partial unique index（`WHERE deleted='0'`）解除逻辑删后编码永久占用——需联动 init ON CONFLICT 仲裁评估
+- **角色签发多角色聚合**（2026-10-29 评审新增）：必修项，见上方「🔴 待修」——建议下次迭代第一项
