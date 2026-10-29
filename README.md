@@ -105,6 +105,17 @@ psql -U postgres -h localhost -d baize -v ON_ERROR_STOP=1 `
 >
 > 已知数据缺口：`sys_config` / `sys_dict_type` / `sys_dict_data` / `sys_post` / `sys_notice` / `sys_job`
 > 暂无种子数据（这些页面打开是空列表，属预期，非脚本错误）。
+>
+> **设计说明（评审遗留项备案）**：
+> - `db/migration` 的 `WHERE NOT EXISTS` 写法存在并发 TOCTOU 窗口（双实例同时跑迁移可能双插），
+>   但迁移仅在部署窗口由 CI/人工单实例执行，风险可接受；固定 id 主键冲突会兜底报错。
+> - 迁移文件按**文件名字母序**执行（非严格时间序），新增脚本命名务必保证与依赖顺序的字母序一致
+>   （如 `V2026_10_22_02__x` 排在 `V2026_10_22__constraints` 之前是刻意安排）。
+> - 日志表（`sys_login_log` / `sys_oper_log`）走**物理删除**（`removeById`），与业务表的逻辑删除
+>   不一致——日志表数据量大、无需回收复用 id，物理删除是刻意设计。
+> - 网关 denylist/whitelist 匹配仅支持精确与 `/**` 前缀（`GatewayPathMatcher`），不支持 Ant 风格
+>   中置通配；由于白名单只影响"是否注入签名身份头"且后端有签名校验兜底（P0-A 修复），编码/大小写
+>   变体绕过的影响面有限。新增路径规则时避免依赖中置通配符。
 
 ## 五、启动后端（本地）
 

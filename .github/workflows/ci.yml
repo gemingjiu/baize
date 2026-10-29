@@ -29,11 +29,33 @@ jobs:
 
       # baize-backend 的 parent 是仓库内同级目录的 baize-parent，必须先安装到本地仓库
       - name: Install parent BOM
-        run: mvn -B -f baize-parent/pom.xml install
+        run: mvn -B -Dfile.encoding=UTF-8 -f baize-parent/pom.xml install
 
       # 单元测试已可正常执行（父 POM 固定 maven-surefire-plugin 3.2.5），因此不再跳过
+      # -Dfile.encoding=UTF-8：文档强调的编码项落到 CI（当前构建不加载配置故此前为良性，防未来回归）
       - name: Build and test backend
-        run: mvn -B -f baize-backend/pom.xml package
+        run: mvn -B -Dfile.encoding=UTF-8 -f baize-backend/pom.xml package
+
+  # ---------------------------------------------------------------------------
+  # Helm chart 静态校验：helm lint + helm template 渲染
+  # ---------------------------------------------------------------------------
+  helm:
+    name: Helm lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Lint chart
+        run: helm lint baize-backend/deploy/helm
+
+      - name: Template render smoke
+        run: helm template baize baize-backend/deploy/helm --set postgresql.auth.password=ci-dummy --set nacos.datasource.password=ci-dummy > /dev/null
 
   # ---------------------------------------------------------------------------
   # 前端：Node 20

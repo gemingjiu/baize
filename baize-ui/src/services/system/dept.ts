@@ -21,15 +21,6 @@ export async function getDeptTreeSelect(tenantId?: string, options?: { [key: str
   });
 }
 
-/** 获取部门列表 GET /system/dept/list */
-export async function getDeptList(dto: Partial<API.SysDeptDto>, options?: { [key: string]: any }) {
-  return request<API.ApiResult<API.SysDeptDto[]>>(`${API_VERSION}/system/dept/list`, {
-    method: 'GET',
-    params: { dto },
-    ...(options || {}),
-  });
-}
-
 /** 分页查询部门 POST /system/dept/page */
 export async function getDeptPage(
   params: {

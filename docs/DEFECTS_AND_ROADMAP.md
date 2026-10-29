@@ -25,7 +25,7 @@
 | P1-A | ~~`RequestContextHolder` ThreadLocal 同步请求不清理~~ ✅ 已修 | 安全面 | `HeaderInterceptor` 已补 `afterCompletion` → `RequestContextHolder.remove()`（闭环验证） |
 | P1-B | 租户缺失兜底到平台租户 "0"（fail-safe 静默放行而非拒绝）| 安全面 | `CustomTenantHandler.java:31-39`（待用户决策：平台态语义 m03289 已确认保留兜底）|
 | P1-C | ~~放行 CORS 反射 Origin 且 `Allow-Credentials:true`~~ ✅ 已修 | 安全面 | 单一事实源 `globalcors.cors-configurations` 白名单；`CorsFilter` 仅留 OPTIONS 兜底（三态验证） |
-| P1-D | 限流器按客户端 `X-Real-IP` 计数 + 内存态 + 默认关闭 → 可被绕过 | 安全面 | `RateLimiterFilter.java:70-82`（默认 disabled）（待评估：是否经 LB/NAT 拓扑）|
+| P1-D | ~~限流器按客户端 `X-Real-IP` 计数 + 内存态 + 默认关闭 → 可被绕过~~ ✅ 已撤销（用户决策 2026-10-28：不改造） | 安全面 | `RateLimiterFilter.java:70-82` 保持现状（默认 disabled + 单机内存计数）；留待真实限流需求出现时再评估 Redis 滑动窗口方案 |
 | P1-E | ~~`@InnerAuth` 内网 token 为空时放行~~ ✅ 已修（fail-closed） | 安全面 | `InnerAuthInterceptor` 空 token 抛 `ForbiddenException`（五态验证） |
 | P1-F | **转换器 `BeanUtils.copyProperties` 静默丢字段**（sort 缺失即典型）→ `编辑菜单缺少排序` 已踩 | 后端 | `SysMenuConvert.java:15-30` 双向拷贝；新增实体字段漏加 DTO 即丢 |
 | P1-G | **任务调度缓存未失效** → UI 新增/修改/删除 job 后调度器不刷新 | 后端 | `SysJobServiceImpl` `addJob:101`/`updateJob:120`/`removeJob:140` 均无 `@CacheEvict`，`@Cacheable getJobList:38` 被 quartz 读取 |
@@ -36,29 +36,29 @@
 | P1-L | **init 与 migration 物理主键不一致（sys_menu id=4）** | DB | 已核实**不成立**：init（`baize-system-init.sql:59`）与 migration（`V2026_10_23__home_menu.sql:41`）都用固定 id=4；migration 自带 snowflake 行对齐逻辑（id≠4 且 id=4 空闲时 UPDATE 主键并同步 sys_role_menu）。live DB 已确认 /welcome = id 4。残余说明：两脚本路径本就互斥（新库走 init 不跑迁移，老库补跑迁移），现在殊途同归到 id=4 |
 | P1-M | 权限码字面量分散多处 → 拼错即静默隐藏按钮或误放行 | 前端 | `config/index.tsx:125`、`role/index.tsx`、`loginlog/index.tsx`、`routePermission.ts:9-23` |
 
-### 🟡 P2 — 次要
+### 🟡 P2 — 次要（✅ 全部闭环，2026-10-28 批量收尾）
 
-- **P2-A** init `sys_menu` 用 `ON CONFLICT(tenant_id,menu_name,parent_id)` 与 DDL 主键 `id` 不同键 → 删除重插被静默吞（`baize-system-init.sql:63`）
-- **P2-B** migration `WHERE NOT EXISTS` 并发双插（TOCTOU，固定 id 主键冲突）— `home_menu.sql:45-50`、`menu_buttons_incremental.sql`
-- **P2-C** Nacos 版本错配（compose v2.2.3 / k8s v2.5.2 / helm v2.2.3）；k8s 用 derby 内嵌而 helm 用外置 pg
-- **P2-D** k8s postgres/redis 缺探针 + 无 securityContext；nacos 有探针但无 securityContext
-- **P2-E** migration glob 字母序脆弱（`V2026_10_22_02` vs `V2026_10_22__constraints_and_align` 依赖 `_`<`0`）
-- **P2-F** DDL 类型不一致：`sys_user`/`sys_oper_log` 的 `version` 无 `DEFAULT 0`；DDL 单独建库 20/21 表无主键（仅 `sys_oper_log` 有）
-- **P2-G** 日志表（loginlog/operlog）`removeById` 仍是物理删除（与业务表逻辑删除不一致，需文档说明）
-- **P2-H** 刷新 token 7 天、可重放、`logout` 当 `tenantId` 为 null 时 key 拼错未删除真 token（`AuthController.java:76`、`RedisTokenManager.java:51`）
-- **P2-I** denylist 匹配朴素（仅精确/`/**` 前缀），编码/大小写变体可绕过（`GatewayPathMatcher.java:25-44`）
-- **P2-J** `sort` 列 DDL `int4 NULL` 与 Java `BaseEntity.private int sort`（基本类型，MP fill 永不生效）冲突 → 全新库无 DEFAULT 行为分叉（`baize-system-ddl.sql:321-324`）
+- ~~**P2-A**~~ init `sys_menu` 用 `ON CONFLICT(tenant_id,menu_name,parent_id)` 与 DDL 主键 `id` 不同键 → 删除重插被静默吞（`baize-system-init.sql:63`）— ✅ 已被 P0-E 种子表补主键连带解决（`ON CONFLICT (id)` 现有仲裁索引），见 :77 补主键块
+- ~~**P2-B**~~ migration `WHERE NOT EXISTS` 并发双插（TOCTOU，固定 id 主键冲突）— ✅ README 已备案设计说明（部署窗口单实例执行，风险可接受）
+- ~~**P2-C**~~ Nacos 版本错配（compose v2.2.3 / k8s v2.5.2 / helm v2.2.3）；k8s 用 derby 内嵌而 helm 用外置 pg — ✅ `03-nacos.yaml:61` 统一降级到 v2.2.3（对齐 spring-cloud-alibaba 2023.0.3.3 对应的 client 2.3.x 兼容线）
+- ~~**P2-D**~~ k8s postgres/redis 缺探针 + 无 securityContext；nacos 有探针但无 securityContext — ✅ 三 yaml 补齐（pg_isready/redis-cli ping 探针 + 全部 securityContext 加固）
+- ~~**P2-E**~~ migration glob 字母序脆弱（`V2026_10_22_02` vs `V2026_10_22__constraints_and_align` 依赖 `_`<`0`）— ✅ README 已备案命名规则（新增脚本须保证依赖顺序的字母序一致）
+- ~~**P2-F**~~ DDL 类型不一致：`sys_user`/`sys_oper_log` 的 `version` 无 `DEFAULT 0`；DDL 单独建库 20/21 表无主键（仅 `sys_oper_log` 有）— ✅ DDL 13 处 `version`/`sort` 补 `DEFAULT 0`，与 migration S2 段语义对齐；主键问题已由 P0-E 连带解决
+- ~~**P2-G**~~ 日志表（loginlog/operlog）`removeById` 仍是物理删除（与业务表逻辑删除不一致，需文档说明）— ✅ README 已备案（数据量大无需回收 id，刻意设计）
+- ~~**P2-H**~~ 刷新 token 7 天、可重放、`logout` 当 `tenantId` 为 null 时 key 拼错未删除真 token（`AuthController.java:76`、`RedisTokenManager.java:51`）— ✅ 大幅缓解：logout 已从 Bearer 正确解析 tenantId，save/delete key 拼法一致，refreshToken 覆写同 key；残余仅 7 天 TTL 偏长 + 多端共享 key（可接受）
+- ~~**P2-I**~~ denylist 匹配朴素（仅精确/`/**` 前缀），编码/大小写变体可绕过（`GatewayPathMatcher.java:25-44`）— ✅ README 已备案（白名单有 P0-A 签名校验兜底）
+- ~~**P2-J**~~ `sort` 列 DDL `int4 NULL` 与 Java `BaseEntity.private int sort`（基本类型，MP fill 永不生效）冲突 → 全新库无 DEFAULT 行为分叉（`baize-system-ddl.sql:321-324`）— ✅ 同 P2-F，DDL 补 `DEFAULT 0`
 
-### 🟢 P3 — 收尾 / 杂项
+### 🟢 P3 — 收尾 / 杂项（✅ 全部闭环，2026-10-28 批量收尾）
 
-- `getDeptList` 把 DTO 包成 `{dto:{...}}` 且当前无调用方（死代码陷阱，`dept.ts:25`）
-- `App.useApp()` 在可能脱离 `<App>` 祖先处调用（`TenantSwitcher.tsx:45`、`login/index.tsx:176`）
-- `.dockerignore` 漏 `**/node_modules`/`*.log`；`.gitignore:24` `.debug/` 只匹配根
-- helm chart 无 `helm lint`；CI frontend `continue-on-error` 掩盖
-- migration 注释"68 条"计数失实（`menu_buttons_incremental.sql:8-9`）
-- `SnowflakeGenerator.generate()` 返回 `""` 死代码（`baize-common-core/.../strategy/SnowflakeGenerator.java:13`）
-- CI 缺 `-Dfile.encoding=UTF-8`（构建不加载配置故当前良性，但文档强调的项未落到 CI）
-- JWT secret 处理**良好**（无默认、<32 字节启动失败、`verifyWith` 防 none）
+- ~~`getDeptList` 把 DTO 包成 `{dto:{...}}` 且当前无调用方（死代码陷阱，`dept.ts:25`）~~ — ✅ 已删除（grep 全库无调用方，tsc 通过）
+- ~~`App.useApp()` 在可能脱离 `<App>` 祖先处调用（`TenantSwitcher.tsx:45`、`login/index.tsx:176`）~~ — ✅ 核查不成立：`config.ts` `antd.appConfig` 已启用，umi 外层包 `<App>`，两处调用点祖先链完整；`global.tsx` 用静态 message/notification 属模块顶层无法用 hooks，合理
+- ~~`.dockerignore` 漏 `**/node_modules`/`*.log`；`.gitignore:24` `.debug/` 只匹配根~~ — ✅ `baize-ui/.dockerignore` 补 `**/node_modules` 与 `*.md`；根 `.gitignore` 补 `**/.debug/` 与 Umi 临时产物（`.umi*`）
+- ~~helm chart 无 `helm lint`；CI frontend `continue-on-error` 掩盖~~ — ✅ CI 新增 helm job（`helm lint` + dummy 密码冒烟渲染）；`continue-on-error` 已在 P1-K 改为 false
+- ~~migration 注释"68 条"计数失实（`menu_buttons_incremental.sql:8-9`）~~ — ✅ 头注释删失实计数；尾注「预期 85」→「预期：既有授权数 + 17」
+- ~~`SnowflakeGenerator.generate()` 返回 `""` 死代码（`baize-common-core/.../strategy/SnowflakeGenerator.java:13`）~~ — ✅ 真实现（1+41+10+12，MAC 哈希 worker-id + SecureRandom 兜底，AtomicLong 同毫秒自旋；javadoc 注明未接分布式 worker-id 协调）
+- ~~CI 缺 `-Dfile.encoding=UTF-8`（构建不加载配置故当前良性，但文档强调的项未落到 CI）~~ — ✅ backend job 两条 mvn 命令已加（带注释）
+- JWT secret 处理**良好**（无默认、<32 字节启动失败、`verifyWith` 防 none）— 无需处理
 
 ---
 
@@ -92,8 +92,8 @@
 1. **提交已完成的 P0-E 迁移修复**（防丢失）
 2. ~~P0-C（密码改 PUT body）~~、~~P0-D（补 redis.conf）~~、~~P0-E（DDL IF NOT EXISTS / schema 限定）~~ ✅ 已修；~~P0-A~~ ✅ 已修并闭环验证（网关签名头）；P0-B 经核查已正确实现（switchTenant 验签+查黑名单）；剩余无
 3. ~~P1-H（.env.example）~~、~~P1-I/J（凭据改 Secret）~~、~~P1-K（CI 阻塞）~~、~~P1-L（核实不成立）~~、~~P1-F（MapStruct 替代 BeanUtils，12 Convert + 注入 INSTANCE 化，commit 2283642）~~、~~P1-M（权限码常量化 PermCodes，115 处替换，commit 2283642）~~ ✅；剩余 P1-G（job 缓存失效，经核查不成立——调度器 60s 轮询 DB 无缓存）
-4. ~~**P1 安全加固**~~：~~P1-A（ThreadLocal 清理）~~、~~P1-C（CORS 白名单）~~、~~P1-E（强制 inner token）~~ ✅ 已修并闭环验证；剩余 P1-D（限流改真实 IP，需评估部署拓扑是否经 LB）
-5. **P2/P3** 批量处理
+4. ~~**P1 安全加固**~~：~~P1-A（ThreadLocal 清理）~~、~~P1-C（CORS 白名单）~~、~~P1-E（强制 inner token）~~ ✅ 已修并闭环验证；~~P1-D（限流改造）~~ ✅ 已撤销（用户决策，保持现状）
+5. ~~**P2/P3** 批量处理（P1-D 已撤销，P1 线全部闭环）~~ ✅ 2026-10-28 批量收尾完成：P2 全闭环（A 被连带解决 / B/E/G/I 备案 / C/D/F/J 实改 / H 大幅缓解）、P3 全闭环（含 SnowflakeGenerator 真实现、CI helm lint job）
 
 ---
 
@@ -101,4 +101,4 @@
 
 - **P0-A/P0-B 涉及"直连后端"威胁模型**：当前架构以网关为唯一可信边界。是否接受"网关是 sole ingress"的设计前提，还是要做后端侧的网关签名头校验？
 - **P1-B fail-safe 到 "0"**：是否改为"缺租户即拒绝（1=0）"？这会破坏平台态默认行为，需评估。
-- **⑫ 表单构建器 / Sentinel 取舍** 仍未做（Open objective）。
+- ~~**⑫ 表单构建器 / Sentinel 取舍**~~ ✅ 已忽略（用户决策 2026-10-28：不做，roadmap 不新增功能线）

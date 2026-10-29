@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
         - name: nacos
-          image: nacos/nacos-server:v2.5.2
+          image: nacos/nacos-server:v2.2.3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8848
@@ -110,6 +110,13 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 10
             failureThreshold: 10
+          securityContext:
+            runAsNonRoot: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
       volumes:
         - name: nacos-storage
           persistentVolumeClaim:

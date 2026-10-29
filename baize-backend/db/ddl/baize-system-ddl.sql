@@ -11,7 +11,7 @@ CREATE TABLE "baize-system".sys_config (
                                            config_key varchar(64) NULL, -- 参数键名
                                            config_value varchar(200) NULL, -- 参数键值
                                            config_type varchar(1) DEFAULT '0'::character varying NOT NULL, -- 系统内置;系统内置（0否 1是）
-                                           sort int4 NULL, -- 排序
+                                           sort int4 DEFAULT 0 NULL, -- 排序
                                            status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:记录有效,1:记录无效
                                            deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                            "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
@@ -68,10 +68,10 @@ CREATE TABLE "baize-system".sys_data_perm (
                                               id int8 NOT NULL, -- 主键ID
                                               tenant_id int8 NOT NULL, -- 租户ID
                                               rule_name varchar(50) NULL, -- 规则名称
-                                              sort int4 NULL, -- 排序
+                                              sort int4 DEFAULT 0 NULL, -- 排序
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:启用,1:关闭
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
-                                              "version" int4 NOT NULL, -- 乐观锁
+                                              "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
                                               created_by int8 NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
                                               modified_by int8 NULL, -- 更新人
@@ -115,10 +115,10 @@ CREATE TABLE "baize-system".sys_dept (
                                          leader varchar(50) NOT NULL, -- 负责人
                                          phone varchar(32) NULL, -- 电话
                                          email varchar(254) NULL, -- 邮箱
-                                         sort int4 NULL, -- 显示顺序
+                                         sort int4 DEFAULT 0 NULL, -- 显示顺序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
-                                         "version" int4 NOT NULL, -- 乐观锁
+                                         "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
                                          created_by int8 NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
                                          modified_by int8 NULL, -- 更新人
@@ -173,10 +173,10 @@ CREATE TABLE "baize-system".sys_dict_data (
                                               css_class varchar(100) NULL, -- 样式属性
                                               list_class varchar(200) NULL, -- 表格回显样式
                                               defaulted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否默认;是否默认: 0:否,1:是
-                                              sort int4 NULL, -- 字典排序
+                                              sort int4 DEFAULT 0 NULL, -- 字典排序
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:记录有效,1:记录无效
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
-                                              "version" int4 NOT NULL, -- 乐观锁
+                                              "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
                                               created_by int8 NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
                                               modified_by int8 NULL, -- 更新人
@@ -232,10 +232,10 @@ CREATE TABLE "baize-system".sys_dict_type (
                                               tenant_id int8 NOT NULL, -- 租户ID
                                               dict_name varchar(50) NULL, -- 字典名称
                                               dict_type varchar(32) NULL, -- 字典类型
-                                              sort int4 NULL, -- 记录排序
+                                              sort int4 DEFAULT 0 NULL, -- 记录排序
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
-                                              "version" int4 NOT NULL, -- 乐观锁
+                                              "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
                                               created_by int8 NOT NULL, -- 创建人
                                               created_time timestamp NOT NULL, -- 创建时间
                                               modified_by int8 NULL, -- 更新人
@@ -296,10 +296,10 @@ CREATE TABLE "baize-system".sys_menu (
                                          visible varchar(1) DEFAULT '0'::character varying NOT NULL, -- 菜单状态;0:显示1:隐藏
                                          icon varchar(90) DEFAULT '#'::character varying NULL, -- 菜单图标
                                          perms varchar(255) NULL, -- 权限字段
-                                         sort int4 NULL, -- 显示顺序
+                                         sort int4 DEFAULT 0 NULL, -- 显示顺序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
-                                         "version" int4 NOT NULL, -- 乐观锁
+                                         "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
                                          created_by int8 NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
                                          modified_by int8 NULL, -- 更新人
@@ -361,7 +361,7 @@ CREATE TABLE "baize-system".sys_perm (
                                          parent_id int8 NOT NULL, -- 父级ID
                                          perm_code varchar(70) NOT NULL, -- 权限编码
                                          perm_name varchar(90) NOT NULL, -- 权限名称
-                                         sort int4 NULL, -- 排序
+                                         sort int4 DEFAULT 0 NULL, -- 排序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:启用,1:关闭
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
@@ -417,7 +417,7 @@ CREATE TABLE "baize-system".sys_post (
                                          tenant_id int8 NOT NULL, -- 租户ID
                                          post_code varchar(70) NOT NULL, -- 岗位编码
                                          post_name varchar(90) NOT NULL, -- 岗位名称
-                                         sort int4 NULL, -- 岗位顺序
+                                         sort int4 DEFAULT 0 NULL, -- 岗位顺序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                          "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
@@ -475,10 +475,10 @@ CREATE TABLE "baize-system".sys_role (
                                          data_scope varchar(1) DEFAULT '1'::character varying NOT NULL, -- 数据范围;1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限
                                          menu_check_strictly varchar(1) DEFAULT '1'::character varying NOT NULL, -- 菜单树选择项是否关联显示
                                          dept_check_strictly varchar(1) DEFAULT '1'::character varying NOT NULL, -- 部门树选择项是否关联显示
-                                         sort int4 NULL, -- 显示顺序
+                                         sort int4 DEFAULT 0 NULL, -- 显示顺序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
-                                         "version" int4 NOT NULL, -- 乐观锁
+                                         "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
                                          created_by int8 NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
                                          modified_by int8 NULL, -- 更新人
@@ -634,7 +634,7 @@ CREATE TABLE "baize-system".sys_tenant (
                                            contact_email varchar(90) NULL, -- 联系人邮箱
                                            "domain" varchar(90) NULL, -- 唯一域名
                                            max_user int4 DEFAULT 10 NULL, -- 最大允许用户数
-                                           sort int4 NULL, -- 显示顺序
+                                           sort int4 DEFAULT 0 NULL, -- 显示顺序
                                            status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                            deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                            "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
@@ -702,10 +702,10 @@ CREATE TABLE "baize-system".sys_user (
                                          "password" varchar(90) DEFAULT ''::character varying NULL, -- 密码
                                          login_ip varchar(90) DEFAULT ''::character varying NULL, -- 最后登录IP
                                          login_date timestamp NULL, -- 最后登录时间
-                                         sort int4 NULL, -- 显示顺序
+                                         sort int4 DEFAULT 0 NULL, -- 显示顺序
                                          status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                          deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
-                                         "version" int4 NOT NULL, -- 乐观锁
+                                         "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
                                          created_by int8 NOT NULL, -- 创建人
                                          created_time timestamp NOT NULL, -- 创建时间
                                          modified_by int8 NULL, -- 更新人
@@ -940,7 +940,7 @@ CREATE TABLE "baize-system".sys_notice (
                                               notice_title varchar(200) NOT NULL, -- 公告标题
                                               notice_content text NULL, -- 公告内容
                                               notice_type varchar(1) DEFAULT '1'::character varying NOT NULL, -- 公告类型;1:通知,2:公告
-                                              sort int4 NULL, -- 显示顺序（BaseEntity 公共字段，缺少列会导致公告查询报 column "sort" does not exist）
+                                              sort int4 DEFAULT 0 NULL, -- 显示顺序（BaseEntity 公共字段，缺少列会导致公告查询报 column "sort" does not exist）
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 状态;0:正常,1:停用
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁
@@ -995,7 +995,7 @@ CREATE TABLE "baize-system".sys_job (
                                               cron_expression varchar(50) NULL, -- cron执行表达式
                                               misfire_policy varchar(1) DEFAULT '0'::character varying NOT NULL, -- 计划执行策略;0:立即执行,1:执行一次
                                               concurrent varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否并发执行;0:允许,1:禁止
-                                              sort int4 NULL, -- 显示顺序（BaseEntity 公共字段：缺少该列会让 sys_job 的所有查询报 column "sort" does not exist）
+                                              sort int4 DEFAULT 0 NULL, -- 显示顺序（BaseEntity 公共字段：缺少该列会让 sys_job 的所有查询报 column "sort" does not exist）
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 状态;0:正常,1:暂停
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
                                               "version" int4 DEFAULT 0 NOT NULL, -- 乐观锁

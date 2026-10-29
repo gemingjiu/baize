@@ -5,8 +5,8 @@
 --       增量同步到数据库。
 --
 -- 【为什么需要这个脚本】
---   baize-system-init.sql 是「全量种子脚本」，其中 68 条 sys_menu 与 68 条
---   sys_role_menu 早已在库中。若整体重跑该脚本，会在这 68 条上直接撞
+--   baize-system-init.sql 是「全量种子脚本」，其中 sys_menu 与 sys_role_menu
+--   的既有行早已在库中。若整体重跑该脚本，会在既有行上直接撞
 --   uk_sys_menu_tenant_name_parent / uk_sys_role_menu_tenant_role_menu 而中止。
 --   因此这里只抽出增量部分，并用 WHERE NOT EXISTS 保证可重复执行。
 --
@@ -169,4 +169,4 @@ WHERE NOT EXISTS (
 --  ORDER BY id;
 -- -- 预期 17 行
 -- SELECT count(*) FROM "baize-system".sys_role_menu WHERE role_id = 1;
--- -- 预期 85（68 既有 + 17 新增）
+-- -- 预期：既有授权数 + 17
