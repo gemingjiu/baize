@@ -31,7 +31,6 @@ import {
   saveUserInfo,
 } from './utils/auth';
 import { getAllPermissions, renderMenuTree, transformMenu } from './utils/menu';
-import '@ant-design/v5-patch-for-react-19';
 
 const isDev = process.env.NODE_ENV === 'development' || process.env.CI;
 const loginPath = '/system/login';

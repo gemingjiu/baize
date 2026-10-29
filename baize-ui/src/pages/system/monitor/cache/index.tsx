@@ -126,7 +126,7 @@ const Cache: React.FC = () => {
         <Alert
           type="warning"
           showIcon
-          message="Redis 当前不可用"
+          title="Redis 当前不可用"
           description={info.errorMessage || '无法读取 Redis INFO，以下统计可能不准确。'}
           style={{ marginBottom: 16 }}
         />
@@ -151,7 +151,7 @@ const Cache: React.FC = () => {
             <Statistic
               title="已用内存"
               value={info?.usedMemoryHuman || '-'}
-              valueStyle={{ color: '#cf1322' }}
+              styles={{ content: { color: '#cf1322' } }}
             />
           </Col>
           <Col xs={12} sm={8} lg={4}>
@@ -176,7 +176,7 @@ const Cache: React.FC = () => {
                 value={hitRate}
                 suffix="%"
                 precision={1}
-                valueStyle={{ color: '#3f8600' }}
+                styles={{ content: { color: '#3f8600' } }}
               />
             ) : (
               <Statistic title="命中率" value="未知" />
@@ -189,7 +189,7 @@ const Cache: React.FC = () => {
             <Statistic
               title="未命中次数"
               value={info?.keyspaceMisses ?? 0}
-              valueStyle={{ color: '#cf1322' }}
+              styles={{ content: { color: '#cf1322' } }}
             />
           </Col>
           <Col xs={12} sm={6} lg={4}>
@@ -199,7 +199,7 @@ const Cache: React.FC = () => {
             <Statistic
               title="运行时长"
               value={info?.uptimeHuman || '-'}
-              valueStyle={{ fontSize: 20 }}
+              styles={{ content: { fontSize: 20 } }}
             />
           </Col>
         </Row>

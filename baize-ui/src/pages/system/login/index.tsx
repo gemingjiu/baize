@@ -156,7 +156,7 @@ const LoginMessage: React.FC<{ content: string }> = ({ content }) => {
   return (
     <Alert
       className={cls.errorMessage}
-      message={content}
+      title={content}
       type="error"
       showIcon
     />

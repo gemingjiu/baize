@@ -31,16 +31,17 @@
     "test:update": "npm run jest -- -u",
     "tsc": "tsc --noEmit"
   },
-  "browserslist": ["defaults"],
+  "browserslist": [
+    "defaults"
+  ],
   "dependencies": {
-    "@ant-design/icons": "^5.6.1",
-    "@ant-design/plots": "^2.6.0",
-    "@ant-design/pro-components": "^2.7.19",
-    "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@ant-design/icons": "^6.3.4",
+    "@ant-design/plots": "^2.6.8",
+    "@ant-design/pro-components": "3.1.14-7",
     "@antv/l7": "^2.22.7",
     "@antv/l7-react": "^2.4.3",
-    "antd": "^5.25.4",
-    "antd-style": "^3.7.0",
+    "antd": "^6.6.5",
+    "antd-style": "^4.1.0",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "numeral": "^2.0.6",
@@ -61,7 +62,7 @@
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "@types/react-helmet": "^6.1.11",
-    "@umijs/max": "^4.3.24",
+    "@umijs/max": "^4.7.28",
     "cross-env": "^7.0.3",
     "express": "^4.21.1",
     "gh-pages": "^6.1.1",
@@ -75,5 +76,7 @@
     "umi-presets-pro": "^2.0.3",
     "umi-serve": "^1.9.11"
   },
-  "engines": { "node": ">=20.0.0" }
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }

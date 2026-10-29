@@ -119,6 +119,10 @@ export default defineConfig({
    */
   antd: {
     appConfig: {},
+    // antd v6 的 dist 已不再提供 antd.less（v5 遗留的静态 less 入口），
+    // umi-presets-pro → @alita/plugins 默认注入 'antd/dist/antd.less' 会直接构建失败，
+    // 这里显式声明使用 css 静态样式（css-in-js 主题 token 仍由下方 configProvider 生效）。
+    style: 'css',
     configProvider: {
       // 主题令牌集中在 config/theme.ts（调色板 + 组件级色板）
       theme: antdTheme,

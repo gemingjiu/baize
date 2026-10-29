@@ -54,7 +54,7 @@ const cardRadius = 12;
 
 /** 交给 umi antd 插件的 configProvider.theme */
 export const antdTheme: ThemeConfig = {
-  cssVar: true,
+  // v6 默认启用 CSS 变量，无需再显式开启（v5 的 cssVar: true 签名已变更）
   token: {
     colorPrimary: palette.colorPrimary,
     colorInfo: palette.colorPrimary,

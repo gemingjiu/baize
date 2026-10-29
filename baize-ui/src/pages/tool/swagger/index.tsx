@@ -23,7 +23,7 @@ const Swagger: React.FC = () => {
       <Alert
         type="info"
         showIcon
-        message="接口文档在新窗口打开"
+        title="接口文档在新窗口打开"
         description="Swagger UI 由网关直接暴露（未注册到前端 dev proxy 的 /api/v1/ 规则），因此点击下方按钮会打开经网关的地址。"
         style={{ marginBottom: 16 }}
       />
@@ -50,8 +50,8 @@ const Swagger: React.FC = () => {
             /api/v1/system/v3/api-docs
           </Descriptions.Item>
         </Descriptions>
-        <Space direction="vertical" style={{ marginTop: 16 }}>
-          <Alert type="warning" showIcon message="鉴权说明" />
+        <Space orientation="vertical" style={{ marginTop: 16 }}>
+          <Alert type="warning" showIcon title="鉴权说明" />
           <Typography.Text type="secondary">
             调试接口时，先在页面顶部 Authorize 填入
             <Typography.Text code>Bearer {'<accessToken>'}</Typography.Text>

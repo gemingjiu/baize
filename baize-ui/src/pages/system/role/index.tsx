@@ -524,7 +524,7 @@ const Role: React.FC = () => {
           value={dataScopeValue}
           onChange={(e) => setDataScopeValue(e.target.value)}
         >
-          <Space direction="vertical">
+          <Space orientation="vertical">
             {DATA_SCOPE_OPTIONS.map((item) => (
               <Radio key={item.value} value={item.value}>
                 {item.label}

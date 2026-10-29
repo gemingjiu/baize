@@ -166,7 +166,7 @@ const TenantSwitcher: React.FC = () => {
         onCancel={() => setOpen(false)}
         destroyOnHidden
       >
-        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
           <span className={styles.hint}>
             当前租户：{currentTenantName}
             {currentTenantId ? `（${currentTenantId}）` : ''}

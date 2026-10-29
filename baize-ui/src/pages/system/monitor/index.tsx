@@ -191,7 +191,7 @@ const Monitor: React.FC = () => {
                     title="已使用"
                     value={serverInfo?.mem?.used || 0}
                     suffix="MB"
-                    valueStyle={{ color: '#cf1322' }}
+                    styles={{ content: { color: '#cf1322' } }}
                   />
                 </Col>
                 <Col span={8}>
@@ -199,7 +199,7 @@ const Monitor: React.FC = () => {
                     title="剩余"
                     value={serverInfo?.mem?.free || 0}
                     suffix="MB"
-                    valueStyle={{ color: '#3f8600' }}
+                    styles={{ content: { color: '#3f8600' } }}
                   />
                 </Col>
               </Row>
@@ -234,7 +234,7 @@ const Monitor: React.FC = () => {
                     title="已使用"
                     value={serverInfo?.jvm?.used || 0}
                     suffix="MB"
-                    valueStyle={{ color: '#cf1322' }}
+                    styles={{ content: { color: '#cf1322' } }}
                   />
                 </Col>
                 <Col span={8}>
@@ -289,7 +289,7 @@ const Monitor: React.FC = () => {
                         title="已使用"
                         value={serverInfo?.disk?.used || 0}
                         suffix="GB"
-                        valueStyle={{ color: '#cf1322' }}
+                        styles={{ content: { color: '#cf1322' } }}
                       />
                     </Col>
                     <Col span={8}>
@@ -297,7 +297,7 @@ const Monitor: React.FC = () => {
                         title="剩余"
                         value={serverInfo?.disk?.free || 0}
                         suffix="GB"
-                        valueStyle={{ color: '#3f8600' }}
+                        styles={{ content: { color: '#3f8600' } }}
                       />
                     </Col>
                   </Row>
@@ -339,7 +339,7 @@ const Monitor: React.FC = () => {
                               title="总容量"
                               value={item.total || 0}
                               suffix="GB"
-                              valueStyle={{ fontSize: 16 }}
+                              styles={{ content: { fontSize: 16 } }}
                             />
                           </Col>
                           <Col span={8}>
@@ -347,7 +347,7 @@ const Monitor: React.FC = () => {
                               title="已用"
                               value={item.used || 0}
                               suffix="GB"
-                              valueStyle={{ fontSize: 16, color: '#cf1322' }}
+                              styles={{ content: { fontSize: 16, color: '#cf1322' } }}
                             />
                           </Col>
                           <Col span={8}>
@@ -355,7 +355,7 @@ const Monitor: React.FC = () => {
                               title="剩余"
                               value={item.free || 0}
                               suffix="GB"
-                              valueStyle={{ fontSize: 16, color: '#3f8600' }}
+                              styles={{ content: { fontSize: 16, color: '#3f8600' } }}
                             />
                           </Col>
                         </Row>
