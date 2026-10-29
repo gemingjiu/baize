@@ -147,7 +147,7 @@
 
 ---
 
-## 2026-10-29 增量：主键全链路迁移 UUIDv7（✅ 完成，commit 823654c）
+## 2026-10-29 增量：主键全链路迁移 UUIDv7（✅ 完成，commit 1c0257e）
 
 - **需求定案**：主键由雪花 bigint 迁移到 **UUIDv7**（用户决策；种子重刷为 UUID、删死代码 id 包、列型 `varchar(36)` 三问已确认）；`parent_id` 树根哨兵 `'0'` 保留原语义（TreeUtils/SysRoleMenuServiceImpl 判断不动）
 - **后端生成器**：新建 `baize-common-database/.../generator/Uuidv7IdentifierGenerator.java`（implements `IdentifierGenerator`：高 52bit 毫秒 + 低 12bit 序列 + 62bit 随机，CAS 自旋/回拨沿用），`MybatisPlusConfig` 注册 `@Bean` 覆盖 MP 默认 `IdWorker.get32UUID()`（无连字符）；`nextId()` 抛 `UnsupportedOperationException` 防 `ASSIGN_ID` 回退
