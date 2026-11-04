@@ -9,7 +9,7 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Modal, message, Space } from 'antd';
+import { Button, Modal, message, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
 import {
@@ -105,6 +105,12 @@ const Tenant: React.FC = () => {
       title: '租户名称',
       dataIndex: 'tenantName',
       width: 150,
+      render: (_, record) => (
+        <>
+          {record.tenantName}
+          {record.isBuiltin === '1' && <Tag color="gold">内置</Tag>}
+        </>
+      ),
     },
     {
       title: '租户编码',
@@ -198,6 +204,10 @@ const Tenant: React.FC = () => {
               size="small"
               danger
               icon={<DeleteOutlined />}
+              disabled={record.isBuiltin === '1'}
+              title={
+                record.isBuiltin === '1' ? '内置租户不允许删除' : undefined
+              }
               onClick={() => handleDelete(record)}
             >
               删除

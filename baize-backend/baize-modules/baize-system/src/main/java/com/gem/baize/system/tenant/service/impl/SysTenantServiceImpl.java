@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
+import com.gem.baize.common.core.enums.ErrorCode;
+import com.gem.baize.common.core.exception.model.BusinessException;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
 import com.gem.baize.system.tenant.entity.SysTenant;
@@ -72,6 +74,16 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = "sys_tenant", key = "#id")
     public void removeById(String id) {
+        // 守卫：内置租户（平台租户）不允许删除——它是全平台登录与平台态数据的归属点，
+        // 删除后 admin/平台种子数据全部悬空、登录页租户下拉缺失，属系统性事故。
+        // 注意：this.getById(id) 被重载为返回 DTO，这里直接查实体（对齐角色的守卫写法）。
+        SysTenant tenant = super.getById(id);
+        if (tenant == null || "1".equals(tenant.getDeleted())) {
+            throw new NotFoundException("租户不存在或已删除");
+        }
+        if ("1".equals(tenant.getIsBuiltin())) {
+            throw new BusinessException(ErrorCode.BUSINESS_CONFLICT, "内置租户不允许删除");
+        }
         // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1'），保留行供审计/外键引用。
         // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，会退化成物理 DELETE。
         LambdaUpdateWrapper<SysTenant> wrapper = new LambdaUpdateWrapper<>();

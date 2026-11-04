@@ -206,4 +206,43 @@
   - 说明：本机 PG18 安装仍不完整（缺 `share/postgres.bki`），本地独立起库验证不可行；本验证借道 dbx 完成，
     CI 的 `sql` job（PG16 容器：ddl → operlog → init×2 → migration）仍作为新装库全流程的权威校验。
 
+---
+
+## 2026-11-04 需求落地：租户内置逻辑（V2026_11_04__tenant_builtin.sql，✅ 完成并验证）
+
+**需求**："租户管理需要增加内置逻辑，将保留字段换成内置类型，不让删除"。
+
+**背景**：平台租户（nil UUID）此前靠 `tenant_name='平台租户(保留)'` 的"名称内土法标记"表达保留语义，
+后端无法据此做删除守卫——任何有 `system:tenant:remove` 权限的人都能逻辑删除平台租户，
+全平台登录与平台态数据随之悬空。本次对齐角色模块已验证的 `is_builtin` 模式
+（V2026_10_29__role_type_builtin + SysRoleServiceImpl 双守卫）。
+
+**变更清单**：
+1. **DDL**：`sys_tenant` 新增 `is_builtin varchar(1) DEFAULT '0' NOT NULL`
+   （`0:非内置, 1:内置（内置不可删除）`，与 `sys_role.is_builtin` 同构）。
+2. **迁移** `V2026_11_04__tenant_builtin.sql`（幂等）：加列 + 平台租户标记 `is_builtin='1'` +
+   名称 `'平台租户(保留)'`→`'平台租户'` + remark 措辞「保留租户」→「内置租户」。
+3. **init 种子**：6 个租户 INSERT 列清单同步加 `is_builtin`（平台租户 `'1'`，其余 `'0'`），
+   平台租户名称去"(保留)"，头注释同步。
+4. **后端**：`SysTenant` 实体 / `SysTenantDto` 加 `isBuiltin`（MapStruct 同名自动映射）；
+   `SysTenantServiceImpl.removeById` 加内置守卫（先查实体，内置→`BUSINESS_CONFLICT`"内置租户不允许删除"，
+   与角色守卫同款写法），原有逻辑删除不变。
+5. **前端**：`typings.d.ts` `SysTenantDto` 加 `isBuiltin`；租户列表"租户名称"列显示金色「内置」Tag；
+   删除按钮对内置租户 `disabled` + title 提示（对齐角色页写法）。
+
+**ON CONFLICT 仲裁联动**：init 对 `sys_tenant` 走 `ON CONFLICT (id)` 主键仲裁，新增列不影响；
+`sys_tenant` 现有 uk（tenant_code/domain，V2026_11_03 已转 partial）不涉及本列。✓
+
+**验证状态（2026-11-04，dbx 活库实测 dev-postgres → dev baize 库，用户确认直改）**：
+- ✅ 后端编译 `mvn -pl baize-api-system,baize-system -am compile` BUILD SUCCESS，
+  `SysTenantConvert` 无新增 MapStruct 告警（isBuiltin 实体↔DTO 自动映射）；
+- ✅ 前端 `tsc --noEmit` 0 错误；
+- ✅ 迁移已应用到 dev baize 库：6 条语句 0 报错，`is_builtin` 标记 1 行、改名 1 行、
+  remark 更新按预期 0 行（dev 库该行 remark 本为空）；
+- ✅ 复查：平台租户 `tenant_name='平台租户'`、`is_builtin='1'`、全库内置数=1；
+- ✅ **幂等**：二跑 6 条语句全部 0 行、0 报错；
+- ✅ **删除守卫功能实测已完成（用户确认，2026-11-04）**：内置租户删除被拒（前端按钮禁用 +
+  后端 `BUSINESS_CONFLICT`"内置租户不允许删除"）。
+- 说明：CI `sql` job 仍作为新装库全流程（含新 init 列清单）权威校验，push 后需确认全绿。
+
 > AI生成

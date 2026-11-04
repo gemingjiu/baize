@@ -643,6 +643,7 @@ CREATE TABLE "baize-system".sys_tenant (
                                            contact_email varchar(90) NULL, -- 联系人邮箱
                                            "domain" varchar(90) NULL, -- 唯一域名
                                            max_user int4 DEFAULT 10 NULL, -- 最大允许用户数
+                                           is_builtin varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否内置租户;0:非内置,1:内置（内置不可删除）
                                            sort int4 DEFAULT 0 NULL, -- 显示顺序
                                            status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                            deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
@@ -666,6 +667,7 @@ COMMENT ON COLUMN "baize-system".sys_tenant.contact_phone IS '联系人号码';
 COMMENT ON COLUMN "baize-system".sys_tenant.contact_email IS '联系人邮箱';
 COMMENT ON COLUMN "baize-system".sys_tenant."domain" IS '唯一域名';
 COMMENT ON COLUMN "baize-system".sys_tenant.max_user IS '最大允许用户数';
+COMMENT ON COLUMN "baize-system".sys_tenant.is_builtin IS '是否内置租户;0:非内置,1:内置（内置不可删除）';
 COMMENT ON COLUMN "baize-system".sys_tenant.sort IS '显示顺序';
 COMMENT ON COLUMN "baize-system".sys_tenant.status IS '记录状态;0:记录有效,1:记录无效';
 COMMENT ON COLUMN "baize-system".sys_tenant.deleted IS '删除标记;0:正常标记,1:删除标记';

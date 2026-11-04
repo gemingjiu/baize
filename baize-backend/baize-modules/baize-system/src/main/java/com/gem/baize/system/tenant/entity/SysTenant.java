@@ -62,4 +62,9 @@ public class SysTenant extends BaseEntity {
      */
     @TableField("max_user")
     private Integer maxUser;
+    /**
+     * 是否内置租户;0:非内置,1:内置（内置不可删除，平台租户为内置）
+     */
+    @TableField("is_builtin")
+    private String isBuiltin;
 }

@@ -145,6 +145,8 @@ declare namespace API {
     contactEmail?: string;
     domain?: string;
     maxUser?: number;
+    /** 是否内置租户;0:非内置,1:内置（内置不可删除） */
+    isBuiltin?: string;
   };
 
   type SysPostDto = {

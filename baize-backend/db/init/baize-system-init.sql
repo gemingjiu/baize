@@ -10,32 +10,33 @@
 -- ============================================================================
 
 -- 租户数据
--- id 为 nil UUID 的租户是平台级保留租户（平台态）；归属平台租户的数据
+-- id 为 nil UUID 的租户是平台内置租户（is_builtin='1'，平台态，不可删除）；归属平台租户的数据
 -- （如 admin 用户、超级管理员角色、平台种子菜单/部门等）都挂在平台态下；
--- CustomTenantHandler 在租户上下文缺失时兜底为 nil UUID，
+-- CustomTenantHandler 在租户上下文缺失时兑底为 nil UUID，
 -- 保证过滤条件始终可下推为平台租户（平台态隔离，而非跳过过滤）。
-INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
-VALUES('00000000-0000-0000-0000-000000000000', 'PLATFORM', '平台租户(保留)', NULL, NULL, NULL, NULL, NULL, 10, 0, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2026-10-23 16:55:00.000', NULL, NULL, '平台级保留租户，平台租户(nil UUID) 的数据归属平台态')
+-- 2026-11-04：原 tenant_name '平台租户(保留)' 的土法标记改为 is_builtin 结构化字段，名称去「(保留)」。
+INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, is_builtin, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+VALUES('00000000-0000-0000-0000-000000000000', 'PLATFORM', '平台租户', NULL, NULL, NULL, NULL, NULL, 10, '1', 0, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2026-10-23 16:55:00.000', NULL, NULL, '平台内置租户，平台租户(nil UUID) 的数据归属平台态')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
-VALUES('00000000-0000-7000-0000-000000000001', 'XIAOMI', '小米科技有限责任公司', '2025-07-17 16:51:06.290', '雷军', '18988888888', '18988888888@189.cn', 'xiaomi', 10, 1, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
+INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, is_builtin, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+VALUES('00000000-0000-7000-0000-000000000001', 'XIAOMI', '小米科技有限责任公司', '2025-07-17 16:51:06.290', '雷军', '18988888888', '18988888888@189.cn', 'xiaomi', 10, '0', 1, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
-VALUES('00000000-0000-7000-0000-000000000002', 'HUAWEI', '华为科技有限责任公司', '2025-07-17 16:51:06.290', '大嘴', '18944441234', '18944441234@189.cn', 'huawei', 10, 2, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
+INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, is_builtin, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+VALUES('00000000-0000-7000-0000-000000000002', 'HUAWEI', '华为科技有限责任公司', '2025-07-17 16:51:06.290', '大嘴', '18944441234', '18944441234@189.cn', 'huawei', 10, '0', 2, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
-VALUES('00000000-0000-7000-0000-000000000003', 'ZIJIE', '字节跳动有限责任公司', '2025-07-17 16:51:06.290', '跳动', '18912341234', '18912341234@189.cn', 'zijie', 10, 3, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
+INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, is_builtin, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+VALUES('00000000-0000-7000-0000-000000000003', 'ZIJIE', '字节跳动有限责任公司', '2025-07-17 16:51:06.290', '跳动', '18912341234', '18912341234@189.cn', 'zijie', 10, '0', 3, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
-VALUES('00000000-0000-7000-0000-000000000004', 'ZTE', '中兴科技有限责任公司', '2025-07-17 16:51:06.290', '中兴', '18988888888', '18988888888@189.cn', 'zte', 10, 4, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
+INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, is_builtin, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+VALUES('00000000-0000-7000-0000-000000000004', 'ZTE', '中兴科技有限责任公司', '2025-07-17 16:51:06.290', '中兴', '18988888888', '18988888888@189.cn', 'zte', 10, '0', 4, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', '00000000-0000-7000-0000-000000000001', '2025-07-17 16:51:06.290', NULL)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
-VALUES('00000000-0000-7000-0000-000000000005', 'CXMT', '长鑫科技有限责任公司', '2025-07-25 16:48:10.000', '长鑫', '18988888888', '18988888888@189.cn', 'cxmt', 10, 5, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-25 16:48:10.654', NULL, '2025-07-25 16:48:10.655', NULL)
+INSERT INTO sys_tenant (id, tenant_code, tenant_name, expire_time, contact_person, contact_phone, contact_email, "domain", max_user, is_builtin, sort, status, deleted, "version", created_by, created_time, modified_by, modified_time, remark)
+VALUES('00000000-0000-7000-0000-000000000005', 'CXMT', '长鑫科技有限责任公司', '2025-07-25 16:48:10.000', '长鑫', '18988888888', '18988888888@189.cn', 'cxmt', 10, '0', 5, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2025-07-25 16:48:10.000', NULL, '2025-07-25 16:48:10.655', NULL)
 ON CONFLICT (id) DO NOTHING;
 
 

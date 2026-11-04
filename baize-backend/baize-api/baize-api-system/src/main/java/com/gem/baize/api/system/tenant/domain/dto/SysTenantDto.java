@@ -47,4 +47,8 @@ public class SysTenantDto extends BaseDto {
      * 最大用户数
      */
     private Integer maxUser;
+    /**
+     * 是否内置租户;0:非内置,1:内置（内置不可删除，平台租户为内置）
+     */
+    private String isBuiltin;
 }
