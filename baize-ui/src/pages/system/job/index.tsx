@@ -18,6 +18,7 @@ import {
 import { Button, Modal, message, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import {
   createJob,
   deleteJob,
@@ -33,6 +34,7 @@ import {
  */
 const Job: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { toValueEnum, getDictOptions } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<API.SysJobDto | undefined>();
 
@@ -157,10 +159,7 @@ const Job: React.FC = () => {
       dataIndex: 'status',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        '0': '正常',
-        '1': '暂停',
-      },
+      valueEnum: toValueEnum('sys_job_status'),
       render: (_, record) => (
         <Tag color={record.status === '0' ? 'success' : 'warning'}>
           {record.status === '0' ? '运行中' : '已暂停'}
@@ -336,19 +335,13 @@ const Job: React.FC = () => {
         <ProFormSelect
           name="misfirePolicy"
           label="执行策略"
-          valueEnum={{
-            '0': '立即执行',
-            '1': '执行一次',
-          }}
+          options={getDictOptions('sys_job_misfire')}
           initialValue="0"
         />
         <ProFormSelect
           name="concurrent"
           label="是否并发"
-          valueEnum={{
-            '0': '允许',
-            '1': '禁止',
-          }}
+          options={getDictOptions('sys_job_concurrent')}
           initialValue="0"
         />
         <ProFormTextArea name="remark" label="备注" placeholder="请输入备注" />

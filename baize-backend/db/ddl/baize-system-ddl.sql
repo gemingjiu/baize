@@ -169,12 +169,11 @@ CREATE INDEX idx_sys_dept_created_time ON "baize-system".sys_dept(created_time);
 CREATE TABLE "baize-system".sys_dict_data (
                                               id varchar(36) NOT NULL, -- 主键ID
                                               tenant_id varchar(36) NOT NULL, -- 租户ID
-                                              dict_type varchar(32) NULL, -- 字典类型
+                                              dict_type varchar(32) NOT NULL, -- 字典类型
                                               dict_label varchar(50) DEFAULT ''::character varying NOT NULL, -- 字典标签
-                                              dict_value varchar(100) DEFAULT ''::character varying NULL, -- 字典键值
-                                              css_class varchar(100) NULL, -- 样式属性
-                                              list_class varchar(200) NULL, -- 表格回显样式
+                                              dict_value varchar(100) DEFAULT ''::character varying NOT NULL, -- 字典键值
                                               defaulted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否默认;是否默认: 0:否,1:是
+                                              is_builtin varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否内置字典项;0:租户自定义,1:平台内置（平台维护，租户不可删）
                                               sort int4 DEFAULT 0 NULL, -- 字典排序
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 启用状态;0:记录有效,1:记录无效
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
@@ -194,9 +193,8 @@ COMMENT ON COLUMN "baize-system".sys_dict_data.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_dict_data.dict_type IS '字典类型';
 COMMENT ON COLUMN "baize-system".sys_dict_data.dict_label IS '字典标签';
 COMMENT ON COLUMN "baize-system".sys_dict_data.dict_value IS '字典键值';
-COMMENT ON COLUMN "baize-system".sys_dict_data.css_class IS '样式属性';
-COMMENT ON COLUMN "baize-system".sys_dict_data.list_class IS '表格回显样式';
 COMMENT ON COLUMN "baize-system".sys_dict_data.defaulted IS '是否默认;是否默认: 0:否,1:是';
+COMMENT ON COLUMN "baize-system".sys_dict_data.is_builtin IS '是否内置字典项;0:租户自定义,1:平台内置（平台维护，租户不可删）';
 COMMENT ON COLUMN "baize-system".sys_dict_data.sort IS '字典排序';
 COMMENT ON COLUMN "baize-system".sys_dict_data.status IS '启用状态;0:记录有效,1:记录无效';
 COMMENT ON COLUMN "baize-system".sys_dict_data.deleted IS '删除标记;0:正常标记,1:删除标记';
@@ -233,7 +231,8 @@ CREATE TABLE "baize-system".sys_dict_type (
                                               id varchar(36) NOT NULL, -- 主键ID
                                               tenant_id varchar(36) NOT NULL, -- 租户ID
                                               dict_name varchar(50) NULL, -- 字典名称
-                                              dict_type varchar(32) NULL, -- 字典类型
+                                              dict_type varchar(32) NOT NULL, -- 字典类型
+                                              is_builtin varchar(1) DEFAULT '0'::character varying NOT NULL, -- 是否内置字典类型;0:租户自定义,1:平台内置（内置不可删除）
                                               sort int4 DEFAULT 0 NULL, -- 记录排序
                                               status varchar(1) DEFAULT '0'::character varying NOT NULL, -- 记录状态;0:记录有效,1:记录无效
                                               deleted varchar(1) DEFAULT '0'::character varying NOT NULL, -- 删除标记;0:正常标记,1:删除标记
@@ -252,6 +251,7 @@ COMMENT ON COLUMN "baize-system".sys_dict_type.id IS '主键ID';
 COMMENT ON COLUMN "baize-system".sys_dict_type.tenant_id IS '租户ID';
 COMMENT ON COLUMN "baize-system".sys_dict_type.dict_name IS '字典名称';
 COMMENT ON COLUMN "baize-system".sys_dict_type.dict_type IS '字典类型';
+COMMENT ON COLUMN "baize-system".sys_dict_type.is_builtin IS '是否内置字典类型;0:租户自定义,1:平台内置（内置不可删除）';
 COMMENT ON COLUMN "baize-system".sys_dict_type.sort IS '记录排序';
 COMMENT ON COLUMN "baize-system".sys_dict_type.status IS '记录状态;0:记录有效,1:记录无效';
 COMMENT ON COLUMN "baize-system".sys_dict_type.deleted IS '删除标记;0:正常标记,1:删除标记';

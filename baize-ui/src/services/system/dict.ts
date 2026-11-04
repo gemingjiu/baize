@@ -118,3 +118,16 @@ export async function getDictDataByType(dictType: string, options?: { [key: stri
     ...(options || {}),
   });
 }
+
+/**
+ * 批量获取当前租户可见的全部启用字典 GET /system/dict/data/all
+ *
+ * 返回 Map<dictType, SysDictDataDto[]>（合并解析：租户自定义项 → 平台内置项兜底）。
+ * 登录即可见（无 DICT_QUERY 权限门槛），前端登录后调用一次并全局缓存（见 @/hooks/useDict）。
+ */
+export async function getAllDictData(options?: { [key: string]: any }) {
+  return request<API.ApiResult<Record<string, API.SysDictDataDto[]>>>(`${API_VERSION}/system/dict/data/all`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

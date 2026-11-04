@@ -12,6 +12,7 @@ import {
 import { Button, Modal, Space, Tag, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import {
   createConfig,
   deleteConfig,
@@ -25,6 +26,7 @@ import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
  */
 const Config: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { toValueEnum, getDictOptions } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<API.SysConfigDto | undefined>();
 
@@ -96,10 +98,10 @@ const Config: React.FC = () => {
       dataIndex: 'configType',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        Y: { text: '是', status: 'Success' },
-        N: { text: '否', status: 'Default' },
-      },
+      valueEnum: toValueEnum('sys_config_type', {
+        Y: 'Success',
+        N: 'Default',
+      }),
       render: (_, record) =>
         record.configType === 'Y' ? <Tag color="blue">是</Tag> : <Tag>否</Tag>,
     },
@@ -212,10 +214,7 @@ const Config: React.FC = () => {
           name="configType"
           label="系统内置"
           initialValue="N"
-          options={[
-            { label: '是', value: 'Y' },
-            { label: '否', value: 'N' },
-          ]}
+          options={getDictOptions('sys_config_type')}
         />
         <ProFormDigit name="sort" label="排序" initialValue={0} min={0} />
         <ProFormTextArea name="remark" label="备注" placeholder="请输入备注" />

@@ -11,6 +11,7 @@ import {
 import { Button, Drawer, Modal, message, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import {
   createNotice,
   deleteNotice,
@@ -24,6 +25,7 @@ import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
  */
 const Notice: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { toValueEnum, getDictOptions } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [detailVisible, setDetailVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<API.SysNoticeDto | undefined>();
@@ -89,10 +91,7 @@ const Notice: React.FC = () => {
       dataIndex: 'noticeType',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        '1': '通知',
-        '2': '公告',
-      },
+      valueEnum: toValueEnum('sys_notice_type'),
       render: (_, record) => (
         <Tag color={record.noticeType === '1' ? 'blue' : 'green'}>
           {record.noticeType === '1' ? '通知' : '公告'}
@@ -104,10 +103,10 @@ const Notice: React.FC = () => {
       dataIndex: 'status',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        '0': '正常',
-        '1': '停用',
-      },
+      valueEnum: toValueEnum('sys_normal_disable', {
+        '0': 'Success',
+        '1': 'Error',
+      }),
       render: (_, record) => (
         <Tag color={record.status === '0' ? 'success' : 'error'}>
           {record.status === '0' ? '正常' : '停用'}
@@ -230,20 +229,14 @@ const Notice: React.FC = () => {
         <ProFormSelect
           name="noticeType"
           label="公告类型"
-          valueEnum={{
-            '1': '通知',
-            '2': '公告',
-          }}
+          options={getDictOptions('sys_notice_type')}
           initialValue="1"
           rules={[{ required: true, message: '请选择公告类型' }]}
         />
         <ProFormSelect
           name="status"
           label="状态"
-          valueEnum={{
-            '0': '正常',
-            '1': '停用',
-          }}
+          options={getDictOptions('sys_normal_disable')}
           initialValue="0"
         />
         <ProFormTextArea

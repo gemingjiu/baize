@@ -19,6 +19,7 @@ import {
 import { Button, Modal, message, Space, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import {
   createMenu,
   deleteMenu,
@@ -46,6 +47,7 @@ const MenuTypeTag: React.FC<{ type?: string }> = ({ type }) => {
  */
 const Menu: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { toValueEnum, getDictOptions } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<
     API.SysMenuDto | undefined
@@ -171,11 +173,7 @@ const Menu: React.FC = () => {
       dataIndex: 'menuType',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        '0': '目录',
-        '1': '菜单',
-        '2': '按钮',
-      },
+      valueEnum: toValueEnum('sys_menu_type'),
       render: (_, record) => <MenuTypeTag type={record.menuType} />,
     },
     {
@@ -336,11 +334,7 @@ const Menu: React.FC = () => {
         <ProFormSelect
           name="menuType"
           label="菜单类型"
-          valueEnum={{
-            '0': '目录',
-            '1': '菜单',
-            '2': '按钮',
-          }}
+          options={getDictOptions('sys_menu_type')}
           initialValue="1"
           rules={[{ required: true, message: '请选择菜单类型' }]}
           placeholder="请选择菜单类型"

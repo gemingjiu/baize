@@ -19,6 +19,7 @@ import { Button, Modal, Radio, message, Space, Tag, Transfer, Tree } from 'antd'
 import type { FormInstance } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import { useExportXlsx } from '@/hooks/useExportXlsx';
 import { getDeptTreeSelect } from '@/services/system/dept';
 import { getMenuTreeSelect } from '@/services/system/menu';
@@ -43,23 +44,15 @@ import {
   toPageQuery,
 } from '@/utils/pagination';
 
-/** 数据权限取值范围（与后端 DataScopeConstant 保持一致） */
-const DATA_SCOPE_OPTIONS = [
-  { label: '全部数据权限', value: '1' },
-  { label: '自定义数据权限', value: '2' },
-  { label: '本部门数据权限', value: '3' },
-  { label: '本部门及以下数据权限', value: '4' },
-  { label: '仅本人数据权限', value: '5' },
-];
-
-/** 角色类型（与后端 sys_role.role_type 保持一致：0 平台角色 / 1 租户角色） */
-const ROLE_TYPE_OPTIONS = [
-  { label: '平台角色', value: '0', color: 'geekblue' },
-  { label: '租户角色', value: '1', color: 'cyan' },
-];
+/** 数据权限/角色类型的展示色（仅展示层配色，枚举数据源已改由字典驱动） */
+const ROLE_TYPE_COLOR: Record<string, string> = {
+  '0': 'geekblue',
+  '1': 'cyan',
+};
 
 const Role: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { getDictOptions, dictLabel } = useDict();
   // 表格查询表单实例，导出时直接取当前查询条件
   const formRef = useRef<FormInstance<API.SysRoleDto> | undefined>(undefined);
   const [exporting, handleExport] = useExportXlsx<API.SysRoleDto>(exportRoles);
@@ -323,22 +316,16 @@ const Role: React.FC = () => {
       width: 110,
       valueType: 'select',
       fieldProps: {
-        options: ROLE_TYPE_OPTIONS.map(({ label, value }) => ({
-          label,
-          value,
-        })),
+        options: getDictOptions('sys_role_type'),
       },
-      render: (_, record) => {
-        const option =
-          ROLE_TYPE_OPTIONS.find((item) => item.value === record.roleType) ??
-          ROLE_TYPE_OPTIONS[1];
-        return (
-          <>
-            <Tag color={option.color}>{option.label}</Tag>
-            {record.isBuiltin === '1' && <Tag color="gold">内置</Tag>}
-          </>
-        );
-      },
+      render: (_, record) => (
+        <>
+          <Tag color={ROLE_TYPE_COLOR[record.roleType ?? ''] ?? 'default'}>
+            {dictLabel('sys_role_type', record.roleType)}
+          </Tag>
+          {record.isBuiltin === '1' && <Tag color="gold">内置</Tag>}
+        </>
+      ),
     },
     {
       title: '菜单严格模式',
@@ -558,7 +545,7 @@ const Role: React.FC = () => {
           onChange={(e) => setDataScopeValue(e.target.value)}
         >
           <Space orientation="vertical">
-            {DATA_SCOPE_OPTIONS.map((item) => (
+            {getDictOptions('sys_data_scope').map((item) => (
               <Radio key={item.value} value={item.value}>
                 {item.label}
               </Radio>

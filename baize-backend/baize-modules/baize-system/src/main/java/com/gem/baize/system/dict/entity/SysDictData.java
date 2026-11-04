@@ -20,11 +20,11 @@ public class SysDictData extends BaseEntity {
     @TableField(value = "dict_value")
     private String dictValue;
 
-    @TableField(value = "css_class")
-    private String cssClass;
-
-    @TableField(value = "list_class")
-    private String listClass;
+    /**
+     * 是否内置字典项;0:租户自定义,1:平台内置（平台维护，租户不可删）
+     */
+    @TableField(value = "is_builtin")
+    private String isBuiltin;
 
     @TableField(value = "defaulted")
     private String defaulted;

@@ -19,6 +19,7 @@ import { Button, Form, Input, Modal, message, Space, Transfer } from 'antd';
 import type { FormInstance } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import { useExportXlsx } from '@/hooks/useExportXlsx';
 import { getDeptTreeSelect } from '@/services/system/dept';
 import { transformDeptTree } from '@/utils/tree';
@@ -42,6 +43,7 @@ import {
 
 const User: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { toValueEnum, getDictOptions } = useDict();
   // 表格查询表单实例，导出时直接取当前查询条件
   const formRef = useRef<FormInstance<API.SysUserDto> | undefined>(undefined);
   const [exporting, handleExport] = useExportXlsx<API.SysUserDto>(exportUsers);
@@ -250,11 +252,7 @@ const User: React.FC = () => {
       dataIndex: 'gender',
       width: 80,
       valueType: 'select',
-      valueEnum: {
-        '0': '男',
-        '1': '女',
-        '2': '未知',
-      },
+      valueEnum: toValueEnum('sys_user_sex'),
       search: false,
     },
     {
@@ -268,10 +266,10 @@ const User: React.FC = () => {
       dataIndex: 'status',
       width: 80,
       valueType: 'select',
-      valueEnum: {
-        '0': { text: '正常', status: 'Success' },
-        '1': { text: '停用', status: 'Error' },
-      },
+      valueEnum: toValueEnum('sys_normal_disable', {
+        '0': 'Success',
+        '1': 'Error',
+      }),
       search: false,
     },
     {
@@ -455,11 +453,7 @@ const User: React.FC = () => {
         <ProFormSelect
           name="gender"
           label="性别"
-          valueEnum={{
-            '0': '男',
-            '1': '女',
-            '2': '未知',
-          }}
+          options={getDictOptions('sys_user_sex')}
           initialValue="2"
           placeholder="请选择性别"
         />

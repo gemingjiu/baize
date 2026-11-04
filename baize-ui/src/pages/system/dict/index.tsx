@@ -13,6 +13,7 @@ import {
 import { Button, Drawer, Modal, Space, Switch, Tag, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import {
   createDictData,
   createDictType,
@@ -31,6 +32,7 @@ import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
 const Dict: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const dataActionRef = useRef<ActionType | null>(null);
+  const { toValueEnum, getDictOptions, reload: reloadDicts } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<API.SysDictTypeDto | undefined>();
   const [dataVisible, setDataVisible] = useState(false);
@@ -55,6 +57,7 @@ const Dict: React.FC = () => {
         if (res.success) {
           message.success('删除成功');
           actionRef.current?.reload();
+          await reloadDicts();
         }
       },
     });
@@ -73,6 +76,7 @@ const Dict: React.FC = () => {
         setFormModalVisible(false);
         setEditingRecord(undefined);
         actionRef.current?.reload();
+        await reloadDicts();
         return true;
       }
       return false;
@@ -99,6 +103,7 @@ const Dict: React.FC = () => {
         if (res.success) {
           message.success('删除成功');
           dataActionRef.current?.reload();
+          await reloadDicts();
         }
       },
     });
@@ -118,6 +123,7 @@ const Dict: React.FC = () => {
         setDataModalVisible(false);
         setEditingData(undefined);
         dataActionRef.current?.reload();
+        await reloadDicts();
         return true;
       }
       return false;
@@ -132,6 +138,12 @@ const Dict: React.FC = () => {
       title: '字典名称',
       dataIndex: 'dictName',
       width: 160,
+      render: (_, record) => (
+        <>
+          {record.dictName}
+          {record.isBuiltin === '1' && <Tag color="gold">内置</Tag>}
+        </>
+      ),
     },
     {
       title: '字典类型',
@@ -143,10 +155,10 @@ const Dict: React.FC = () => {
       dataIndex: 'status',
       width: 90,
       valueType: 'select',
-      valueEnum: {
-        '0': { text: '正常', status: 'Success' },
-        '1': { text: '停用', status: 'Error' },
-      },
+      valueEnum: toValueEnum('sys_normal_disable', {
+        '0': 'Success',
+        '1': 'Error',
+      }),
       render: (_, record) =>
         record.status === '0' ? <Tag color="success">正常</Tag> : <Tag color="error">停用</Tag>,
     },
@@ -176,7 +188,15 @@ const Dict: React.FC = () => {
             </Button>
           </Authorized>
           <Authorized permission="system:dict:remove">
-            <Button type="link" size="small" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
+            <Button
+              type="link"
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+              disabled={record.isBuiltin === '1'}
+              title={record.isBuiltin === '1' ? '内置字典类型不允许删除，请使用停用' : undefined}
+              onClick={() => handleDelete(record)}
+            >
               删除
             </Button>
           </Authorized>
@@ -190,6 +210,12 @@ const Dict: React.FC = () => {
       title: '字典标签',
       dataIndex: 'dictLabel',
       width: 140,
+      render: (_, record) => (
+        <>
+          {record.dictLabel}
+          {record.isBuiltin === '1' && <Tag color="gold">内置</Tag>}
+        </>
+      ),
     },
     {
       title: '字典键值',
@@ -197,33 +223,10 @@ const Dict: React.FC = () => {
       width: 140,
     },
     {
-      title: '回显样式',
-      dataIndex: 'listClass',
-      width: 100,
-      valueType: 'select',
-      valueEnum: {
-        default: { text: '默认' },
-        primary: { text: '主色', status: 'Processing' },
-        success: { text: '成功', status: 'Success' },
-        info: { text: '信息' },
-        warning: { text: '警告', status: 'Warning' },
-        danger: { text: '危险', status: 'Error' },
-      },
-      render: (_, record) =>
-        record.listClass && record.listClass !== 'default' ? (
-          <Tag color={record.listClass}>{record.dictLabel}</Tag>
-        ) : (
-          record.dictLabel
-        ),
-    },
-    {
       title: '是否默认',
       dataIndex: 'defaulted',
       width: 100,
-      valueEnum: {
-        '0': '否',
-        '1': '是',
-      },
+      valueEnum: toValueEnum('sys_defaulted'),
       render: (_, record) => (record.defaulted === '1' ? <Tag color="blue">是</Tag> : '否'),
     },
     {
@@ -237,10 +240,10 @@ const Dict: React.FC = () => {
       dataIndex: 'status',
       width: 90,
       valueType: 'select',
-      valueEnum: {
-        '0': { text: '正常', status: 'Success' },
-        '1': { text: '停用', status: 'Error' },
-      },
+      valueEnum: toValueEnum('sys_normal_disable', {
+        '0': 'Success',
+        '1': 'Error',
+      }),
       render: (_, record) =>
         record.status === '0' ? <Tag color="success">正常</Tag> : <Tag color="error">停用</Tag>,
     },
@@ -258,7 +261,15 @@ const Dict: React.FC = () => {
             </Button>
           </Authorized>
           <Authorized permission="system:dict:remove">
-            <Button type="link" size="small" danger icon={<DeleteOutlined />} onClick={() => handleDataDelete(record)}>
+            <Button
+              type="link"
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+              disabled={record.isBuiltin === '1'}
+              title={record.isBuiltin === '1' ? '内置字典项不允许删除，请使用停用' : undefined}
+              onClick={() => handleDataDelete(record)}
+            >
               删除
             </Button>
           </Authorized>
@@ -341,10 +352,7 @@ const Dict: React.FC = () => {
           name="status"
           label="状态"
           initialValue="0"
-          options={[
-            { label: '正常', value: '0' },
-            { label: '停用', value: '1' },
-          ]}
+          options={getDictOptions('sys_normal_disable')}
         />
         <ProFormDigit name="sort" label="排序" initialValue={0} min={0} />
         <ProFormTextArea name="remark" label="备注" placeholder="请输入备注" />
@@ -412,35 +420,16 @@ const Dict: React.FC = () => {
           <ProFormText name="dictLabel" label="字典标签" rules={[{ required: true, message: '请输入字典标签' }]} />
           <ProFormText name="dictValue" label="字典键值" rules={[{ required: true, message: '请输入字典键值' }]} />
           <ProFormSelect
-            name="listClass"
-            label="回显样式"
-            initialValue="default"
-            options={[
-              { label: '默认', value: 'default' },
-              { label: '主色', value: 'primary' },
-              { label: '成功', value: 'success' },
-              { label: '信息', value: 'info' },
-              { label: '警告', value: 'warning' },
-              { label: '危险', value: 'danger' },
-            ]}
-          />
-          <ProFormSelect
             name="defaulted"
             label="是否默认"
             initialValue="0"
-            options={[
-              { label: '否', value: '0' },
-              { label: '是', value: '1' },
-            ]}
+            options={getDictOptions('sys_defaulted')}
           />
           <ProFormSelect
             name="status"
             label="状态"
             initialValue="0"
-            options={[
-              { label: '正常', value: '0' },
-              { label: '停用', value: '1' },
-            ]}
+            options={getDictOptions('sys_normal_disable')}
           />
           <ProFormDigit name="sort" label="排序" initialValue={0} min={0} />
           <ProFormTextArea name="remark" label="备注" />

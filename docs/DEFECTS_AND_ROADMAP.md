@@ -208,7 +208,7 @@
 
 ---
 
-## 2026-11-04 需求落地：租户内置逻辑（V2026_11_04__tenant_builtin.sql，✅ 完成并验证）
+## 2026-11-04 需求落地：租户内置逻辑（V2026_11_04__tenant_builtin.sql，✅ 完成）
 
 **需求**："租户管理需要增加内置逻辑，将保留字段换成内置类型，不让删除"。
 
@@ -244,5 +244,111 @@
 - ✅ **删除守卫功能实测已完成（用户确认，2026-11-04）**：内置租户删除被拒（前端按钮禁用 +
   后端 `BUSINESS_CONFLICT`"内置租户不允许删除"）。
 - 说明：CI `sql` job 仍作为新装库全流程（含新 init 列清单）权威校验，push 后需确认全绿。
+
+> AI生成
+
+---
+
+## 2026-11-05 需求落地：字典模块生效改造（V2026_11_05__dict_model_align.sql，✅ 完成）
+
+**需求**："字典表未生效，表模型不一定合理"——诊断后按用户五项决策落地（1A/2删/3批量/4全量/5后续增）。
+
+**根因诊断（未生效）**：init 零字典种子（表空）+ 前端零消费（28 处枚举全硬编码，
+`getDictDataByType` 无人调用）+ 读接口 `DICT_QUERY` 权限门槛错位（普通用户表单页 403）+
+`listByDictType` 缓存键 `type_+dictType` 无租户维度（多租户下跨租户缓存污染）+
+类型删除无引用守卫。
+
+**变更清单**：
+1. **表模型（1A 混合模型）**：`sys_dict_type`/`sys_dict_data` 加 `is_builtin`
+   （0:租户自定义,1:平台内置，内置不可删除）；读路径按「租户自定义 → 平台内置兜底」合并解析
+   （`SysDictDataMapper.selectVisible` 用 `@InterceptorIgnore(tenantLine="true")` 绕过租户拦截器、
+   手工限定两域范围）；补 `dict_type`/`dict_value` NOT NULL；**删 RuoYi 遗留 `css_class`/`list_class`**（2删）。
+2. **种子**：14 类 40 项平台内置字典（sys_normal_disable/sys_yes_no/sys_user_sex/sys_notice_type/
+   sys_oper_type/sys_oper_status/sys_job_status/sys_job_concurrent/sys_job_misfire/sys_config_type/
+   sys_role_type/sys_data_scope/sys_menu_type/sys_defaulted），值与前端原硬编码一一对应；
+   init 与迁移同步（ID 段 N=4001..4014 / 4101..4140）。
+3. **后端读路径（3批量）**：新增 `GET /system/dict/data/all` 批量接口（登录即可见，无权限门槛，
+   对齐租户 `/list` 先例）返回 `Map<dictType, 合并列表>`；`listByDictType` 同步合并语义 +
+   缓存键带租户维度（SpEL Elvis 兜底平台租户，修复跨租户污染）+ 过滤 `status='0'`；
+   写操作对 `sys_dict_data` 缓存 allEntries 清空。
+4. **后端守卫**：类型删除双守卫（内置拒删 + 数据引用计数拒删，对齐角色模块）；数据删除内置守卫；
+   create/update 防伪造：非平台租户 is_builtin 强制归 0 / 保持原值。
+5. **前端消费层**：新增 `useDict()` hook（模块级全局缓存，登录后拉一次 `/all`）+ `getAllDictData` API；
+   **全量替换 10 页 28+ 处硬编码枚举**（tenant/role/loginlog/operlog/user/notice/menu/job/config/dict），
+   展示色保留在页面 render（配色不进 DB）；字典管理页：类型/数据内置金 Tag、内置禁删、
+   删"回显样式"列与表单字段、增删改后 `reload()` 刷新全局缓存。
+
+**ON CONFLICT 仲裁联动**：字典种子 init 走 `ON CONFLICT (id)` 主键仲裁不受影响；迁移种子用裸
+`ON CONFLICT DO NOTHING`（容忍 id 与 uk 冲突双情形）；`uk_sys_dict_*` 两个 uk 已是 partial index
+（V2026_11_03），新增列不触碰。
+
+**验证状态（2026-11-05，dbx 活库实测 dev-postgres → dev baize 库，用户确认直改）**：
+- ✅ 后端 `clean compile`（-pl baize-api-system,baize-system -am）BUILD SUCCESS，全量真实重编译；
+- ✅ 前端 `tsc --noEmit` 0 错误；`listClass/cssClass/ROLE_TYPE_OPTIONS/DATA_SCOPE_OPTIONS` 零残留；
+- ✅ 迁移已应用 dev baize 库：11 语句 0 报错（14 类型 + 40 数据种子落库）；
+- ✅ 复查：builtin 14/40、`css_class/list_class` 0 列、`dict_type/dict_value` 全 NOT NULL、无残留行；
+- ✅ **幂等**：二跑 11 语句全 0 行 0 报错；
+- ✅ **合并解析**：以租户 XIAOMI 视角执行 selectVisible 同款 SQL，返回 14 类共 40 项平台内置兜底数据；
+- ⚠️ 端到端（/all 接口 + 页面下拉）需重启后端生效后走 UI 验证；CI `sql` job 仍为新装库全流程权威校验。
+
+**已知取舍**：
+- 字典值展示色（如角色类型 geekblue/cyan）保留在页面本地色表，不进 DB（决策 2 的自然推论）；
+- 模块级字典缓存在字典变更后需页面重新挂载才取新值（管理页自身即时 reload，其他已挂载页下次进入生效）；
+- `sys_dict_type`/`sys_dict_data` 仍参与租户行级隔离（管理页只看本租户/平台行），合并语义只在读路径。
+
+> AI生成
+
+---
+
+## 2026-11-04 迁移执行状态审计（14/14 全部已执行，✅ 完成）
+
+**背景**：本项目未引入 Flyway/Liquibase 版本表，CI 对 `db/migration/*.sql` 按文件名顺序直接执行，
+库侧无执行记录可查。因此用 dbx（只读查询）对每个迁移的「标志性产物」逐一探测核对。
+
+**结论**：截至审计时点，`db/migration/` 下全部 14 个迁移在 dev `baize` 库中**均已执行、均已生效**：
+
+| 迁移 | 探测标志物 | 结果 |
+|---|---|---|
+| V2026_10_21 uuid_v7_id | `sys_user.id` 为 varchar(36) | ✅ |
+| V2026_10_22 constraints_and_align | `sys_role` 有主键 | ✅ |
+| V2026_10_22_02 menu_buttons_incremental | job/post/config/notice 按钮菜单 5 标志行 | ✅ 5/5 |
+| V2026_10_22_03 relation_table_pk | `sys_role_menu` 有主键 | ✅ |
+| V2026_10_22_04 user_updatepwd_perm | `system:user:updatePwd` 权限行 | ✅ |
+| V2026_10_23 home_menu | `uk_sys_menu_tenant_path` 索引 | ✅ |
+| V2026_10_23 platform_tenant_0 | nil UUID 平台租户行 | ✅ |
+| V2026_10_25_01 monitor_query_perms | monitor:server/cache:query 权限 | ✅ 2/2 |
+| V2026_10_29 role_type_builtin | `role_type`+`is_builtin` 列 | ✅ 2/2 |
+| V2026_10_30 seed_roles | 平台角色数 | ✅ 7（见澄清 1） |
+| V2026_10_31 index_optimize | 补 `idx_sys_user_dept_id` ✅、4 冗余索引 0 残留 ✅ | ✅ |
+| V2026_11_03 soft_delete_unique_index | partial unique uk | ✅ 13（见澄清 2） |
+| V2026_11_04 tenant_builtin | 内置租户 = 1 | ✅ |
+| V2026_11_05 dict_model_align | 内置字典类型 14 / 数据 40 | ✅ |
+
+**两处数字澄清（非问题）**：
+1. 平台角色 7 = `admin`（init 既有种子，2025-08 建）+ 6 个预置角色
+   （ops/auditor/tenant_admin/hr/dept_manager/employee，V2026_10_30 新增）；
+   首次探测的预期值漏算 admin，库状态本身正常。
+2. partial unique uk 13 = 12 个（V2026_11_03 转换，`WHERE deleted='0'`）+ 1 个
+   （`uk_sys_menu_tenant_path`：V2026_10_23 建立时即 partial——
+   `WHERE path IS NOT NULL AND path <> ''`，空路径不参与唯一），正常并存，互不冲突。
+
+---
+
+## 当前待办（截至 2026-11-04，按优先级）
+
+1. **提交与推送（最高优先）**：工作区累积三个任务的改动未 commit——软删除×唯一键（V2026_11_03）、
+   租户内置（V2026_11_04）、字典改造（V2026_11_05），约 30 文件。建议按任务分 3 个 commit。
+   **push 后必须确认 CI 四个 job 全绿**（backend / frontend / helm / sql——sql job 是新装库
+   全流程 ddl→operlog→init×2→migration 顺序执行，对本批新增的 3 个迁移与改列后的 init 是权威校验）。
+2. **UI 端到端验证**：重启 baize-system（加载新实体/Mapper/接口）并重新构建前端后验证：
+   - 租户删除按钮对平台租户禁用、后端守卫返回「内置租户不允许删除」；
+   - 登录后 `/system/dict/data/all` 一次拉取、10 页下拉/回显由字典驱动；
+   - 字典管理页内置 Tag、内置禁删、租户自定义类型可正常增删；
+   - 角色管理下拉（角色类型/数据权限）改为字典数据源后展示正常。
+3. **（可选）D4 功能复用实测**：逻辑删除后将同编码重新插入可用性的 DML 实测仍未做
+   （dbx 对远程 PG 无事务回滚能力，避免在共享 dev 库留测试数据）；语义由 partial unique index
+   本身保证，等待 CI 或专用环境补测。
+4. **（低优先）后续字典扩充（决策 5）**：业务专属字典类型按需后续增加；上线流程见
+   `builtin-resource-guard` 技能沉淀的七步法，不再重复展开。
 
 > AI生成

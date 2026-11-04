@@ -9,6 +9,7 @@ import { Button, Modal, message, Space, Tag } from 'antd';
 import type { FormInstance } from 'antd';
 import React, { useCallback, useRef } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import { useExportXlsx } from '@/hooks/useExportXlsx';
 import {
   cleanLoginLog,
@@ -23,6 +24,7 @@ import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
  */
 const LoginLog: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { toValueEnum } = useDict();
   // 表格查询表单实例，导出时直接取当前查询条件
   const formRef = useRef<FormInstance<API.SysLoginLogDto> | undefined>(
     undefined,
@@ -109,10 +111,10 @@ const LoginLog: React.FC = () => {
       dataIndex: 'status',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        '0': '成功',
-        '1': '失败',
-      },
+      valueEnum: toValueEnum('sys_oper_status', {
+        '0': 'Success',
+        '1': 'Error',
+      }),
       render: (_, record) => (
         <Tag color={record.status === '0' ? 'success' : 'error'}>
           {record.status === '0' ? '成功' : '失败'}

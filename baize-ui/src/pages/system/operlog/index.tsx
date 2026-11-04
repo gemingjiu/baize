@@ -10,6 +10,7 @@ import { Button, Descriptions, Drawer, Modal, message, Space, Tag } from 'antd';
 import type { FormInstance } from 'antd';
 import React, { useCallback, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
+import { useDict } from '@/hooks/useDict';
 import { useExportXlsx } from '@/hooks/useExportXlsx';
 import {
   cleanOperLog,
@@ -24,6 +25,7 @@ import { DEFAULT_PAGE_SIZE, toPageQuery } from '@/utils/pagination';
  */
 const OperLog: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
+  const { toValueEnum } = useDict();
   // 表格查询表单实例，导出时直接取当前查询条件
   const formRef = useRef<FormInstance<API.SysOperLogDto> | undefined>(undefined);
   const [exporting, handleExport] =
@@ -103,17 +105,7 @@ const OperLog: React.FC = () => {
       dataIndex: 'businessType',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        '1': '新增',
-        '2': '修改',
-        '3': '删除',
-        '4': '授权',
-        '5': '导出',
-        '6': '导入',
-        '7': '强退',
-        '8': '生成代码',
-        '9': '清空数据',
-      },
+      valueEnum: toValueEnum('sys_oper_type'),
       render: (_, record) => {
         const info = businessTypeMap[record.businessType || '1'];
         return <Tag color={info.color}>{info.text}</Tag>;
@@ -160,10 +152,10 @@ const OperLog: React.FC = () => {
       dataIndex: 'status',
       width: 100,
       valueType: 'select',
-      valueEnum: {
-        '0': '成功',
-        '1': '失败',
-      },
+      valueEnum: toValueEnum('sys_oper_status', {
+        '0': 'Success',
+        '1': 'Error',
+      }),
       render: (_, record) => (
         <Tag color={Number(record.status) === 0 ? 'success' : 'error'}>
           {Number(record.status) === 0 ? '成功' : '失败'}

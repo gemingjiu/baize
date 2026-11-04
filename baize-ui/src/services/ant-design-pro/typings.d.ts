@@ -197,6 +197,8 @@ declare namespace API {
     tenantId?: string;
     dictName?: string;
     dictType?: string;
+    /** 是否内置字典类型;0:租户自定义,1:平台内置（内置不可删除） */
+    isBuiltin?: string;
     sort?: number;
     status?: string;
     remark?: string;
@@ -208,8 +210,8 @@ declare namespace API {
     dictType?: string;
     dictLabel?: string;
     dictValue?: string;
-    cssClass?: string;
-    listClass?: string;
+    /** 是否内置字典项;0:租户自定义,1:平台内置（平台维护，租户不可删） */
+    isBuiltin?: string;
     defaulted?: string;
     sort?: number;
     status?: string;

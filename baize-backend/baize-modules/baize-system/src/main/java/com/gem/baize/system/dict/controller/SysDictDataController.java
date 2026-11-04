@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import com.gem.baize.common.core.constant.PermCodes;
 @RestController
@@ -73,8 +74,22 @@ public class SysDictDataController {
         return ApiResult.ok(pageConvert.toDto(sysDictDataService.page(page, dto)));
     }
 
+    /**
+     * 批量获取当前租户可见的全部启用字典（key=dict_type，value=合并解析后的数据列表）。
+     * <p>
+     * 故意不加 {@code @RequiresPermission}：字典是全站表单/表格的展示数据源，普通登录用户
+     * 也要在业务页面渲染下拉与回显；按 DICT_QUERY 设门槛会把所有表单页变 403，
+     * 字典永远无法生效。该接口只读、只返回启用的展示文本（label/value），不含敏感运营数据。
+     * 合并解析：租户自定义项 → 平台内置项兑底（见 SysDictDataServiceImpl#listAll）。
+     */
+    @GetMapping("/all")
+    @Operation(summary = "批量获取当前租户可见的全部启用字典", description = "登录即可见：前端登录后一次性拉取并全局缓存")
+    public ApiResult<Map<String, List<SysDictDataDto>>> all() {
+        return ApiResult.ok(sysDictDataService.listAll());
+    }
+
     @GetMapping("/type/{dictType}")
-    @Operation(summary = "根据字典类型获取字典数据列表")
+    @Operation(summary = "根据字典类型获取字典数据列表（合并解析：租户自定义→平台内置兑底）")
     @RequiresPermission(PermCodes.DICT_QUERY)
     public ApiResult<List<SysDictDataDto>> listByDictType(@PathVariable String dictType) {
         if (StringUtils.isBlank(dictType)) {
