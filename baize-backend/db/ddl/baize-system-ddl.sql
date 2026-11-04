@@ -59,6 +59,8 @@ ALTER TABLE "baize-system".sys_config ADD CONSTRAINT uk_sys_config_tenant_config
 
 -- "baize-system".sys_data_perm 定义
 -- 当前无对应实体，保留待接入（无 Java entity/mapper，接入前请勿删表）
+-- 【2026-11-03 评审决策：暂未实现，保留】仅 DataScopeInnerInterceptor 白名单引用，
+--   当前数据权限走 sys_role.data_scope 字段（1-5 档），本表暂不消费；保留表结构待未来接入。
 
 -- Drop table
 
@@ -350,6 +352,8 @@ ALTER TABLE "baize-system".sys_menu ADD CONSTRAINT uk_sys_menu_tenant_name_paren
 
 
 -- "baize-system".sys_perm 定义
+-- 【2026-11-03 评审决策：暂未实现，保留】实体/服务/控制器齐全，但登录签发不消费
+--   （AuthServiceImpl 走菜单 perms），与 sys_menu.perms 构成双轨冗余；暂存，待统一权限模型时决策。
 
 -- Drop table
 
@@ -590,6 +594,7 @@ ALTER TABLE "baize-system".sys_role_menu ADD CONSTRAINT uk_sys_role_menu_tenant_
 
 
 -- "baize-system".sys_role_perm 定义
+-- 【2026-11-03 评审决策：暂未实现，保留】随 sys_perm 一并暂存（登录签发不消费，双轨冗余），待决策。
 
 -- Drop table
 
@@ -763,6 +768,8 @@ ALTER TABLE "baize-system".sys_user ADD CONSTRAINT uk_sys_user_tenant_user_name 
 
 -- "baize-system".sys_user_post 定义
 -- 当前无对应实体，保留待接入（无 Java entity/mapper，接入前请勿删表）
+-- 【2026-11-03 评审决策：暂未实现，保留】无实体/Mapper/调用，纯死代码；岗位关系当前由
+--   sys_post 独立维护，本表暂存待接入用户-岗位绑定。
 
 -- Drop table
 

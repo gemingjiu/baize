@@ -164,3 +164,46 @@
 - **三组僵尸表删/留**（2026-10-29 评审新增）：`sys_data_perm` / `sys_user_post` / `sys_perm`+`sys_role_perm` 详见上方「表模型评审发现」——删除需迁移脚本 DROP + 清理实体/服务/控制器/白名单引用；保留建议在 DDL 注释标明用途
 - **软删除×唯一键**（2026-10-29 评审新增）：是否引入 PG partial unique index（`WHERE deleted='0'`）解除逻辑删后编码永久占用——需联动 init ON CONFLICT 仲裁评估
 - ~~**角色签发多角色聚合**~~ ✅ 已完成（2026-10-29，commit e5f673c，见上方「增量评审」章节）
+
+---
+
+## 2026-11-03 决策定案（评审遗留项，4 项全部确认）
+
+| # | 决策项 | 结论 |
+|---|--------|------|
+| D1 | P0-A 威胁模型（网关是否 sole ingress）| ✅ 接受「网关唯一入口」前提，**不进一步收紧**（保持网关 SignatureFilter 签名校验兜底，部署层防火墙/隔离兜底直连威胁）|
+| D2 | P1-B 租户缺失兜底 | ✅ **保留 fail-safe 兜底**到平台租户（nil UUID，原 `'0'`），不改 fail-closed |
+| D3 | 三组僵尸表删/留 | ✅ **全部保留，仅注释**标明「暂未实现」（sys_data_perm / sys_user_post / sys_perm + sys_role_perm 已同步 DDL 注释）|
+| D4 | 软删除 × 唯一键 | ✅ **引入 partial unique index**（`WHERE deleted='0'`）|
+
+### D4 落地：V2026_11_03__soft_delete_unique_index.sql（✅ 完成）
+
+- **11 张带 deleted 列的业务表**唯一键（约束/索引）统一转成部分唯一索引 `WHERE deleted='0'`：
+  `sys_config` / `sys_dept` / `sys_dict_data` / `sys_dict_type` / `sys_menu` / `sys_perm` /
+  `sys_post` / `sys_role` / `sys_tenant`（tenant_code + domain）/ `sys_user` / `sys_job`。
+- **语义**：逻辑删除（deleted='1'）的记录不进入索引，编码可复用；只对活跃记录强制唯一。
+- **联动评估（D4 决策的关键风险）**：init 对 sys_menu 的 `ON CONFLICT (tenant_id,menu_name,parent_id)`
+  由该部分唯一索引继续支撑（PG 允许部分唯一索引作 ON CONFLICT 仲裁；插入行不满足 `deleted='0'`
+  时不判冲突直接落库，正是复用语义）。其余 ON CONFLICT (id) 走主键、关系表 uk 无 deleted 列，
+  均不受影响 → **init/migration 的 ON CONFLICT 无需改动**。
+- **设计取舍**：**不改 DDL 的约束声明**——否则与存量迁移 `V2026_10_22__constraints_and_align`（S4 补
+  sys_dept 唯一键约束）在全新库上「索引/约束同名冲突」；本脚本置于所有迁移之后执行，全新库
+  （ddl→init→migration）与存量库殊途同归为部分唯一索引。索引沿用原 uk_ 名，引用方零改动。
+- **幂等**：DO 块先判存在 DROP 约束/非部分索引、再判存在建部分索引；DROP/CREATE 前都统计
+  「活跃重复组数」，有重复只 NOTICE 跳过不落 DDL。双跑（CI M1/M2）0 行变更。
+- **⚠️ 手工重跑 caveat**：某库已跑过本脚本后，**不要**再手工重跑 `V2026_10_22__constraints_and_align.sql`
+  的 S4（补 sys_dept 唯一键约束）——它只判 `pg_constraint` 里的约束、不判同名索引，会因
+  `uk_sys_dept_tenant_parent_dept_name` 已是同名部分索引而报「already exists」。正常流程
+  （CI 一次性跑迁移 / 新装库）不受影响；S4 仅应在执行本脚本之前的历史库上运行。
+- **执行后自检**：查询 12 个 uk 的 `pg_get_indexdef`，预期全部以 `WHERE deleted` 结尾。
+- **验证状态（已活库实测，2026-11-03 补充）**：经本机 **dbx（MCP）** 连 dev-postgres（192.168.5.4:30432），
+  对真实 `baize` 库执行本迁移：
+  - ✅ 迁移前 12 个 uk 均为无 WHERE 的普通唯一索引；
+  - ✅ 执行迁移后 12 个 uk 全部变为 **partial unique index**（`WHERE ((deleted)::text='0'::text)`，`indpred` 非空）；
+  - ✅ **幂等**：二次执行 0 报错、0 变更（DO 分支识别已有 partial index 直接跳过）。
+  - ⚠️ 功能复用（逻辑删后可插同编码）未做活库 DML 实测：dbx 事务仅支持原生本地 MySQL、PG 不支持回滚，
+    为避免在共享 dev 库留下测试数据未跑；该语义由 PG partial unique index 本身保证（`deleted='1'` 行不入索引）。
+  - 说明：本机 PG18 安装仍不完整（缺 `share/postgres.bki`），本地独立起库验证不可行；本验证借道 dbx 完成，
+    CI 的 `sql` job（PG16 容器：ddl → operlog → init×2 → migration）仍作为新装库全流程的权威校验。
+
+> AI生成
