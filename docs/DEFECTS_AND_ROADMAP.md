@@ -374,14 +374,21 @@
   依赖解析并不冲突（此前的本地复现在临时目录执行、未带上 .npmrc，属污染结论）。
   删除 `@antv/l7`/`@antv/l7-react` 仍保留：二者在 src 零引用，属死依赖清理（安装体积↓），
   但它**不是** CI 失败的修复。
-- 真正根因（待日志确认）：install 步骤内执行的生命周期脚本，嫌疑按序：
-  1. `postinstall: max setup`（@umijs/max 4.7.x 在 CI 冷环境跑 setup 的已知坑）；
-  2. `prepare: husky`（CI 上 husky 拿不到 .git 上下文时报错版本）。
-- 取证途径：CI 日志下载需 repo admin token（gh 登录未完成，匿名 403）；
-  已在浏览器打开 Actions job 页面（github.com 经用户代理可达）或完成 gh 登录后即可取证。
+- 真正根因（f982b04 日志取证确认）：`baize-ui/.gitignore` 裸 `build` 规则把
+  `src/pages/tool/build/index.tsx`（表单构建器模板残留页）遮蔽——该文件从未入库，
+  `config/routes.ts` 却静态引用 `component: './tool/build'`，CI 冷环境 postinstall 的
+  `max setup` 解析该组件路径即 MODULE_NOT_FOUND 崩溃；本地正常只因磁盘恰有此文件
+  （这也解释了 Frontend job 从建立依赖步骤起从未绿过）。
+- 修复（用户选 A，2026-11-05）：routes.ts 删 `/tool/build` 路由项、`/tool` redirect
+  改 `/tool/gen`；routePermission.ts 删对应映射；本地残留页
+  `src/pages/tool/build/` 整目录回收站删除（与 2026-10-28「表单构建器不做」决策对齐）。
+  验证：全仓 `tool/build` 代码引用清零（仅保留删除说明注释）、`tsc --noEmit` 0 错误；
+  CI 实测待推送。
 
-**结论**：Backend 已修复（f982b04 后 CI 实测 ✅）；Frontend 两个候选根因已排除一个
-（ERESOLVE），真实根因待日志取证后修复。gh 已由用户安装（token 登录未完成，暂用匿名
-Actions API 查询——该仓库匿名可读 run/job 状态；日志下载需 admin token）。
+**结论**：Backend 已修复（f982b04 后 CI 实测 ✅）；Frontend 根因已日志取证
+（.gitignore 裸 build 遮蔽 tool/build 残留页 + routes 静态引用，postinstall 崩溃），
+已按方案 A 修复（删路由+删残留页），待推送后 CI 实测。gh 登录完成（keyring 凭据；
+agent 环境需先清除 XDG_CONFIG_HOME 指向 TeleAgent 目录的注入才能读到 keyring，
+本修正已沉淀为本次排查记录）。
 
 > AI生成

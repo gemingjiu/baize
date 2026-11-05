@@ -25,7 +25,9 @@ export const ROUTE_PERMISSIONS: Record<string, string> = {
   '/monitor/online': 'monitor:online:list',
   '/monitor/server': 'monitor:server:list',
   '/monitor/cache': 'monitor:cache:list',
-  '/tool/build': 'tool:build:list',
+  // /tool/build（表单构建器，模板残留）已移除——2026-11-05 Frontend CI 根因修复：
+  // 该页面被 .gitignore 裸 build 规则遮蔽从未入库，CI 冷环境 max setup 解析
+  // 该组件路径失败致 postinstall 崩溃（与 2026-10-28「表单构建器不做」决策对齐）。
   '/tool/gen': 'tool:gen:list',
   '/tool/swagger': 'tool:swagger:list',
 };

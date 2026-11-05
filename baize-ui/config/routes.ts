@@ -190,14 +190,7 @@ export default [
     routes: [
       {
         path: '/tool',
-        redirect: '/tool/build',
-      },
-      {
-        name: 'build',
-        icon: 'form',
-        path: '/tool/build',
-        component: './tool/build',
-        wrappers: ['@/wrappers/authGuard'],
+        redirect: '/tool/gen',
       },
       {
         name: 'gen',
