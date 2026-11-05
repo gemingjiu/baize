@@ -24,6 +24,8 @@ import { useExportXlsx } from '@/hooks/useExportXlsx';
 import { getDeptTreeSelect } from '@/services/system/dept';
 import { transformDeptTree } from '@/utils/tree';
 import { getRolePage } from '@/services/system/role';
+import { getPostList, getPostPage } from '@/services/system/post';
+import { getUserPosts } from '@/services/system/user';
 import {
   assignUserRoles,
   changeUserStatus,
@@ -60,6 +62,10 @@ const User: React.FC = () => {
     API.SysUserDto | undefined
   >();
   const [deptTree, setDeptTree] = useState<any[]>([]);
+  // 岗位选项（P6）：用户表单岗位多选数据源（登录即可见的启用岗位）
+  const [postOptions, setPostOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
   const [allRoles, setAllRoles] = useState<
     { key: string; title: string }[]
   >([]);
@@ -74,6 +80,28 @@ const User: React.FC = () => {
       }
     };
     fetchDeptTree();
+  }, []);
+
+  // 岗位选项拉取（P6）：失败时保底空列表，表单岗位项仍可打开只是无选项
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await getPostList({ skipErrorHandler: true });
+        if (res?.success && Array.isArray(res.data)) {
+          setPostOptions(
+            res.data
+              .filter((post) => post.id)
+              .map((post) => ({
+                label: post.postName || `岗位 ${post.id}`,
+                value: post.id as string,
+              })),
+          );
+        }
+      } catch (_e) {
+        // 忽略：保底空列表
+      }
+    };
+    fetchPosts();
   }, []);
 
   useEffect(() => {
@@ -115,6 +143,16 @@ const User: React.FC = () => {
 
   const handleEdit = (record: API.SysUserDto) => {
     setEditingRecord(record);
+    // P6：编辑打开时拉取该用户的岗位绑定回显（独立接口避免污染用户主缓存）
+    if (record.id) {
+      getUserPosts(record.id, { skipErrorHandler: true })
+        .then((res) => {
+          if (res?.success && Array.isArray(res.data)) {
+            setEditingRecord({ ...record, postIds: res.data });
+          }
+        })
+        .catch(() => {});
+    }
     setFormModalVisible(true);
   };
 
@@ -415,9 +453,13 @@ const User: React.FC = () => {
           name="password"
           label="密码"
           rules={
-            editingRecord ? [] : [{ required: true, message: '请输入密码' }]
+            editingRecord ? [] : [{ min: 8, max: 20, message: '密码长度8-20位' }]
           }
-          placeholder={editingRecord ? '不修改请留空' : '请输入密码'}
+          placeholder={
+            editingRecord
+              ? '不修改请留空'
+              : '留空则使用系统初始密码（参数 sys.user.initPassword）'
+          }
         />
         <ProFormText
           name="email"
@@ -449,6 +491,13 @@ const User: React.FC = () => {
             treeDefaultExpandAll: true,
             treeData: deptTree,
           }}
+        />
+        <ProFormSelect
+          name="postIds"
+          label="岗位"
+          placeholder="请选择岗位（可多选）"
+          options={postOptions}
+          fieldProps={{ mode: 'multiple' }}
         />
         <ProFormSelect
           name="gender"

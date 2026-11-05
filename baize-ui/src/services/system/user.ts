@@ -33,6 +33,14 @@ export async function getUserById(id: string, options?: { [key: string]: any }) 
   });
 }
 
+/** 查询用户岗位绑定 GET /system/user/{id}/posts（P6：编辑表单回显，返回岗位ID列表） */
+export async function getUserPosts(id: string, options?: { [key: string]: any }) {
+  return request<API.ApiResult<string[]>>(`${API_VERSION}/system/user/${id}/posts`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 根据用户名查询用户 GET /system/user/getByUsername */
 export async function getUserByUsername(username: string, options?: { [key: string]: any }) {
   return request<API.ApiResult<API.SysUserDto>>(`${API_VERSION}/system/user/getByUsername`, {

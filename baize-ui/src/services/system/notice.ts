@@ -3,6 +3,25 @@
 import { request } from '@umijs/max';
 import { API_VERSION } from '@/constants/api';
 
+/**
+ * 最新启用的公告列表 GET /system/notice/latest（P3 公告展示闭环）
+ *
+ * 登录即可见：首页公告栏 / 登录后弹窗数据源，只返回启用中的公告（默认前 5 条）。
+ */
+export async function getLatestNotices(
+  limit: number = 5,
+  options?: { [key: string]: any },
+) {
+  return request<API.ApiResult<API.SysNoticeDto[]>>(
+    `${API_VERSION}/system/notice/latest`,
+    {
+      method: 'GET',
+      params: { limit },
+      ...(options || {}),
+    },
+  );
+}
+
 /** 分页查询通知公告 POST /system/notice/page */
 export async function getNoticePage(
   params: {

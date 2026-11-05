@@ -1,4 +1,4 @@
-import { ApartmentOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { ApartmentOutlined, LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
 import {
   ProFormCheckbox,
   ProFormSelect,
@@ -10,6 +10,7 @@ import { createStyles } from 'antd-style';
 import React, { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { login } from '@/services/ant-design-pro/api';
+import { getCaptcha, isCaptchaEnabled } from '@/services/ant-design-pro/api';
 import { getUserMenuTree } from '@/services/system/menu';
 import { getTenantList } from '@/services/system/tenant';
 import {
@@ -178,9 +179,13 @@ const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [tenants, setTenants] = useState<API.SysTenantDto[]>([]);
   const [form] = Form.useForm();
+  // 验证码状态（P5）：开关探测 + 图片 + 会话 key；默认关闭不渲染
+  const [captchaEnabled, setCaptchaEnabled] = useState(false);
+  const [captchaImage, setCaptchaImage] = useState<string>('');
+  const [captchaKey, setCaptchaKey] = useState<string>('');
 
   // 租户下拉框数据来自免鉴权接口 GET /system/tenant/list（网关白名单放行），
-  // 因为此时还没有令牌。拉取失败时保留「平台租户」兜底选项，保证登录可用。
+  // 因为此时还没有令牌。拉取失败时保留「平台租户」兑底选项，保证登录可用。
   useEffect(() => {
     const loadTenants = async () => {
       try {
@@ -189,11 +194,40 @@ const Login: React.FC = () => {
           setTenants(res.data);
         }
       } catch (_e) {
-        // 忽略：下面会兜底成只有「平台租户」一项
+        // 忽略：下面会兑底成只有「平台租户」一项
       }
     };
     loadTenants();
   }, []);
+
+  // 验证码开关探测（P5）：sys.account.captchaEnabled=true 时拉取验证码图片；
+  // 探测失败一律按关闭处理，不阻塞登录页。
+  const refreshCaptcha = React.useCallback(async () => {
+    try {
+      const res = await getCaptcha({ skipErrorHandler: true });
+      if (res?.success && res.data) {
+        setCaptchaImage(res.data.image || '');
+        setCaptchaKey(res.data.key || '');
+      }
+    } catch (_e) {
+      // 验证码拉取失败：提交时后端会再拦，这里不处理
+    }
+  }, []);
+
+  useEffect(() => {
+    const probeCaptcha = async () => {
+      try {
+        const res = await isCaptchaEnabled({ skipErrorHandler: true });
+        if (res?.success && res.data) {
+          setCaptchaEnabled(true);
+          refreshCaptcha();
+        }
+      } catch (_e) {
+        // 探测失败按关闭处理
+      }
+    };
+    probeCaptcha();
+  }, [refreshCaptcha]);
 
   const tenantOptions = React.useMemo(() => {
     const options = tenants
@@ -218,8 +252,12 @@ const Login: React.FC = () => {
       setLoginErrorMessage('');
       try {
         // values.tenant 会被后端 AuthServiceImpl 当作 tenant_id 用于 getByUsernameAndTenantId，
-        // 所以这里传的是租户 ID（数字字符串），不是租户编码 / 域名。
-        const res = await login(values, { skipErrorHandler: true });
+        // 所以这里传的是租户 ID，不是租户编码 / 域名。
+        const payload: API.LoginParams = { ...values };
+        if (captchaEnabled) {
+          payload.captchaKey = captchaKey;
+        }
+        const res = await login(payload, { skipErrorHandler: true });
         if (res.success) {
           message.success('登录成功！');
           // 落地 accessToken / refreshToken / userInfo（userInfo 仅作展示缓存）
@@ -251,13 +289,18 @@ const Login: React.FC = () => {
           return;
         }
         setLoginErrorMessage(res.errorMessage || '登录失败，请重试');
-      } catch (error: any) {
+        } catch (error: any) {
         setLoginErrorMessage(error?.message || '登录失败，请重试');
+        // 登录失败后刷新验证码（一次性消费已作废）并清空输入
+        if (captchaEnabled) {
+          refreshCaptcha();
+          form.setFieldValue('captcha', '');
+        }
       } finally {
         setSubmitting(false);
       }
     },
-    [setInitialState, message],
+    [setInitialState, message, captchaEnabled, captchaKey, refreshCaptcha],
   );
 
   return (
@@ -342,6 +385,33 @@ const Login: React.FC = () => {
                 placeholder="请输入密码"
                 rules={[{ required: true, message: '请输入密码!' }]}
               />
+
+              {captchaEnabled && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <ProFormText
+                    name="captcha"
+                    fieldProps={{
+                      size: 'large',
+                      prefix: <SafetyOutlined />,
+                    }}
+                    placeholder="请输入验证码"
+                    rules={[{ required: true, message: '请输入验证码!' }]}
+                    style={{ flex: 1, marginBottom: 8 }}
+                  />
+                  <img
+                    src={captchaImage}
+                    alt="验证码"
+                    title="点击刷新"
+                    onClick={() => refreshCaptcha()}
+                    style={{
+                      height: 40,
+                      cursor: 'pointer',
+                      borderRadius: 4,
+                      marginBottom: 8,
+                    }}
+                  />
+                </div>
+              )}
 
               <ProFormCheckbox name="remember">记住密码</ProFormCheckbox>
 

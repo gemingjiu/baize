@@ -15,6 +15,22 @@ export async function login(body: API.LoginDTO, options?: { [key: string]: any }
   });
 }
 
+/** 生成登录验证码 GET /auth/captcha（P5：网关白名单 /api/v1/auth/** 匿名放行） */
+export async function getCaptcha(options?: { [key: string]: any }) {
+  return request<API.ApiResult<{ key: string; image: string }>>(`${API_VERSION}/auth/captcha`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** 验证码开关探测 GET /auth/captcha/enabled（登录页渲染表单前调用，失败按关闭处理） */
+export async function isCaptchaEnabled(options?: { [key: string]: any }) {
+  return request<API.ApiResult<boolean>>(`${API_VERSION}/auth/captcha/enabled`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 用户登出 POST /auth/logout */
 export async function logout(options?: { [key: string]: any }) {
   return request<API.ApiResult>(`${API_VERSION}/auth/logout`, {

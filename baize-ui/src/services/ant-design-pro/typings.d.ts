@@ -16,6 +16,8 @@ declare namespace API {
     username: string;
     password: string;
     captcha?: string;
+    /** 验证码会话标识（与 /auth/captcha 返回的 key 配对，P5） */
+    captchaKey?: string;
     deviceType?: string;
   };
 
@@ -82,6 +84,8 @@ declare namespace API {
     avatar?: string;
     password?: string;
     status?: string;
+    /** 岗位ID列表（P6 用户-岗位绑定；创建/更新时全量替换） */
+    postIds?: string[];
   };
 
   type SysRoleDto = {

@@ -2,12 +2,15 @@ import {
   ApiOutlined,
   IdcardOutlined,
   MenuOutlined,
+  NotificationOutlined,
   SafetyOutlined,
 } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import { Card, Col, Row, theme } from 'antd';
-import React, { useMemo } from 'react';
+import { Badge, Card, Col, Drawer, List, Modal, Row, Tag, theme } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { getLatestNotices } from '@/services/system/notice';
+import { useDict } from '@/hooks/useDict';
 import { PLATFORM_TENANT_ID } from '@/constants/tenant';
 import { getPermissions } from '@/utils/auth';
 
@@ -80,7 +83,45 @@ const StatCard: React.FC<{
 const Welcome: React.FC = () => {
   const { token } = theme.useToken();
   const { initialState } = useModel('@@initialState');
+  const { dictLabel } = useDict();
   const currentUser = initialState?.currentUser;
+
+  // 最新公告（P3 公告展示闭环）：首页公告栏 + 登录后弹窗
+  const [notices, setNotices] = useState<API.SysNoticeDto[]>([]);
+  const [noticeDetail, setNoticeDetail] = useState<API.SysNoticeDto>();
+  const [popupNotice, setPopupNotice] = useState<API.SysNoticeDto>();
+
+  useEffect(() => {
+    let mounted = true;
+    getLatestNotices(5, { skipErrorHandler: true })
+      .then((res) => {
+        if (mounted && res?.success && Array.isArray(res.data)) {
+          const list = res.data;
+          setNotices(list);
+          // 登录弹窗：仅弹最新一条，同一公告「我已知晓」后不再弹（localStorage 记忆）
+          const latest = list[0];
+          if (latest?.id) {
+            const dismissed = window.localStorage.getItem(
+              `notice_dismissed_${latest.id}`,
+            );
+            if (!dismissed) {
+              setPopupNotice(latest);
+            }
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const dismissPopup = () => {
+    if (popupNotice?.id) {
+      window.localStorage.setItem(`notice_dismissed_${popupNotice.id}`, '1');
+    }
+    setPopupNotice(undefined);
+  };
 
   const menuCount = useMemo(
     () => countMenuNodes((initialState?.menuData ?? []) as any[]),
@@ -161,6 +202,80 @@ const Welcome: React.FC = () => {
           />
         </Col>
       </Row>
+
+      <Card
+        variant="outlined"
+        style={{
+          marginTop: 16,
+          borderColor: token.colorBorderSecondary,
+        }}
+        styles={{ body: { padding: '12px 20px' } }}
+        title={
+          <span>
+            <NotificationOutlined style={{ marginRight: 8, color: token.colorPrimary }} />
+            通知公告
+          </span>
+        }
+        extra={<Badge count={notices.length} overflowCount={99} />}
+      >
+        <List
+          dataSource={notices}
+          locale={{ emptyText: '暂无公告' }}
+          renderItem={(item) => (
+            <List.Item
+              style={{ cursor: 'pointer', padding: '10px 0' }}
+              onClick={() => setNoticeDetail(item)}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Tag color={item.noticeType === '1' ? 'blue' : 'green'}>
+                    {dictLabel('sys_notice_type', item.noticeType)}
+                  </Tag>
+                }
+                title={item.noticeTitle}
+                description={
+                  item.createdTime
+                    ? String(item.createdTime).replace('T', ' ').slice(0, 16)
+                    : ''
+                }
+              />
+            </List.Item>
+          )}
+        />
+      </Card>
+
+      <Drawer
+        title={noticeDetail?.noticeTitle}
+        width={520}
+        open={!!noticeDetail}
+        onClose={() => setNoticeDetail(undefined)}
+      >
+        <Tag color={noticeDetail?.noticeType === '1' ? 'blue' : 'green'} style={{ marginBottom: 16 }}>
+          {dictLabel('sys_notice_type', noticeDetail?.noticeType)}
+        </Tag>
+        <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>
+          {noticeDetail?.noticeContent || '（无内容）'}
+        </div>
+      </Drawer>
+
+      <Modal
+        title={
+          <span>
+            <NotificationOutlined style={{ marginRight: 8, color: token.colorPrimary }} />
+            {popupNotice?.noticeTitle}
+          </span>
+        }
+        open={!!popupNotice}
+        onOk={dismissPopup}
+        onCancel={dismissPopup}
+        okText="我已知晓"
+        cancelButtonProps={{ style: { display: 'none' } }}
+        width={520}
+      >
+        <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, marginTop: 8 }}>
+          {popupNotice?.noticeContent || '（无内容）'}
+        </div>
+      </Modal>
     </PageContainer>
   );
 };

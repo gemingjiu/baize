@@ -3,6 +3,18 @@
 import { request } from '@umijs/max';
 import { API_VERSION } from '@/constants/api';
 
+/**
+ * 岗位选项列表 GET /system/post/list（P6 用户-岗位绑定）
+ *
+ * 登录即可见：用户管理表单的岗位多选数据源，只返回启用中的岗位。
+ */
+export async function getPostList(options?: { [key: string]: any }) {
+  return request<API.ApiResult<API.SysPostDto[]>>(`${API_VERSION}/system/post/list`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 分页查询岗位 POST /system/post/page */
 export async function getPostPage(
   params: {
