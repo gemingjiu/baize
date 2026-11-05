@@ -334,22 +334,28 @@
 
 ---
 
-## 当前待办（截至 2026-11-04，按优先级）
+## 当前待办（截至 2026-11-05，CI 全绿后，按优先级）
 
 1. ~~**提交与推送（最高优先）**~~ ✅ 已完成（2026-11-05）：三任务分三个 commit
    （`bbf5a60` 软删除唯一键 / `a441577` 租户内置 / `c2b17b2` 字典改造），已推送 origin/dev。
-2. **UI 端到端验证**：重启 baize-system（加载新实体/Mapper/接口）并重新构建前端后验证：
+   ~~CI 确认~~ ✅ 修复两个历史遗留失败后四 job 全绿（见下方 2026-11-05 CI 诊断章节）。
+2. **UI 端到端验证（现为最高优先）**：重启 baize-system（加载新实体/Mapper/接口）并重新构建前端后验证：
    - 租户删除按钮对平台租户禁用、后端守卫返回「内置租户不允许删除」；
    - 登录后 `/system/dict/data/all` 一次拉取、10 页下拉/回显由字典驱动；
    - 字典管理页内置 Tag、内置禁删、租户自定义类型可正常增删；
    - 角色管理下拉（角色类型/数据权限）改为字典数据源后展示正常。
-   - 前端注意：本地 `node_modules` 需重新 `npm install`（本次从 package.json 删除了两个
-     @antv 死依赖，本地 npm 会同步移除；package-lock.json 未跟踪无需提交）。
+   - 前端注意：本地 `node_modules` 需重新 `npm install`（package.json 已删两个 @antv 死依赖，
+     且本地需同步删除 gitignore 遮蔽的 tool/build 残留页——本次已删，新克隆不涉及）；
+     package-lock.json 未跟踪无需提交。
 3. **（可选）D4 功能复用实测**：逻辑删除后将同编码重新插入可用性的 DML 实测仍未做
    （dbx 对远程 PG 无事务回滚能力，避免在共享 dev 库留测试数据）；语义由 partial unique index
    本身保证，等待 CI 或专用环境补测。
 4. **（低优先）后续字典扩充（决策 5）**：业务专属字典类型按需后续增加；上线流程见
    `builtin-resource-guard` 技能沉淀的七步法，不再重复展开。
+5. **（低优先）CI 运维提醒**（不阻塞；CI 全绿后 annotations 提示）：ubuntu-latest 将于
+   2026-10-19 起迁移 Ubuntu 26；actions/checkout@v4、setup-node@v4、setup-java@v4、
+   azure/setup-helm@v4 存在 deprecated 提示（setup-java 建议 v5）；GitHub runner 已
+   强制 Node 20 action 运行于 Node 24。建议择期统一升级 workflow actions 版本。
 
 ---
 
@@ -380,15 +386,16 @@
   `max setup` 解析该组件路径即 MODULE_NOT_FOUND 崩溃；本地正常只因磁盘恰有此文件
   （这也解释了 Frontend job 从建立依赖步骤起从未绿过）。
 - 修复（用户选 A，2026-11-05）：routes.ts 删 `/tool/build` 路由项、`/tool` redirect
-  改 `/tool/gen`；routePermission.ts 删对应映射；本地残留页
-  `src/pages/tool/build/` 整目录回收站删除（与 2026-10-28「表单构建器不做」决策对齐）。
-  验证：全仓 `tool/build` 代码引用清零（仅保留删除说明注释）、`tsc --noEmit` 0 错误；
-  CI 实测待推送。
+   改 `/tool/gen`；routePermission.ts 删对应映射；本地残留页
+   `src/pages/tool/build/` 整目录回收站删除（与 2026-10-28「表单构建器不做」决策对齐）。
+   验证：全仓 `tool/build` 代码引用清零（仅保留删除说明注释）、`tsc --noEmit` 0 错误；
+   **CI 实测 ✅**：随 `27c94ce` 推送，run `41961921954` 四 job 全绿
+   （Helm 7s / Frontend 2m8s / Backend 42s / SQL 29s）。
 
-**结论**：Backend 已修复（f982b04 后 CI 实测 ✅）；Frontend 根因已日志取证
-（.gitignore 裸 build 遮蔽 tool/build 残留页 + routes 静态引用，postinstall 崩溃），
-已按方案 A 修复（删路由+删残留页），待推送后 CI 实测。gh 登录完成（keyring 凭据；
-agent 环境需先清除 XDG_CONFIG_HOME 指向 TeleAgent 目录的注入才能读到 keyring，
-本修正已沉淀为本次排查记录）。
+**结论（✅ 闭环）**：Backend（f982b04）与 Frontend（27c94ce）两个历史遗留失败均已修复，
+2026-11-05 起 dev 分支 CI 四 job 全绿——Frontend job 自仓库建 CI 以来首次通过。
+gh 工具链亦就绪（keyring 凭据；agent 环境需先清除 XDG_CONFIG_HOME 指向 TeleAgent
+目录的注入才能读到 keyring，本修正已沉淀为本次排查记录，后续 CI 排障可直接
+`gh run list / gh run view --log` 取证）。根因误判（ERESOLVE 假阳性）已在上方公开更正。
 
 > AI生成
