@@ -369,14 +369,19 @@
 - 验证：本地 `mvn -pl baize-modules/baize-system -am package`（含单测）BUILD SUCCESS。
 
 **Frontend（Install dependencies 失败，基线起一直红）**
-- 根因（本地干净目录 dry-run 复现）：`@antv/l7-react@2.4.3` peer 要求
-  `react@^16.8.6||^17.0.2`，项目实为 React 19 → 全新安装（CI 无 lockfile）必报 ERESOLVE。
-  两个 `@antv/*` 包在 src 零引用，属死依赖。
-- 修复：package.json 删除 `@antv/l7` / `@antv/l7-react`。
-- 验证：dry-run 3384 包解析成功 exit=0；src 无残留引用。
+- 2026-11-05 复盘更正：最初判断「ERESOLVE（@antv/l7-react peer react ^16/^17 vs React 19）」
+  **不成立**——`baize-ui/.npmrc`（已被 git 跟踪）内含 `legacy-peer-deps=true`，CI 全程生效，
+  依赖解析并不冲突（此前的本地复现在临时目录执行、未带上 .npmrc，属污染结论）。
+  删除 `@antv/l7`/`@antv/l7-react` 仍保留：二者在 src 零引用，属死依赖清理（安装体积↓），
+  但它**不是** CI 失败的修复。
+- 真正根因（待日志确认）：install 步骤内执行的生命周期脚本，嫌疑按序：
+  1. `postinstall: max setup`（@umijs/max 4.7.x 在 CI 冷环境跑 setup 的已知坑）；
+  2. `prepare: husky`（CI 上 husky 拿不到 .git 上下文时报错版本）。
+- 取证途径：CI 日志下载需 repo admin token（gh 登录未完成，匿名 403）；
+  已在浏览器打开 Actions job 页面（github.com 经用户代理可达）或完成 gh 登录后即可取证。
 
-**结论**：Backend/Frontend 两个红均为历史遗留，与本次三任务无关；本次一并修复，
-待推送后观察 CI 全绿。gh 已由用户安装（token 登录未完成，暂用匿名 Actions API 查询——
-该仓库匿名可读 run/job 状态；日志下载需 admin token）。
+**结论**：Backend 已修复（f982b04 后 CI 实测 ✅）；Frontend 两个候选根因已排除一个
+（ERESOLVE），真实根因待日志取证后修复。gh 已由用户安装（token 登录未完成，暂用匿名
+Actions API 查询——该仓库匿名可读 run/job 状态；日志下载需 admin token）。
 
 > AI生成
