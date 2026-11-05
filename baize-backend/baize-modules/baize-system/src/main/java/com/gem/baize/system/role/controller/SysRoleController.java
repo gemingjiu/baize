@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.system.role.entity.SysRole;
 import com.gem.baize.system.role.service.SysRoleService;
 import com.gem.baize.api.system.role.domain.dto.SysRoleDto;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.core.model.vo.PageResult;
@@ -68,6 +69,7 @@ public class SysRoleController {
     @PostMapping
     @Operation(summary = "创建角色")
     @RequiresPermission(PermCodes.ROLE_ADD)
+    @Log(title = "角色管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysRoleDto dto) {
         sysRoleService.create(dto);
         return ApiResult.ok();
@@ -76,6 +78,7 @@ public class SysRoleController {
     @PutMapping("/{id}")
     @Operation(summary = "更新角色")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysRoleDto dto) {
         // 双重验证
         if(!id.equals(dto.getId())) {
@@ -88,6 +91,7 @@ public class SysRoleController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除角色")
     @RequiresPermission(PermCodes.ROLE_REMOVE)
+    @Log(title = "角色管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysRoleService.removeById(id);
         return ApiResult.ok();
@@ -108,6 +112,7 @@ public class SysRoleController {
     @PostMapping("/export")
     @Operation(summary = "导出角色", description = "按查询条件导出角色列表为 Excel")
     @RequiresPermission(PermCodes.ROLE_EXPORT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.EXPORT)
     public void export(@RequestBody(required = false) SysRoleDto dto, HttpServletResponse response) {
         Page<SysRole> query = new Page<>(1, EXPORT_MAX_ROWS);
         query.setSearchCount(false);
@@ -134,6 +139,7 @@ public class SysRoleController {
     @PostMapping("/{roleId}/authUser")
     @Operation(summary = "为角色分配用户")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Void> assignUsersToRole(@PathVariable String roleId,
                                              @RequestBody List<String> userIds,
                                              @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {

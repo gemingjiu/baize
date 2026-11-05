@@ -7,8 +7,10 @@ import com.gem.baize.system.operlog.service.SysOperLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +25,14 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * 操作日志记录处理
+ * 操作日志记录处理。
+ * <p>
+ * 2026-11-05 P1 激活与补全：
+ * 1. baize-system 此前缺 spring-boot-starter-aop 依赖，本切面从未真正生效
+ *    （dev 库 sys_oper_log 恒为空即证据），本次补齐依赖后激活；
+ * 2. 计时改 @Around：原 @AfterReturning 版拿不到耗时，cost_time 恒为 0；
+ * 3. 注解覆盖面从仅 SysUserController 扩展到全部控制器的写操作（见各控制器）。
+ * 异步落库（logExecutor）与参数/响应序列化逻辑保持不变。
  */
 @Slf4j
 @Aspect
@@ -38,22 +47,29 @@ public class LogAspect {
     private ThreadPoolTaskExecutor logExecutor;
 
     /**
-     * 处理完请求后执行
+     * 环绕拦截：计时 + 异常照常抛出（不吞业务异常），日志异步落库。
      */
-    @AfterReturning(pointcut = "@annotation(controllerLog)", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, Log controllerLog, Object jsonResult) {
-        logExecutor.execute(() -> handleLog(joinPoint, controllerLog, null, jsonResult));
+    @Around(value = "@annotation(controllerLog)")
+    public Object doAround(ProceedingJoinPoint joinPoint, Log controllerLog) throws Throwable {
+        long start = System.currentTimeMillis();
+        try {
+            Object result = joinPoint.proceed();
+            long cost = System.currentTimeMillis() - start;
+            logExecutor.execute(() -> handleLog(joinPoint, controllerLog, null, result, cost));
+            return result;
+        } catch (Throwable e) {
+            long cost = System.currentTimeMillis() - start;
+            logExecutor.execute(() -> handleLog(joinPoint, controllerLog,
+                    e instanceof Exception ? (Exception) e : new RuntimeException(e), null, cost));
+            throw e;
+        }
     }
 
     /**
-     * 拦截异常操作
+     * 组装并异步保存日志（原 @AfterReturning/@AfterThrowing 两分支在此统一）。
      */
-    @AfterThrowing(pointcut = "@annotation(controllerLog)", throwing = "e")
-    public void doAfterThrowing(JoinPoint joinPoint, Log controllerLog, Exception e) {
-        logExecutor.execute(() -> handleLog(joinPoint, controllerLog, e, null));
-    }
-
-    protected void handleLog(final JoinPoint joinPoint, final Log controllerLog, final Exception e, Object jsonResult) {
+    protected void handleLog(final JoinPoint joinPoint, final Log controllerLog, final Exception e,
+                             Object jsonResult, long costMillis) {
         try {
             // 获取请求信息
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -117,7 +133,7 @@ public class LogAspect {
             }
 
             operLog.setOperTime(LocalDateTime.now());
-            operLog.setCostTime(0L);
+            operLog.setCostTime(costMillis);
 
             // 保存日志
             sysOperLogService.insertOperlog(operLog);

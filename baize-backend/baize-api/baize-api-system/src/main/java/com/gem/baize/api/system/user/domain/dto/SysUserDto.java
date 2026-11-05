@@ -58,4 +58,9 @@ public class SysUserDto {
      */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    /**
+     * 岗位ID列表（2026-11-05 P6 用户-岗位绑定；创建/更新时全量替换绑定关系）
+     */
+    private java.util.List<String> postIds;
 }

@@ -26,8 +26,11 @@ public class LoginDTO {
     @Schema(description = "密码", example = "Password123!", format = "password")
     private String password;
 
-    @Schema(description = "验证码（可选）", example = "3842")
+    @Schema(description = "验证码（可选，sys.account.captchaEnabled=true 时必填）", example = "3842")
     private String captcha;
+
+    @Schema(description = "验证码会话标识（与 /auth/captcha 返回的 key 配对）", example = "a1b2c3d4")
+    private String captchaKey;
 
     @Schema(description = "设备标识（用于多端登录控制）", example = "WEB/APP")
     private String deviceType;

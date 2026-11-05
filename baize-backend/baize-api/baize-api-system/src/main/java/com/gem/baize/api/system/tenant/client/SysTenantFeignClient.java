@@ -21,6 +21,13 @@ public interface SysTenantFeignClient {
     ApiResult<Boolean> existsById(@RequestParam("id") String id);
 
     /**
+     * 按租户ID查询租户行（仅服务间调用，2026-11-05 P4）：
+     * 登录/切换租户时校验 expire_time 租户过期。
+     */
+    @GetMapping("/tenant/inner/get")
+    ApiResult<SysTenantDto> getById(@RequestParam("id") String id);
+
+    /**
      * 查询可用租户列表（登录页租户下拉框数据源）
      */
     @GetMapping("/tenant/list")

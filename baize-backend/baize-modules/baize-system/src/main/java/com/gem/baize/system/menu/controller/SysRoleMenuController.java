@@ -2,6 +2,7 @@ package com.gem.baize.system.menu.controller;
 
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
 import com.gem.baize.common.core.annotation.InnerAuth;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.menu.service.SysRoleMenuService;
@@ -55,6 +56,7 @@ public class SysRoleMenuController {
     @PostMapping("/{roleId}/assign")
     @Operation(summary = "为角色分配菜单")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.GRANT)
     public ApiResult<Void> assignMenus(@PathVariable String roleId,
                                        @RequestBody List<String> menuIds,
                                        @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {
@@ -65,6 +67,7 @@ public class SysRoleMenuController {
     @DeleteMapping("/{roleId}")
     @Operation(summary = "删除角色所有菜单关联")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> removeByRoleId(@PathVariable String roleId) {
         sysRoleMenuService.removeByRoleId(roleId);
         return ApiResult.ok();

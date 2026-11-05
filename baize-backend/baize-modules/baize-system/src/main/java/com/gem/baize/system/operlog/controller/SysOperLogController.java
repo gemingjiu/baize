@@ -2,6 +2,7 @@ package com.gem.baize.system.operlog.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.operlog.domain.dto.SysOperLogDto;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.core.model.vo.PageResult;
@@ -64,6 +65,7 @@ public class SysOperLogController {
     @PostMapping("/export")
     @Operation(summary = "导出操作日志", description = "按查询条件导出操作日志为 Excel")
     @RequiresPermission(PermCodes.OPERLOG_EXPORT)
+    @Log(title = "操作日志", businessType = Log.BusinessType.EXPORT)
     public void export(@RequestBody(required = false) SysOperLogDto dto, HttpServletResponse response) {
         Page<SysOperLog> page = new Page<>(1, EXPORT_MAX_ROWS);
         page.setSearchCount(false);
@@ -90,6 +92,7 @@ public class SysOperLogController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除操作日志", description = "根据ID删除操作日志")
     @RequiresPermission(PermCodes.OPERLOG_REMOVE)
+    @Log(title = "操作日志", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysOperLogService.removeById(id);
         return ApiResult.ok();
@@ -98,6 +101,7 @@ public class SysOperLogController {
     @DeleteMapping("/clean")
     @Operation(summary = "清空操作日志", description = "清空所有操作日志")
     @RequiresPermission(PermCodes.OPERLOG_REMOVE)
+    @Log(title = "操作日志", businessType = Log.BusinessType.CLEAN)
     public ApiResult<Void> clean() {
         sysOperLogService.cleanOperLog();
         return ApiResult.ok();

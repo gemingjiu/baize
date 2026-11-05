@@ -33,6 +33,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * 新用户初始密码参数键（2026-11-05 P2）：创建用户未显式指定密码时取该参数，
+     * 参数缺失则拒绝创建（避免落库一个永远无法登录的空密码账号）。
+     */
+    private static final String INIT_PASSWORD_KEY = "sys.user.initPassword";
+
+    @Autowired
+    private com.gem.baize.system.config.service.SysConfigService sysConfigService;
+
+    /**
+     * 租户服务（2026-11-05 P4）：创建用户时校验租户 max_user 配额。
+     */
+    @Autowired
+    private com.gem.baize.system.tenant.service.SysTenantService sysTenantService;
+
+    /**
+     * 用户岗位关联服务（2026-11-05 P6）：创建/更新时全量替换绑定，删除时清理。
+     */
+    @Autowired
+    private com.gem.baize.system.user.service.SysUserPostService sysUserPostService;
+
     @Override
     @Cacheable(cacheNames = "sys_user", key = "#id")
     public SysUserDto getById(String id) {
@@ -44,14 +65,53 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Transactional(rollbackFor = Exception.class)
     public void create(SysUserDto sysUserDto) {
         SysUser sysUser = SysUserConvert.INSTANCE.toEntity(sysUserDto);
-        // 密码加密
-        if (StringUtils.isNotBlank(sysUser.getPassword())) {
-            sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+        // 租户用户配额校验（P4）：超过 max_user 拒绝创建；max_user 为空表示不限制
+        checkUserQuota();
+        // 密码加密；未显式指定时回落系统参数 sys.user.initPassword（P2 参数消费）
+        String rawPassword = sysUser.getPassword();
+        if (StringUtils.isNotBlank(rawPassword)) {
+            sysUser.setPassword(passwordEncoder.encode(rawPassword));
+        } else {
+            String initPassword = sysConfigService.getConfigValueByKey(INIT_PASSWORD_KEY);
+            if (StringUtils.isBlank(initPassword)) {
+                throw new BusinessException(ErrorCode.BUSINESS_CONFLICT,
+                        "未设置初始密码，请配置参数 " + INIT_PASSWORD_KEY + " 或显式指定密码");
+            }
+            sysUser.setPassword(passwordEncoder.encode(initPassword));
         }
         try {
             super.save(sysUser);
         } catch (DuplicateKeyException e) {
             throw new DuplicateException("用户名称已存在，请更换后重试");
+        }
+        // 岗位绑定（P6）：全量替换；空列表=不绑定
+        sysUserPostService.assignPosts(sysUser.getId(), sysUserDto.getPostIds());
+    }
+
+    /**
+     * 租户用户配额校验（2026-11-05 P4）：
+     * 当前租户未删除用户数达到 max_user 时拒绝创建；查不到租户或 max_user 为空不限制。
+     */
+    private void checkUserQuota() {
+        try {
+            com.gem.baize.api.system.tenant.domain.dto.SysTenantDto tenant =
+                    sysTenantService.getByCurrentTenantId();
+            if (tenant == null || tenant.getMaxUser() == null) {
+                return;
+            }
+            LambdaQueryWrapper<SysUser> countWrapper = new LambdaQueryWrapper<>();
+            countWrapper.eq(SysUser::getDeleted, "0");
+            long current = this.count(countWrapper);
+            if (current >= tenant.getMaxUser()) {
+                throw new BusinessException(ErrorCode.BUSINESS_CONFLICT,
+                        "已达租户最大用户数上限（" + tenant.getMaxUser() + "），请联系管理员调整配额");
+            }
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            // 配额校验是治理增强，不作为创建的硬边界：查租户失败时放行并告警
+            org.slf4j.LoggerFactory.getLogger(SysUserServiceImpl.class)
+                    .warn("租户用户配额校验失败（放行创建）: {}", e.getMessage());
         }
     }
 
@@ -64,6 +124,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         boolean success = super.updateById(sysUser);
         if (!success) {
             throw new NotFoundException("用户不存在或已删除");
+        }
+        // 岗位绑定（P6）：全量替换；null 表示前端未提交岗位字段，不改动既有绑定
+        if (sysUserDto.getPostIds() != null) {
+            sysUserPostService.assignPosts(sysUserDto.getId(), sysUserDto.getPostIds());
         }
     }
 
@@ -82,6 +146,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (!success) {
             throw new NotFoundException("用户不存在或已删除");
         }
+        // 岗位绑定清理（P6）：逻辑删用户后同步清理岗位绑定，防孤儿行
+        sysUserPostService.removeByUserId(id);
     }
 
 

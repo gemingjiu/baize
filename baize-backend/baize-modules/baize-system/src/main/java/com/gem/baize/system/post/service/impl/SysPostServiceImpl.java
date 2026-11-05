@@ -101,4 +101,13 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         Page<SysPost> sysPostPage = super.page(page, wrapper);
         return SysPostConvert.INSTANCE.toDtoPage(sysPostPage);
     }
+
+    @Override
+    public java.util.List<SysPostDto> listAvailable() {
+        LambdaQueryWrapper<SysPost> wrapper = new LambdaQueryWrapper<>();
+        // 只返回启用中的岗位；deleted='0' 由全局逻辑删除过滤自动附加
+        wrapper.eq(SysPost::getStatus, "0");
+        wrapper.orderByAsc(SysPost::getSort);
+        return SysPostConvert.INSTANCE.toDtoList(super.list(wrapper));
+    }
 }

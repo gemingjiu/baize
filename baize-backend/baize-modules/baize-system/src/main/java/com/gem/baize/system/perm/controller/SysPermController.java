@@ -2,6 +2,7 @@ package com.gem.baize.system.perm.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.perm.domain.dto.SysPermDto;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
@@ -37,6 +38,7 @@ public class SysPermController {
     @PostMapping
     @Operation(summary = "创建权限")
     @RequiresPermission(PermCodes.PERM_ADD)
+    @Log(title = "权限管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysPermDto dto) {
         sysPermService.create(dto);
         return ApiResult.ok();
@@ -45,6 +47,7 @@ public class SysPermController {
     @PutMapping("/{id}")
     @Operation(summary = "更新权限")
     @RequiresPermission(PermCodes.PERM_EDIT)
+    @Log(title = "权限管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysPermDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
@@ -57,6 +60,7 @@ public class SysPermController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除权限")
     @RequiresPermission(PermCodes.PERM_REMOVE)
+    @Log(title = "权限管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysPermService.removeById(id);
         return ApiResult.ok();

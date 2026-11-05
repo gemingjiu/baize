@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,5 +77,15 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
 
         Page<SysNotice> sysNoticePage = super.page(page, wrapper);
         return SysNoticeConvert.INSTANCE.toDtoPage(sysNoticePage);
+    }
+
+    @Override
+    public List<SysNoticeDto> listLatest(int limit) {
+        LambdaQueryWrapper<SysNotice> wrapper = new LambdaQueryWrapper<>();
+        // 只取启用中的公告；deleted='0' 由全局逻辑删除过滤自动附加
+        wrapper.eq(SysNotice::getStatus, "0");
+        wrapper.orderByDesc(SysNotice::getCreatedTime);
+        wrapper.last("LIMIT " + Math.max(1, limit));
+        return SysNoticeConvert.INSTANCE.toDtoList(super.list(wrapper));
     }
 }

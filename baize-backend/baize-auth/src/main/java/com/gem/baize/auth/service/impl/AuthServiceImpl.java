@@ -1,13 +1,16 @@
 package com.gem.baize.auth.service.impl;
 
+import com.gem.baize.api.system.config.client.SysConfigFeignClient;
 import com.gem.baize.api.system.menu.client.SysMenuFeignClient;
 import com.gem.baize.api.system.role.client.SysRoleFeignClient;
 import com.gem.baize.api.system.role.domain.dto.SysRoleDto;
 import com.gem.baize.api.system.tenant.client.SysTenantFeignClient;
+import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.api.system.user.client.SysUserFeignClient;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
 import com.gem.baize.auth.manager.TokenManager;
 import com.gem.baize.auth.service.AuthService;
+import com.gem.baize.auth.service.CaptchaService;
 import com.gem.baize.common.cache.service.TokenBlacklistService;
 import com.gem.baize.common.core.constant.CustomHttpHeaders;
 import com.gem.baize.common.core.constant.DataScopeConstant;
@@ -69,6 +72,9 @@ public class AuthServiceImpl implements AuthService {
     private TokenBlacklistService tokenBlacklistService;
 
     @Autowired
+    private CaptchaService captchaService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Value("${jwt.expiration:7200000}")
@@ -99,6 +105,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginVO login(LoginDTO dto) {
         log.info("用户登录请求: username={}, tenant={}", dto.getUsername(), dto.getTenant());
+        // 验证码校验（P5）：sys.account.captchaEnabled=true 时必填；开关关闭时跳过
+        if (captchaService.isEnabled()) {
+            if (!captchaService.validate(dto.getCaptchaKey(), dto.getCaptcha())) {
+                throw new UnauthorizedException("验证码错误或已过期");
+            }
+        }
         // 按用户名和租户查询用户
         ApiResult<SysUserDto> userResult;
         if (StringUtils.isNotBlank(dto.getTenant())) {
@@ -128,6 +140,9 @@ public class AuthServiceImpl implements AuthService {
             throw new NotFoundException("用户名或密码错误");
         }
 
+        // 租户过期校验（P4）：expire_time 已过的租户拒绝登录（null 表示永不过期）
+        checkTenantNotExpired(user.getTenantId());
+
         // 签发令牌（权限码按用户当前角色重新聚合，保证权限变更能立即生效）
         LoginVO loginVO = issueTokenForUser(user, user.getTenantId());
 
@@ -145,8 +160,11 @@ public class AuthServiceImpl implements AuthService {
         if (current == null || StringUtils.isBlank(current.getUserId())) {
             throw new UnauthorizedException("令牌无效，请重新登录");
         }
-        if (StringUtils.isBlank(targetTenant) || !StringUtils.isNumeric(targetTenant)) {
-            throw new ParamException("目标租户ID必须为数字");
+        // 目标租户ID必须是 UUIDv7 形态（36 位含连字符）。2026-11-05 P4 修复：
+        // 历史代码用 isNumeric 校验数字，UUIDv7 迁移后所有合法租户ID都会被误拒，
+        // 切换租户功能自 V2026_10_21 起完全不可用。
+        if (StringUtils.isBlank(targetTenant) || !targetTenant.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
+            throw new ParamException("目标租户ID格式非法");
         }
         String userName = current.getUserName();
         if (StringUtils.isBlank(userName)) {
@@ -165,6 +183,9 @@ public class AuthServiceImpl implements AuthService {
         if (!tenantExists) {
             throw new NotFoundException("目标租户不存在");
         }
+
+        // 租户过期校验（P4）：过期租户拒绝切换
+        checkTenantNotExpired(targetTenant);
 
         // 2. 归属判定：优先使用「用户在目标租户下的账号」，其次是平台超管的跨租户巡视
         ApiResult<SysUserDto> memberResult;
@@ -205,6 +226,30 @@ public class AuthServiceImpl implements AuthService {
         log.info("切换租户成功: userId={}, from={}, to={}",
                 current.getUserId(), current.getTenantId(), targetTenant);
         return loginVO;
+    }
+
+    /**
+     * 租户过期校验（2026-11-05 P4）：expire_time 已过拒绝登录/切换；
+     * 查不到租户行（含 inner 接口异常）不拦截——过期校验是增强治理，不作为鉴权边界。
+     */
+    private void checkTenantNotExpired(String tenantId) {
+        if (StringUtils.isBlank(tenantId)) {
+            return;
+        }
+        try {
+            ApiResult<SysTenantDto> tenantResult = sysTenantFeignClient.getById(tenantId);
+            if (tenantResult == null || !tenantResult.isSuccess() || tenantResult.getData() == null) {
+                return;
+            }
+            java.time.LocalDateTime expireTime = tenantResult.getData().getExpireTime();
+            if (expireTime != null && expireTime.isBefore(java.time.LocalDateTime.now())) {
+                throw new ForbiddenException("租户已过期，请联系管理员");
+            }
+        } catch (ForbiddenException e) {
+            throw e;
+        } catch (Exception e) {
+            log.warn("租户过期校验失败（不拦截登录）: tenantId={}, error={}", tenantId, e.getMessage());
+        }
     }
 
     /**

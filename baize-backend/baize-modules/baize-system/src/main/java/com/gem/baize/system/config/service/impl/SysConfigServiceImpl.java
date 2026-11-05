@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.config.domain.dto.SysConfigDto;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
+import com.gem.baize.common.webmvc.context.RequestContextHolder;
 import com.gem.baize.system.config.entity.SysConfig;
 import com.gem.baize.system.config.mapper.SysConfigMapper;
 import com.gem.baize.system.config.service.SysConfigService;
@@ -24,6 +25,9 @@ import java.util.Optional;
 @Service
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
 
+    /** 平台级租户ID（nil UUID），与 CustomTenantHandler 的兑底口径一致 */
+    private static final String PLATFORM_TENANT = "00000000-0000-0000-0000-000000000000";
+
 
     @Override
     @Cacheable(cacheNames = "sys_config", key = "#id")
@@ -34,6 +38,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = "sys_config", allEntries = true)
     public void create(SysConfigDto dto) {
         SysConfig sysConfig = SysConfigConvert.INSTANCE.toEntity(dto);
         try {
@@ -45,7 +50,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = "sys_config", key = "#dto.id")
+    @CacheEvict(cacheNames = "sys_config", allEntries = true)
     public void updateById(SysConfigDto dto) {
         SysConfig sysConfig = SysConfigConvert.INSTANCE.toEntity(dto);
         boolean success = super.updateById(sysConfig);
@@ -56,7 +61,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(cacheNames = "sys_config", key = "#id")
+    @CacheEvict(cacheNames = "sys_config", allEntries = true)
     public void removeById(String id) {
         // 逻辑删除：只把 deleted 置 '1'（status 同步置 '1' 表示停用），保留行供审计/外键引用。
         // 不调用 super.removeById：MP 的全局 logic-delete 配置对由 DTO 转换的实体无效，
@@ -95,11 +100,32 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     }
 
     @Override
-    @Cacheable(cacheNames = "sys_config", key = "'key_' + #configKey")
+    @Cacheable(cacheNames = "sys_config",
+            key = "(T(com.gem.baize.common.webmvc.context.RequestContextHolder).getTenantId() ?: '00000000-0000-0000-0000-000000000000') + ':key_' + #configKey")
     public SysConfigDto getByConfigKey(String configKey) {
         LambdaQueryWrapper<SysConfig> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysConfig::getConfigKey, configKey);
+        wrapper.eq(SysConfig::getStatus, "0");
         SysConfig sysConfig = getOne(wrapper);
+        if (sysConfig == null) {
+            return null;
+        }
         return SysConfigConvert.INSTANCE.toDto(sysConfig);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "sys_config",
+            key = "(T(com.gem.baize.common.webmvc.context.RequestContextHolder).getTenantId() ?: '00000000-0000-0000-0000-000000000000') + ':value_' + #configKey")
+    public String getConfigValueByKey(String configKey) {
+        String tenantId = currentTenantId();
+        return baseMapper.selectVisibleValue(tenantId, PLATFORM_TENANT, configKey);
+    }
+
+    /**
+     * 当前租户上下文；缺失时兑底为平台租户（与 CustomTenantHandler 的 fail-safe 口径一致）。
+     */
+    private String currentTenantId() {
+        String tenantId = RequestContextHolder.getTenantId();
+        return StringUtils.isBlank(tenantId) ? PLATFORM_TENANT : tenantId;
     }
 }

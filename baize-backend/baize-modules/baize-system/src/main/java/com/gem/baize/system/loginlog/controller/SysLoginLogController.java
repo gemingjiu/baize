@@ -1,6 +1,7 @@
 package com.gem.baize.system.loginlog.controller;
 
 import com.gem.baize.common.core.annotation.InnerAuth;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.core.model.vo.PageResult;
@@ -44,6 +45,7 @@ public class SysLoginLogController {
     @InnerAuth
     @PostMapping("/record")
     @Operation(summary = "记录登录日志")
+    @Log(title = "登录日志", businessType = Log.BusinessType.INSERT)
     public ApiResult<Void> record(@RequestBody SysLoginLogDto dto) {
         sysLoginLogService.recordLoginLog(dto);
         return ApiResult.ok();
@@ -66,6 +68,7 @@ public class SysLoginLogController {
     @PostMapping("/export")
     @Operation(summary = "导出登录日志", description = "按查询条件导出登录日志为 Excel")
     @RequiresPermission(PermCodes.LOGINLOG_EXPORT)
+    @Log(title = "登录日志", businessType = Log.BusinessType.EXPORT)
     public void export(@RequestBody(required = false) SysLoginLogDto dto, HttpServletResponse response) {
         Page<SysLoginLog> page = new Page<>(1, EXPORT_MAX_ROWS);
         page.setSearchCount(false);
@@ -90,6 +93,7 @@ public class SysLoginLogController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除登录日志")
     @RequiresPermission(PermCodes.LOGINLOG_REMOVE)
+    @Log(title = "登录日志", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysLoginLogService.removeById(id);
         return ApiResult.ok();
@@ -98,6 +102,7 @@ public class SysLoginLogController {
     @DeleteMapping("/clean")
     @Operation(summary = "清空登录日志")
     @RequiresPermission(PermCodes.LOGINLOG_REMOVE)
+    @Log(title = "登录日志", businessType = Log.BusinessType.CLEAN)
     public ApiResult<Void> clean() {
         sysLoginLogService.cleanLoginLog();
         return ApiResult.ok();

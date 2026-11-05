@@ -1,6 +1,7 @@
 package com.gem.baize.system.dept.controller;
 
 import com.gem.baize.api.system.dept.domain.dto.SysDeptDto;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
@@ -38,6 +39,7 @@ public class SysDeptController {
     @PostMapping
     @Operation(summary = "创建部门")
     @RequiresPermission(PermCodes.DEPT_ADD)
+    @Log(title = "部门管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysDeptDto dto) {
         sysDeptService.create(dto);
         return ApiResult.ok();
@@ -46,6 +48,7 @@ public class SysDeptController {
     @PutMapping("/{id}")
     @Operation(summary = "更新部门")
     @RequiresPermission(PermCodes.DEPT_EDIT)
+    @Log(title = "部门管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysDeptDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
@@ -59,6 +62,7 @@ public class SysDeptController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除部门")
     @RequiresPermission(PermCodes.DEPT_REMOVE)
+    @Log(title = "部门管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysDeptService.removeById(id);
         return ApiResult.ok();
@@ -76,6 +80,7 @@ public class SysDeptController {
     @PostMapping("/tree")
     @Operation(summary = "查询部门树")
     @RequiresPermission(PermCodes.DEPT_LIST)
+    @Log(title = "部门管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<List<SysDeptDto>> tree(@RequestBody(required = false) SysDeptDto dto) {
         if (dto == null) {
             dto = new SysDeptDto();

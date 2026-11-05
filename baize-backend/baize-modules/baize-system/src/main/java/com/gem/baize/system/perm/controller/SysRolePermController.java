@@ -1,5 +1,6 @@
 package com.gem.baize.system.perm.controller;
 
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.perm.service.SysRolePermService;
@@ -41,6 +42,7 @@ public class SysRolePermController {
     @PostMapping("/{roleId}/assign")
     @Operation(summary = "为角色分配权限")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.GRANT)
     public ApiResult<Void> assignPerms(@PathVariable String roleId,
                                        @RequestBody List<String> permIds,
                                        @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {
@@ -51,6 +53,7 @@ public class SysRolePermController {
     @DeleteMapping("/{roleId}")
     @Operation(summary = "删除角色所有权限关联")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> removeByRoleId(@PathVariable String roleId) {
         sysRolePermService.removeByRoleId(roleId);
         return ApiResult.ok();

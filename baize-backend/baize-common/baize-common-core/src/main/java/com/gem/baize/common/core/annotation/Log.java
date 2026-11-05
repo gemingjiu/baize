@@ -60,9 +60,10 @@ public @interface Log {
          */
         DELETE,
         /**
-         * 查询
+         * 授权（2026-11-05 P1：原 SELECT 枚举从未使用，改名 GRANT 后 ordinal 仍为 4，
+         * 与前端字典 sys_oper_type 的「4=授权」对齐）
          */
-        SELECT,
+        GRANT,
         /**
          * 导出
          */

@@ -2,6 +2,7 @@ package com.gem.baize.system.menu.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.menu.domain.dto.SysMenuDto;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
@@ -41,6 +42,7 @@ public class SysMenuController {
     @PostMapping
     @Operation(summary = "创建菜单")
     @RequiresPermission(PermCodes.MENU_ADD)
+    @Log(title = "菜单管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysMenuDto dto) {
         sysMenuService.create(dto);
         return ApiResult.ok();
@@ -49,6 +51,7 @@ public class SysMenuController {
     @PutMapping("/{id}")
     @Operation(summary = "更新菜单")
     @RequiresPermission(PermCodes.MENU_EDIT)
+    @Log(title = "菜单管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysMenuDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
@@ -62,6 +65,7 @@ public class SysMenuController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除菜单")
     @RequiresPermission(PermCodes.MENU_REMOVE)
+    @Log(title = "菜单管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysMenuService.removeById(id);
         return ApiResult.ok();
@@ -79,6 +83,7 @@ public class SysMenuController {
     @PostMapping("/tree")
     @Operation(summary = "查询菜单树")
     @RequiresPermission(PermCodes.MENU_LIST)
+    @Log(title = "菜单管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<List<SysMenuDto>> tree(@RequestBody(required = false) SysMenuDto dto) {
         if (dto == null) {
             dto = new SysMenuDto();

@@ -41,6 +41,33 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private com.gem.baize.auth.service.CaptchaService captchaService;
+
+    /**
+     * 生成登录图形验证码（2026-11-05 P5）。
+     * <p>
+     * 返回 {key, image(Base64 PNG)}；登录时随 captchaKey+captcha 提交。
+     * 注意：该路径需加入网关白名单 baize.gateway.whitelist（匿名可访问），
+     * 见 doc/DEFAULT_GROUP/baize-gateway-dev.yml。
+     */
+    @GetMapping("/captcha")
+    @Operation(summary = "生成登录验证码", description = "返回 key 与 Base64 图片；TTL 120 秒，一次性消费")
+    public ApiResult<java.util.Map<String, String>> captcha() {
+        return ApiResult.ok(captchaService.generate());
+    }
+
+    /**
+     * 验证码开关（登录页在渲染表单前探测是否需要验证码）。
+     * 读参数 sys.account.captchaEnabled，读取失败一律回 false（不阻断登录页）。
+     * 同样需要网关白名单放行。
+     */
+    @GetMapping("/captcha/enabled")
+    @Operation(summary = "验证码开关", description = "登录页探测是否启用验证码")
+    public ApiResult<Boolean> captchaEnabled() {
+        return ApiResult.ok(captchaService.isEnabled());
+    }
+
     @PostMapping("/login")
     @Operation(summary = "用户登录", description = "用户名密码登录")
     public ApiResult<LoginVO> login(@Valid @RequestBody LoginDTO dto, HttpServletRequest request) {

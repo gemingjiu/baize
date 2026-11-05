@@ -4,6 +4,7 @@ package com.gem.baize.system.tenant.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.common.core.annotation.InnerAuth;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
@@ -44,6 +45,7 @@ public class SysTenantController {
     @PostMapping
     @Operation(summary = "创建租户")
     @RequiresPermission(PermCodes.TENANT_ADD)
+    @Log(title = "租户管理", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysTenantDto dto) {
         sysTenantService.create(dto);
         return ApiResult.ok();
@@ -52,6 +54,7 @@ public class SysTenantController {
     @PutMapping("/{id}")
     @Operation(summary = "更新租户")
     @RequiresPermission(PermCodes.TENANT_EDIT)
+    @Log(title = "租户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysTenantDto dto) {
         // 双重验证
         if (!id.equals(dto.getId())) {
@@ -65,6 +68,7 @@ public class SysTenantController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除租户")
     @RequiresPermission(PermCodes.TENANT_REMOVE)
+    @Log(title = "租户管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable("id") String id) {
         sysTenantService.removeById(id);
         return ApiResult.ok();
@@ -119,5 +123,22 @@ public class SysTenantController {
             throw new ParamException("请求参数id不能为空");
         }
         return ApiResult.ok(sysTenantService.existsById(id));
+    }
+
+    /**
+     * 按租户ID查询租户行（仅供服务间调用，2026-11-05 P4 租户治理）。
+     * <p>
+     * 消费方：baize-auth 登录/切换租户时校验 {@code expire_time}（租户过期拒绝）。
+     * 对齐 /exists 的防护口径：@InnerAuth + 无网关白名单，浏览器侧无法直接命中。
+     * 注意：sys_tenant 豁免租户行级隔离（IGNORED_TABLES），任何租户上下文都能按 id 查到。
+     */
+    @GetMapping("/inner/get")
+    @Operation(summary = "按ID查询租户", description = "仅供服务间调用：登录/切换租户时的过期校验取数")
+    @InnerAuth
+    public ApiResult<SysTenantDto> innerGet(@RequestParam("id") String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new ParamException("请求参数id不能为空");
+        }
+        return ApiResult.ok(sysTenantService.getById(id));
     }
 }

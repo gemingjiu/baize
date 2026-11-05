@@ -1,5 +1,6 @@
 package com.gem.baize.system.user.controller;
 
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.core.service.OnlineUserService;
@@ -42,6 +43,7 @@ public class OnlineUserController {
     @PostMapping("/kickout")
     @Operation(summary = "强制用户下线")
     @RequiresPermission(PermCodes.ONLINE_FORCE_LOGOUT)
+    @Log(title = "在线用户", businessType = Log.BusinessType.FORCE)
     public ApiResult<Void> kickout(@RequestParam("userId") String userId,
                                    @RequestParam(value = "tenantId", required = false) String tenantId) {
         onlineUserService.kickout(userId, tenantId);

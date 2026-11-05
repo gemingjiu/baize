@@ -45,4 +45,11 @@ public interface SysTenantService extends IService<SysTenant> {
      * @return 存在返回 true
      */
     boolean existsById(String id);
+
+    /**
+     * 按当前请求租户上下文查询租户行（2026-11-05 P4：用户配额等治理校验取数）。
+     * <p>
+     * 上下文缺失时兜底平台租户；查不到返回 null（调用方自行决定放行/拦截）。
+     */
+    SysTenantDto getByCurrentTenantId();
 }

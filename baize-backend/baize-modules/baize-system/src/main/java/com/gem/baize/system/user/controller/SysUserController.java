@@ -52,6 +52,9 @@ public class SysUserController {
     private SysUserService sysUserService;
 
     @Autowired
+    private com.gem.baize.system.user.service.SysUserPostService sysUserPostService;
+
+    @Autowired
     private FileUploadService fileUploadService;
 
     @PostMapping("/uploadAvatar")
@@ -76,6 +79,22 @@ public class SysUserController {
             throw new ParamException("请求参数id不能为空");
         }
         return ApiResult.ok(sysUserService.getById(id));
+    }
+
+    /**
+     * 查询用户的岗位ID列表（2026-11-05 P6）。
+     * <p>
+     * 编辑用户表单回显用：SysUserDto 的 getById 走 @Cacheable 缓存，
+     * 岗位绑定实时性要求更高，独立接口避免污染用户主缓存。
+     */
+    @GetMapping("/{id}/posts")
+    @Operation(summary = "查询用户岗位绑定", description = "返回用户绑定的岗位ID列表（编辑表单回显）")
+    @RequiresPermission(PermCodes.USER_QUERY)
+    public ApiResult<java.util.List<String>> getUserPosts(@PathVariable String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new ParamException("请求参数id不能为空");
+        }
+        return ApiResult.ok(sysUserPostService.getPostIdsByUserId(id));
     }
 
     @PostMapping
@@ -128,6 +147,7 @@ public class SysUserController {
     @PostMapping("/export")
     @Operation(summary = "导出用户", description = "按查询条件导出用户列表为 Excel")
     @RequiresPermission(PermCodes.USER_EXPORT)
+    @Log(title = "用户管理", businessType = Log.BusinessType.EXPORT)
     public void export(@RequestBody(required = false) SysUserDto dto, HttpServletResponse response) {
         Page<SysUser> query = new Page<>(1, EXPORT_MAX_ROWS);
         query.setSearchCount(false);
@@ -218,6 +238,7 @@ public class SysUserController {
 
     @PutMapping("/profile")
     @Operation(summary = "修改个人信息", description = "用户修改自己的个人资料")
+    @Log(title = "用户管理", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> updateProfile(@RequestHeader(CustomHttpHeaders.USER_ID) String userId,
                                          @Valid @RequestBody SysUserDto dto) {
         sysUserService.updateProfile(userId, dto);

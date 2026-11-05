@@ -2,6 +2,7 @@ package com.gem.baize.system.job.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.common.core.model.vo.PageResult;
@@ -87,6 +88,7 @@ public class SysJobController {
     @PostMapping
     @Operation(summary = "新增定时任务")
     @RequiresPermission(PermCodes.JOB_ADD)
+    @Log(title = "定时任务", businessType = Log.BusinessType.INSERT)
     public ApiResult<Void> create(@Valid @RequestBody SysJobDto dto) {
         sysJobService.save(SysJobConvert.INSTANCE.toEntity(dto));
         return ApiResult.ok();
@@ -103,6 +105,7 @@ public class SysJobController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除定时任务")
     @RequiresPermission(PermCodes.JOB_REMOVE)
+    @Log(title = "定时任务", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysJobService.removeById(id);
         return ApiResult.ok();
@@ -111,6 +114,7 @@ public class SysJobController {
     @PutMapping("/run/{id}")
     @Operation(summary = "立即执行任务")
     @RequiresPermission(PermCodes.JOB_EDIT)
+    @Log(title = "定时任务", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> run(@PathVariable String id) throws Exception {
         SysJob job = sysJobService.getById(id);
         if (job != null) {
@@ -122,6 +126,7 @@ public class SysJobController {
     @PutMapping("/pause/{id}")
     @Operation(summary = "暂停任务")
     @RequiresPermission(PermCodes.JOB_EDIT)
+    @Log(title = "定时任务", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> pause(@PathVariable String id) {
         sysJobService.pauseJob(id);
         return ApiResult.ok();
@@ -130,6 +135,7 @@ public class SysJobController {
     @PutMapping("/resume/{id}")
     @Operation(summary = "恢复任务")
     @RequiresPermission(PermCodes.JOB_EDIT)
+    @Log(title = "定时任务", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> resume(@PathVariable String id) {
         sysJobService.resumeJob(id);
         return ApiResult.ok();

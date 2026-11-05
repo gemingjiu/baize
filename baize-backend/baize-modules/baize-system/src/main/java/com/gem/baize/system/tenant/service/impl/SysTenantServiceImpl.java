@@ -8,8 +8,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.common.core.enums.ErrorCode;
 import com.gem.baize.common.core.exception.model.BusinessException;
+import com.gem.baize.common.core.enums.ErrorCode;
+import com.gem.baize.common.core.exception.model.BusinessException;
 import com.gem.baize.common.core.exception.model.DuplicateException;
 import com.gem.baize.common.core.exception.model.NotFoundException;
+import com.gem.baize.common.webmvc.context.RequestContextHolder;
 import com.gem.baize.system.tenant.entity.SysTenant;
 import com.gem.baize.system.tenant.mapper.SysTenantMapper;
 import com.gem.baize.system.tenant.service.SysTenantService;
@@ -31,6 +34,11 @@ import java.util.Optional;
 @Service
 public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements SysTenantService {
 
+    /** 平台级租户ID（nil UUID），与 CustomTenantHandler 的兑底口径一致 */
+    private static final String PLATFORM_TENANT = "00000000-0000-0000-0000-000000000000";
+
+    /** UUIDv7 形态：租户ID自 V2026_10_21 起为 36 位带连字符，不再是纯数字 */
+    private static final String UUID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
 
 
     @Override
@@ -134,8 +142,10 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Override
     public boolean existsById(String id) {
-        // 租户ID必须是数字：它会进入 SQL 条件，同时也会被写入令牌的 X-Tenant-Id
-        if (StringUtils.isBlank(id) || !id.matches("\\d+")) {
+        // 租户ID自 UUIDv7 迁移后为 36 位带连字符（V2026_10_21），不再是纯数字。
+        // 2026-11-05 P4 修复：历史 \\d+ 校验会把所有合法 UUID 拒掉，
+        // 使 switchTenant 永远报「目标租户不存在」。此处校验 UUID 形态防注入。
+        if (StringUtils.isBlank(id) || !id.matches(UUID_PATTERN)) {
             return false;
         }
         LambdaQueryWrapper<SysTenant> wrapper = new LambdaQueryWrapper<>();
@@ -143,6 +153,19 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         wrapper.eq(SysTenant::getDeleted, "0");
         wrapper.eq(SysTenant::getStatus, "0");
         return super.count(wrapper) > 0;
+    }
+
+    @Override
+    public SysTenantDto getByCurrentTenantId() {
+        String tenantId = RequestContextHolder.getTenantId();
+        if (StringUtils.isBlank(tenantId)) {
+            tenantId = PLATFORM_TENANT;
+        }
+        SysTenant sysTenant = super.getById(tenantId);
+        if (sysTenant == null || "1".equals(sysTenant.getDeleted())) {
+            return null;
+        }
+        return SysTenantConvert.INSTANCE.toDto(sysTenant);
     }
 
     @Override

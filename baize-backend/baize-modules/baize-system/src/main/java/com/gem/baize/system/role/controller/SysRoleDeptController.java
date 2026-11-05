@@ -1,5 +1,6 @@
 package com.gem.baize.system.role.controller;
 
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.role.service.SysRoleDeptService;
@@ -37,6 +38,7 @@ public class SysRoleDeptController {
     @PostMapping("/{roleId}/assign")
     @Operation(summary = "为角色分配部门")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.GRANT)
     public ApiResult<Void> assignDepts(@PathVariable String roleId,
                                        @RequestBody List<String> deptIds) {
         sysRoleDeptService.assignDepts(roleId, deptIds);
@@ -46,6 +48,7 @@ public class SysRoleDeptController {
     @DeleteMapping("/{roleId}")
     @Operation(summary = "删除角色所有部门关联")
     @RequiresPermission(PermCodes.ROLE_EDIT)
+    @Log(title = "角色管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> removeByRoleId(@PathVariable String roleId) {
         sysRoleDeptService.removeByRoleId(roleId);
         return ApiResult.ok();

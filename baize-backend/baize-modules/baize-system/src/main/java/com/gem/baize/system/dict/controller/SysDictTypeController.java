@@ -2,6 +2,7 @@ package com.gem.baize.system.dict.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gem.baize.api.system.dict.domain.dto.SysDictTypeDto;
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.exception.model.ParamException;
 import com.gem.baize.common.core.model.vo.ApiResult;
@@ -36,6 +37,7 @@ public class SysDictTypeController {
     @PostMapping
     @Operation(summary = "创建字典类型")
     @RequiresPermission(PermCodes.DICT_ADD)
+    @Log(title = "字典类型", businessType = Log.BusinessType.INSERT)
     public ApiResult<Integer> create(@Valid @RequestBody SysDictTypeDto dto) {
         sysDictTypeService.create(dto);
         return ApiResult.ok();
@@ -44,6 +46,7 @@ public class SysDictTypeController {
     @PutMapping("/{id}")
     @Operation(summary = "更新字典类型")
     @RequiresPermission(PermCodes.DICT_EDIT)
+    @Log(title = "字典类型", businessType = Log.BusinessType.UPDATE)
     public ApiResult<Void> update(@PathVariable String id, @Valid @RequestBody SysDictTypeDto dto) {
         if (!id.equals(dto.getId())) {
             throw new ParamException("请求参数id不一致");
@@ -55,6 +58,7 @@ public class SysDictTypeController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除字典类型")
     @RequiresPermission(PermCodes.DICT_REMOVE)
+    @Log(title = "字典类型", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> delete(@PathVariable String id) {
         sysDictTypeService.removeById(id);
         return ApiResult.ok();

@@ -1,5 +1,6 @@
 package com.gem.baize.system.user.controller;
 
+import com.gem.baize.common.core.annotation.Log;
 import com.gem.baize.common.core.annotation.RequiresPermission;
 import com.gem.baize.common.core.model.vo.ApiResult;
 import com.gem.baize.system.user.service.SysUserRoleService;
@@ -35,6 +36,7 @@ public class SysUserRoleController {
     @PostMapping("/{userId}/assign")
     @Operation(summary = "为用户分配角色")
     @RequiresPermission(PermCodes.USER_EDIT)
+    @Log(title = "用户管理", businessType = Log.BusinessType.GRANT)
     public ApiResult<Void> assignRoles(@PathVariable String userId,
                                        @RequestBody List<String> roleIds,
                                        @RequestHeader(value = "X-Tenant-Id", required = false) String tenantId) {
@@ -45,6 +47,7 @@ public class SysUserRoleController {
     @DeleteMapping("/{userId}")
     @Operation(summary = "删除用户所有角色关联")
     @RequiresPermission(PermCodes.USER_EDIT)
+    @Log(title = "用户管理", businessType = Log.BusinessType.DELETE)
     public ApiResult<Void> removeByUserId(@PathVariable String userId) {
         sysUserRoleService.removeByUserId(userId);
         return ApiResult.ok();
