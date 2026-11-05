@@ -46,6 +46,19 @@ VALUES('00000000-0000-7000-0000-000000000001', '00000000-0000-0000-0000-00000000
 ON CONFLICT (id) DO NOTHING;
 
 
+-- 参数配置（2026-11-05 P2 参数消费机制：平台内置参数种子，config_type='Y'）
+--   读口径：getConfigValueByKey 按「当前租户自定义 → 平台兜底」合并解析。
+--   1. sys.user.initPassword       创建用户未显式指定密码时的初始密码（创建链路消费）
+--   2. sys.account.captchaEnabled 登录验证码开关（auth 消费；开启前需网关白名单放行
+--                                  /api/v1/auth/captcha*，见 V2026_11_06__config_seed.sql）
+--   与 db/migration/V2026_11_06__config_seed.sql 保持一致。
+INSERT INTO sys_config (id, tenant_id, config_name, config_key, config_value, config_type, sort, status, deleted, "version", created_by, created_time, remark)
+VALUES
+('00000000-0000-7000-0000-000000001069', '00000000-0000-0000-0000-000000000000', '用户初始密码', 'sys.user.initPassword', 'Baize@123456', 'Y', 1, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2026-11-05 12:00:00.000', '创建用户未显式指定密码时的初始密码（P2：创建链路消费；修改后对新建用户即时生效）'),
+('00000000-0000-7000-0000-00000000106a', '00000000-0000-0000-0000-000000000000', '登录验证码开关', 'sys.account.captchaEnabled', 'false', 'Y', 2, '0', '0', 0, '00000000-0000-7000-0000-000000000001', '2026-11-05 12:00:00.000', '登录页图形验证码开关（P5：auth 登录链路消费；开启前需在网关白名单放行 /api/v1/auth/captcha*）')
+ON CONFLICT (id) DO NOTHING;
+
+
 -- ============================================================================
 -- 字典数据（2026-11-05 字典模型对齐：平台内置字典种子，is_builtin='1'）
 --   读路径按"租户自定义 → 平台内置兜底"合并解析（tenant 有同类型自定义项则整类

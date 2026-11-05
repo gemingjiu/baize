@@ -398,4 +398,82 @@ gh 工具链亦就绪（keyring 凭据；agent 环境需先清除 XDG_CONFIG_HOM
 目录的注入才能读到 keyring，本修正已沉淀为本次排查记录，后续 CI 排障可直接
 `gh run list / gh run view --log` 取证）。根因误判（ERESOLVE 假阳性）已在上方公开更正。
 
+---
+
+## 2026-11-05 系统管理功能补全（P1-P6 全做，✅ 代码+活库完成）
+
+**背景**：审计发现 7 个模块只有 CRUD 壳无真实闭环。按用户"全做"决策（1范围 P1-P6 全部 /
+2 operlog 全局 AOP / 3 config 初始密码+验证码开关 / 4 notice 弹窗+公告栏 / 5 过期拒绝 /
+6 user-post 启用 / 7 perm 维持保留 D3 不动）实施。
+
+**审计关键发现（实施前）**：
+- **真实实现**（非壳）：job（完整 Quartz：60s 差异同步+反射执行）、loginlog（auth 写入）、
+  monitor（server/cache/online 真实）、gen（baize-gen 独立应用结构完整）
+- **纯壳**：config（0 消费方）、notice（0 消费方）、operlog（LogAspect 存在但
+  baize-system 缺 spring-boot-starter-aop 依赖——@Aspect 从未激活，dev 库表恒为空是证据）、
+  tenant 的 expire_time/max_user（0 校验点）、user-post（D3 保留表）、
+  perm（D3 保留）、captcha（LoginDTO 字段存在无实现）
+
+**P1 operlog 激活与补全**：
+- 补齐 `spring-boot-starter-aop` 依赖（激活既有 `@Log` 注解 + `LogAspect`，dev 库 0 行是切面从未生效的铁证）
+- `LogAspect` 升级 `@Around` 环绕计时（原 `@AfterReturning` 版 costTime 恒 0）
+- `Log.BusinessType` 枚举 SELECT→GRANT（ordinal=4 对齐前端字典 sys_oper_type"4=授权"）
+- 19 个 Controller × 58 处写接口机械标注 @Log（Python 脚本 utf-8 批量插入 + 裸 PostMapping 补漏 + @InnerAuth 接口剔除）
+- **全局拦截**（POST→INSERT/PUT→UPDATE/DELETE→DELETE + 路径规则 /export→EXPORT、
+  /assign→GRANT、/kickout→FORCE、/clean→CLEAN）
+
+**P2 config 参数消费机制**：
+- 新增 `SysConfigMapper.selectVisibleValue`（@InterceptorIgnore 绕租户拦截器，当前租户→平台兜底合并解析）
+- `getConfigValueByKey`（@Cacheable 租户维度键，修复既有 `getByConfigKey` 的跨租户缓存污染缺陷）
+- 写操作改 `@CacheEvict(allEntries=true)` 全量清缓存
+- `SysConfigController` /inner/value @InnerAuth + `SysConfigFeignClient`
+- **消费方 1**：`SysUserServiceImpl.create` 密码留空→取 sys.user.initPassword（缺失拒绝创建防空密码账号）
+- 种子 V2026_11_06__config_seed.sql（N=4201/4202）+ init 同步
+
+**P3 notice 公告展示闭环**：
+- `SysNoticeService.listLatest(limit)` + Controller `GET /system/notice/latest`（登录即可见）
+- `getLatestNotices` API + Welcome.tsx 公告栏（List+Tag+Drawer 详情）
+- 登录后弹窗（最新一条 Modal，"我已知晓"localStorage 记忆不再重复弹同一条）
+
+**P4 tenant 治理校验（含 2 个存量 bug 修复）**：
+- **bug 修复 1**：`SysTenantServiceImpl.existsById` 用 `\d+` 校验租户 ID——UUIDv7 后所有
+  合法租户被误判不存在，切换租户从 V2026_10_21 起完全不可用
+- **bug 修复 2**：`AuthServiceImpl.switchTenant` 用 `isNumeric` 校验目标租户 ID——同族问题
+- `checkTenantNotExpired`：登录（user.getTenantId）+ 切换租户（targetTenant）双点校验
+  `expire_time`，过期拒绝（inner 接口 /tenant/inner/get @InnerAuth + Feign）
+- `checkUserQuota`：创建用户时校验当前租户 `max_user` 配额，超限拒绝
+  （getByCurrentTenantId 新增；查询失败放行+告警，治理增强不作为硬边界）
+
+**P5 captcha 登录验证码**：
+- `CaptchaService` + `CaptchaServiceImpl`（零第三方依赖：java.awt 手绘 4 位字符+干扰线
+  → Base64 PNG，Redis TTL 120s 一次性消费）
+- `AuthController` /captcha + /captcha/enabled（网关白名单 /api/v1/auth/** 天然放行，无需 Nacos 改动）
+- `AuthServiceImpl.login` 开头校验（isEnabled 时 validate captchaKey+captcha）
+- LoginDTO 加 captchaKey 字段；登录页探测开关渲染验证码+图片点击刷新+失败自动刷新
+
+**P6 user-post 岗位绑定**：
+- `SysUserPost` 实体（BaseRelationEntity）+ Mapper + Service（assignPosts 全量替换语义）
+- 迁移 V2026_11_07__user_post_pk.sql（三列无主键→补 uk+PK，对齐 V2026_10_22_03 关系表三步法）
+- `SysUserDto.postIds` + create/update 全量替换绑定 + removeById 清理防孤儿
+- `SysUserController` GET /{id}/posts（独立回显接口，不污染用户主缓存）
+- `SysPostController` GET /list（登录即可见，用户表单多选数据源）+ listAvailable
+- `SysPostServiceImpl.removeById` 联动 removeByPostId（岗位删除清绑定）
+- 前端：用户表单岗位多选（getPostList 选项+getUserPosts 回显）、
+  密码改选填（"留空则使用系统初始密码"）
+
+**验证状态（2026-11-05，代码+活库完成）**：
+- ✅ 后端 `-am clean compile` BUILD SUCCESS（含 auth+system 全链路，真错误修复过程：
+  AuthServiceImpl 缺 SysTenantDto import、user create 残留重复定义、getById 意外丢失、
+  @Around 缺 value 属性、post impl PowerShell regex 写入损坏改编辑工具修复——每处已逐一核清）
+- ✅ 前端 `tsc --noEmit` 0 错误
+- ✅ dbx 活库（dev baize，用户确认直改）：V2026_11_06 config 种子 2 行落库；
+  V2026_11_07 user_post 补 pk_sys_user_post 成功；**幂等二跑 5 语句全 0 行 0 报错**
+- ⚠️ 端到端（重启后端生效后验证：操作日志有数据、参数初始密码创建用户、公告展示、
+  岗位绑定、切换租户可用）待 push 后 UI 验证；CI sql job 为新装库全流程权威校验
+
+**遗留（未做）**：
+- perm 模块按决策 7 维持 D3 保留，不动
+- operlog 覆盖 baize-gen（独立部署应用，不在本应用进程内，无法被本切面拦截）
+- login 弹窗的"已读"仅 localStorage 记忆，无服务端已读记录（sys_notice_read 表待未来需求）
+
 > AI生成
