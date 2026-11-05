@@ -336,19 +336,47 @@
 
 ## 当前待办（截至 2026-11-04，按优先级）
 
-1. **提交与推送（最高优先）**：工作区累积三个任务的改动未 commit——软删除×唯一键（V2026_11_03）、
-   租户内置（V2026_11_04）、字典改造（V2026_11_05），约 30 文件。建议按任务分 3 个 commit。
-   **push 后必须确认 CI 四个 job 全绿**（backend / frontend / helm / sql——sql job 是新装库
-   全流程 ddl→operlog→init×2→migration 顺序执行，对本批新增的 3 个迁移与改列后的 init 是权威校验）。
+1. ~~**提交与推送（最高优先）**~~ ✅ 已完成（2026-11-05）：三任务分三个 commit
+   （`bbf5a60` 软删除唯一键 / `a441577` 租户内置 / `c2b17b2` 字典改造），已推送 origin/dev。
 2. **UI 端到端验证**：重启 baize-system（加载新实体/Mapper/接口）并重新构建前端后验证：
    - 租户删除按钮对平台租户禁用、后端守卫返回「内置租户不允许删除」；
    - 登录后 `/system/dict/data/all` 一次拉取、10 页下拉/回显由字典驱动；
    - 字典管理页内置 Tag、内置禁删、租户自定义类型可正常增删；
    - 角色管理下拉（角色类型/数据权限）改为字典数据源后展示正常。
+   - 前端注意：本地 `node_modules` 需重新 `npm install`（本次从 package.json 删除了两个
+     @antv 死依赖，本地 npm 会同步移除；package-lock.json 未跟踪无需提交）。
 3. **（可选）D4 功能复用实测**：逻辑删除后将同编码重新插入可用性的 DML 实测仍未做
    （dbx 对远程 PG 无事务回滚能力，避免在共享 dev 库留测试数据）；语义由 partial unique index
    本身保证，等待 CI 或专用环境补测。
 4. **（低优先）后续字典扩充（决策 5）**：业务专属字典类型按需后续增加；上线流程见
    `builtin-resource-guard` 技能沉淀的七步法，不再重复展开。
+
+---
+
+## 2026-11-05 CI 失败诊断与修复（c2b17b2 推送后）
+
+**背景**：`c2b17b2` CI 四 job：SQL ✅、Helm ✅、Backend ❌、Frontend ❌。对比历史 runs 定位：
+
+**Backend（Build and test backend 失败）**
+- 根因：`SysNoticeServiceImplTest.shouldReturnPagedNotices` 单测 NPE。该测试依赖
+  P1-F 重构**前**的行为——当时 `SysNoticeConvert` 是 `@Autowired` 字段注入，`@MockBean`
+  拦截了它、mock 吞掉 null；P1-F（2283642）改为静态 `INSTANCE` 后 mock 不再生效，
+  `super.page`（MP `IService.page` 默认实现= `baseMapper.selectPage` 直返，mock 未 stub → null）
+  把 null 传进真实 `INSTANCE.toDtoPage` → `page.getCurrent()` NPE。该失败自 UUIDv7 批
+  （0a3c824）起持续存在，非本次三任务引入。
+- 修复：测试改为 stub `sysNoticeMapper.selectPage(any(),any())` 原样回传分页对象，
+  让真实 MapStruct convert 走通，并断言分页字段；删除失效的 mock convert stub。
+- 验证：本地 `mvn -pl baize-modules/baize-system -am package`（含单测）BUILD SUCCESS。
+
+**Frontend（Install dependencies 失败，基线起一直红）**
+- 根因（本地干净目录 dry-run 复现）：`@antv/l7-react@2.4.3` peer 要求
+  `react@^16.8.6||^17.0.2`，项目实为 React 19 → 全新安装（CI 无 lockfile）必报 ERESOLVE。
+  两个 `@antv/*` 包在 src 零引用，属死依赖。
+- 修复：package.json 删除 `@antv/l7` / `@antv/l7-react`。
+- 验证：dry-run 3384 包解析成功 exit=0；src 无残留引用。
+
+**结论**：Backend/Frontend 两个红均为历史遗留，与本次三任务无关；本次一并修复，
+待推送后观察 CI 全绿。gh 已由用户安装（token 登录未完成，暂用匿名 Actions API 查询——
+该仓库匿名可读 run/job 状态；日志下载需 admin token）。
 
 > AI生成

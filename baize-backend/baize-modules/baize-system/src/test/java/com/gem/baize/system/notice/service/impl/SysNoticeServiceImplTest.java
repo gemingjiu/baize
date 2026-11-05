@@ -93,13 +93,18 @@ class SysNoticeServiceImplTest {
         dto.setNoticeTitle("测试");
         dto.setTenantId("1");
 
-        Page<SysNoticeDto> expectedPage = new Page<>(1, 10);
-        when(sysNoticeConvert.toDtoPage(any())).thenReturn(expectedPage);
+        // P1-F（MapStruct 化）后服务走静态 SysNoticeConvert.INSTANCE，@MockBean 的 convert 拦截不到；
+        // super.page 底层是 baseMapper.selectPage，mock 未 stub 时返回 null 会让真实 convert 拿到 null NPE。
+        // 这里 stub selectPage 原样回传入参分页，让真实 MapStruct toDtoPage 走通。
+        when(sysNoticeMapper.selectPage(any(), any())).thenAnswer(inv -> inv.getArgument(0));
 
         // When
         Page<SysNoticeDto> result = sysNoticeService.page(page, dto);
 
         // Then
         assertThat(result).isNotNull();
+        assertThat(result.getCurrent()).isEqualTo(1);
+        assertThat(result.getSize()).isEqualTo(10);
+        assertThat(result.getRecords()).isEmpty();
     }
 }
