@@ -57,6 +57,13 @@
             <groupId>com.gem</groupId>
             <artifactId>baize-common-webmvc</artifactId>
         </dependency>
+
+        <!-- 测试：租户隔离 / 数据权限五档（spring-boot-starter-test 由父 POM 管理版本） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

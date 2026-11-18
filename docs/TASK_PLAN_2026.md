@@ -126,11 +126,13 @@
 **步骤**：`biome ci` 接入 CI 并设为阻塞；保留 `tsc --noEmit`。
 **验收**：lint/format 问题使 CI 变红；不影响 build job。
 
-> ✅ 完成于 2026-11-18：`npx biome check --write .` 修复 77 个文件的格式/import 顺序（纯格式化，tsc --noEmit exit 0 无语义变更）；`biome.json` includes 排除 Umi 自动生成目录 `!**/.umi-undefined`（7 个残留 lint error 全在该目录）；`npx biome ci .` exit 0（27 warnings，0 errors）。ci.yml frontend 在 Build 前新增 `Biome CI (lint + format)` 阻塞步骤。commit 待填。
+> ✅ 完成于 2026-11-18：`npx biome check --write .` 修复 77 个文件的格式/import 顺序（纯格式化，tsc --noEmit exit 0 无语义变更）；`biome.json` includes 排除 Umi 自动生成目录 `!**/.umi-undefined`（7 个残留 lint error 全在该目录）；`npx biome ci .` exit 0（27 warnings，0 errors）。ci.yml frontend 在 Build 前新增 `Biome CI (lint + format)` 阻塞步骤。commit 578e010。
 
 ### T1.6 后端测试基线加固（P1 / M / 可立即开工）
 **步骤**：修复 `SysNoticeServiceImplTest` 类 mock 失活（缺陷档案 :367–375）；surefire 保持在 3.2.5；新增"租户隔离/五档数据权限"优先测试用例的骨架。
 **验收**：`mvn package` 单测全绿；核心鉴权模块有用例覆盖。
+
+> ✅ 完成于 2026-11-18：`SysNoticeServiceImplTest` mock 失活修复已在 HEAD（f982b04，4/4 通过，无需重复改）；surefire 保持 3.2.5。新增 `baize-common-database` 测试依赖（spring-boot-starter/test），落地两个测试骨架共 12 用例：`CustomTenantHandlerTest`（4：上下文缺失兜底 nil UUID / 精确下推 / 切租户 / sys_tenant 豁免）、`CustomDataScopeHandlerTest`（8：档 1~5 全档位 + 空集合 1=0 + 注入串拒绝 + skip 标记）。**顺带修复 UUIDv7 迁移回归**：`CustomDataScopeHandler` 的 `NUMERIC`（`\d{1,19}`）替换为 `SAFE_ID`（历史纯数字 ≤19 位 或 标准 UUID 8-4-4-4-12），否则 dept_id/create_by 改为 varchar(36) UUID 后档 2/3/4/5 全退化为 `1=0`（该拦截器当前 `enabled()` 默认 false，属潜伏缺陷非现网故障）。`mvn -pl baize-common/baize-common-database -am test` → Tests run: 12, Failures: 0, Errors: 0, BUILD SUCCESS。commit e051326。
 
 ---
 

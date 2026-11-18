@@ -34,14 +34,16 @@ import java.util.regex.Pattern;
  * <p><b>fail-safe：</b>需要下推部门集合却算出空集合时，返回 {@code 1 = 0}（永不成立）
  * 而不是返回 null——"宁可查不到，也不越权看到全部"。
  *
- * <p><b>注入防护：</b>dept_id / create_by 在库中均为 bigint，因此下推前用
- * {@link #NUMERIC} 严格校验；任何非纯数字取值都拒绝下推并退化为 {@code 1 = 0}，
- * 避免把外部输入直接拼进 SQL。
+ * <p><b>注入防护：</b>下推前用 {@link #SAFE_ID} 严格校验取值格式——仅放行历史纯数字
+ * （≤19 位）或标准 UUID（8-4-4-4-12 十六进制）。UUIDv7 迁移后 dept_id/create_by
+ * 已是 varchar(36) UUID，必须放行；任何不匹配（含注入串）一律拒绝下推并退化为
+ * {@code 1 = 0}，避免把外部输入直接拼进 SQL。
  */
 @Slf4j
 public class CustomDataScopeHandler {
 
-    private static final Pattern NUMERIC = Pattern.compile("\\d{1,19}");
+    private static final Pattern SAFE_ID = Pattern.compile(
+            "^(?:\\d{1,19}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
 
     /**
      * 生成追加到 WHERE 上的数据权限条件；不需要过滤时返回 null。
@@ -81,8 +83,8 @@ public class CustomDataScopeHandler {
                 if (isBlank(id)) {
                     continue;
                 }
-                if (!NUMERIC.matcher(id.trim()).matches()) {
-                    log.warn("部门ID取值非法（非纯数字），已拒绝下推并退化为不可见：{}", id);
+                if (!SAFE_ID.matcher(id.trim()).matches()) {
+                    log.warn("部门ID取值非法（非数字/UUID），已拒绝下推并退化为不可见：{}", id);
                     return alwaysFalse();
                 }
                 values.add(new StringValue(id.trim()));
@@ -103,8 +105,8 @@ public class CustomDataScopeHandler {
             return alwaysFalse();
         }
         String v = value.trim();
-        if (!NUMERIC.matcher(v).matches()) {
-            log.warn("字段 {} 取值非法（非纯数字），已拒绝下推并退化为不可见：{}", column, value);
+        if (!SAFE_ID.matcher(v).matches()) {
+            log.warn("字段 {} 取值非法（非数字/UUID），已拒绝下推并退化为不可见：{}", column, value);
             return alwaysFalse();
         }
         return new EqualsTo(new Column(qualify(alias, column)), new StringValue(v));
