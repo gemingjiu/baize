@@ -10,7 +10,7 @@ import {
   ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Drawer, Modal, Space, Switch, Tag, message } from 'antd';
+import { Button, Drawer, Modal, message, Space, Switch, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
 import { useDict } from '@/hooks/useDict';
@@ -34,11 +34,17 @@ const Dict: React.FC = () => {
   const dataActionRef = useRef<ActionType | null>(null);
   const { toValueEnum, getDictOptions, reload: reloadDicts } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<API.SysDictTypeDto | undefined>();
+  const [editingRecord, setEditingRecord] = useState<
+    API.SysDictTypeDto | undefined
+  >();
   const [dataVisible, setDataVisible] = useState(false);
-  const [currentType, setCurrentType] = useState<API.SysDictTypeDto | undefined>();
+  const [currentType, setCurrentType] = useState<
+    API.SysDictTypeDto | undefined
+  >();
   const [dataModalVisible, setDataModalVisible] = useState(false);
-  const [editingData, setEditingData] = useState<API.SysDictDataDto | undefined>();
+  const [editingData, setEditingData] = useState<
+    API.SysDictDataDto | undefined
+  >();
 
   const handleEdit = (record: API.SysDictTypeDto) => {
     setEditingRecord(record);
@@ -160,7 +166,11 @@ const Dict: React.FC = () => {
         '1': 'Error',
       }),
       render: (_, record) =>
-        record.status === '0' ? <Tag color="success">正常</Tag> : <Tag color="error">停用</Tag>,
+        record.status === '0' ? (
+          <Tag color="success">正常</Tag>
+        ) : (
+          <Tag color="error">停用</Tag>
+        ),
     },
     {
       title: '备注',
@@ -176,14 +186,23 @@ const Dict: React.FC = () => {
       fixed: 'right',
       render: (_, record) => (
         <Space>
-          <Button type="link" size="small" onClick={() => {
-            setCurrentType(record);
-            setDataVisible(true);
-          }}>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              setCurrentType(record);
+              setDataVisible(true);
+            }}
+          >
             字典数据
           </Button>
           <Authorized permission="system:dict:edit">
-            <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
+            >
               编辑
             </Button>
           </Authorized>
@@ -194,7 +213,11 @@ const Dict: React.FC = () => {
               danger
               icon={<DeleteOutlined />}
               disabled={record.isBuiltin === '1'}
-              title={record.isBuiltin === '1' ? '内置字典类型不允许删除，请使用停用' : undefined}
+              title={
+                record.isBuiltin === '1'
+                  ? '内置字典类型不允许删除，请使用停用'
+                  : undefined
+              }
               onClick={() => handleDelete(record)}
             >
               删除
@@ -227,7 +250,8 @@ const Dict: React.FC = () => {
       dataIndex: 'defaulted',
       width: 100,
       valueEnum: toValueEnum('sys_defaulted'),
-      render: (_, record) => (record.defaulted === '1' ? <Tag color="blue">是</Tag> : '否'),
+      render: (_, record) =>
+        record.defaulted === '1' ? <Tag color="blue">是</Tag> : '否',
     },
     {
       title: '排序',
@@ -245,7 +269,11 @@ const Dict: React.FC = () => {
         '1': 'Error',
       }),
       render: (_, record) =>
-        record.status === '0' ? <Tag color="success">正常</Tag> : <Tag color="error">停用</Tag>,
+        record.status === '0' ? (
+          <Tag color="success">正常</Tag>
+        ) : (
+          <Tag color="error">停用</Tag>
+        ),
     },
     {
       title: '操作',
@@ -256,7 +284,12 @@ const Dict: React.FC = () => {
       render: (_, record) => (
         <Space>
           <Authorized permission="system:dict:edit">
-            <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleDataEdit(record)}>
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => handleDataEdit(record)}
+            >
               编辑
             </Button>
           </Authorized>
@@ -267,7 +300,11 @@ const Dict: React.FC = () => {
               danger
               icon={<DeleteOutlined />}
               disabled={record.isBuiltin === '1'}
-              title={record.isBuiltin === '1' ? '内置字典项不允许删除，请使用停用' : undefined}
+              title={
+                record.isBuiltin === '1'
+                  ? '内置字典项不允许删除，请使用停用'
+                  : undefined
+              }
               onClick={() => handleDataDelete(record)}
             >
               删除
@@ -417,8 +454,16 @@ const Dict: React.FC = () => {
             destroyOnHidden: true,
           }}
         >
-          <ProFormText name="dictLabel" label="字典标签" rules={[{ required: true, message: '请输入字典标签' }]} />
-          <ProFormText name="dictValue" label="字典键值" rules={[{ required: true, message: '请输入字典键值' }]} />
+          <ProFormText
+            name="dictLabel"
+            label="字典标签"
+            rules={[{ required: true, message: '请输入字典标签' }]}
+          />
+          <ProFormText
+            name="dictValue"
+            label="字典键值"
+            rules={[{ required: true, message: '请输入字典键值' }]}
+          />
           <ProFormSelect
             name="defaulted"
             label="是否默认"

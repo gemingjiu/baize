@@ -1,7 +1,7 @@
 import { DatabaseOutlined, ReloadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { useAccess, history } from '@umijs/max';
+import { history, useAccess } from '@umijs/max';
 import { Alert, Button, Card, Col, Result, Row, Statistic, Tag } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getCacheInfo, getCacheKeys } from '@/services/system/monitor';
@@ -40,7 +40,9 @@ const Cache: React.FC = () => {
    * useAccess() 在 AccessProvider 之外会拿到 null，此时放行（后端才是真正的鉴权方）。
    */
   const canQuery =
-    typeof access?.canPerm === 'function' ? access.canPerm(PERM_CACHE_QUERY) : true;
+    typeof access?.canPerm === 'function'
+      ? access.canPerm(PERM_CACHE_QUERY)
+      : true;
 
   const fetchInfo = useCallback(async () => {
     setInfoLoading(true);
@@ -127,7 +129,9 @@ const Cache: React.FC = () => {
           type="warning"
           showIcon
           title="Redis 当前不可用"
-          description={info.errorMessage || '无法读取 Redis INFO，以下统计可能不准确。'}
+          description={
+            info.errorMessage || '无法读取 Redis INFO，以下统计可能不准确。'
+          }
           style={{ marginBottom: 16 }}
         />
       ) : null}
@@ -145,7 +149,11 @@ const Cache: React.FC = () => {
             <Statistic title="运行模式" value={info?.mode || '-'} />
           </Col>
           <Col xs={12} sm={8} lg={4}>
-            <Statistic title="连接客户端" value={info?.connectedClients ?? 0} suffix="个" />
+            <Statistic
+              title="连接客户端"
+              value={info?.connectedClients ?? 0}
+              suffix="个"
+            />
           </Col>
           <Col xs={12} sm={8} lg={4}>
             <Statistic
@@ -155,13 +163,20 @@ const Cache: React.FC = () => {
             />
           </Col>
           <Col xs={12} sm={8} lg={4}>
-            <Statistic title="内存峰值" value={info?.usedMemoryPeakHuman || '-'} />
+            <Statistic
+              title="内存峰值"
+              value={info?.usedMemoryPeakHuman || '-'}
+            />
           </Col>
           <Col xs={12} sm={8} lg={4}>
             <Statistic
               title="Key 总数"
               value={info?.dbSize ?? 0}
-              suffix={info?.maxMemoryPolicy ? `（${info.maxMemoryPolicy}）` : undefined}
+              suffix={
+                info?.maxMemoryPolicy
+                  ? `（${info.maxMemoryPolicy}）`
+                  : undefined
+              }
             />
           </Col>
         </Row>
@@ -193,7 +208,10 @@ const Cache: React.FC = () => {
             />
           </Col>
           <Col xs={12} sm={6} lg={4}>
-            <Statistic title="每秒操作" value={info?.instantaneousOpsPerSec ?? 0} />
+            <Statistic
+              title="每秒操作"
+              value={info?.instantaneousOpsPerSec ?? 0}
+            />
           </Col>
           <Col xs={12} sm={6} lg={6}>
             <Statistic
@@ -206,7 +224,11 @@ const Cache: React.FC = () => {
       </Card>
 
       {prefixStats.length > 0 ? (
-        <Card title="Key 分布（按前缀）" style={{ marginTop: 16 }} loading={infoLoading}>
+        <Card
+          title="Key 分布（按前缀）"
+          style={{ marginTop: 16 }}
+          loading={infoLoading}
+        >
           <Row gutter={[8, 8]}>
             {prefixStats.map((item, index) => (
               <Col key={item.prefix || index}>
@@ -241,7 +263,9 @@ const Cache: React.FC = () => {
         request={async (params) => {
           const res = await getCacheKeys({ pattern: params.key || '*' });
           const rows: CacheKeyRow[] =
-            res.success && Array.isArray(res.data?.keys) ? res.data?.keys ?? [] : [];
+            res.success && Array.isArray(res.data?.keys)
+              ? (res.data?.keys ?? [])
+              : [];
           return {
             data: rows,
             success: true,

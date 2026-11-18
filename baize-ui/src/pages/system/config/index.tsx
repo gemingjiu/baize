@@ -9,7 +9,7 @@ import {
   ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Modal, Space, Tag, message } from 'antd';
+import { Button, Modal, message, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
 import { useDict } from '@/hooks/useDict';
@@ -28,7 +28,9 @@ const Config: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const { toValueEnum, getDictOptions } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<API.SysConfigDto | undefined>();
+  const [editingRecord, setEditingRecord] = useState<
+    API.SysConfigDto | undefined
+  >();
 
   const handleEdit = (record: API.SysConfigDto) => {
     setEditingRecord(record);
@@ -120,12 +122,23 @@ const Config: React.FC = () => {
       render: (_, record) => (
         <Space>
           <Authorized permission="system:config:edit">
-            <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
+            >
               编辑
             </Button>
           </Authorized>
           <Authorized permission="system:config:remove">
-            <Button type="link" size="small" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
+            <Button
+              type="link"
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record)}
+            >
               删除
             </Button>
           </Authorized>

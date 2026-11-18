@@ -6,6 +6,7 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
+import { history, useAccess } from '@umijs/max';
 import {
   Button,
   Card,
@@ -20,7 +21,6 @@ import {
   Statistic,
   Tag,
 } from 'antd';
-import { useAccess, history } from '@umijs/max';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getServerInfo } from '@/services/system/monitor';
 
@@ -40,7 +40,9 @@ const Monitor: React.FC = () => {
    * useAccess() 在 AccessProvider 之外会拿到 null，此时放行（后端才是真正的鉴权方）。
    */
   const canQuery =
-    typeof access?.canPerm === 'function' ? access.canPerm(PERM_SERVER_QUERY) : true;
+    typeof access?.canPerm === 'function'
+      ? access.canPerm(PERM_SERVER_QUERY)
+      : true;
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -154,7 +156,9 @@ const Monitor: React.FC = () => {
                 />
               )}
               <Descriptions column={1} size="small" style={{ marginTop: 16 }}>
-                <Descriptions.Item label="架构">{serverInfo?.cpu?.name || '-'}</Descriptions.Item>
+                <Descriptions.Item label="架构">
+                  {serverInfo?.cpu?.name || '-'}
+                </Descriptions.Item>
                 <Descriptions.Item label="逻辑核心数">
                   {serverInfo?.cpu?.logicalCount || 0}
                 </Descriptions.Item>
@@ -251,12 +255,18 @@ const Monitor: React.FC = () => {
                 style={{ marginTop: 16 }}
               />
               <Descriptions column={1} size="small" style={{ marginTop: 16 }}>
-                <Descriptions.Item label="JVM 名称">{serverInfo?.jvm?.name || '-'}</Descriptions.Item>
+                <Descriptions.Item label="JVM 名称">
+                  {serverInfo?.jvm?.name || '-'}
+                </Descriptions.Item>
                 <Descriptions.Item label="Java 版本">
                   <Tag color="blue">{serverInfo?.jvm?.version || '-'}</Tag>
                 </Descriptions.Item>
-                <Descriptions.Item label="启动时间">{serverInfo?.jvm?.startTime || '-'}</Descriptions.Item>
-                <Descriptions.Item label="运行时长">{formatUptime(serverInfo?.jvm?.uptime)}</Descriptions.Item>
+                <Descriptions.Item label="启动时间">
+                  {serverInfo?.jvm?.startTime || '-'}
+                </Descriptions.Item>
+                <Descriptions.Item label="运行时长">
+                  {formatUptime(serverInfo?.jvm?.uptime)}
+                </Descriptions.Item>
               </Descriptions>
             </Card>
           </Col>
@@ -268,12 +278,17 @@ const Monitor: React.FC = () => {
                 <Space>
                   <HddOutlined />
                   磁盘信息
-                  {disks.length > 1 ? <Tag color="blue">{disks.length} 个分区</Tag> : null}
+                  {disks.length > 1 ? (
+                    <Tag color="blue">{disks.length} 个分区</Tag>
+                  ) : null}
                 </Space>
               }
             >
               {disks.length === 0 ? (
-                <Empty description="未获取到磁盘信息" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                <Empty
+                  description="未获取到磁盘信息"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
               ) : (
                 <>
                   <Row gutter={16}>
@@ -306,7 +321,11 @@ const Monitor: React.FC = () => {
                     strokeColor={getProgressColor(serverInfo?.disk?.usage || 0)}
                     style={{ marginTop: 16 }}
                   />
-                  <Descriptions column={1} size="small" style={{ marginTop: 16 }}>
+                  <Descriptions
+                    column={1}
+                    size="small"
+                    style={{ marginTop: 16 }}
+                  >
                     <Descriptions.Item label="分区">
                       {serverInfo?.disk?.name || serverInfo?.disk?.path || '-'}
                     </Descriptions.Item>
@@ -327,12 +346,23 @@ const Monitor: React.FC = () => {
               }
             >
               {disks.length === 0 ? (
-                <Empty description="未获取到磁盘分区" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                <Empty
+                  description="未获取到磁盘分区"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
               ) : (
                 <Row gutter={[16, 16]}>
                   {disks.map((item, index) => (
-                    <Col xs={24} sm={12} lg={8} key={item.path || item.name || index}>
-                      <Card size="small" title={item.name || item.path || `分区 ${index + 1}`}>
+                    <Col
+                      xs={24}
+                      sm={12}
+                      lg={8}
+                      key={item.path || item.name || index}
+                    >
+                      <Card
+                        size="small"
+                        title={item.name || item.path || `分区 ${index + 1}`}
+                      >
                         <Row gutter={8}>
                           <Col span={8}>
                             <Statistic
@@ -347,7 +377,9 @@ const Monitor: React.FC = () => {
                               title="已用"
                               value={item.used || 0}
                               suffix="GB"
-                              styles={{ content: { fontSize: 16, color: '#cf1322' } }}
+                              styles={{
+                                content: { fontSize: 16, color: '#cf1322' },
+                              }}
                             />
                           </Col>
                           <Col span={8}>
@@ -355,7 +387,9 @@ const Monitor: React.FC = () => {
                               title="剩余"
                               value={item.free || 0}
                               suffix="GB"
-                              styles={{ content: { fontSize: 16, color: '#3f8600' } }}
+                              styles={{
+                                content: { fontSize: 16, color: '#3f8600' },
+                              }}
                             />
                           </Col>
                         </Row>

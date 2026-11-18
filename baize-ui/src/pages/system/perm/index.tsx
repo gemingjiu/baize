@@ -1,8 +1,8 @@
 import {
   DeleteOutlined,
   EditOutlined,
-  PlusOutlined,
   PlusCircleOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
@@ -259,10 +259,7 @@ const Perm: React.FC = () => {
           placeholder="请选择上级权限"
           fieldProps={{
             treeDefaultExpandAll: true,
-            treeData: [
-              { label: '主类目', value: undefined },
-              ...permTree,
-            ],
+            treeData: [{ label: '主类目', value: undefined }, ...permTree],
           }}
           initialValue={parentId}
         />

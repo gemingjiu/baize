@@ -1,10 +1,14 @@
 import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, Modal, Space, Tag, message } from 'antd';
+import { Button, Modal, message, Space, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
-import { getOnlineCount, getOnlineUsers, kickoutUser } from '@/services/system/online';
+import {
+  getOnlineCount,
+  getOnlineUsers,
+  kickoutUser,
+} from '@/services/system/online';
 import { getUserById } from '@/services/system/user';
 
 /**

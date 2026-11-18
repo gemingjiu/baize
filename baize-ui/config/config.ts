@@ -3,9 +3,9 @@
 import { join } from 'node:path';
 import { defineConfig } from '@umijs/max';
 import defaultSettings from './defaultSettings';
-import { antdTheme } from './theme';
 import proxy from './proxy';
 import routes from './routes';
+import { antdTheme } from './theme';
 
 const { REACT_APP_ENV = 'dev' } = process.env;
 

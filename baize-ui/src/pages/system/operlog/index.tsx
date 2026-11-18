@@ -6,8 +6,8 @@ import {
 } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, Descriptions, Drawer, Modal, message, Space, Tag } from 'antd';
 import type { FormInstance } from 'antd';
+import { Button, Descriptions, Drawer, Modal, message, Space, Tag } from 'antd';
 import React, { useCallback, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
 import { useDict } from '@/hooks/useDict';
@@ -27,11 +27,15 @@ const OperLog: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const { toValueEnum } = useDict();
   // 表格查询表单实例，导出时直接取当前查询条件
-  const formRef = useRef<FormInstance<API.SysOperLogDto> | undefined>(undefined);
+  const formRef = useRef<FormInstance<API.SysOperLogDto> | undefined>(
+    undefined,
+  );
   const [exporting, handleExport] =
     useExportXlsx<API.SysOperLogDto>(exportOperLogs);
   const [detailVisible, setDetailVisible] = useState(false);
-  const [detailRecord, setDetailRecord] = useState<API.SysOperLogDto | undefined>();
+  const [detailRecord, setDetailRecord] = useState<
+    API.SysOperLogDto | undefined
+  >();
 
   /** 按当前查询条件导出操作日志（无查询条件即全量导出） */
   const handleExportOperLogs = useCallback(() => {
@@ -263,41 +267,73 @@ const OperLog: React.FC = () => {
       >
         {detailRecord && (
           <Descriptions column={1} bordered>
-            <Descriptions.Item label="日志编号">{detailRecord.id}</Descriptions.Item>
-            <Descriptions.Item label="系统模块">{detailRecord.title}</Descriptions.Item>
+            <Descriptions.Item label="日志编号">
+              {detailRecord.id}
+            </Descriptions.Item>
+            <Descriptions.Item label="系统模块">
+              {detailRecord.title}
+            </Descriptions.Item>
             <Descriptions.Item label="请求方式">
-              <Tag color={
-                {
-                  GET: 'blue',
-                  POST: 'green',
-                  PUT: 'orange',
-                  DELETE: 'red',
-                }[detailRecord.requestMethod || '']
-              }>
+              <Tag
+                color={
+                  {
+                    GET: 'blue',
+                    POST: 'green',
+                    PUT: 'orange',
+                    DELETE: 'red',
+                  }[detailRecord.requestMethod || '']
+                }
+              >
                 {detailRecord.requestMethod}
               </Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="请求URL">{detailRecord.operUrl}</Descriptions.Item>
-            <Descriptions.Item label="操作人员">{detailRecord.userName}</Descriptions.Item>
-            <Descriptions.Item label="操作IP">{detailRecord.operIp}</Descriptions.Item>
-            <Descriptions.Item label="操作地点">{detailRecord.operLocation}</Descriptions.Item>
+            <Descriptions.Item label="请求URL">
+              {detailRecord.operUrl}
+            </Descriptions.Item>
+            <Descriptions.Item label="操作人员">
+              {detailRecord.userName}
+            </Descriptions.Item>
+            <Descriptions.Item label="操作IP">
+              {detailRecord.operIp}
+            </Descriptions.Item>
+            <Descriptions.Item label="操作地点">
+              {detailRecord.operLocation}
+            </Descriptions.Item>
             <Descriptions.Item label="操作状态">
-              <Tag color={Number(detailRecord.status) === 0 ? 'success' : 'error'}>
+              <Tag
+                color={Number(detailRecord.status) === 0 ? 'success' : 'error'}
+              >
                 {Number(detailRecord.status) === 0 ? '成功' : '失败'}
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="异常信息">
               {detailRecord.errorMsg || '无'}
             </Descriptions.Item>
-            <Descriptions.Item label="耗时">{detailRecord.costTime}ms</Descriptions.Item>
-            <Descriptions.Item label="操作时间">{detailRecord.operTime}</Descriptions.Item>
+            <Descriptions.Item label="耗时">
+              {detailRecord.costTime}ms
+            </Descriptions.Item>
+            <Descriptions.Item label="操作时间">
+              {detailRecord.operTime}
+            </Descriptions.Item>
             <Descriptions.Item label="请求参数">
-              <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+              <pre
+                style={{
+                  margin: 0,
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-all',
+                }}
+              >
                 {detailRecord.operParam || '无'}
               </pre>
             </Descriptions.Item>
             <Descriptions.Item label="返回结果">
-              <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+              <pre
+                style={{
+                  margin: 0,
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-all',
+                }}
+              >
                 {detailRecord.jsonResult || '无'}
               </pre>
             </Descriptions.Item>

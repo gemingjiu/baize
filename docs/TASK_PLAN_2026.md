@@ -104,7 +104,7 @@
 **步骤**：从 `baize-ui/.gitignore` 移除 `package-lock.json` 忽略 → 生成并提交锁文件 → ci.yml frontend job 改 `npm ci` + `cache: npm`（cache-dependency-path 指向 lockfile）。
 **验收**：冷环境两次 `npm ci` 产物一致；CI 构建通过且耗时不增。
 
-> ✅ 完成于 2026-11-18：`.gitignore` 移除 `package-lock.json` 忽略并跟踪 1.2MB 锁文件；ci.yml frontend 改 `npm ci` + `cache: npm`（cache-dependency-path 指向锁文件）。`npm ci --dry-run` exit 0（lockfile 与 package.json 同步，removed 114 个残留包）；CI 构建通过需 GitHub Actions 环境验证。commit 待填。
+> ✅ 完成于 2026-11-18：`.gitignore` 移除 `package-lock.json` 忽略并跟踪 1.2MB 锁文件；ci.yml frontend 改 `npm ci` + `cache: npm`（cache-dependency-path 指向锁文件）。`npm ci --dry-run` exit 0（lockfile 与 package.json 同步，removed 114 个残留包）；CI 构建通过需 GitHub Actions 环境验证。commit 83898ed。
 
 ### T1.3 token 存储改 HttpOnly Cookie + refresh 轮转（P0 / L / 🔒 DEC-2）
 **目标**：DEBT-6——消除 XSS 单点窃取登录态。
@@ -125,6 +125,8 @@
 ### T1.5 Biome 规则提升为 CI error（P1 / S / 可立即开工）
 **步骤**：`biome ci` 接入 CI 并设为阻塞；保留 `tsc --noEmit`。
 **验收**：lint/format 问题使 CI 变红；不影响 build job。
+
+> ✅ 完成于 2026-11-18：`npx biome check --write .` 修复 77 个文件的格式/import 顺序（纯格式化，tsc --noEmit exit 0 无语义变更）；`biome.json` includes 排除 Umi 自动生成目录 `!**/.umi-undefined`（7 个残留 lint error 全在该目录）；`npx biome ci .` exit 0（27 warnings，0 errors）。ci.yml frontend 在 Build 前新增 `Biome CI (lint + format)` 阻塞步骤。commit 待填。
 
 ### T1.6 后端测试基线加固（P1 / M / 可立即开工）
 **步骤**：修复 `SysNoticeServiceImplTest` 类 mock 失活（缺陷档案 :367–375）；surefire 保持在 3.2.5；新增"租户隔离/五档数据权限"优先测试用例的骨架。

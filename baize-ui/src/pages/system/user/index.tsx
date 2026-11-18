@@ -15,17 +15,15 @@ import {
   ProFormTreeSelect,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Form, Input, Modal, message, Space, Transfer } from 'antd';
 import type { FormInstance } from 'antd';
+import { Button, Form, Input, Modal, message, Space, Transfer } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
 import { useDict } from '@/hooks/useDict';
 import { useExportXlsx } from '@/hooks/useExportXlsx';
 import { getDeptTreeSelect } from '@/services/system/dept';
-import { transformDeptTree } from '@/utils/tree';
-import { getRolePage } from '@/services/system/role';
 import { getPostList, getPostPage } from '@/services/system/post';
-import { getUserPosts } from '@/services/system/user';
+import { getRolePage } from '@/services/system/role';
 import {
   assignUserRoles,
   changeUserStatus,
@@ -33,6 +31,7 @@ import {
   deleteUser,
   exportUsers,
   getUserPage,
+  getUserPosts,
   getUserRoles,
   resetPassword,
   updateUser,
@@ -42,6 +41,7 @@ import {
   fetchAllPages,
   toPageQuery,
 } from '@/utils/pagination';
+import { transformDeptTree } from '@/utils/tree';
 
 const User: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
@@ -66,9 +66,9 @@ const User: React.FC = () => {
   const [postOptions, setPostOptions] = useState<
     { label: string; value: string }[]
   >([]);
-  const [allRoles, setAllRoles] = useState<
-    { key: string; title: string }[]
-  >([]);
+  const [allRoles, setAllRoles] = useState<{ key: string; title: string }[]>(
+    [],
+  );
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [passwordForm] = Form.useForm();
 
@@ -453,7 +453,9 @@ const User: React.FC = () => {
           name="password"
           label="密码"
           rules={
-            editingRecord ? [] : [{ min: 8, max: 20, message: '密码长度8-20位' }]
+            editingRecord
+              ? []
+              : [{ min: 8, max: 20, message: '密码长度8-20位' }]
           }
           placeholder={
             editingRecord

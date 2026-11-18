@@ -1,4 +1,9 @@
-import { ApartmentOutlined, LockOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  ApartmentOutlined,
+  LockOutlined,
+  SafetyOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import {
   ProFormCheckbox,
   ProFormSelect,
@@ -9,17 +14,16 @@ import { Alert, App, Button, Form } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { login } from '@/services/ant-design-pro/api';
-import { getCaptcha, isCaptchaEnabled } from '@/services/ant-design-pro/api';
+import { PLATFORM_TENANT_ID } from '@/constants/tenant';
+import {
+  getCaptcha,
+  isCaptchaEnabled,
+  login,
+} from '@/services/ant-design-pro/api';
 import { getUserMenuTree } from '@/services/system/menu';
 import { getTenantList } from '@/services/system/tenant';
-import {
-  saveAuth,
-  saveMenuTree,
-  savePermissions,
-} from '@/utils/auth';
+import { saveAuth, saveMenuTree, savePermissions } from '@/utils/auth';
 import { getAllPermissions, transformMenu } from '@/utils/menu';
-import { PLATFORM_TENANT_ID } from '@/constants/tenant';
 
 const useStyles = createStyles(({ css, token }) => ({
   container: css`
@@ -156,12 +160,7 @@ const useStyles = createStyles(({ css, token }) => ({
 const LoginMessage: React.FC<{ content: string }> = ({ content }) => {
   const { styles: cls } = useStyles();
   return (
-    <Alert
-      className={cls.errorMessage}
-      title={content}
-      type="error"
-      showIcon
-    />
+    <Alert className={cls.errorMessage} title={content} type="error" showIcon />
   );
 };
 
@@ -289,7 +288,7 @@ const Login: React.FC = () => {
           return;
         }
         setLoginErrorMessage(res.errorMessage || '登录失败，请重试');
-        } catch (error: any) {
+      } catch (error: any) {
         setLoginErrorMessage(error?.message || '登录失败，请重试');
         // 登录失败后刷新验证码（一次性消费已作废）并清空输入
         if (captchaEnabled) {

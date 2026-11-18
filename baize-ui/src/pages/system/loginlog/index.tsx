@@ -5,8 +5,8 @@ import {
 } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, Modal, message, Space, Tag } from 'antd';
 import type { FormInstance } from 'antd';
+import { Button, Modal, message, Space, Tag } from 'antd';
 import React, { useCallback, useRef } from 'react';
 import Authorized from '@/components/Authorized';
 import { useDict } from '@/hooks/useDict';

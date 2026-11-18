@@ -15,8 +15,17 @@ import {
   ProFormText,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Modal, Radio, message, Space, Tag, Transfer, Tree } from 'antd';
 import type { FormInstance } from 'antd';
+import {
+  Button,
+  Modal,
+  message,
+  Radio,
+  Space,
+  Tag,
+  Transfer,
+  Tree,
+} from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
 import { useDict } from '@/hooks/useDict';
@@ -70,9 +79,9 @@ const Role: React.FC = () => {
   >();
   const [menuTree, setMenuTree] = useState<any[]>([]);
   const [checkedMenuKeys, setCheckedMenuKeys] = useState<string[]>([]);
-  const [allPerms, setAllPerms] = useState<
-    { key: string; title: string }[]
-  >([]);
+  const [allPerms, setAllPerms] = useState<{ key: string; title: string }[]>(
+    [],
+  );
   const [selectedPermKeys, setSelectedPermKeys] = useState<string[]>([]);
   const [dataScopeModalVisible, setDataScopeModalVisible] = useState(false);
   const [assignDataScopeRecord, setAssignDataScopeRecord] = useState<

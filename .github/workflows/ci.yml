@@ -84,6 +84,12 @@ jobs:
         working-directory: baize-ui
         run: npm ci
 
+      # T1.5：Biome 统一 lint + format 门禁（阻塞）。biome ci 只检查不改写，
+      # 任何 error 都会让本 job 变红；warning 不阻塞。src/.umi-undefined 等生成目录已在 biome.json 排除。
+      - name: Biome CI (lint + format)
+        working-directory: baize-ui
+        run: npx biome ci .
+
       - name: Build
         working-directory: baize-ui
         run: npm run build

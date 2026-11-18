@@ -9,15 +9,16 @@ import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Badge, Card, Col, Drawer, List, Modal, Row, Tag, theme } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
-import { getLatestNotices } from '@/services/system/notice';
-import { useDict } from '@/hooks/useDict';
 import { PLATFORM_TENANT_ID } from '@/constants/tenant';
+import { useDict } from '@/hooks/useDict';
+import { getLatestNotices } from '@/services/system/notice';
 import { getPermissions } from '@/utils/auth';
 
 /** 递归统计菜单树节点数（父节点 + 子节点） */
 const countMenuNodes = (menus: any[] = []): number =>
   menus.reduce(
-    (sum, item) => sum + 1 + countMenuNodes(item?.children ?? item?.routes ?? []),
+    (sum, item) =>
+      sum + 1 + countMenuNodes(item?.children ?? item?.routes ?? []),
     0,
   );
 
@@ -53,7 +54,13 @@ const StatCard: React.FC<{
           </div>
         </Col>
         <Col flex="auto" style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 13, color: token.colorTextTertiary, marginBottom: 2 }}>
+          <div
+            style={{
+              fontSize: 13,
+              color: token.colorTextTertiary,
+              marginBottom: 2,
+            }}
+          >
             {title}
           </div>
           <div
@@ -70,7 +77,13 @@ const StatCard: React.FC<{
             {value}
           </div>
           {hint && (
-            <div style={{ fontSize: 12, color: token.colorTextTertiary, marginTop: 2 }}>
+            <div
+              style={{
+                fontSize: 12,
+                color: token.colorTextTertiary,
+                marginTop: 2,
+              }}
+            >
               {hint}
             </div>
           )}
@@ -212,7 +225,9 @@ const Welcome: React.FC = () => {
         styles={{ body: { padding: '12px 20px' } }}
         title={
           <span>
-            <NotificationOutlined style={{ marginRight: 8, color: token.colorPrimary }} />
+            <NotificationOutlined
+              style={{ marginRight: 8, color: token.colorPrimary }}
+            />
             通知公告
           </span>
         }
@@ -250,7 +265,10 @@ const Welcome: React.FC = () => {
         open={!!noticeDetail}
         onClose={() => setNoticeDetail(undefined)}
       >
-        <Tag color={noticeDetail?.noticeType === '1' ? 'blue' : 'green'} style={{ marginBottom: 16 }}>
+        <Tag
+          color={noticeDetail?.noticeType === '1' ? 'blue' : 'green'}
+          style={{ marginBottom: 16 }}
+        >
           {dictLabel('sys_notice_type', noticeDetail?.noticeType)}
         </Tag>
         <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>
@@ -261,7 +279,9 @@ const Welcome: React.FC = () => {
       <Modal
         title={
           <span>
-            <NotificationOutlined style={{ marginRight: 8, color: token.colorPrimary }} />
+            <NotificationOutlined
+              style={{ marginRight: 8, color: token.colorPrimary }}
+            />
             {popupNotice?.noticeTitle}
           </span>
         }

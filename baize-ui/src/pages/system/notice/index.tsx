@@ -1,4 +1,9 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import {
   ModalForm,
@@ -28,8 +33,12 @@ const Notice: React.FC = () => {
   const { toValueEnum, getDictOptions } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [detailVisible, setDetailVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<API.SysNoticeDto | undefined>();
-  const [detailRecord, setDetailRecord] = useState<API.SysNoticeDto | undefined>();
+  const [editingRecord, setEditingRecord] = useState<
+    API.SysNoticeDto | undefined
+  >();
+  const [detailRecord, setDetailRecord] = useState<
+    API.SysNoticeDto | undefined
+  >();
 
   const handleEdit = (record: API.SysNoticeDto) => {
     setEditingRecord(record);

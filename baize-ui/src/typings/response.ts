@@ -1,6 +1,3 @@
-
-
-
 // 错误处理方案： 错误类型
 export enum ErrorShowType {
   SILENT = 0,

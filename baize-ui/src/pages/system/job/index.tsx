@@ -36,7 +36,9 @@ const Job: React.FC = () => {
   const actionRef = useRef<ActionType | null>(null);
   const { toValueEnum, getDictOptions } = useDict();
   const [formModalVisible, setFormModalVisible] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<API.SysJobDto | undefined>();
+  const [editingRecord, setEditingRecord] = useState<
+    API.SysJobDto | undefined
+  >();
 
   const handleEdit = (record: API.SysJobDto) => {
     setEditingRecord(record);

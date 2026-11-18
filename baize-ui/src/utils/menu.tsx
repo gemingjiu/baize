@@ -120,7 +120,10 @@ export function normalizeIconName(icon: string): string {
  * 3. 去掉末尾的 `/index`（后端菜单常带 index 后缀，前端路由不需要）；
  * 4. 按钮节点（menuType=2）path 为空，由调用方过滤，不会走到这里。
  */
-function toRoutePath(menuPath: string | undefined | null, parentPath: string): string {
+function toRoutePath(
+  menuPath: string | undefined | null,
+  parentPath: string,
+): string {
   const raw = (menuPath || '').trim();
   if (!raw) {
     return parentPath || '/';
@@ -134,7 +137,11 @@ function toRoutePath(menuPath: string | undefined | null, parentPath: string): s
   let rest = raw.replace(/^\/+/, '');
   const parentSegments = (parentPath || '').split('/').filter(Boolean);
   // 从最长前缀开始尝试剥离（例如父路径 /system，子路径 system/user/index -> user/index）
-  for (let take = Math.min(parentSegments.length, rest.split('/').length); take > 0; take--) {
+  for (
+    let take = Math.min(parentSegments.length, rest.split('/').length);
+    take > 0;
+    take--
+  ) {
     const head = parentSegments.slice(0, take).join('/');
     if (rest === head || rest.startsWith(`${head}/`)) {
       rest = rest.slice(head.length).replace(/^\/+/, '');
@@ -142,13 +149,17 @@ function toRoutePath(menuPath: string | undefined | null, parentPath: string): s
     }
   }
 
-  const joined = rest ? `${(parentPath || '').replace(/\/$/, '')}/${rest}` : parentPath || '/';
+  const joined = rest
+    ? `${(parentPath || '').replace(/\/$/, '')}/${rest}`
+    : parentPath || '/';
   const normalized = joined.replace(/\/index$/, '') || '/';
   // 兜底前缀必须跟随**父路径的首段**，不能硬编码 /system：
   // 否则 /monitor/operlog、/tool/gen 会被错改成 /system/monitor/operlog、/system/tool/gen，
   // 而前端真实路由是 /system/operlog（monitor 子树）或根本不存在（tool 子树），点击即 404。
   const parentPrefix = `/${(parentPath || '').split('/').filter(Boolean)[0] || 'system'}`;
-  return normalized.startsWith(parentPrefix) ? normalized : `${parentPrefix}${normalized}`;
+  return normalized.startsWith(parentPrefix)
+    ? normalized
+    : `${parentPrefix}${normalized}`;
 }
 
 export function transformMenu(
@@ -165,7 +176,9 @@ export function transformMenu(
         key: menu.id,
         icon: menu.icon ? normalizeIconName(menu.icon) : undefined,
         hideInMenu: menu.visible === '1',
-        children: menu.children ? transformMenu(menu.children, routePath) : undefined,
+        children: menu.children
+          ? transformMenu(menu.children, routePath)
+          : undefined,
       };
 
       if (menu.component && menu.component !== 'Layout') {
@@ -186,11 +199,14 @@ export function transformMenu(
  */
 export function renderMenuTree(menuData: MenuDataItem[]): MenuDataItem[] {
   return menuData.map((item) => {
-    const icon = typeof item.icon === 'string' ? iconNodeMap[item.icon] : item.icon;
+    const icon =
+      typeof item.icon === 'string' ? iconNodeMap[item.icon] : item.icon;
     return {
       ...item,
       icon,
-      children: item.children?.length ? renderMenuTree(item.children) : item.children,
+      children: item.children?.length
+        ? renderMenuTree(item.children)
+        : item.children,
     };
   });
 }

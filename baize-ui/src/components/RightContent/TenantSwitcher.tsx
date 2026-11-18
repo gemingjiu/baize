@@ -3,10 +3,10 @@ import { useModel } from '@umijs/max';
 import { App, Modal, Select, Space, Tag } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { PLATFORM_TENANT_ID } from '@/constants/tenant';
 import { switchTenant } from '@/services/auth';
 import { getTenantList } from '@/services/system/tenant';
 import { getUserInfo, saveAuth } from '@/utils/auth';
-import { PLATFORM_TENANT_ID } from '@/constants/tenant';
 
 type TenantOption = {
   value: string;
@@ -102,7 +102,10 @@ const TenantSwitcher: React.FC = () => {
     async (tenantId: string) => {
       setSubmitting(true);
       try {
-        const res = await switchTenant({ tenantId }, { skipErrorHandler: true });
+        const res = await switchTenant(
+          { tenantId },
+          { skipErrorHandler: true },
+        );
         if (!res?.success || !res.data?.accessToken) {
           message.error(res?.errorMessage || '切换租户失败，请重试');
           return;

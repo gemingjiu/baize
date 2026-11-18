@@ -1,13 +1,13 @@
 import { CodeOutlined, DownloadOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { Button, Drawer, Space, Tabs, message } from 'antd';
+import { Button, Drawer, message, Space, Tabs } from 'antd';
 import React, { useRef, useState } from 'react';
 import Authorized from '@/components/Authorized';
 import { API_VERSION } from '@/constants/api';
 import {
-  GenCodeParams,
-  GenTableItem,
+  type GenCodeParams,
+  type GenTableItem,
   generateCode,
   getGenTables,
 } from '@/services/tool/gen';

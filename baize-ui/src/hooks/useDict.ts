@@ -110,7 +110,10 @@ export function useDict() {
    */
   const dictLabel = useCallback(
     (dictType: string, value?: string) =>
-      (dicts[dictType] ?? []).find((item) => item.dictValue === value)?.dictLabel ?? value ?? '',
+      (dicts[dictType] ?? []).find((item) => item.dictValue === value)
+        ?.dictLabel ??
+      value ??
+      '',
     [dicts],
   );
 

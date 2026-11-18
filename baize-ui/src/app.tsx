@@ -14,9 +14,9 @@ import {
   Footer,
   Question,
 } from '@/components';
+import TenantSwitcher from '@/components/RightContent/TenantSwitcher';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import { getUserMenuTree } from '@/services/system/menu';
-import TenantSwitcher from '@/components/RightContent/TenantSwitcher';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 
@@ -120,7 +120,10 @@ export async function getInitialState(): Promise<{
       // （旧版本只缓存了 userInfo、用户手动清理过缓存、升级后首次进入等）。
       // 此时如果直接给 ProLayout 一个空数组，侧边栏会整块渲染为空——
       // 用户看到的就是「左边什么都没有」，比缺少图标严重得多。
-      const menuData = storedMenu && storedMenu.length > 0 ? storedMenu : await fetchMenuTree();
+      const menuData =
+        storedMenu && storedMenu.length > 0
+          ? storedMenu
+          : await fetchMenuTree();
       return {
         fetchUserInfo,
         fetchMenuTree,
@@ -166,7 +169,10 @@ export const layout: RunTimeLayoutConfig = ({
   return {
     // 不渲染语言切换器：项目仅提供中文一种有效语言（见 config.ts 的 locale 说明），
     // 保留入口会让用户切到 "英文框架 + 中文菜单" 的混排状态。
-    actionsRender: () => [<TenantSwitcher key="tenant" />, <Question key="doc" />],
+    actionsRender: () => [
+      <TenantSwitcher key="tenant" />,
+      <Question key="doc" />,
+    ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
