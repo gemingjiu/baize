@@ -76,13 +76,13 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: baize-ui/package-lock.json
 
-      # 注意：仓库未跟踪 baize-ui/package-lock.json（baize-ui/.gitignore 第 20 行忽略了它），
-      # 因此这里不能用 npm ci（要求已提交的 lockfile），也不能启用 setup-node 的 npm 缓存。
-      # 后续提交 lockfile 后可改为 npm ci + cache: npm 以获得可复现构建与缓存加速。
+      # lockfile 已提交（T1.2）：npm ci 保证可复现构建，配合 setup-node 的 npm 缓存加速。
       - name: Install dependencies
         working-directory: baize-ui
-        run: npm install
+        run: npm ci
 
       - name: Build
         working-directory: baize-ui

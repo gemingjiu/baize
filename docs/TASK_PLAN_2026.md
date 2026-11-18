@@ -72,12 +72,14 @@
 **步骤**：改写该条为"权限码已烘焙进 token role claim（多角色聚合签发），后端按 claim 精确匹配"；补一句 `sys_perm/sys_role_perm` 按 D3 决策保留但签发不消费。
 **验收**：README 描述与 `AuthServiceImpl` 签发逻辑一致；缺陷档案追加更正记录。
 
-> ✅ 完成于 2026-11-18：README:227 改写为多角色聚合签发的实际逻辑（声明旧"接口待实现"作废），commit 待填。
+> ✅ 完成于 2026-11-18：README:227 改写为多角色聚合签发的实际逻辑（声明旧"接口待实现"作废），commit 18b522b。
 
 ### T0.4 CI actions 健康升级（P1 / S / 可立即开工）
 **目标**：消除 ubuntu-latest 迁 Ubuntu 26 与 Node 运行时告警。
 **步骤**：`checkout/setup-node/setup-java/setup-helm` 升 v5 或固定 SHA（与 T1.4 统一处理）；确认 Node20 仍装 setup-node 显式版本。
 **验收**：四 job（backend/helm/frontend/sql）全绿，无 deprecation 告警。
+
+> ✅ 完成于 2026-11-18：checkout/setup-java/setup-node/setup-helm 全部 → v5（均已发布稳定 major：checkout v5.0.0 / setup-node v5.0.0 / setup-java v5.4 / setup-helm v5.1.0），commit 4881d24。YAML 语法本地校验通过；CI 四 job 全绿需在 GitHub Actions 环境验证。
 
 ---
 
@@ -101,6 +103,8 @@
 ### T1.2 提交 lockfile + CI 改 npm ci（P0 / S / 可立即开工）
 **步骤**：从 `baize-ui/.gitignore` 移除 `package-lock.json` 忽略 → 生成并提交锁文件 → ci.yml frontend job 改 `npm ci` + `cache: npm`（cache-dependency-path 指向 lockfile）。
 **验收**：冷环境两次 `npm ci` 产物一致；CI 构建通过且耗时不增。
+
+> ✅ 完成于 2026-11-18：`.gitignore` 移除 `package-lock.json` 忽略并跟踪 1.2MB 锁文件；ci.yml frontend 改 `npm ci` + `cache: npm`（cache-dependency-path 指向锁文件）。`npm ci --dry-run` exit 0（lockfile 与 package.json 同步，removed 114 个残留包）；CI 构建通过需 GitHub Actions 环境验证。commit 待填。
 
 ### T1.3 token 存储改 HttpOnly Cookie + refresh 轮转（P0 / L / 🔒 DEC-2）
 **目标**：DEBT-6——消除 XSS 单点窃取登录态。
