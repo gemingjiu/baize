@@ -224,7 +224,6 @@ Kubernetes / Helm 部署见 `baize-backend/deploy/k8s/`、`baize-backend/deploy/
 1. `jwt.secret` 必须通过环境变量 `BAIZE_JWT_SECRET`（或 Nacos 加密配置）提供，为空时认证服务会启动失败，这是有意设计。
 2. 数据库、Redis、Nacos、PostgreSQL 容器口令一律不得提交到仓库，使用 `.env`（已加入 `.gitignore`）或密钥管理系统。
 3. `.env.example` 中变量名与配置文件中的占位符一一对应，新增占位符时请同步更新该文件。
-4. `PermissionAspect` 已改为**权限码精确匹配**（`@RequiresPermission("system:user:add")` 必须与令牌里的权限码完全一致，仅 `*:*:*` 视为超管），不再使用角色名包含判断与前缀匹配。当前系统还没有「按用户查询权限码」的接口，`sys_perm` / `sys_role_perm` 也无初始化数据，因此登录时按 `baize.security.super-admin-role-codes`（默认 `admin`）把超管角色编码签发为 `*:*:*`，其他角色仍写角色编码。
-   **待办**：实现权限码查询接口后，应把用户实际权限码集合（逗号分隔）写入令牌的 role claim；在那之前非超管角色会被精确匹配拒绝，效果与改造前一致，但只有补齐这一步才算真正落地接口级权限。
+4. `PermissionAspect` 为**权限码精确匹配**（`@RequiresPermission("system:user:add")` 必须与令牌 role claim 中的权限码完全一致，仅 `*:*:*` 视为超管）。登录/刷新时由 `AuthServiceImpl` 走**多角色聚合签发**：取用户全部启用角色的菜单权限码，去重后（逗号分隔）写入 token 的 role claim；任一角色命中 `baize.security.super-admin-role-codes`（默认 `admin`）即签 `*:*:*`。`sys_perm` / `sys_role_perm` 按决策保留但签发链路不消费，权限码唯一来源是 `sys_menu.perms`。（旧版"待实现权限码查询接口"的说明已作废，多角色聚合签发已落地。）
 5. 内部端点（`@InnerAuth`，如 `/system/user/getByUsername`）通过请求头 `X-Inner-Token` 与配置 `baize.inner.token` 比对来隔离。**该配置项为空时不做校验（仅打印告警）**，生产环境必须配置并同步到所有服务；Feign 侧由 `baize-api-system` 的 `InnerAuthFeignConfig` 统一追加请求头。
 6. 单元测试已可正常执行（父 POM 固定 `maven-surefire-plugin` 3.2.5；此前 Maven 默认的 2.12.4 只识别 JUnit4，JUnit5 测试被静默跳过，日志表现为 `Tests run: 0`）。

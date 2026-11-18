@@ -72,6 +72,8 @@
 **步骤**：改写该条为"权限码已烘焙进 token role claim（多角色聚合签发），后端按 claim 精确匹配"；补一句 `sys_perm/sys_role_perm` 按 D3 决策保留但签发不消费。
 **验收**：README 描述与 `AuthServiceImpl` 签发逻辑一致；缺陷档案追加更正记录。
 
+> ✅ 完成于 2026-11-18：README:227 改写为多角色聚合签发的实际逻辑（声明旧"接口待实现"作废），commit 待填。
+
 ### T0.4 CI actions 健康升级（P1 / S / 可立即开工）
 **目标**：消除 ubuntu-latest 迁 Ubuntu 26 与 Node 运行时告警。
 **步骤**：`checkout/setup-node/setup-java/setup-helm` 升 v5 或固定 SHA（与 T1.4 统一处理）；确认 Node20 仍装 setup-node 显式版本。
