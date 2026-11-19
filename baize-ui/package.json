@@ -59,7 +59,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
     "@types/express": "^5.0.3",
-    "@types/lodash": "^4.17.10",
+    "@types/lodash": "^4.17.27",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "@types/react-helmet": "^6.1.11",
