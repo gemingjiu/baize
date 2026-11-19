@@ -32,7 +32,7 @@
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <!-- surefire 必须显式指定 3.x：Maven 3.8.x 默认绑定 maven-surefire-plugin 2.12.4，
              该版本只识别 JUnit4，会让 JUnit5 测试被静默跳过（日志表现为 Tests run: 0） -->
-        <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
+        <maven.surefire.plugin.version>3.6.1</maven.surefire.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
