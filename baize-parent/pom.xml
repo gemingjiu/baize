@@ -16,7 +16,7 @@
         <spring-boot.version>3.2.12</spring-boot.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
         <spring-cloud-alibaba.version>2023.0.3.3</spring-cloud-alibaba.version>
-        <spring-doc-openapi.version>2.5.0</spring-doc-openapi.version>
+        <spring-doc-openapi.version>3.2.0</spring-doc-openapi.version>
         <jwt.version>0.12.5</jwt.version>
         <lombok.version>1.18.30</lombok.version>
         <mybatis-plus.version>3.5.9</mybatis-plus.version>
