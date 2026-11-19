@@ -50,7 +50,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@ant-design/pro-cli": "^3.3.0",
+    "@ant-design/pro-cli": "^3.4.0",
     "@biomejs/biome": "^2.0.6",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
