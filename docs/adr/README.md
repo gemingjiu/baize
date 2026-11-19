@@ -6,5 +6,6 @@
 |---|---|---|---|
 | [0001](./0001-database-migration-flyway.md) | 引入 Flyway 管理数据库迁移（DEC-3） | Accepted | T1.1 |
 | [0002](./0002-token-httponly-cookie.md) | 登录态改 HttpOnly Cookie + refresh 轮转（DEC-2） | Accepted | T1.3 |
+| [0003](./0003-observability-otel-lgtm.md) | 可观测性迁移到 OpenTelemetry + LGTM（取代 SkyWalking） | Accepted | T2.1 / T2.2 |
 
 > 决策门编号（DEC-1~7）见 [ROADMAP_2026.md](../ROADMAP_2026.md)，任务拆解见 [TASK_PLAN_2026.md](../TASK_PLAN_2026.md)。

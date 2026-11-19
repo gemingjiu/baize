@@ -17,7 +17,6 @@
         <spring-cloud.version>2023.0.5</spring-cloud.version>
         <spring-cloud-alibaba.version>2023.0.3.3</spring-cloud-alibaba.version>
         <spring-doc-openapi.version>2.5.0</spring-doc-openapi.version>
-        <skywalking.version>9.4.0</skywalking.version>
         <jwt.version>0.12.5</jwt.version>
         <lombok.version>1.18.30</lombok.version>
         <mybatis-plus.version>3.5.9</mybatis-plus.version>
@@ -99,12 +98,11 @@
                 <version>${spring-doc-openapi.version}</version>
             </dependency>
 
-            <!-- SkyWalking -->
-            <dependency>
-                <groupId>org.apache.skywalking</groupId>
-                <artifactId>apm-toolkit-trace</artifactId>
-                <version>${skywalking.version}</version>
-            </dependency>
+            <!-- 可观测性：Micrometer Tracing（OTel 桥接）、OTLP 导出器、Prometheus 注册表
+                 三者版本均已由上方 spring-boot-dependencies BOM 传递管理
+                 （micrometer-bom 1.12.13 / micrometer-tracing-bom 1.2.12 / opentelemetry-bom 1.31.0），
+                 故此处不重复声明，模块中直接引用 artifact 即可不写版本号。
+                 详见 docs/adr/0003-observability-otel-lgtm.md -->
 
             <!-- JJWT -->
             <dependency>

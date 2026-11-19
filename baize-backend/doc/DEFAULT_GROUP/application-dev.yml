@@ -19,6 +19,40 @@ logging:
   level:
     org.springframework: info
     com.gem: debug
+
+# 可观测性（T2.1/T2.2，见 docs/adr/0003-observability-otel-lgtm.md）
+# 本文件由各服务共同加载，故端点与追踪配置集中在此，避免五个模块重复维护。
+management:
+  endpoints:
+    web:
+      exposure:
+        # 仅暴露必要端点；prometheus 供 ServiceMonitor/VM 抓取，metrics 供排障
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        # T2.4 韧性：暴露 liveness/readiness 供 K8s 探针使用
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        # 开启直方图后 Prometheus 可算 P95/P99（histogram_quantile）
+        http.server.requests: true
+  tracing:
+    sampling:
+      # dev 全采样便于排查；生产按需下调（如 0.1）或改为 ParentBased 采样
+      probability: ${BAIZE_TRACING_SAMPLING:1.0}
+    propagation:
+      type: w3c
+  otlp:
+    tracing:
+      # OTel Collector 的 OTLP/HTTP 入口；未部署 Collector 时导出失败不影响业务（异步批量上报）
+      endpoint: ${BAIZE_OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+      timeout: 10s
+
 # 安全配置
 baize:
   # 内部调用令牌：@InnerAuth 端点据此校验 Feign 客户端附加的 From-Inner 请求头。

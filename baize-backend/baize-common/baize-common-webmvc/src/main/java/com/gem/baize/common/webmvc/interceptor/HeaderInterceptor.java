@@ -6,12 +6,17 @@ import com.gem.baize.common.webmvc.context.RequestContextHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 /**
  * 请求头拦截器 处理传递进来的租户、用户、权限等信息
  */
 public class HeaderInterceptor implements AsyncHandlerInterceptor {
+
+    /** logback MDC 中 traceId 的键名，与各模块 logback-spring.xml 的 %X{traceId} 对应。 */
+    private static final String MDC_TRACE_ID_KEY = "traceId";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String tenantId = request.getHeader(CustomHttpHeaders.TENANT_ID);
@@ -29,6 +34,12 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
         }
         if (StringUtils.isNotBlank(traceId)) {
             RequestContextHolder.setTraceId(traceId);
+            // 补齐 logback MDC：OTel bridge 会自动写入由 traceparent 传播来的 traceId，
+            // 仅在其缺失时用上游透传的 X-Trace-Id 兜底，避免覆盖 OTel 的权威值。
+            // 修复前只写 ThreadLocal，导致下游日志 traceId 字段恒空、无法与网关串联。
+            if (StringUtils.isBlank(MDC.get(MDC_TRACE_ID_KEY))) {
+                MDC.put(MDC_TRACE_ID_KEY, traceId);
+            }
         }
         if (StringUtils.isNotBlank(userId)) {
             RequestContextHolder.setUserId(userId);
@@ -60,5 +71,7 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         // P1-A：同步请求结束后清理 ThreadLocal，避免线程复用把上一请求的租户/角色泄漏给下一请求
         RequestContextHolder.remove();
+        // 同样清理 MDC 中的 traceId 兜底值，防止线程复用污染下一请求的日志
+        MDC.remove(MDC_TRACE_ID_KEY);
     }
 }
