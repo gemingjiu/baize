@@ -120,6 +120,13 @@
 **验收**：XSS 场景无法读取 refresh token；旧 refresh 复用触发整链吊销；登录/切租户/登出全链路正常。
 **风险回退**：保留 feature flag，异常时切回原 localStorage 方案。
 
+> ✅ 完成于 2026-11-19（commit 37c9309）：按 m05398 拍板策略「后端完整能力 + flag 默认关」实施，前端零改动、现网零影响。
+> - **能力**：refresh 明文只经 HttpOnly Cookie 下发（`AuthCookieHelper` 写 refresh HttpOnly + CSRF 非 HttpOnly 双 Cookie，Path=/api/v1/auth，SameSite=Lax，secure 由配置控制）；服务端 `RefreshTokenStore` 只存 SHA-256(Base64url) 哈希为 key、`RefreshTokenRecord.encode()` 为 value，TTL 7 天；family 轮转链（issue/issueForFamily）+ used 标记 + 复用检测（used 令牌再出现即 `revokeFamily` 整族吊销）；CSRF 双重提交（头值==Cookie 值）；`refreshToken()` 校验令牌内 tenant/user 与 DTO 一致防跨租户重放；登出按 refresh 吊销整族并清 Cookie。
+> - **flag 分支**：`AuthCookieProperties.enabled`（默认 false）——关时 `issueTokenForUser`/`refreshToken`/`logout` 完全走原 UUID 明文 + `TokenManager` 链路，JSON 仍返回 refresh，前端 localStorage/Bearer 行为不变；开时 JSON 剔除 refresh（`@JsonIgnore` IssuedRefresh 仅 service→controller 内部传递，`loginVO.refreshToken=null`）。
+> - **配置**：`baize-auth-dev.yml` 加 `baize.security.token-cookie` 块（默认关）；`baize-gateway-dev.yml` CORS allowedHeaders 加 `X-XSRF-TOKEN`。灰度切换前提：前端配合 `credentials:'include'` + 携带 CSRF 头。
+> - **测试**：`RefreshTokenRecordTest`（3：编解码往返/用户名含 '|' 保留末字段/畸形返回 null）+ `RefreshTokenStoreTest`（4：只存哈希/consume 标记 used/复用吊销整族/轮转同 family），baize-auth 测试栈换 `spring-boot-starter-test`；`mvn -pl baize-auth -am test` 7 用例全绿（含 JwtUtilsTest 4）。
+> - **未做（下一步灰度）**：前端切 Cookie 模式（移除 localStorage、credentials/include、401 静默刷新）、access 缩到 15min — 留作后续工作包；BFF 演进记入 ADR-0002。
+
 ### T1.4 CI 安全门禁（P1 / M / 依赖：T0.4 协同）
 **步骤**：`permissions: contents: read` 最小化；actions 固定 SHA；Renovate/Dependabot 配置；Trivy 镜像+依赖扫描（先告警后阻断）；CycloneDX Maven 插件产 SBOM；若上云改 OIDC 免密钥。
 **验收**：每次 push/PR 产出 SBOM 与扫描报告；高危 CVE 阻断合并。
