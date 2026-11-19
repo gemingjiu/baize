@@ -124,6 +124,8 @@
 **步骤**：`permissions: contents: read` 最小化；actions 固定 SHA；Renovate/Dependabot 配置；Trivy 镜像+依赖扫描（先告警后阻断）；CycloneDX Maven 插件产 SBOM；若上云改 OIDC 免密钥。
 **验收**：每次 push/PR 产出 SBOM 与扫描报告；高危 CVE 阻断合并。
 
+> ✅ 完成于 2026-11-19：ci.yml 顶部加 `permissions: contents: read` 全局最小权限（OIDC 提权留作未来上云时局部开启）。6 类 action（checkout/setup-java/setup-node/setup-helm/upload-artifact/trivy-action）全部通过 GitHub API 实测 tag→commit SHA 并固定到 SHA + 注释版本号，共 12 处，防 tag 漂移/供应链投毒（azure/setup-helm v5 SHA commit 未签名，已记录）。新增 `security` job：CycloneDX `makeAggregateBom` 2.9.1 产出聚合 SBOM（JSON/XML，实测 295 组件）经 upload-artifact v7 上传；Trivy fs 扫描（CRITICAL/HIGH、ignore-unfixed）先以 `continue-on-error` 告警运行，基线清理后去该行即转阻断。新建 `.github/dependabot.yml` 覆盖 github-actions + 两处 maven（baize-parent/baize-backend）+ npm（baize-ui），每周一自动提更新 PR。本地验证：js-yaml 校验 ci.yml/dependabot.yml YAML_OK；cyclonedx 目标 BOM 生成 BUILD SUCCESS。OIDC 未启用（当前非上云部署）。commit 待填。
+
 ### T1.5 Biome 规则提升为 CI error（P1 / S / 可立即开工）
 **步骤**：`biome ci` 接入 CI 并设为阻塞；保留 `tsc --noEmit`。
 **验收**：lint/format 问题使 CI 变红；不影响 build job。

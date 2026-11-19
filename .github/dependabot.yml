@@ -1,0 +1,50 @@
+# T1.4 安全门禁：依赖更新自动化。
+# 与固定 SHA 的 action 配合：Dependabot 提 PR 更新 SHA/版本，CI 全绿后再合并。
+version: 2
+updates:
+  # GitHub Actions：跟随上游 action 的版本与 SHA 更新（含我们固定的 6 个 action）
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci(deps)"
+
+  # Maven：根目录父 POM 与后端多模块 reactor（两个目录分别维护）
+  - package-ecosystem: "maven"
+    directory: "/baize-parent"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "java"
+    commit-message:
+      prefix: "deps(java)"
+
+  - package-ecosystem: "maven"
+    directory: "/baize-backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "java"
+    commit-message:
+      prefix: "deps(java)"
+
+  # npm：前端 Umi Max 工程（lockfile 已提交，走 npm 生态）
+  - package-ecosystem: "npm"
+    directory: "/baize-ui"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "frontend"
+    commit-message:
+      prefix: "deps(js)"

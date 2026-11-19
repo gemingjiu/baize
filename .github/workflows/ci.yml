@@ -5,11 +5,65 @@ on:
     branches: [dev, main]
   pull_request:
 
+# T1.4 安全基线：默认最小权限，所有 job 仅可读仓库内容。
+# 若未来上云需要 OIDC 免密钥，再在对应 job 局部提权 id-token: write。
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # T1.4 安全门禁：SBOM 生成 + Trivy 漏洞扫描
+  #   - CycloneDX 聚合 BOM（JSON/XML）上传为构建产物，供供应链审计
+  #   - Trivy fs 扫描先以 advisory（continue-on-error）运行，基线清理后再转阻断
+  #   - 所有 action 固定到 commit SHA（T1.4），防 tag 漂移 / 供应链投毒
+  # ---------------------------------------------------------------------------
+  security:
+    name: Security (SBOM + Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      # baize-backend 的 parent 是仓库内的 baize-parent，SBOM 解析依赖树前需先安装
+      - name: Install parent BOM
+        run: mvn -B -Dfile.encoding=UTF-8 -f baize-parent/pom.xml install
+
+      # CycloneDX 聚合 SBOM：一次覆盖全部后端模块的依赖树，产物为 target/bom.json 与 bom.xml
+      - name: Generate CycloneDX SBOM
+        run: mvn -B -DskipTests -f baize-backend/pom.xml org.cyclonedx:cyclonedx-maven-plugin:2.9.1:makeAggregateBom
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sbom-cyclonedx
+          path: |
+            baize-backend/target/bom.json
+            baize-backend/target/bom.xml
+          if-no-files-found: error
+
+      # 先告警后阻断：当前依赖基线尚未清理，先用 continue-on-error 收集报告；
+      # 高危 CVE 清零后去掉该行即可转为阻断门禁（对齐 roadmap 的渐进策略）。
+      - name: Trivy filesystem scan (advisory)
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+
   # ---------------------------------------------------------------------------
   # 后端：JDK 17 + Maven 缓存；先安装仓库内的 baize-parent，再构建全部后端模块
   # ---------------------------------------------------------------------------
@@ -18,10 +72,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: '17'
@@ -44,10 +98,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Helm
-        uses: azure/setup-helm@v5
+        uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5
         with:
           version: v3.16.3
 
@@ -70,10 +124,10 @@ jobs:
     continue-on-error: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Set up Node 20
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: '20'
           cache: npm
@@ -126,7 +180,7 @@ jobs:
       PGPASSWORD: postgres
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Create schema
         run: psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d baize -c 'CREATE SCHEMA IF NOT EXISTS "baize-system";'
@@ -170,7 +224,7 @@ jobs:
           echo "All migration versions are unique."
 
       - name: Set up JDK 17 for Flyway validation
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: '17'
