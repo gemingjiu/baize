@@ -3,6 +3,24 @@ jwt:
   secret: baize-a732659e-45e2-47a8-89ab-6c4b8af98bab
   expiration: 7200000
 
+# T1.3 / ADR-0002：refresh token HttpOnly Cookie 模式
+# 默认 enabled=false —— 保持旧链路（JSON 返回 refresh + 前端 localStorage + Bearer）零变更。
+# 灰度切换时置 true：refresh 明文只走 HttpOnly Cookie，服务端存哈希 + family 轮转 + CSRF 双重提交。
+# 注意：切换前需前端配合 credentials:'include' 并携带 X-XSRF-TOKEN 头，且网关 CORS 放行该头。
+baize:
+  security:
+    token-cookie:
+      enabled: false
+      refresh-cookie-name: baize_refresh
+      csrf-cookie-name: XSRF-TOKEN
+      csrf-header-name: X-XSRF-TOKEN
+      # Cookie Path 必须与 auth 服务对外路径（网关路由前缀）一致
+      path: /api/v1/auth
+      # dev 为 http，必须 false；生产 https 置 true
+      secure: false
+      same-site: Lax
+      ttl-seconds: 604800 # 7 天
+
 logging:
   level:
     com.gem: debug

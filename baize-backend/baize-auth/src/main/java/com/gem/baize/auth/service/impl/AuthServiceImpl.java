@@ -8,6 +8,9 @@ import com.gem.baize.api.system.tenant.client.SysTenantFeignClient;
 import com.gem.baize.api.system.tenant.domain.dto.SysTenantDto;
 import com.gem.baize.api.system.user.client.SysUserFeignClient;
 import com.gem.baize.api.system.user.domain.dto.SysUserDto;
+import com.gem.baize.auth.config.AuthCookieProperties;
+import com.gem.baize.auth.domain.RefreshTokenRecord;
+import com.gem.baize.auth.manager.RefreshTokenStore;
 import com.gem.baize.auth.manager.TokenManager;
 import com.gem.baize.auth.service.AuthService;
 import com.gem.baize.auth.service.CaptchaService;
@@ -23,6 +26,7 @@ import com.gem.baize.common.core.service.OnlineUserService;
 import com.gem.baize.common.security.domain.dto.LoginDTO;
 import com.gem.baize.common.security.domain.dto.Payload;
 import com.gem.baize.common.security.domain.dto.TokenRefreshDTO;
+import com.gem.baize.common.security.domain.vo.IssuedRefresh;
 import com.gem.baize.common.security.domain.vo.LoginVO;
 import com.gem.baize.common.security.domain.vo.UserVO;
 import com.gem.baize.common.security.util.JwtUtils;
@@ -64,6 +68,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private TokenManager tokenManager;
+
+    /** T1.3：HttpOnly Cookie 模式刷新令牌存储，仅 flag 开启时使用。 */
+    @Autowired
+    private RefreshTokenStore refreshTokenStore;
+
+    /** T1.3：特性开关，默认 false 保持旧链路零变更。 */
+    @Autowired
+    private AuthCookieProperties authCookieProperties;
 
     @Autowired
     private OnlineUserService onlineUserService;
@@ -284,13 +296,22 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String accessToken = jwtUtils.createToken(user.getId(), buildClaims(payload));
-        String refreshToken = UUID.randomUUID().toString().replace("-", "");
-        tokenManager.saveRefreshToken(tenantId, user.getId(), refreshToken);
 
         LoginVO loginVO = new LoginVO();
         loginVO.setAccessToken(accessToken);
-        loginVO.setRefreshToken(refreshToken);
         loginVO.setExpiresIn((int) (jwtExpirationMs / 1000));
+
+        if (authCookieProperties.isEnabled()) {
+            // T1.3：HttpOnly Cookie 模式——明文 refresh 只通过 IssuedRefresh 交给 controller 写 Cookie，
+            // 不进 JSON；服务端存哈希 + family。loginVO.refreshToken 保持 null。
+            IssuedRefresh issued = refreshTokenStore.issue(tenantId, user.getId(), user.getUserName());
+            loginVO.setIssuedRefresh(issued);
+        } else {
+            // 旧链路：JSON 返回 refresh，Redis 明文存储（feature flag 关闭时零变更）
+            String refreshToken = UUID.randomUUID().toString().replace("-", "");
+            tokenManager.saveRefreshToken(tenantId, user.getId(), refreshToken);
+            loginVO.setRefreshToken(refreshToken);
+        }
 
         UserVO userVO = new UserVO();
         userVO.setId(user.getId());
@@ -345,8 +366,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String userId, String tenantId, String accessToken) {
+        logout(userId, tenantId, accessToken, null);
+    }
+
+    @Override
+    public void logout(String userId, String tenantId, String accessToken, String refreshToken) {
         // 先清理刷新令牌与在线状态
         logout(userId, tenantId);
+        // T1.3：flag 开启时按明文 refresh 吊销整个 family（含所有已轮转令牌）
+        if (authCookieProperties.isEnabled() && StringUtils.isNotBlank(refreshToken)) {
+            refreshTokenStore.revokeByToken(refreshToken);
+        }
         // 再把访问令牌写入黑名单（TTL 取令牌剩余有效期），网关据此立即拒绝该令牌
         blacklistAccessToken(accessToken, userId);
     }
@@ -356,9 +386,21 @@ public class AuthServiceImpl implements AuthService {
         log.info("刷新令牌请求: userId={}", dto.getUserId());
 
         // 1. 验证刷新令牌
-        boolean valid = tokenManager.validateRefreshToken(dto.getTenantId(), dto.getUserId(), dto.getRefreshToken());
-        if (!valid) {
-            throw new NotFoundException("刷新令牌无效或已过期");
+        // T1.3：flag 开启时走 family 轮转 + 复用检测（服务端只存哈希）；关闭时保持旧明文校验零变更。
+        String familyId = null;
+        if (authCookieProperties.isEnabled()) {
+            RefreshTokenRecord consumed = refreshTokenStore.consume(dto.getRefreshToken());
+            // 身份一致性：令牌内的 tenant/user 必须与 DTO 声明一致，防止跨租户/跨用户重放
+            if (!consumed.getTenantId().equals(dto.getTenantId())
+                    || !consumed.getUserId().equals(dto.getUserId())) {
+                throw new UnauthorizedException("刷新令牌与请求身份不一致");
+            }
+            familyId = consumed.getFamilyId();
+        } else {
+            boolean valid = tokenManager.validateRefreshToken(dto.getTenantId(), dto.getUserId(), dto.getRefreshToken());
+            if (!valid) {
+                throw new NotFoundException("刷新令牌无效或已过期");
+            }
         }
 
         // 2. 查询用户信息
@@ -391,15 +433,19 @@ public class AuthServiceImpl implements AuthService {
         Map<String, Object> claims = buildClaims(payload);
         String accessToken = jwtUtils.createToken(user.getId(), claims);
 
-        // 4. 生成新的刷新令牌（可选：保持原有刷新令牌）
-        String refreshToken = UUID.randomUUID().toString().replace("-", "");
-        tokenManager.saveRefreshToken(user.getTenantId(), user.getId(), refreshToken);
-
-        // 5. 构建返回结果
+        // 4. 生成新的刷新令牌
         LoginVO loginVO = new LoginVO();
         loginVO.setAccessToken(accessToken);
-        loginVO.setRefreshToken(refreshToken);
         loginVO.setExpiresIn((int) (jwtExpirationMs / 1000));
+        if (authCookieProperties.isEnabled()) {
+            // T1.3：同 family 轮转签发新令牌，明文只走 Cookie
+            loginVO.setIssuedRefresh(refreshTokenStore.issueForFamily(
+                    familyId, user.getTenantId(), user.getId(), user.getUserName()));
+        } else {
+            String refreshToken = UUID.randomUUID().toString().replace("-", "");
+            tokenManager.saveRefreshToken(user.getTenantId(), user.getId(), refreshToken);
+            loginVO.setRefreshToken(refreshToken);
+        }
 
         return loginVO;
     }

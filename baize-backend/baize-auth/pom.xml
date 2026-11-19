@@ -74,9 +74,10 @@
             <artifactId>spring-boot-starter-data-ldap</artifactId>
         </dependency>
 
+        <!-- T1.3：完整测试栈（JUnit5 + Mockito + AssertJ），用于 refresh 令牌编解码/轮转/复用检测单测 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 

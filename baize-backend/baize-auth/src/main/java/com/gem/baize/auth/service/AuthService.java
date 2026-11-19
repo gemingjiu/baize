@@ -36,6 +36,16 @@ public interface AuthService {
     void logout(String userId, String tenantId, String accessToken);
 
     /**
+     * T1.3：用户登出（含 HttpOnly Cookie 模式下的 refresh family 吊销）。
+     *
+     * @param userId       用户ID
+     * @param tenantId     租户ID
+     * @param accessToken  当前访问令牌
+     * @param refreshToken 从 Cookie 读取的 refresh 明文（flag 关闭时可为 null）
+     */
+    void logout(String userId, String tenantId, String accessToken, String refreshToken);
+
+    /**
      * 刷新令牌
      *
      * @param dto 刷新令牌参数

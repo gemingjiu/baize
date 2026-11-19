@@ -7,8 +7,7 @@ import lombok.Data;
 @Data
 @Schema(description = "刷新Token请求参数")
 public class TokenRefreshDTO {
-    @NotBlank(message = "刷新令牌不能为空")
-    @Schema(description = "刷新令牌")
+    @Schema(description = "刷新令牌（HttpOnly Cookie 模式下可为空，服务端从 Cookie 读取）")
     private String refreshToken;
 
     @NotBlank(message = "用户ID不能为空")

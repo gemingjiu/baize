@@ -33,6 +33,8 @@ spring:
               - Content-Type
               - X-Requested-With
               - X-Tenant-Id
+              # T1.3 / ADR-0002：HttpOnly Cookie 灰度切换后前端需携带 CSRF 双重提交头
+              - X-XSRF-TOKEN
             allowCredentials: true
             maxAge: 3600
       discovery:
