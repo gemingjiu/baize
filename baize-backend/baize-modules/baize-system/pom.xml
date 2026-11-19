@@ -155,6 +155,17 @@
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
 
+        <!-- Flyway：DB 版本迁移（专用数据源，绕过 dynamic-datasource 路由层） -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <!-- Flyway 专用数据源的 JDBC 驱动（9.x 的 PG 驱动不在 flyway-core 内，需显式引入） -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -177,6 +188,35 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <!-- T1.1/DEC-3：把权威迁移脚本复制到 classpath，保证 fat jar（K8s）内
+                 classpath:db/migration 路径稳定，无需在宿主机挂载 db 目录。
+                 权威源仍是 baize-backend/db/migration，这里只做单向复制，不产生第二份维护点。 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-flyway-migrations</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/db/migration</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/../../db/migration</directory>
+                                    <includes>
+                                        <include>V*.sql</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

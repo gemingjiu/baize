@@ -26,6 +26,10 @@
         <alibaba-ttl.version>2.14.5</alibaba-ttl.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <easyexcel.version>3.3.4</easyexcel.version>
+        <!-- Flyway：与 Spring Boot 3.2.12 BOM 管理的 flyway-core 版本保持一致；
+             显式声明供 flyway-maven-plugin（CI/本地校验）与文档引用。9.x 的 PG 驱动在 core 内。 -->
+        <flyway.version>9.22.3</flyway.version>
+        <postgresql.driver.version>42.7.7</postgresql.driver.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <!-- surefire 必须显式指定 3.x：Maven 3.8.x 默认绑定 maven-surefire-plugin 2.12.4，
              该版本只识别 JUnit4，会让 JUnit5 测试被静默跳过（日志表现为 Tests run: 0） -->
@@ -191,6 +195,20 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel-core</artifactId>
                 <version>${easyexcel.version}</version>
+            </dependency>
+
+            <!-- Flyway：版本由 Spring Boot BOM 管理（与 ${flyway.version} 对齐），此处显式列出供按需引入 -->
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
+            <!-- PostgreSQL JDBC：Flyway 专用数据源 / CI 插件使用，版本显式管理避免漂移 -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.driver.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

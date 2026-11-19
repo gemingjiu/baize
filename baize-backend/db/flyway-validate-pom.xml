@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  T1.1 / DEC-3：CI 专用的 Flyway 校验 POM。
+
+  不复用 baize-system 的 pom.xml，原因有二：
+  1. 应用侧 spring.flyway.* 走 Nacos 配置，CI 无 Nacos；
+  2. flyway-maven-plugin 的 JDBC 驱动需作为「插件依赖」引入（不在插件默认 classpath），
+     单独 POM 可把 postgresql 驱动作为 plugin dependency 固定下来。
+
+  用法（在仓库根目录执行）：
+    mvn -B -f baize-backend/db/flyway-validate-pom.xml \
+      -Dflyway.url=jdbc:postgresql://localhost:5432/baize \
+      -Dflyway.user=postgres -Dflyway.password=postgres \
+      -Dflyway.locations=filesystem:${basedir}/migration \
+      org.flywaydb:flyway-maven-plugin:9.22.3:migrate
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.gem.baize</groupId>
+    <artifactId>baize-flyway-validate</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>9.22.3</version>
+                <configuration>
+                    <driver>org.postgresql.Driver</driver>
+                    <user>postgres</user>
+                    <password>postgres</password>
+                    <schemas>baize-system</schemas>
+                    <createSchemas>true</createSchemas>
+                    <!-- filesystem 路径相对本 POM 所在目录（baize-backend/db）解析，故用 ${basedir}/migration -->
+                    <locations>filesystem:${basedir}/migration</locations>
+                    <validateOnMigrate>true</validateOnMigrate>
+                    <!-- 与 spring.flyway.* 保持一致：CI 已手工跑完 ddl→init→migration，
+                         以最新版本建立 baseline，Flyway 只校验启动、不再重复建表 -->
+                    <baselineOnMigrate>true</baselineOnMigrate>
+                    <baselineVersion>2026_11_07</baselineVersion>
+                    <baselineDescription>T1.1 CI baseline</baselineDescription>
+                </configuration>
+                <dependencies>
+                    <!-- 9.x 的 PG 驱动需显式作为插件依赖提供 -->
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>42.7.7</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>

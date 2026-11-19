@@ -75,7 +75,7 @@
 | 平台租户 0 + 平台态隔离 | live DB + init + migration 插入 id=0 | ✅ 验证 |
 | 逻辑删除 status=null bug | 11 个 Service `LambdaUpdateWrapper` 逻辑删除 | ✅ 构建验证 |
 | Excel 导出 / 服务监控 / Redis 监控 / 租户切换 / 数据权限 / 代码生成器 | 见路线图 | ✅ 完成 |
-| **P0-E 修复（DDL 不幂等）** — 迁移脚本 schema 限定 + 固定 id + path 唯一索引 + ON CONFLICT | `V2026_10_23__home_menu.sql`、`V2026_10_23__platform_tenant_0.sql` | ✅ 已提交（a2fe6e3） |
+| **P0-E 修复（DDL 不幂等）** — 迁移脚本 schema 限定 + 固定 id + path 唯一索引 + ON CONFLICT | `V2026_10_23__home_menu.sql`、`V2026_10_23_02__platform_tenant_0.sql` | ✅ 已提交（a2fe6e3） |
 | **种子表缺主键（review P0-1 / 原 P2-A 升级）** — DDL 仅 `sys_oper_log` 有主键，15 张种子表 `id int8 NOT NULL` 无 PK → 全新库按 README 走 `ddl→init`（不跑 migration）时 `init` 的 `ON CONFLICT (id)` 无仲裁索引首跑即失败 | `db/ddl/baize-system-ddl.sql` 末尾追加幂等 `DO $$` 补主键块（15 张种子表 `pk_<table>(id)`，逐表判重跳过）| ✅ 已提交（a2fe6e3） |
 | **README 幂等声明纠正** — 原称 `db/ddl/` 幂等「是」实为裸 `CREATE TABLE` 非幂等 | `README.md` 表项改为「否（增量用 migration）」 | ✅ 已改 |
 | **P0-C 密码以 URL query 发送** → access log 泄露 | 后端新建 `UpdatePasswordDto`/`ResetPasswordDto`（jakarta `@NotBlank`），`SysUserController` 两个端点改 `@Valid @RequestBody`；前端 `services/system/user.ts` `params:` → `data:` | ✅ 编译+tsc 验证 |

@@ -12,7 +12,7 @@
 ## 决策
 
 1. **引入 Flyway**，依赖用 Spring Boot 3.2.12 BOM 管理的 `flyway-core` 9.22.3（该版本 PG 驱动内置在 core，无需 `flyway-database-postgresql`，那是 10.x 才拆出的）。
-2. **权威脚本仍在 `baize-backend/db/migration/`**，避免与 `src/main/resources/db/migration` 形成双份漂移；Flyway 配置 `spring.flyway.locations=filesystem:db/migration`，本地/CI/容器挂载同路径。
+2. **权威脚本仍在 `baize-backend/db/migration/`**，避免与 `src/main/resources/db/migration` 形成双份漂移。构建期由 `maven-resources-plugin` 把权威脚本单向复制到 `target/classes/db/migration`，Flyway 配置 `spring.flyway.locations=classpath:db/migration`：fat jar（K8s）自包含迁移脚本，路径稳定，不依赖宿主机挂载 db 目录，也不形成第二份维护点。（原方案 `filesystem:db/migration` 因容器内 jar 运行无稳定文件系统路径而改为 classpath 单源。）
 3. **baseline 策略**：
    - 存量库：`baseline-on-migrate=true` + `baseline-version=2026_11_07`（当前最新脚本版本），把已手工跑过的 16 个脚本标记为已应用，避免重复执行。
    - 新装库：仍走 `ddl → init → migration` 流程；init 已含种子，同样 baseline 到 `2026_11_07`，未来新脚本 `V2026_11_08+` 才由 Flyway 应用。

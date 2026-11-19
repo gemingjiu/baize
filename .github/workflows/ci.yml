@@ -156,3 +156,34 @@ jobs:
             echo "== $f"
             psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d baize -f "$f"
           done
+
+      # T1.1/DEC-3：Flyway 版本管理校验。
+      # 上面已按手工路径跑完 ddl→init→migration，这里用 Flyway 对同一份权威脚本
+      # 建立 baseline 并校验启动，证明 16 个脚本可被 Flyway 正确纳管。
+      - name: Check duplicate Flyway versions
+        run: |
+          dupes=$(cd baize-backend/db/migration && for f in V*.sql; do echo "${f%%__*}"; done | sort | uniq -d)
+          if [ -n "$dupes" ]; then
+            echo "::error::Duplicate Flyway versions detected: $dupes"
+            exit 1
+          fi
+          echo "All migration versions are unique."
+
+      - name: Set up JDK 17 for Flyway validation
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # 独立 POM（不继承 baize-parent）已把 postgresql 驱动作为插件依赖固定，
+      # 无需 install parent BOM。baseline-version 与 spring.flyway.* 保持一致。
+      - name: Validate Flyway migration history
+        run: |
+          mvn -B -f baize-backend/db/flyway-validate-pom.xml \
+            -Dflyway.url=jdbc:postgresql://localhost:5432/baize \
+            -Dflyway.user=postgres \
+            -Dflyway.password=postgres \
+            org.flywaydb:flyway-maven-plugin:9.22.3:migrate
+          # 断言：history 表存在、有 baseline 记录、且无失败项（用完整 schema 限定，不依赖 search_path）
+          psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d baize \
+            -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='baize-system' AND table_name='flyway_schema_history') THEN RAISE EXCEPTION 'flyway_schema_history missing'; END IF; IF NOT EXISTS (SELECT 1 FROM \"baize-system\".flyway_schema_history) THEN RAISE EXCEPTION 'flyway history empty'; END IF; IF EXISTS (SELECT 1 FROM \"baize-system\".flyway_schema_history WHERE success=false) THEN RAISE EXCEPTION 'failed migration in history'; END IF; END \$\$;"

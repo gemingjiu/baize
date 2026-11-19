@@ -42,6 +42,26 @@ spring:
           url: jdbc:postgresql://${baize.datasource.master.addr}/${baize.datasource.master.schema}?currentSchema=baize-system&stringtype=unspecified
           username: ${baize.datasource.master.username}
           password: ${baize.datasource.master.password}
+  # Flyway：DB 迁移版本管理（T1.1 / DEC-3）。
+  # 使用专用数据源（spring.flyway.url 存在时 Boot 自建独立 DataSource），
+  # 绕过 dynamic-datasource 的路由层，避免 baseline 与业务多数据源互相干扰。
+  flyway:
+    enabled: true
+    # 迁移脚本在构建期由 maven-resources-plugin 复制到 classpath:db/migration，
+    # 保证 fat jar（K8s）部署路径稳定，无需在宿主机挂载 db 目录。
+    locations: classpath:db/migration
+    url: jdbc:postgresql://${baize.datasource.master.addr}/${baize.datasource.master.schema}?currentSchema=baize-system&stringtype=unspecified
+    user: ${baize.datasource.master.username}
+    password: ${baize.datasource.master.password}
+    driver-class-name: org.postgresql.Driver
+    schemas: baize-system
+    # 存量库/已按 ddl→init→migration 初始化的库：以当前最新版本建立 baseline，
+    # 历史 16 个脚本标记为已应用，仅 V2026_11_08+ 由 Flyway 接管。
+    baseline-on-migrate: true
+    baseline-version: "2026_11_07"
+    baseline-description: "T1.1 baseline before Flyway adoption"
+    # forward-only：禁止改动已应用迁移，checksum 漂移会让启动失败
+    validate-on-migrate: true
 
 # 日志相关配置
 logging:
