@@ -1,0 +1,130 @@
+# T2.2 指标告警：PrometheusRule
+#
+# 指标来源：T2.1 引入的 micrometer-registry-prometheus。
+# 关键指标名（Micrometer 命名 → Prometheus 命名会自动转换）：
+#   http.server.requests            → http_server_requests_seconds_{count,sum,bucket}
+#   http.server.requests.active     → http_server_requests_active_seconds
+#   jvm.memory.used                 → jvm_memory_used_bytes
+#   jvm.gc.pause                    → jvm_gc_pause_seconds_{count,sum}
+#   executor.*                      → executor_*（线程池）
+#   hikaricp.connections.*          → hikaricp_connections_*
+#
+# 前提：集群已安装 Prometheus Operator。阈值按当前小规模环境给出，生产需按容量基线调整。
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: baize-apps
+  namespace: baize
+  labels:
+    app.kubernetes.io/part-of: baize
+    release: kube-prometheus-stack
+spec:
+  groups:
+    # ---------------------------------------------------------------- 可用性
+    - name: baize-availability
+      rules:
+        - alert: BaizeServiceDown
+          expr: up{namespace="baize", job=~".*baize.*"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "服务 {{ $labels.pod }} 抓取失败超过 2 分钟"
+            description: "Prometheus 无法抓取 {{ $labels.instance }}，实例可能已宕机或指标端点不可达。"
+
+        - alert: BaizeReadinessFailing
+          # 就绪探针失败会表现为 kube_pod_status_ready=0，这里直接看 Pod 就绪状态
+          expr: kube_pod_status_ready{namespace="baize", condition="true"} == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ $labels.pod }} 未就绪超过 5 分钟"
+            description: "该 Pod 就绪探针持续失败，流量已被摘除，请检查应用日志与依赖可用性。"
+
+    # ---------------------------------------------------------------- 错误率
+    - name: baize-errors
+      rules:
+        # 5xx 占比超过 5%（按 5 分钟窗口，按服务聚合）
+        - alert: BaizeHighErrorRate
+          expr: |
+            (
+              sum by (application) (rate(http_server_requests_seconds_count{namespace="baize", status=~"5.."}[5m]))
+              /
+              sum by (application) (rate(http_server_requests_seconds_count{namespace="baize"}[5m]))
+            ) > 0.05
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "服务 {{ $labels.application }} 5xx 错误率超过 5%"
+            description: "近 5 分钟 5xx 占比 {{ $value | humanizePercentage }}，请检查下游依赖与异常日志。"
+
+        # 4xx 突增常意味着鉴权/租户上下文异常，值得告警但不致命
+        - alert: BaizeHigh4xxRate
+          expr: |
+            (
+              sum by (application) (rate(http_server_requests_seconds_count{namespace="baize", status=~"4.."}[5m]))
+              /
+              sum by (application) (rate(http_server_requests_seconds_count{namespace="baize"}[5m]))
+            ) > 0.30
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "服务 {{ $labels.application }} 4xx 占比超过 30%"
+            description: "4xx 占比 {{ $value | humanizePercentage }}，排查鉴权、租户头与请求签名链路。"
+
+    # ---------------------------------------------------------------- 延迟
+    - name: baize-latency
+      rules:
+        # 基于 T2.1 开启的 http.server.requests 直方图计算 P99
+        - alert: BaizeHighLatencyP99
+          expr: |
+            histogram_quantile(
+              0.99,
+              sum by (le, application) (rate(http_server_requests_seconds_bucket{namespace="baize"}[5m]))
+            ) > 2
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "服务 {{ $labels.application }} P99 延迟超过 2s"
+            description: "近 10 分钟 P99 为 {{ $value | humanizeDuration }}，请结合追踪定位慢调用。"
+
+    # ---------------------------------------------------------------- 资源
+    - name: baize-resources
+      rules:
+        - alert: BaizeJvmHeapHigh
+          expr: |
+            sum by (application, pod) (jvm_memory_used_bytes{namespace="baize", area="heap"})
+            /
+            sum by (application, pod) (jvm_memory_max_bytes{namespace="baize", area="heap"})
+            > 0.90
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.application }} 堆内存使用率超过 90%"
+            description: "Pod {{ $labels.pod }} 堆使用率 {{ $value | humanizePercentage }}，接近 OOM 风险。"
+
+        - alert: BaizeContainerOOMKilled
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace="baize"}[1h]) > 0
+            and on (pod, container)
+            kube_pod_container_status_last_terminated_reason{namespace="baize", reason="OOMKilled"} == 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "{{ $labels.pod }} 出现 OOMKilled 重启"
+            description: "容器因内存超限被内核终止，请上调 limits 或排查内存泄漏。"
+
+        - alert: BaizeDbPoolExhausted
+          expr: hikaricp_connections_pending{namespace="baize"} > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.application }} 数据库连接池排队"
+            description: "等待连接的线程数 {{ $value }}，可能存在慢 SQL 或连接泄漏。"

@@ -10,6 +10,24 @@ spring:
         dashboard: localhost:8858
         port: 8719
       eager: true
+      # T2.4 韧性：限流规则托管到 Nacos，改规则即时生效，无需重启网关。
+      # 规则文件本身入库（doc/DEFAULT_GROUP/sentinel/baize-gateway-gw-flow.json），
+      # 部署时随 Nacos 配置一并导入，避免"规则只存在于控制台"的不可追溯状态。
+      # 说明：
+      # - rule-type: gw-flow 对应网关维度的路由级限流（SCA RuleType.GW_FLOW）。
+      # - data-id 中的 .json 后缀需与 data-type 匹配，Nacos 上也要用同名 dataId。
+      # - 若 Nacos 上暂无该 dataId，启动不会失败（懒加载），但规则为空、不生效。
+      datasource:
+        gw-flow:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+            namespace: ${NACOS_NAMESPACE:baize}
+            username: ${NACOS_USERNAME:nacos}
+            password: ${NACOS_PASSWORD:}
+            group-id: DEFAULT_GROUP
+            data-id: baize-gateway-gw-flow.json
+            data-type: json
+            rule-type: gw-flow
     loadbalancer:
       enabled: true
     gateway:

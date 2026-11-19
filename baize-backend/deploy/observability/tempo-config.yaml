@@ -1,0 +1,56 @@
+# Tempo 配置（本地 LGTM 栈）
+#
+# 单机模式：本地文件系统存储，适合开发/测试；生产请切换到 S3/GCS 对象存储。
+# 接收路径：OTel Collector 通过 OTLP gRPC (tempo:4317) 写入。
+server:
+  http_listen_port: 3200
+  grpc_listen_port: 9095
+  log_level: info
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+    # 兼容 Zipkin 上报（旧客户端或调试工具）
+    zipkin:
+      endpoint: 0.0.0.0:9411
+
+ingester:
+  max_block_duration: 5m
+
+compactor:
+  compaction:
+    block_retention: 24h
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo/blocks
+    wal:
+      path: /var/tempo/wal
+
+# 指标生成器：从 traces 派生 RED 指标，可在 Grafana 直接看服务级吞吐/错误/延迟，
+# 无需额外接入 Mimir 即可完成"从 trace 到指标"的闭环。
+metrics_generator:
+  registry:
+    external_labels:
+      source: tempo
+  storage:
+    path: /var/tempo/generator/wal
+    remote_write:
+      # 写入同栈 Prometheus（已开启 --web.enable-remote-write-receiver）
+      - url: http://prometheus:9090/api/v1/write
+        send_exemplars: true
+  processor:
+    service_graphs: {}
+    span_metrics: {}
+
+overrides:
+  defaults:
+    metrics_generator:
+      processors: [service-graphs, span-metrics]

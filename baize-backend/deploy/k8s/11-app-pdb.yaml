@@ -1,0 +1,46 @@
+# T2.4 韧性基础：PodDisruptionBudget
+#
+# 作用：节点排水（drain/升级）时保证每个服务至少保留 1 个可用副本，
+# 避免运维操作把服务整体摘掉。与 Deployment 的 maxUnavailable: 0 配合，
+# 滚动更新本身不会降容，PDB 保护的是主动驱逐场景。
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: baize-gateway
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-gateway
+    app.kubernetes.io/part-of: baize
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: baize-gateway
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: baize-auth
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-auth
+    app.kubernetes.io/part-of: baize
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: baize-auth
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: baize-system
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-system
+    app.kubernetes.io/part-of: baize
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: baize-system

@@ -1,0 +1,57 @@
+# T2.2 指标采集：Prometheus Operator ServiceMonitor
+#
+# 前提：集群已安装 Prometheus Operator（kube-prometheus-stack 或等价组件）。
+# 若集群是裸 Prometheus（无 Operator），改用本文件末尾注释的 scrape_config 片段。
+#
+# 说明：
+# - selector 匹配 12-app-services.yaml 中 Service 的 app.kubernetes.io/name 标签。
+# - path 必须带 context-path 前缀 /api/v1（T2.1 实证：/actuator/prometheus 为 404）。
+# - 依赖 T2.1 引入的 micrometer-registry-prometheus 与 application-dev.yml 中的
+#   management.endpoints.web.exposure.include 含 prometheus。
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: baize-apps
+  namespace: baize
+  labels:
+    app.kubernetes.io/part-of: baize
+    # kube-prometheus-stack 默认只选取带此标签的 ServiceMonitor，
+    # 若你的 Prometheus 实例配置了不同的 selector，请相应调整。
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - baize
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: baize
+      baize.io/metrics: "true"
+  endpoints:
+    - port: http
+      path: /api/v1/actuator/prometheus
+      interval: 30s
+      scrapeTimeout: 10s
+      scheme: http
+      # 指标里已带 application 标签（management.metrics.tags.application），
+      # 这里再补 pod/service 维度，便于按实例与按服务两种视角聚合。
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_name]
+          targetLabel: pod
+        - sourceLabels: [__meta_kubernetes_service_name]
+          targetLabel: service
+# ---------------------------------------------------------------------------
+# 裸 Prometheus（无 Operator）替代方案，加入 prometheus.yml 的 scrape_configs：
+#
+# - job_name: baize-apps
+#   metrics_path: /api/v1/actuator/prometheus
+#   kubernetes_sd_configs:
+#     - role: pod
+#       namespaces:
+#         names: [baize]
+#   relabel_configs:
+#     - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+#       action: keep
+#       regex: "true"
+#     - source_labels: [__meta_kubernetes_pod_name]
+#       target_label: pod
+# ---------------------------------------------------------------------------

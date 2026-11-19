@@ -1,0 +1,111 @@
+# T2.1 / LGTM 本地可观测性栈（Loki + Grafana + Tempo + Mimir + OTel Collector）
+#
+# 用途：本地/测试环境一键起一套完整的可观测性后端，验证应用侧的
+#   traces  → OTel Collector → Tempo
+#   metrics → Prometheus/Mimir（本文件用 Prometheus 抓取 + Mimir 长期存储留待生产）
+#   logs    → Loki
+# 并与 T2.1 的 OTLP 导出配置（默认 http://localhost:4318/v1/traces）对齐。
+#
+# 用法：
+#   cd baize-backend/deploy/observability
+#   docker compose -f docker-compose.observability.yml up -d
+#   Grafana: http://localhost:3001 (admin / admin)
+#   Tempo:   http://localhost:3200
+#   Loki:    http://localhost:3100
+#   OTLP:    http://localhost:4318 (HTTP) / localhost:4317 (gRPC)
+#
+# 注意：本机当前无 docker，故本文件只做静态校验，未实跑；端口与
+# 项目其它 compose 服务（PG 30432 / Nacos 30848 / Redis 30379）不冲突。
+name: baize-observability
+
+services:
+  # ---------------------------------------------------------------- OTel Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    container_name: baize-otel-collector
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+      - "8889:8889"   # Prometheus exporter（自身指标）
+      - "13133:13133" # health_check
+    depends_on:
+      - tempo
+    restart: unless-stopped
+    networks: [observability]
+
+  # ---------------------------------------------------------------- Tempo（traces）
+  tempo:
+    image: grafana/tempo:2.6.1
+    container_name: baize-tempo
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./tempo-config.yaml:/etc/tempo.yaml:ro
+      - tempo-data:/var/tempo
+    ports:
+      - "3200:3200"   # Tempo HTTP API / Grafana 数据源
+      - "9411:9411"   # Zipkin 兼容入口（可选）
+    restart: unless-stopped
+    networks: [observability]
+
+  # ---------------------------------------------------------------- Loki（logs）
+  loki:
+    image: grafana/loki:3.2.1
+    container_name: baize-loki
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki-data:/loki
+    restart: unless-stopped
+    networks: [observability]
+
+  # ---------------------------------------------------------------- Prometheus（metrics）
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: baize-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=7d"
+      - "--web.enable-remote-write-receiver"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks: [observability]
+
+  # ---------------------------------------------------------------- Grafana
+  grafana:
+    image: grafana/grafana:11.3.1
+    container_name: baize-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      # 关闭匿名访问，避免测试环境被误暴露
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+      - tempo
+      - loki
+    restart: unless-stopped
+    networks: [observability]
+
+volumes:
+  tempo-data:
+  loki-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  observability:
+    driver: bridge

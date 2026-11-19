@@ -18,6 +18,9 @@ public enum ErrorCode {
     UNAUTHORIZED(30001, "未登录或登录已过期"),
     FORBIDDEN(30002, "无访问权限"),
 
+    // ===== 4xxxx 资源 / 路由 =====
+    RESOURCE_NOT_FOUND(40004, "请求的资源不存在"),
+
     // ===== 5xxxx 系统异常 =====
     SYSTEM_ERROR(50000, "系统异常"),
     SERVICE_UNAVAILABLE(50001, "服务暂不可用"),

@@ -1,0 +1,62 @@
+# 应用服务 Service（gateway / auth / system）
+#
+# 说明：
+# - baize.io/metrics: "true" 供 13-servicemonitor.yaml 选取抓取目标。
+# - gateway 对外类型 ClusterIP，外部暴露交由 Ingress/NodePort 按环境决定，
+#   避免把入口形态写死在基础清单里。
+apiVersion: v1
+kind: Service
+metadata:
+  name: baize-gateway
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-gateway
+    app.kubernetes.io/part-of: baize
+    baize.io/metrics: "true"
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: baize-gateway
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: baize-auth
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-auth
+    app.kubernetes.io/part-of: baize
+    baize.io/metrics: "true"
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: baize-auth
+  ports:
+    - name: http
+      port: 8010
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: baize-system
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-system
+    app.kubernetes.io/part-of: baize
+    baize.io/metrics: "true"
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: baize-system
+  ports:
+    - name: http
+      port: 8020
+      targetPort: http
+      protocol: TCP

@@ -1,0 +1,35 @@
+[
+  {
+    "resource": "baize-auth",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 100,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "maxQueueingTimeoutMs": 500,
+    "paramItem": null
+  },
+  {
+    "resource": "baize-system",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 300,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "maxQueueingTimeoutMs": 500,
+    "paramItem": null
+  },
+  {
+    "resource": "baize-gen",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 50,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 0,
+    "maxQueueingTimeoutMs": 500,
+    "paramItem": null
+  }
+]

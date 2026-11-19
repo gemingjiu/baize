@@ -63,6 +63,23 @@ spring:
     # forward-only：禁止改动已应用迁移，checksum 漂移会让启动失败
     validate-on-migrate: true
 
+  # T2.4 韧性：Sentinel 流控规则托管 Nacos，热更新无需重启。
+  # 规则文件入库：doc/DEFAULT_GROUP/sentinel/baize-system-flow.json
+  # 未在 Nacos 建同名 dataId 时规则为空、不生效，但不影响启动。
+  cloud:
+    sentinel:
+      datasource:
+        flow:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+            namespace: ${NACOS_NAMESPACE:baize}
+            username: ${NACOS_USERNAME:nacos}
+            password: ${NACOS_PASSWORD:}
+            group-id: DEFAULT_GROUP
+            data-id: baize-system-flow.json
+            data-type: json
+            rule-type: flow
+
 # 日志相关配置
 logging:
   level:

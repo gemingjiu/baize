@@ -1,0 +1,282 @@
+# T2.4 韧性基础：应用服务 Deployment（gateway / auth / system）
+#
+# 说明：
+# - 本清单交付应用侧韧性骨架，包含副本数、滚动更新、存活/就绪/启动探针、
+#   资源请求与限制、拓扑打散、优雅停机。PDB 单独在同目录 pdb.yaml。
+# - 探针路径已与 T2.2 的 actuator 暴露对齐：context-path 为 /api/v1，
+#   故探针为 /api/v1/actuator/health/{liveness,readiness}。
+# - 镜像名与标签为占位（baize/<svc>:latest），部署前由 CI 推送实际 tag 覆盖。
+# - 本机无 K8s 集群，仅做静态校验；实际调度行为需在目标集群验证。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baize-gateway
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-gateway
+    app.kubernetes.io/part-of: baize
+spec:
+  # 网关是无状态入口，至少 2 副本避免单点
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: baize-gateway
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: baize-gateway
+        app.kubernetes.io/part-of: baize
+      annotations:
+        # T2.2：供 Prometheus Operator 抓取（需集群已装 Prometheus Operator）
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/api/v1/actuator/prometheus"
+    spec:
+      # 优雅停机：给正在处理的请求留出时间，配合 Spring Boot graceful shutdown
+      terminationGracePeriodSeconds: 45
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: gateway
+          image: baize/gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -XX:MaxRAMPercentage=75
+                -XX:+UseG1GC
+                -Djava.security.egd=file:/dev/./urandom
+          # 启动探针：JVM 冷启动较慢，先给足 90s，期间存活/就绪探针不生效
+          startupProbe:
+            httpGet:
+              path: /api/v1/actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 18
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /api/v1/actuator/health/liveness
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/actuator/health/readiness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          # 优雅停机：Spring Boot 3 需显式开启 server.shutdown=graceful（见 application-dev.yml 说明）
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+      # 拓扑打散：优先把副本分散到不同节点与可用区，降低单节点故障影响
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: baize-gateway
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: baize-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baize-auth
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-auth
+    app.kubernetes.io/part-of: baize
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: baize-auth
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: baize-auth
+        app.kubernetes.io/part-of: baize
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8010"
+        prometheus.io/path: "/api/v1/actuator/prometheus"
+    spec:
+      terminationGracePeriodSeconds: 45
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: auth
+          image: baize/auth:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8010
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -XX:MaxRAMPercentage=75
+                -XX:+UseG1GC
+          startupProbe:
+            httpGet:
+              path: /api/v1/actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 18
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /api/v1/actuator/health/liveness
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/actuator/health/readiness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: baize-auth
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baize-system
+  namespace: baize
+  labels:
+    app.kubernetes.io/name: baize-system
+    app.kubernetes.io/part-of: baize
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: baize-system
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: baize-system
+        app.kubernetes.io/part-of: baize
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8020"
+        prometheus.io/path: "/api/v1/actuator/prometheus"
+    spec:
+      terminationGracePeriodSeconds: 45
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: system
+          image: baize/system:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8020
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -XX:MaxRAMPercentage=75
+                -XX:+UseG1GC
+            # Flyway 在 Nacos 配置缺失时可由环境变量兜底（T0.1 暴露过同类疏漏）
+            - name: SPRING_FLYWAY_BASELINE_ON_MIGRATE
+              value: "true"
+          startupProbe:
+            httpGet:
+              path: /api/v1/actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 24
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /api/v1/actuator/health/liveness
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/actuator/health/readiness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 300m
+              memory: 768Mi
+            limits:
+              cpu: "2"
+              memory: 1536Mi
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: baize-system

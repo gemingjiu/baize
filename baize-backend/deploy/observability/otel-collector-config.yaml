@@ -1,0 +1,65 @@
+# OTel Collector 配置（本地 LGTM 栈）
+#
+# 数据流：
+#   applications --OTLP(4317/4318)--> collector --traces--> tempo
+#                                              --metrics--> prometheus exporter(:8889)
+# 说明：
+# - 应用侧只需配置 management.otlp.tracing.endpoint=http://<host>:4318/v1/traces，
+#   与 T2.1 的 application-dev.yml 默认值一致。
+# - 生产环境建议改为 OTLP 直送 Tempo/Mimir，或启用 batch + memory_limiter 后
+#   再做 tail_sampling，避免全量上报带来的成本。
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # 内存保护：容器内存超限时先丢数据而不是 OOM
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 75
+    spike_limit_percentage: 20
+  # 批量上报，降低后端写入压力
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+  # 资源属性补全，便于在 Grafana 中按环境/服务过滤
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: dev
+        action: upsert
+
+exporters:
+  # traces → Tempo（OTLP gRPC）
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  # metrics → Prometheus 抓取端点（collector 自身暴露 :8889）
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    resource_to_telemetry_conversion:
+      enabled: true
+  # 调试输出，排障时打开（生产建议关闭，否则日志量很大）
+  debug:
+    verbosity: basic
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [otlp/tempo]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [prometheus]

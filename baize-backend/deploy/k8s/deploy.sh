@@ -35,27 +35,55 @@ echo "📁 部署配置文件目录: $SCRIPT_DIR"
 echo ""
 
 # 部署命名空间
-echo "🔧 1/4 部署命名空间..."
+echo "🔧 1/5 部署命名空间..."
 kubectl apply -f "$SCRIPT_DIR/00-namespace.yaml"
 echo "✅ 命名空间部署完成"
 echo ""
 
 # 部署 PostgreSQL
-echo "🔧 2/4 部署 PostgreSQL..."
+echo "🔧 2/5 部署 PostgreSQL..."
 kubectl apply -f "$SCRIPT_DIR/01-postgres.yaml"
 echo "✅ PostgreSQL 部署完成"
 echo ""
 
 # 部署 Redis
-echo "🔧 3/4 部署 Redis..."
+echo "🔧 3/5 部署 Redis..."
 kubectl apply -f "$SCRIPT_DIR/02-redis.yaml"
 echo "✅ Redis 部署完成"
 echo ""
 
 # 部署 Nacos
-echo "🔧 4/4 部署 Nacos..."
+echo "🔧 4/5 部署 Nacos..."
 kubectl apply -f "$SCRIPT_DIR/03-nacos.yaml"
 echo "✅ Nacos 部署完成"
+echo ""
+
+# ---------------------------------------------------------------------------
+# 部署应用层（T2.4 韧性骨架 + T2.2 指标采集）
+# 中间件就绪后再部署应用，否则启动探针会长时间失败。
+# 若集群未安装 Prometheus Operator，ServiceMonitor/PrometheusRule 会 apply 失败，
+# 此时用 SKIP_MONITORING=1 跳过（CRD 不存在属预期，不影响应用运行）。
+# ---------------------------------------------------------------------------
+echo "⏳ 等待中间件就绪..."
+kubectl wait --for=condition=available --timeout=300s \
+    deployment/postgres deployment/redis deployment/nacos -n baize || true
+echo ""
+
+echo "🔧 5/5 部署应用服务..."
+kubectl apply -f "$SCRIPT_DIR/10-app-deployments.yaml"
+kubectl apply -f "$SCRIPT_DIR/11-app-pdb.yaml"
+kubectl apply -f "$SCRIPT_DIR/12-app-services.yaml"
+
+if [ "${SKIP_MONITORING:-0}" = "1" ]; then
+    echo "⏭️  已跳过 ServiceMonitor/PrometheusRule（SKIP_MONITORING=1）"
+else
+    # CRD 不存在时 kubectl 会报错，这里显式降级为警告，避免中断中间件已完成的部署
+    kubectl apply -f "$SCRIPT_DIR/13-servicemonitor.yaml" \
+        || echo "⚠️  ServiceMonitor 部署失败：请确认集群已安装 Prometheus Operator（或用 SKIP_MONITORING=1 跳过）"
+    kubectl apply -f "$SCRIPT_DIR/14-prometheusrule.yaml" \
+        || echo "⚠️  PrometheusRule 部署失败：请确认集群已安装 Prometheus Operator（或用 SKIP_MONITORING=1 跳过）"
+fi
+echo "✅ 应用服务部署完成"
 echo ""
 
 echo "======================================"
@@ -72,6 +100,7 @@ echo "🌐 服务访问地址："
 echo "  PostgreSQL: localhost:30432"
 echo "  Redis: localhost:30379"
 echo "  Nacos: http://localhost:30848/nacos"
+echo "  Gateway: http://localhost:8000（经 Service/Ingress 暴露）"
 echo ""
 echo "🔐 连接信息："
 echo "  PostgreSQL 用户: postgres, 密码: 见 01-postgres.yaml Secret（部署前替换）"

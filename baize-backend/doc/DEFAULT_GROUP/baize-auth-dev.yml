@@ -47,12 +47,32 @@ feign:
     response:
       enabled: true
 
+# T2.4 韧性：Sentinel 流控规则托管 Nacos（登录/刷新是最易被刷的入口）
+# 规则文件入库：doc/DEFAULT_GROUP/sentinel/baize-auth-flow.json
+# 未在 Nacos 建同名 dataId 时规则为空、不生效，但不影响启动。
+spring:
+  cloud:
+    sentinel:
+      datasource:
+        flow:
+          nacos:
+            server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+            namespace: ${NACOS_NAMESPACE:baize}
+            username: ${NACOS_USERNAME:nacos}
+            password: ${NACOS_PASSWORD:}
+            group-id: DEFAULT_GROUP
+            data-id: baize-auth-flow.json
+            data-type: json
+            rule-type: flow
+
 # 暴露监控端点
+# 注意：此处原先为 include: '*'，会把全部 actuator 端点（含 env/heapdump/threaddump）
+# 暴露在网关可达路径下。T2.2 收敛为白名单，与 application-dev.yml 保持一致。
 management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: health,info,prometheus,metrics
   info:
     env:
       enabled: true

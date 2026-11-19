@@ -1,4 +1,9 @@
 spring:
+  # T2.4 韧性：优雅停机。收到 SIGTERM 后先停止接收新请求，等待在途请求完成
+  # （与 K8s preStop sleep 5s + terminationGracePeriodSeconds 45s 配合），
+  # 避免滚动更新/节点排水时正在处理的请求被硬切断。
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   data:
     redis:
       host: ${baize.redis.host}
@@ -6,10 +11,14 @@ spring:
       password: ${baize.redis.password}
   cloud:
     sentinel:
-      # 开发集群未部署 Sentinel 控制台，直接关闭，避免启动反复连接 localhost:8858
-      enabled: false
+      # T2.4：Sentinel 必须保持 enabled=true，否则 SentinelAutoConfiguration 不装配，
+      # SentinelDataSourceHandler 也就不会注册 —— 规则永远为空（这一点极易误判为"规则没生效"）。
+      enabled: true
       transport:
-        dashboard: localhost:8858
+        # 开发集群未部署 Sentinel 控制台，地址留空：SCA 约定"地址为空时不尝试连接 dashboard"，
+        # 既避免启动反复连接 localhost:8858，也不影响 Nacos 规则数据源。
+        # 需要可视化/动态改规则时再填 localhost:8858。
+        dashboard:
         port: 8719
       eager: true
     loadbalancer:
@@ -19,6 +28,23 @@ logging:
   level:
     org.springframework: info
     com.gem: debug
+
+server:
+  # T2.4 韧性：优雅停机开关（Boot 3 默认 immediate，需显式设为 graceful）
+  shutdown: graceful
+
+# T2.4 韧性：Feign 超时统一基线
+# 各服务共同加载本文件，故在此集中定义默认值，避免每个模块各写一份导致漂移。
+# 说明：
+# - 项目内不存在 RestTemplate/WebClient 调用（已 grep 确认），Feign 是唯一出站 HTTP 通道。
+# - 具体服务可在自己的 xxx-dev.yml 里覆盖（如 baize-auth-dev.yml 当前为 10000ms）。
+# - 未开启 retryer：写操作自动重试会放大重复提交风险，重试交由业务与 Sentinel 熔断处理。
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
 
 # 可观测性（T2.1/T2.2，见 docs/adr/0003-observability-otel-lgtm.md）
 # 本文件由各服务共同加载，故端点与追踪配置集中在此，避免五个模块重复维护。

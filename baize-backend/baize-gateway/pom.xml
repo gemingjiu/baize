@@ -50,6 +50,14 @@
             <artifactId>sentinel-spring-cloud-gateway-adapter</artifactId>
         </dependency>
 
+        <!-- Sentinel Nacos 数据源（T2.4）：规则在 Nacos 中配置并热生效。
+             SCA 的 sentinel-datasource-nacos 在 spring-cloud-alibaba-sentinel-datasource
+             中是 optional 依赖，不会传递引入，必须显式声明；版本由 SCA BOM 管理（1.8.8）。 -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+        </dependency>
+
         <!-- Sentinel Transport（连接Dashboard必需） -->
         <dependency>
             <groupId>com.alibaba.csp</groupId>

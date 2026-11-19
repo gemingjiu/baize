@@ -32,6 +32,13 @@
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
 
+        <!-- Sentinel Nacos 数据源（T2.4）：规则集中托管在 Nacos，支持热更新；
+             optional 依赖不传递，需显式声明；版本由 SCA BOM 管理（1.8.8）。 -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+        </dependency>
+
         <!-- SpringCloud Alibaba Seata -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

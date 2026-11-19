@@ -13,6 +13,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
@@ -134,6 +136,21 @@ public class GlobalExceptionHandler {
     public ApiResult<Void> handleForbiddenException(ForbiddenException e, HttpServletRequest request) {
         log.warn("禁止访问: {} - {}", request.getRequestURI(), e.getMessage());
         return ApiResult.fail(ErrorCode.FORBIDDEN.code(), e.getMessage());
+    }
+
+    /**
+     * 处理未映射路径（含未暴露的 actuator 端点）。
+     * <p>
+     * 必须排在 {@link #handleException} 之前单独处理：否则"客户端请求了不存在的路径"会落进
+     * 兜底分支返回 500「系统内部错误」，让监控把客户端错误误判为服务故障并触发告警，
+     * 也会污染 5xx 错误率指标。Boot 3 抛的是 {@link NoResourceFoundException}，
+     * Boot 2 时代的 {@link NoHandlerFoundException} 一并兜住。
+     */
+    @ExceptionHandler({NoResourceFoundException.class, NoHandlerFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResult<Void> handleNotFoundPath(Exception e, HttpServletRequest request) {
+        log.warn("路径不存在: {} {}", request.getMethod(), request.getRequestURI());
+        return ApiResult.fail(ErrorCode.RESOURCE_NOT_FOUND.code(), ErrorCode.RESOURCE_NOT_FOUND.message());
     }
 
     /**
