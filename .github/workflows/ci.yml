@@ -144,6 +144,11 @@ jobs:
         working-directory: baize-ui
         run: npx biome ci .
 
+      # T2.5：Vitest 单元测试（tool / utils / access 等纯逻辑），阻塞门禁。
+      - name: Vitest unit tests
+        working-directory: baize-ui
+        run: npm run test
+
       - name: Build
         working-directory: baize-ui
         run: npm run build

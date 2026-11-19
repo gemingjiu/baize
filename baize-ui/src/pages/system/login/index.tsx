@@ -359,6 +359,7 @@ const Login: React.FC = () => {
                 fieldProps={{
                   size: 'large',
                   suffixIcon: <ApartmentOutlined />,
+                  'data-testid': 'login-tenant',
                 }}
                 placeholder="请选择租户"
                 options={tenantOptions}
@@ -370,6 +371,7 @@ const Login: React.FC = () => {
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined />,
+                  'data-testid': 'login-username',
                 }}
                 placeholder="请输入用户名"
                 rules={[{ required: true, message: '请输入用户名!' }]}
@@ -380,6 +382,7 @@ const Login: React.FC = () => {
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined />,
+                  'data-testid': 'login-password',
                 }}
                 placeholder="请输入密码"
                 rules={[{ required: true, message: '请输入密码!' }]}
@@ -420,6 +423,7 @@ const Login: React.FC = () => {
                 loading={submitting}
                 size="large"
                 className={styles.submitBtn}
+                data-testid="login-submit"
               >
                 登 录
               </Button>

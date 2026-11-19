@@ -151,7 +151,11 @@ const TenantSwitcher: React.FC = () => {
 
   return (
     <>
-      <span className={styles.trigger} onClick={openSwitcher}>
+      <span
+        className={styles.trigger}
+        onClick={openSwitcher}
+        data-testid="tenant-switcher-trigger"
+      >
         <Space size={4}>
           <SwapOutlined />
           <span>{currentTenantName}</span>
@@ -179,6 +183,7 @@ const TenantSwitcher: React.FC = () => {
             options={options}
             value={target}
             onChange={setTarget}
+            data-testid="tenant-switcher-select"
           />
           <span className={styles.hint}>
             切换后会重新签发令牌并刷新页面，菜单与按钮权限按新租户重新加载。
