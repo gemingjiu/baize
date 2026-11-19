@@ -64,6 +64,8 @@
 
 > ⏸ 2026-11-19 环境评估（部分交付，**BLOCKED**）：已新建 `docs/acceptance/2026-11.md` 归档环境评估结论与已完成证据。实测 Nacos 8848 / auth 8010 / 前端端口均未监听，无 Docker、无本地 Nacos、E2E 凭证未设置；远程 PG(192.168.5.4:30432)/Redis(30379) 可达但配置全在 Nacos，缺配置中心后端无法启动 → 5 项 UI 走查无法执行。已完成本地可验证部分：`cd baize-ui && npm run build` 成功（全部页面产出）。待用户补齐可用 Nacos + 后端服务栈与测试账号后执行 5 项走查。
 
+> ✅ 2026-11-19 完成（用户提供远程 Nacos `192.168.5.4:30848` namespace `baize` 后）：三服务（auth 8010 / gateway 8000 / system 8020）+ 前端 3000 全部启动，5 项走查在活服务栈执行完毕，证据归档 `docs/acceptance/2026-11.md`。结果：①租户内置禁删 PASS ②字典驱动下拉 PASS ③公告链路通/无种子数据 ④岗位链路通/无种子数据（sys_post 全库 0 行，未做写库回读避免污染共享库）⑤租户切换 PASS（JWT X-Tenant-Id 正确重签）。走查中发现并修复**登录日志 msg 溢出缺陷**（`AuthController` 空体登录把完整 Feign 异常 message ~400 字符写入 `sys_login_log.msg` varchar(255) 报错）→ 新增 `LOG_MSG_MAX_LENGTH=255` + `truncate()`；重打包后重放空体登录回归：`value too long` 0 次、DB `msg_len=255` 落库成功。另排除"用户不存在"假阳性（GET /user/list 误命中 /{id}，真实分页是 POST /user/page）。遗留运维同步项：Nacos 上 `baize-system-dev.yml` 缺 Flyway 配置块（已用 JVM 属性覆盖启动）、网关 CORS 缺 `X-XSRF-TOKEN`（T1.3 flag 默认关暂不影响）。
+
 ### T0.2 D4 编码复用 DML 实测（P1 / S / 依赖：专用或本地库）
 **目标**：验证 partial unique index（`WHERE deleted='0'`）下逻辑删后编码可复用。
 **步骤**：在专用/本地库插入一条测试记录 → 逻辑删（`deleted='1'`）→ 用同编码重新插入 → 断言成功。

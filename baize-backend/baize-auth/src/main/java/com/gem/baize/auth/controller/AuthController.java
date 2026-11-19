@@ -36,6 +36,11 @@ public class AuthController {
      */
     private static final String BEARER_PREFIX = "Bearer ";
 
+    /**
+     * 登录日志 msg 字段上限，对应 sys_login_log.msg varchar(255)
+     */
+    private static final int LOG_MSG_MAX_LENGTH = 255;
+
     @Autowired
     private AuthService authService;
 
@@ -219,12 +224,23 @@ public class AuthController {
             }
             logDto.setIpaddr(getIpAddr(request));
             logDto.setStatus(status);
-            logDto.setMsg(msg);
+            logDto.setMsg(truncate(msg));
             logDto.setLoginTime(LocalDateTime.now());
             sysLoginLogFeignClient.record(logDto);
         } catch (Exception e) {
             log.warn("记录登录日志失败: {}", e.getMessage());
         }
+    }
+
+    /**
+     * 截断登录日志消息，避免异常 message（如 Feign 异常携带的完整响应体）
+     * 超过 sys_login_log.msg 的 varchar(255) 长度导致写入失败。
+     */
+    private String truncate(String msg) {
+        if (msg == null) {
+            return null;
+        }
+        return msg.length() <= LOG_MSG_MAX_LENGTH ? msg : msg.substring(0, LOG_MSG_MAX_LENGTH);
     }
 
     private String getIpAddr(HttpServletRequest request) {
