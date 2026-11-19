@@ -47,7 +47,7 @@
     "numeral": "^2.0.6",
     "rc-util": "^5.44.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^3.3.0",
@@ -61,7 +61,7 @@
     "@types/express": "^5.0.3",
     "@types/lodash": "^4.17.10",
     "@types/react": "^19.1.5",
-    "@types/react-dom": "^19.1.5",
+    "@types/react-dom": "^19.3.0",
     "@types/react-helmet": "^6.1.11",
     "@umijs/max": "^4.7.28",
     "@vitest/coverage-v8": "^2.1.9",
