@@ -162,6 +162,8 @@
 **步骤**：Jest→Vitest + RTL（services/utils/access/关键 ProForm）；Playwright 少量高价值 E2E：登录→租户切换→RBAC 路由→核心 CRUD；加 `data-testid`。
 **验收**：CI 分层测试跑通；核心链路 E2E 通过。
 
+> ✅ **已完成**（2026-11-19，commit 8e13688）Jest→Vitest 迁移：`vitest@2.1.9`+`jsdom@25.0.1`+RTL；删除失效的 jest.config.ts（`@umijs/max/test` 子路径在已装版本不存在，基线 `npm test` 直接报错）与 tests/setupTests.jsx（旧 antd v5 路径 `antd/lib/theme/internal`）；新建 vitest.config.ts（@/@@ 别名、jsdom、matchMedia polyfill）+ tests/vitest.setup.ts + 4 个单测文件共 26 用例（permission 9 / pagination 7 / tree 4 / auth 6，auth 用 TextEncoder→latin1 构造无签名 JWT 绕开 btoa 中文报错）。package.json 脚本改 test=vitest run / test:coverage / test:watch / test:update，新增 test:e2e。验证：`npm run test` 26/26、`npm run tsc` 0、`npx biome ci .` 0 error（33 warning 基线保留）。CI frontend job 在 Biome 与 Build 之间加阻塞步骤 `npm run test`。Playwright 骨架：playwright.config.ts（E2E_BASE_URL 可配、单 worker、trace on-first-retry）+ e2e/auth.spec.ts（登录重定向/字段渲染/有效凭证登录）+ e2e/tenant.spec.ts（租户切换弹窗），凭证缺失自动 skip，不进 CI 裸跑；登录页与 TenantSwitcher 补 `data-testid`。E2E 真实执行需要有后端栈的环境，未在本机跑（仅骨架 + tsc 校验）。回退：保留单测为门禁，E2E 维持 advisory。
+
 ---
 
 ## 6. Wave 3 — Phase 3：受控框架代际升级
